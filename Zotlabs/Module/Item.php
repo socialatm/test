@@ -743,6 +743,8 @@ class Item extends Controller {
 				$webpage       = $parent_item['item_type'];
 			}
 
+
+
 			if ((!$allow_empty) && (!strlen($body))) {
 				if ($preview)
 					killme();
@@ -806,7 +808,6 @@ class Item extends Controller {
 		}
 
 		$post_tags = [];
-
 
 		if ($mimetype === 'text/bbcode') {
 
@@ -919,15 +920,7 @@ class Item extends Controller {
 			$cats = explode(',', $categories);
 			foreach ($cats as $cat) {
 
-				if ($webpage == ITEM_TYPE_CARD) {
-					$catlink = z_root() . '/cards/' . $channel['channel_address'] . '?f=&cat=' . urlencode(trim($cat));
-				}
-				elseif ($webpage == ITEM_TYPE_ARTICLE) {
-					$catlink = z_root() . '/articles/' . $channel['channel_address'] . '?f=&cat=' . urlencode(trim($cat));
-				}
-				else {
-					$catlink = $owner_xchan['xchan_url'] . '?f=&cat=' . urlencode(trim($cat));
-				}
+				$catlink = $owner_xchan['xchan_url'] . '?f=&cat=' . urlencode(trim($cat));
 
 				$post_tags[] = [
 					'uid'   => $profile_uid,
