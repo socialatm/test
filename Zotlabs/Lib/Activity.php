@@ -1013,7 +1013,7 @@ class Activity {
 			'type'      => 'Image',
 			'mediaType' => (($p['xchan_photo_mimetype']) ? $p['xchan_photo_mimetype'] : 'image/png'),
 			'updated'   => datetime_convert('UTC', 'UTC', $p['xchan_photo_date'], ATOM_TIME),
-			'url'       => $p['xchan_photo_l'],
+			'url'       => $p['xchan_photo_l'] . '?_updated=' . datetime_convert('UTC', 'UTC', $p['xchan_photo_date'], ATOM_TIME),
 			'height'    => 300,
 			'width'     => 300,
 		];
