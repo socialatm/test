@@ -83,7 +83,8 @@ function nav($template = 'default') {
 	if ($observer) {
 		$userinfo = [
 			'icon' => $observer['xchan_photo_m'] . '?rev=' . strtotime($observer['xchan_photo_date']),
-			'name' => $observer['xchan_addr'],
+			'addr' => $observer['xchan_addr'],
+			'name' => $observer['xchan_name'],
 		];
 	}
 
