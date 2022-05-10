@@ -2273,6 +2273,14 @@ class Activity {
 			if ($act->type === 'emojiReaction') {
 				$content['content'] = (($act->tgt && $act->tgt['type'] === 'Image') ? '[img=32x32]' . $act->tgt['url'] . '[/img]' : '&#x' . $act->tgt['name'] . ';');
 			}
+
+			if (in_array($act->type, ['EmojiReaction', 'EmojiReact'])) {
+				// Pleroma reactions
+				$t = trim(self::get_textfield($act->data, 'content'));
+				if (mb_strlen($t) === 1) {
+					$content['content'] = $t;
+				}
+			}
 		}
 
 		$s['item_thread_top'] = 0;
