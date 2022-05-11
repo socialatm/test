@@ -177,49 +177,46 @@ class Search extends Controller {
 
 		}
 
-		$item_normal = item_normal_search();
-		$pub_sql     = public_permissions_sql($observer_hash);
-
-		require_once('include/channel.php');
-
-		$sys = get_sys_channel();
-
 		if (($update) && ($load)) {
 			$itemspage = get_pconfig(local_channel(), 'system', 'itemspage');
 			App::set_pager_itemspage(((intval($itemspage)) ? $itemspage : 10));
 			$pager_sql = sprintf(" LIMIT %d OFFSET %d ", intval(App::$pager['itemspage']), intval(App::$pager['start']));
 
-			// in case somebody turned off public access to sys channel content with permissions
+			$item_normal = item_normal_search();
+			$pub_sql     = item_permissions_sql(0, $observer_hash);
 
-			if (!perm_is_allowed($sys['channel_id'], $observer_hash, 'view_stream'))
-				$sys['xchan_hash'] .= 'disabled';
+			$sys = get_sys_channel();
+
+			// in case somebody turned off public access to sys channel content using permissions
+			// make that content unsearchable by ensuring the owner uid can't match
+			$sys_id = perm_is_allowed($sys['channel_id'], $observer_hash, 'view_stream') ? $sys['channel_id'] : 0;
 
 			if ($load) {
 				$r = null;
 
 				if (local_channel()) {
-					$r = q("SELECT mid, MAX(id) as item_id from item
-						WHERE ((( item.allow_cid = ''  AND item.allow_gid = '' AND item.deny_cid  = '' AND item.deny_gid  = '' AND item_private = 0 )
-						OR ( item.uid = %d )) OR item.owner_xchan = '%s' )
+					$r = q("SELECT mid, MAX(id) AS item_id FROM item
+						WHERE (( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = '' AND item.deny_gid  = '' AND item.item_private = 0 )
+						OR ( item.uid = %d ))
 						$item_normal
 						$sql_extra
-						group by mid, created order by created desc $pager_sql ",
-						intval(local_channel()),
-						dbesc($sys['xchan_hash'])
+						GROUP BY mid, created ORDER BY created DESC $pager_sql ",
+						intval(local_channel())
 					);
 				}
-				if ($r === null) {
-					$r = q("SELECT mid, MAX(id) as item_id from item
-						WHERE (((( item.allow_cid = ''  AND item.allow_gid = '' AND item.deny_cid  = ''
-						AND item.deny_gid  = '' AND item_private = 0 )
-						and owner_xchan in ( " . stream_perms_xchans(($observer) ? (PERMS_NETWORK | PERMS_PUBLIC) : PERMS_PUBLIC) . " ))
-							$pub_sql ) OR owner_xchan = '%s')
+
+				if (!$r) {
+					$r = q("SELECT mid, MAX(id) AS item_id FROM item
+						WHERE (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''	AND item.deny_gid  = '' AND item.item_private = 0 )
+						AND item.uid IN ( " . stream_perms_api_uids(($observer_hash) ? (PERMS_NETWORK | PERMS_PUBLIC) : PERMS_PUBLIC) . " ))
+						$pub_sql ) OR item.uid = '%d')
 						$item_normal
 						$sql_extra
-						group by mid, created order by created desc $pager_sql",
-						dbesc($sys['xchan_hash'])
+						GROUP BY mid, created ORDER BY created DESC $pager_sql",
+						intval($sys_id)
 					);
 				}
+
 				if ($r) {
 					$str = ids_to_querystr($r, 'item_id');
 					$r   = dbq("select *, id as item_id from item where id in ( " . $str . ") order by created desc");
@@ -232,12 +229,11 @@ class Search extends Controller {
 
 		}
 
+		$items = [];
+
 		if ($r) {
 			xchan_query($r);
 			$items = fetch_post_tags($r, true);
-		}
-		else {
-			$items = [];
 		}
 
 		if ($format === 'json') {

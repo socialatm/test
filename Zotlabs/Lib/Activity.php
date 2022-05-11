@@ -2270,6 +2270,7 @@ class Activity {
 				$s['mid'] = $act->obj['id'];
 				$s['parent_mid'] = $act->obj['id'];
 			}
+
 			if ($act->type === 'emojiReaction') {
 				$content['content'] = (($act->tgt && $act->tgt['type'] === 'Image') ? '[img=32x32]' . $act->tgt['url'] . '[/img]' : '&#x' . $act->tgt['name'] . ';');
 			}
