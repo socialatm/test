@@ -209,7 +209,7 @@ class Search extends Controller {
 					$r = q("SELECT mid, MAX(id) AS item_id FROM item
 						WHERE (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''	AND item.deny_gid  = '' AND item.item_private = 0 )
 						AND item.uid IN ( " . stream_perms_api_uids(($observer_hash) ? (PERMS_NETWORK | PERMS_PUBLIC) : PERMS_PUBLIC) . " ))
-						$pub_sql ) OR item.uid = '%d')
+						$pub_sql ) OR item.uid = %d)
 						$item_normal
 						$sql_extra
 						GROUP BY mid, created ORDER BY created DESC $pager_sql",
