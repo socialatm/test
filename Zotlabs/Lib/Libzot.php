@@ -1627,7 +1627,7 @@ class Libzot {
 					// doesn't exist.
 
 					if ($perm === 'send_stream') {
-						if ($force || get_pconfig($channel['channel_id'], 'system', 'hyperdrive', false) || $arr['verb'] === ACTIVITY_SHARE) {
+						if ($force || get_pconfig($channel['channel_id'], 'system', 'hyperdrive', false)) {
 							$allowed = true;
 						}
 					}
@@ -1673,6 +1673,10 @@ class Libzot {
 					$DR->update('comment parent not found');
 					$result[] = $DR->get();
 
+					if ($relay || $request || $local_public) {
+						continue;
+					}
+
 					// We don't seem to have a copy of this conversation or at least the parent
 					// - so request a copy of the entire conversation to date.
 					// Don't do this if it's a relay post as we're the ones who are supposed to
@@ -1684,10 +1688,10 @@ class Libzot {
 					// the top level post is unlikely to be imported and
 					// this is just an exercise in futility.
 
-					if ((!$relay) && (!$request) && (!$local_public)
-						&& perm_is_allowed($channel['channel_id'], $sender, 'send_stream')) {
+					if (perm_is_allowed($channel['channel_id'], $sender, 'send_stream')) {
 						self::fetch_conversation($channel, $arr['parent_mid']);
 					}
+
 					continue;
 				}
 
