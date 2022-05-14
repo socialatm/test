@@ -3219,6 +3219,7 @@ function start_delivery_chain($channel, $item, $item_id, $parent, $group = false
 
 		}
 
+		$arr['title'] = $item['title'];
 		$arr['tgt_type'] = $item['tgt_type'];
 		$arr['target'] = $item['target'];
 
