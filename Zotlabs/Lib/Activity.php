@@ -2195,20 +2195,20 @@ class Activity {
 			$s['created']   = datetime_convert('UTC', 'UTC', $act->data['published']);
 			$s['commented'] = $s['created'];
 		}
-		elseif (array_key_exists('published', $act->obj)) {
+		elseif (is_array($act->obj) && array_key_exists('published', $act->obj)) {
 			$s['created']   = datetime_convert('UTC', 'UTC', $act->obj['published']);
 			$s['commented'] = $s['created'];
 		}
 		if (array_key_exists('updated', $act->data)) {
 			$s['edited'] = datetime_convert('UTC', 'UTC', $act->data['updated']);
 		}
-		elseif (array_key_exists('updated', $act->obj)) {
+		elseif (is_array($act->obj) && array_key_exists('updated', $act->obj)) {
 			$s['edited'] = datetime_convert('UTC', 'UTC', $act->obj['updated']);
 		}
 		if (array_key_exists('expires', $act->data)) {
 			$s['expires'] = datetime_convert('UTC', 'UTC', $act->data['expires']);
 		}
-		elseif (array_key_exists('expires', $act->obj)) {
+		elseif (is_array($act->obj) && array_key_exists('expires', $act->obj)) {
 			$s['expires'] = datetime_convert('UTC', 'UTC', $act->obj['expires']);
 		}
 
