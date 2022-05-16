@@ -85,7 +85,7 @@ function format_event_obj($jobject) {
 			'startTime' => (($arr['adjust']) ? datetime_convert('UTC','UTC',$arr['dtstart'], ATOM_TIME) : datetime_convert('UTC','UTC',$arr['dtstart'],'Y-m-d\\TH:i:s-00:00')),
 			'content'   => bbcode($arr['description']),
 			'location'  => [ 'type' => 'Place', 'content' => $arr['location'] ],
-			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/bbcode' ],
 			'url'       => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
 			'actor'     => Activity::encode_person($r[0],false),
 		];
@@ -141,8 +141,15 @@ function format_event_obj($jobject) {
 			'$event_tz'      => ['label' => t('Timezone'), 'value' => (($tz === date_default_timezone_get()) ? '' : $tz)]
 		));
 
+
+		$description = [];
+
+		if (strpos($object['source']['content'], '[/event-description]') !== false) {
+			preg_match("/\[event\-description\](.*?)\[\/event\-description\]/ism", $object['source']['content'], $description);
+		}
+
 		$event['content'] = replace_macros(get_markup_template('event_item_content.tpl'), array(
-			'$description'    => $object['content'],
+			'$description'    => ((isset($description[1]))? zidify_links(smilies(bbcode($description[1]))) : EMPTY_STR),
 			'$location_label' => t('Location:'),
 			'$location'   => ((array_path_exists('location/name', $object)) ? zidify_links(smilies(bbcode($object['location']['name']))) : EMPTY_STR)
 		));
@@ -1215,7 +1222,7 @@ function event_store_item($arr, $event) {
 			'startTime' => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
 			'content'   => bbcode($arr['description']),
 			'location'  => [ 'type' => 'Place', 'name' => $arr['location'] ],
-			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/bbcode' ],
 			'url'       => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
 			'actor'     => Activity::encode_person($r[0], false),
 			'attachment' => Activity::encode_attachment($r[0]),
@@ -1375,7 +1382,7 @@ function event_store_item($arr, $event) {
 				'startTime'  => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
 				'content'    => bbcode($arr['description']),
 				'location'   => [ 'type' => 'Place', 'name' => bbcode($arr['location']) ],
-				'source'     => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+				'source'     => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/bbcode' ],
 				'url'        => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
 				'actor'      => Activity::encode_person($z, false),
 				'attachment' => Activity::encode_attachment($item_arr),
