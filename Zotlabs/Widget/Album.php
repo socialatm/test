@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Album
+ *   * Description: Displays an album with a title which can be defined via the 'album' and 'title' variable
+ *   * Requires: channel, articles, cards, wiki
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/attach.php');
@@ -99,7 +105,7 @@ class Album {
 			'$upload_form' => $upload_form,
 			'$usage' => $usage_message
 		));
-	
+
 		return $o;
 	}
 }

@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/cloud/$nick
 requires: local_channel
 name: Files
 photo: icon:folder-open
 categories: nav_featured_app, Productivity
+desc: A mighty tool to manage your files and folders.

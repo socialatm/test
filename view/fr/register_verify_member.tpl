@@ -1,24 +1,29 @@
-
 Merci de vous être enregistré sur {{$sitename}}.
 
-Voici les détails de connexion:
+Voici les détails de connexion :
 
-Emplacement du site:⇥{{$siteurl}}
-Utilisateur:⇥{{$email}}
+Adresse du site: {{$siteurl}}
+Utilisateur: {{$email}}
 
 Connectez-vous avec le mot de passe que vous avez choisi au moment de l'enregistrement.
 
-Nous avons besoin de vérifier votre adresse de courriel avant d’autoriser votre accès au réseau. 
+Nous devons vérifier votre adresse électronique afin de vous donner un accès complet au réseau. 
 
-Si vous avez enregistré ce compte, suivre ce lien:
+Votre code de vérification est :
 
-{{$siteurl}}/regver/allow/{{$hash}} 
+{{$hash}}
+
+{{if $timeframe}}
+Ce code est valable de {{$timeframe.0}} UTC jusqu'à {{$timeframe.1}}
+
+{{/if}}
+
+Si vous avez enregistré ce compte, veuillez entrer le code de vérification lorsque cela vous est demandé ou cliquez sur le lien suivant :
 
 
-Pour supprimer ce compte, veuillez visiter:
+{{$siteurl}}/regate/{{$mail}}
 
-
-{{$siteurl}}/regver/deny/{{$hash}}
-
+Pour refuser la demande et supprimer le compte, merci de vous rendre à cette adresse :
+{{$siteurl}}/regate/{{$mail}}{{if $ko}}/{{$ko}}{{/if}}
 
 Merci.

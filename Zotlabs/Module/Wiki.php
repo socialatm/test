@@ -48,10 +48,8 @@ class Wiki extends Controller {
 		if(! Apps::system_app_installed(App::$profile_uid, 'Wiki')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('Wiki App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Provide a wiki for your channel');
-			return $o;
+			$papp = Apps::get_papp('Wiki');
+			return Apps::app_render($papp, 'module');
 		}
 
 
@@ -68,7 +66,7 @@ class Wiki extends Controller {
 		$pageHistory = array();
 		$local_observer = null;
 		$resource_id = '';
-		
+
 		// init() should have forced the URL to redirect to /wiki/channel so assume argc() > 1
 
 		$nick = argv(1);
@@ -98,9 +96,9 @@ class Wiki extends Controller {
 			// Initialize the ACL to the channel default permissions
 
 			$x = array(
-					'lockstate' => (( $owner['channel_allow_cid'] || 
-						$owner['channel_allow_gid'] || 
-						$owner['channel_deny_cid'] || 
+					'lockstate' => (( $owner['channel_allow_cid'] ||
+						$owner['channel_allow_gid'] ||
+						$owner['channel_deny_cid'] ||
 						$owner['channel_deny_gid'])
 						? 'lock' : 'unlock'
 					),
@@ -113,7 +111,7 @@ class Wiki extends Controller {
 			);
 		}
 		else {
-			// Not the channel owner 
+			// Not the channel owner
 			$owner_acl = $x = array();
 		}
 
@@ -272,10 +270,10 @@ class Wiki extends Controller {
 				if(! $w['resource_id']) {
 					notice(t('Wiki not found') . EOL);
 					goaway(z_root() . '/' . argv(0) . '/' . argv(1));
-				}				
+				}
 
 				$resource_id = $w['resource_id'];
-				
+
 				if(! $wiki_owner) {
 					// Check for observer permissions
 					$observer_hash = get_observer_hash();
@@ -316,7 +314,7 @@ class Wiki extends Controller {
 				                'channel_address' => $owner['channel_address'],
 				                'refresh' => true
 			                ]);
-			                //json_return_and_die(array('pages' => $page_list_html, 'message' => '', 'success' => true));					
+			                //json_return_and_die(array('pages' => $page_list_html, 'message' => '', 'success' => true));
 					notice( t('Error retrieving page content') . EOL);
 					//goaway(z_root() . '/' . argv(0) . '/' . argv(1) );
 				        $renderedContent = NativeWikiPage::convert_links($html, argv(0) . '/' . argv(1) . '/' . NativeWiki::name_encode($wikiUrlName));
@@ -334,7 +332,7 @@ class Wiki extends Controller {
 				    $hookinfo = ['content' => $content, 'mimetype' => $mimeType];
 				    call_hooks('wiki_preprocess',$hookinfo);
 				    $content = $hookinfo['content'];
-    
+
 				    // Render the Markdown-formatted page content in HTML
 				    if($mimeType == 'text/bbcode') {
 					$renderedContent = zidify_links(smilies(bbcode($content)));
@@ -356,7 +354,7 @@ class Wiki extends Controller {
 //			default:	// Strip the extraneous URL components
 //				goaway('/' . argv(0) . '/' . argv(1) . '/' . NativeWiki::name_encode($wikiUrlName) . '/' . $pageUrlName);
 		}
-		
+
 
 		$wikiModalID = random_string(3);
 
@@ -458,18 +456,18 @@ class Wiki extends Controller {
 			}
 			json_return_and_die(array('html' => $html, 'success' => true));
 		}
-		
+
 		// Create a new wiki
 		// /wiki/channel/create/wiki
 		if ((argc() > 3) && (argv(2) === 'create') && (argv(3) === 'wiki')) {
 
-			// Only the channel owner can create a wiki, at least until we create a 
+			// Only the channel owner can create a wiki, at least until we create a
 			// more detail permissions framework
 
 			if (local_channel() !== intval($owner['channel_id'])) {
 				goaway('/' . argv(0) . '/' . $nick . '/');
-			} 
-			$wiki = array(); 
+			}
+			$wiki = array();
 
 			// backslashes won't work well in the javascript functions
 			$name = str_replace('\\','',$_POST['wikiName']);
@@ -478,12 +476,12 @@ class Wiki extends Controller {
 			$wiki['postVisible'] = ((intval($_POST['postVisible'])) ? 1 : 0);
 			$wiki['rawName']     = $name;
 			$wiki['htmlName']    = escape_tags($name);
-			//$wiki['urlName']     = urlencode(urlencode($name)); 
+			//$wiki['urlName']     = urlencode(urlencode($name));
 			$wiki['urlName']     = NativeWiki::name_encode($name);
 			$wiki['mimeType']    = $_POST['mimeType'];
 			$wiki['typelock']    = $_POST['typelock'];
 
-			if($wiki['urlName'] === '') {				
+			if($wiki['urlName'] === '') {
 				notice( t('Error creating wiki. Invalid name.') . EOL);
 				goaway('/wiki');
 				return; //not reached
@@ -502,7 +500,7 @@ class Wiki extends Controller {
 			$r = NativeWiki::create_wiki($owner, $observer_hash, $wiki, $acl);
 			if($r['success']) {
 				NativeWiki::sync_a_wiki_item($owner['channel_id'],$r['item_id'],$r['item']['resource_id']);
-				$homePage = NativeWikiPage::create_page($owner['channel_id'],$observer_hash,'Home', $r['item']['resource_id'], $wiki['mimeType']);
+				$homePage = NativeWikiPage::create_page($owner, $observer_hash, 'Home', $r['item']['resource_id'], $wiki['mimeType']);
 				if(! $homePage['success']) {
 					notice( t('Wiki created, but error creating Home page.'));
 					goaway(z_root() . '/wiki/' . $nick . '/' . NativeWiki::name_encode($wiki['urlName']));
@@ -519,7 +517,7 @@ class Wiki extends Controller {
 		// Update a wiki
 		// /wiki/channel/update/wiki
 		if ((argc() > 3) && (argv(2) === 'update') && (argv(3) === 'wiki')) {
-			// Only the channel owner can update a wiki, at least until we create a 
+			// Only the channel owner can update a wiki, at least until we create a
 			// more detail permissions framework
 
 			if (local_channel() !== intval($owner['channel_id'])) {
@@ -544,7 +542,7 @@ class Wiki extends Controller {
 			if($wiki['resource_id']) {
 
 				$arr['resource_id'] = $wiki['resource_id'];
-				
+
 				$acl = new \Zotlabs\Access\AccessList($owner);
 				$acl->set_from_array($_POST);
 
@@ -565,18 +563,18 @@ class Wiki extends Controller {
 		// Delete a wiki
 		if ((argc() > 3) && (argv(2) === 'delete') && (argv(3) === 'wiki')) {
 
-			// Only the channel owner can delete a wiki, at least until we create a 
+			// Only the channel owner can delete a wiki, at least until we create a
 			// more detail permissions framework
 			if (local_channel() !== intval($owner['channel_id'])) {
 				logger('Wiki delete permission denied.');
 				json_return_and_die(array('message' => t('Wiki delete permission denied.'), 'success' => false));
-			} 
-			$resource_id = $_POST['resource_id']; 
+			}
+			$resource_id = $_POST['resource_id'];
 			$deleted = NativeWiki::delete_wiki($owner['channel_id'],$observer_hash,$resource_id);
 			if ($deleted['success']) {
 				NativeWiki::sync_a_wiki_item($owner['channel_id'], 0, $resource_id);
 				json_return_and_die(array('message' => '', 'success' => true));
-			} 
+			}
 			else {
 				logger('Error deleting wiki: ' . $resource_id . ' ' . $deleted['message']);
 				json_return_and_die(array('message' => t('Error deleting wiki'), 'success' => false));
@@ -589,14 +587,14 @@ class Wiki extends Controller {
 
 			$mimetype = $_POST['mimetype'];
 
-			$resource_id = $_POST['resource_id']; 
+			$resource_id = $_POST['resource_id'];
 			// Determine if observer has permission to create a page
-			
 
-			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash, $mimetype);
+
+			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(! $perms['write']) {
 				logger('Wiki write permission denied. ' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$name = isset($_POST['pageName']) ? $_POST['pageName'] : $_POST['missingPageName']; //Get new page name
@@ -608,12 +606,12 @@ class Wiki extends Controller {
 				json_return_and_die(array('message' => 'Error creating page. Invalid name (' . print_r($_POST,true) . ').', 'success' => false));
 			}
 
-			$page = NativeWikiPage::create_page($owner['channel_id'],$observer_hash, $name, $resource_id, $mimetype);
+			$page = NativeWikiPage::create_page($owner, $observer_hash, $name, $resource_id, $mimetype);
 			if($page['item_id']) {
 
 				$commit = NativeWikiPage::commit([
-					'commit_msg'    => t('New page created'), 
-					'resource_id'   => $resource_id, 
+					'commit_msg'    => t('New page created'),
+					'resource_id'   => $resource_id,
 					'channel_id'    => $owner['channel_id'],
 					'observer_hash' => $observer_hash,
 					'pageUrlName'   => $name
@@ -622,10 +620,10 @@ class Wiki extends Controller {
 					NativeWiki::sync_a_wiki_item($owner['channel_id'], $commit['item_id'], $resource_id);
 					//json_return_and_die(array('url' => '/' . argv(0) . '/' . argv(1) . '/' . urlencode($page['wiki']['urlName']) . '/' . urlencode($page['page']['urlName']), 'success' => true));
 					json_return_and_die(array('url' => '/' . argv(0) . '/' . argv(1) . '/' . $page['wiki']['urlName'] . '/' . $page['page']['urlName'], 'success' => true));
-				} 
+				}
 				else {
 					json_return_and_die(array('message' => 'Error making git commit','url' => '/' . argv(0) . '/' . argv(1) . '/' . NativeWiki::name_encode($page['wiki']['urlName']) . '/' . NativeWiki::name_encode($page['page']['urlName']),'success' => false));
-				}				
+				}
 
 
 			}
@@ -633,8 +631,8 @@ class Wiki extends Controller {
 				logger('Error creating page');
 				json_return_and_die(array('message' => 'Error creating page.', 'success' => false));
 			}
-		}		
-		
+		}
+
 		// Fetch page list for a wiki
 		if((argc() === 5) && (argv(2) === 'get') && (argv(3) === 'page') && (argv(4) === 'list')) {
 			$resource_id = $_POST['resource_id']; // resource_id for wiki in db
@@ -642,7 +640,7 @@ class Wiki extends Controller {
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(!$perms['read']) {
 				logger('Wiki read permission denied.' . EOL);
-				json_return_and_die(array('pages' => null, 'message' => 'Permission denied.', 'success' => false));					
+				json_return_and_die(array('pages' => null, 'message' => 'Permission denied.', 'success' => false));
 			}
 
 			// @FIXME - we shouldn't invoke this if it isn't in the PDL or has been over-ridden
@@ -655,17 +653,17 @@ class Wiki extends Controller {
 				'channel_address' => $owner['channel_address'],
 				'refresh' => true
 			]);
-			json_return_and_die(array('pages' => $page_list_html, 'message' => '', 'success' => true));					
+			json_return_and_die(array('pages' => $page_list_html, 'message' => '', 'success' => true));
 		}
-		
+
 		// Save a page
 		if ((argc() === 4) && (argv(2) === 'save') && (argv(3) === 'page')) {
-			
-			$resource_id = $_POST['resource_id']; 
+
+			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['name'];
 			$pageHtmlName = escape_tags($_POST['name']);
 			$content = $_POST['content']; //Get new content
-			$commitMsg = $_POST['commitMsg']; 
+			$commitMsg = $_POST['commitMsg'];
 			if ($commitMsg === '') {
 				$commitMsg = 'Updated ' . $pageHtmlName;
 			}
@@ -674,7 +672,7 @@ class Wiki extends Controller {
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(! $perms['write']) {
 				logger('Wiki write permission denied. ' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$saved = NativeWikiPage::save_page([
@@ -687,9 +685,9 @@ class Wiki extends Controller {
 			if($saved['success']) {
 
 				$commit = NativeWikiPage::commit([
-					'commit_msg' => $commitMsg, 
+					'commit_msg' => $commitMsg,
 					'pageUrlName' => $pageUrlName,
-					'resource_id' => $resource_id, 
+					'resource_id' => $resource_id,
 					'channel_id'    => $owner['channel_id'],
 					'observer_hash' => $observer_hash,
 					'revision' => (-1)
@@ -699,21 +697,21 @@ class Wiki extends Controller {
 					json_return_and_die(array('message' => 'Wiki git repo commit made', 'success' => true , 'content' => $content));
 				}
 				else {
-					json_return_and_die(array('message' => 'Error making git commit','success' => false));					
+					json_return_and_die(array('message' => 'Error making git commit','success' => false));
 				}
 			}
 			else {
-				json_return_and_die(array('message' => 'Error saving page', 'success' => false));					
+				json_return_and_die(array('message' => 'Error saving page', 'success' => false));
 			}
 		}
-		
+
 		// Update page history
 		// /wiki/channel/history/page
 		if ((argc() === 4) && (argv(2) === 'history') && (argv(3) === 'page')) {
-			
+
 			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['name'];
-			
+
 			// Determine if observer has permission to read content
 
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
@@ -734,7 +732,7 @@ class Wiki extends Controller {
 		// Delete a page
 		if ((argc() === 4) && (argv(2) === 'delete') && (argv(3) === 'page')) {
 
-			$resource_id = $_POST['resource_id']; 
+			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['name'];
 
 			if ($pageUrlName === 'Home') {
@@ -745,13 +743,13 @@ class Wiki extends Controller {
 			// currently just allow page owner
 			if((! local_channel()) || (local_channel() != $owner['channel_id'])) {
 				logger('Wiki write permission denied. ' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(! $perms['write']) {
 				logger('Wiki write permission denied. ' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$deleted = NativeWikiPage::delete_page([
@@ -765,14 +763,14 @@ class Wiki extends Controller {
 				json_return_and_die(array('message' => 'Wiki git repo commit made', 'success' => true));
 			}
 			else {
-				json_return_and_die(array('message' => 'Error deleting page', 'success' => false));					
+				json_return_and_die(array('message' => 'Error deleting page', 'success' => false));
 			}
 		}
-		
+
 		// Revert a page
 		if ((argc() === 4) && (argv(2) === 'revert') && (argv(3) === 'page')) {
 
-			$resource_id = $_POST['resource_id']; 
+			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['name'];
 			$commitHash = $_POST['commitHash'];
 
@@ -780,7 +778,7 @@ class Wiki extends Controller {
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(! $perms['write']) {
 				logger('Wiki write permission denied.' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$reverted = NativeWikiPage::revert_page([
@@ -791,16 +789,16 @@ class Wiki extends Controller {
 				'pageUrlName' => $pageUrlName
 			]);
 			if($reverted['success']) {
-				json_return_and_die(array('content' => $reverted['content'], 'message' => '', 'success' => true));					
+				json_return_and_die(array('content' => $reverted['content'], 'message' => '', 'success' => true));
 			}
 			else {
-				json_return_and_die(array('content' => '', 'message' => 'Error reverting page', 'success' => false));					
+				json_return_and_die(array('content' => '', 'message' => 'Error reverting page', 'success' => false));
 			}
 		}
-		
+
 		// Compare page revisions
 		if ((argc() === 4) && (argv(2) === 'compare') && (argv(3) === 'page')) {
-			$resource_id = $_POST['resource_id']; 
+			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['name'];
 			$compareCommit = $_POST['compareCommit'];
 			$currentCommit = $_POST['currentCommit'];
@@ -809,21 +807,21 @@ class Wiki extends Controller {
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(!$perms['read']) {
 				logger('Wiki read permission denied.' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$compare = NativeWikiPage::compare_page(array('channel_id' => $owner['channel_id'], 'observer_hash' => $observer_hash, 'currentCommit' => $currentCommit, 'compareCommit' => $compareCommit, 'resource_id' => $resource_id, 'pageUrlName' => $pageUrlName));
 			if($compare['success']) {
 				$diffHTML = '<table class="text-center" width="100%"><tr><td class="lead" width="50%">' . t('Current Revision') . '</td><td class="lead" width="50%">' . t('Selected Revision') . '</td></tr></table>' . $compare['diff'];
-				json_return_and_die(array('diff' => $diffHTML, 'message' => '', 'success' => true));					
+				json_return_and_die(array('diff' => $diffHTML, 'message' => '', 'success' => true));
 			} else {
-				json_return_and_die(array('diff' => '', 'message' => 'Error comparing page', 'success' => false));					
+				json_return_and_die(array('diff' => '', 'message' => 'Error comparing page', 'success' => false));
 			}
 		}
-		
+
 		// Rename a page
 		if ((argc() === 4) && (argv(2) === 'rename') && (argv(3) === 'page')) {
-			$resource_id = $_POST['resource_id']; 
+			$resource_id = $_POST['resource_id'];
 			$pageUrlName = $_POST['oldName'];
 			$pageNewName = str_replace('\\','',$_POST['newName']);
 			if ($pageUrlName === 'Home') {
@@ -837,7 +835,7 @@ class Wiki extends Controller {
 			$perms = NativeWiki::get_permissions($resource_id, intval($owner['channel_id']), $observer_hash);
 			if(! $perms['write']) {
 				logger('Wiki write permission denied. ' . EOL);
-				json_return_and_die(array('success' => false));					
+				json_return_and_die(array('success' => false));
 			}
 
 			$renamed = NativeWikiPage::rename_page([
@@ -850,8 +848,8 @@ class Wiki extends Controller {
 			if($renamed['success']) {
 				$commit = NativeWikiPage::commit([
 					'channel_id' => $owner['channel_id'],
-					'commit_msg' => 'Renamed ' . NativeWiki::name_decode($pageUrlName) . ' to ' . $renamed['page']['htmlName'], 
-					'resource_id' => $resource_id, 
+					'commit_msg' => 'Renamed ' . NativeWiki::name_decode($pageUrlName) . ' to ' . $renamed['page']['htmlName'],
+					'resource_id' => $resource_id,
 					'observer_hash' => $observer_hash,
 					'pageUrlName' => $pageNewName
 				]);
@@ -860,16 +858,16 @@ class Wiki extends Controller {
 					json_return_and_die(array('name' => $renamed['page'], 'message' => 'Wiki git repo commit made', 'success' => true));
 				}
 				else {
-					json_return_and_die(array('message' => 'Error making git commit','success' => false));					
+					json_return_and_die(array('message' => 'Error making git commit','success' => false));
 				}
 			}
 			else {
-				json_return_and_die(array('message' => 'Error renaming page', 'success' => false));					
+				json_return_and_die(array('message' => 'Error renaming page', 'success' => false));
 			}
 		}
 
 		//notice( t('You must be authenticated.'));
 		json_return_and_die(array('message' => t('You must be authenticated.'), 'success' => false));
-		
+
 	}
 }

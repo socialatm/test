@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: New member
+ *   * Description: Display useful links for new members to help them get started
+ */
+
 namespace Zotlabs\Widget;
 
 class Newmember {
@@ -29,7 +34,7 @@ class Newmember {
 
 		$options = [
 			t('Profile Creation'),
-			[ 
+			[
 				'profile_photo' => t('Upload profile photo'),
 				'cover_photo'   => t('Upload cover photo'),
 				'profiles'      => t('Edit your profile'),
@@ -84,4 +89,4 @@ class Newmember {
 }
 
 
-	
+

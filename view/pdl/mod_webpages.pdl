@@ -2,6 +2,9 @@
 [widget=design_tools][/widget]
 [widget=website_portation_tools][/widget]
 [/region]
+[region=content]
+$content
+[/region]
 [region=right_aside]
 [widget=notifications][/widget]
 [widget=newmember][/widget]

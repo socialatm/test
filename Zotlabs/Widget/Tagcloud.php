@@ -2,6 +2,11 @@
 
 namespace Zotlabs\Widget;
 
+/**
+ *   * Name: Tag cloud
+ *   * Description: Display hashtags of your network items in a cloud
+ *   * Requires: network, hq
+ */
 
 class Tagcloud {
 

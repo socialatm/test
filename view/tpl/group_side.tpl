@@ -13,9 +13,11 @@
 				<a class="nav-link{{if $group.selected}} active{{/if}}" href="{{$group.href}}">{{$group.text}}</a>
 			</li>
 			{{/foreach}}
+			{{if $createtext}}
 			<li class="nav-item">
-				<a class="nav-link" href="group/new" title="{{$createtext}}" ><i class="fa fa-plus-circle"></i> {{$createtext}}</a>
+				<a class="nav-link" href="group/new" title="{{$createtext}}" ><i class="fa fa-external-link"></i> {{$createtext}}</a>
 			</li>
+			{{/if}}
 		</ul>
 
 	</div>

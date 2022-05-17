@@ -9,10 +9,10 @@
 			<div id="collapsed-comments-{{$thread.id}}" class="collapsed-comments" style="display: none;">
 		{{/if}}
 		{{if $item.comment_lastcollapsed}}</div>{{/if}}
-		
+
 		{{include file="{{$item.template}}"}}
-		
-		
+
+
 	{{/foreach}}
 </div>
 {{/foreach}}

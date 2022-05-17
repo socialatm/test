@@ -26,13 +26,6 @@ var followUpPageLoad = false;
 var window_needs_alert = true;
 var expanded_items = [];
 
-var sse_bs_active = false;
-var sse_offset = 0;
-var sse_type;
-var sse_partial_result = false;
-var sse_rmids = [];
-var sse_fallback_interval;
-
 var page_cache = {};
 
 // take care of tab/window reloads on channel change
@@ -41,6 +34,7 @@ if(localStorage.getItem('uid') !== localUser.toString()) {
 	sessionStorage.clear();
 	localStorage.setItem('uid', localUser.toString());
 }
+
 window.onstorage = function(e) {
 	if(e.key === 'uid' && parseInt(e.newValue) !== localUser) {
 		if(window_needs_alert) {
@@ -50,6 +44,14 @@ window.onstorage = function(e) {
 			return;
 		}
 	}
+}
+
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('/ServiceWorker.js', { scope: '/' }).then(function(registration) {
+		console.log('Service worker registered. scope is', registration.scope);
+	}).catch(function(error) {
+		console.log('Service worker registration failed because ' + error);
+	});
 }
 
 $.ajaxSetup({cache: false});
@@ -78,6 +80,65 @@ $(document).ready(function() {
 		}
 	});
 
+	// @hilmar |->
+	if ( typeof(window.tao) == 'undefined' ) {
+		window.tao = {};
+	}
+	if ( typeof(window.tao.zin) == 'undefined' ) {
+		tao.zin = { syslc: '', syslcs: {}, htm: '', me: '', debug: '' };
+		tao.zin.axim = '<div class="zinpax fa fa-sync fa-spin"> </div>';
+		$('.navbar-app[href*="/lang"]').attr({"aria-expand": "true", "id": "zintog"})
+			.removeAttr('href').addClass('zinlcx zinlcxp dropdown dropdown-toggle').css('cursor','pointer');
+		$('.dropdown-item[href*="/lang"]').addClass('zinlcxmi zinlcx').removeAttr('href').css('cursor','pointer');
+	}
+	$('.zinlcx').on('click',  function(e) {
+		if (tao.zin.syslc == '') {
+			$('.zinlcx').append(tao.zin.axim);
+			$.ajax({
+    			type: 'POST', url: 'lang',
+      			data: { zinlc: '??' }
+   			}).done( function(re) {
+   				tao.zin.re = JSON.parse(re);
+   			 	tao.zin.syslc = tao.zin.re.lc;
+   			 	tao.zin.syslcs = tao.zin.re.lcs;
+				tao.zin.htm = '<ul class="zinlcs fa-ul">';
+				$.each( tao.zin.syslcs, function( k, v ) {
+					tao.zin.htm += '<li><a id="zinlc' + k + '" class="zinlc dropdown-item fakelink">' + k + ' ' + v + '</a></li>';
+				});
+				tao.zin.htm += '</ul>';
+				$('.zinpax').remove();
+				$('.zinlcx').append(tao.zin.htm);
+				$('.zinlcxp > ul').addClass('dropdown dropdown-menu dropdown-menu-end mt-2 show').css('right', 0);
+   			});
+			return false;
+		} else {
+			if (e.target.id == '' || e.target.id == 'zintog') {
+				// noop click on lang again
+				return false;
+			}
+			tao.zin.me = e.target.id.substr(5);
+			$('#right_aside_wrapper').append(tao.zin.axim);
+			$.ajax({
+	   			type: 'POST', url: 'lang',
+      			data: { zinlc: tao.zin.me }
+    		}).done( function(re) {
+     			tao.zin.re = JSON.parse(re);
+     			location.reload(true);
+    		});
+		}
+	});
+	$('#zintog').on('click', function() {
+		$('.zinlcs').toggle();
+	});
+	$('#dropdown-menu').on('shown.bs.dropdown', function() {
+		tao.zin.debug += 'e,';
+		//$('.zinlcs').removeAttr('display');
+	})
+		.on('mouseleave', function() {
+		$(this).trigger('click');
+	});
+	// @hilmar <-|
+
 	var tf = new Function('n', 's', 'var k = s.split("/")['+aStr['plural_func']+']; return (k ? k : s);');
 
 	jQuery.timeago.settings.strings = {
@@ -102,110 +163,63 @@ $(document).ready(function() {
 
 	jQuery.timeago.settings.allowFuture = true;
 
-	if(sse_enabled) {
-		if(typeof(window.SharedWorker) === 'undefined') {
-			// notifications with multiple tabs open will not work very well in this scenario
-			var evtSource = new EventSource('/sse');
+	$(document).on('click', '.notification, .message', function(e) {
+		let b64mid = $(this).data('b64mid');
+		let notify_id = $(this).data('notify_id');
+		let path = $(this)[0].pathname.split('/')[1];
+		let stateObj = { b64mid: b64mid };
+		let singlethread_modules = ['display', 'hq'];
+		let redirect_modules = ['display', 'notify'];
 
-			evtSource.addEventListener('notifications', function(e) {
-				var obj = JSON.parse(e.data);
-				sse_handleNotifications(obj, false, false);
-			}, false);
-
-			document.addEventListener('visibilitychange', function() {
-				if (!document.hidden) {
-					sse_offset = 0;
-					sse_bs_init();
-				}
-			}, false);
-
-		}
-		else {
-			var myWorker = new SharedWorker('/view/js/sse_worker.js', localUser);
-
-			myWorker.port.onmessage = function(e) {
-				obj = e.data;
-				console.log(obj);
-				sse_handleNotifications(obj, false, false);
-			}
-
-			myWorker.onerror = function(e) {
-				myWorker.port.close();
-			}
-
-			myWorker.port.start();
-		}
-	}
-	else {
-		if (!document.hidden)
-			sse_fallback_interval = setInterval(sse_fallback, updateInterval);
-
-		document.addEventListener('visibilitychange', function() {
-			if (document.hidden) {
-				clearInterval(sse_fallback_interval);
-			}
-			else {
-				sse_offset = 0;
-				sse_bs_init();
-				sse_fallback_interval = setInterval(sse_fallback, updateInterval);
-			}
-
-		}, false);
-	}
-
-	$('.notification-link').on('click', { replace: true, followup: false }, sse_bs_notifications);
-
-	$('.notification-filter').on('keypress', function(e) {
-		if(e.which == 13) { // enter
-			this.blur();
-			sse_offset = 0;
-			$("#nav-" + sse_type + "-menu").html('');
-			$("#nav-" + sse_type + "-loading").show();
-
-			var cn_val = $('#cn-' + sse_type + '-input').length ? $('#cn-' + sse_type + '-input').val().toString().toLowerCase() : '';
-
-			$.get('/sse_bs/' + sse_type + '/' + sse_offset + '?nquery=' + encodeURIComponent(cn_val), function(obj) {
-				console.log('sse: bootstraping ' + sse_type);
-				console.log(obj);
-
-				sse_bs_active = false;
-				sse_partial_result = true;
-				sse_offset = obj[sse_type].offset;
-				if(sse_offset < 0)
-					$("#nav-" + sse_type + "-loading").hide();
-
-				sse_handleNotifications(obj, true, false);
-
-			});
-		}
-	});
-
-	$('.notifications-textinput-clear').on('click', function(e) {
-		if(! sse_partial_result)
+		if(! b64mid && ! notify_id)
 			return;
 
-		$("#nav-" + sse_type + "-menu").html('');
-		$("#nav-" + sse_type + "-loading").show();
-		$.get('/sse_bs/' + sse_type, function(obj) {
-			console.log('sse: bootstraping ' + sse_type);
-			console.log(obj);
+		if(localUser && redirect_modules.indexOf(path) !== -1) {
+			path = 'hq';
+		}
 
-			sse_bs_active = false;
-			sse_partial_result = false;
-			sse_offset = obj[sse_type].offset;
-			if(sse_offset < 0)
-				$("#nav-" + sse_type + "-loading").hide();
+		if(notify_id) {
+			$.ajax({
+				type: 'post',
+				url: 'notify',
+				data: {
+					'notify_id' : notify_id
+				},
+				async: ((module !== path) ? false : true)
+			});
+		}
 
-			sse_handleNotifications(obj, true, false);
+		if (module !== path) {
+			e.preventDefault();
+			window.location.href = path + '/' + b64mid;
+		}
+		else {
 
-		});
-	});
+			if (singlethread_modules.indexOf(module) !== -1) {
+				history.pushState(stateObj, '', module + '/' + b64mid);
+				$('.message').removeClass('active');
+				$('[data-b64mid="' + b64mid + '"].message').addClass('active');
+			}
 
-	$('.notification-content').on('scroll', function() {
-		if(this.scrollTop > this.scrollHeight - this.clientHeight - (this.scrollHeight/7)) {
-			sse_bs_notifications(sse_type, false, true);
+			if (b64mid) {
+
+				e.preventDefault();
+
+				if(! page_load) {
+					prepareLiveUpdate(b64mid, notify_id);
+				}
+			}
 		}
 	});
+
+	window.onpopstate = function(e) {
+		if(e.state !== null && e.state.b64mid !== bParam_mid) {
+			prepareLiveUpdate(e.state.b64mid, '');
+			$('.message').removeClass('active');
+			$('[data-b64mid="' + e.state.b64mid + '"].message').addClass('active');
+		}
+
+	};
 
 	//mod_mail only
 	$(".mail-conv-detail .autotime").timeago();
@@ -223,6 +237,13 @@ $(document).ready(function() {
 			cache_next_page();
 	});
 
+	$(document).on('hz:handleNetworkNotificationsItems', function(e, obj) {
+		push_notification(
+			obj.name,
+			$('<p>' + obj.message + '</p>').text(),
+			obj.b64mid
+		);
+	});
 });
 
 function getConversationSettings() {
@@ -504,11 +525,14 @@ function showHideComments(id) {
 	}
 }
 
-function openClose(theID) {
-	if(document.getElementById(theID).style.display == "block") {
+function openClose(theID, display) {
+	if (typeof display == typeof undefined)
+		display = 'block';
+
+	if(document.getElementById(theID).style.display == display) {
 		document.getElementById(theID).style.display = "none";
 	} else {
-		document.getElementById(theID).style.display = "block";
+		document.getElementById(theID).style.display = display;
 	}
 }
 
@@ -520,9 +544,11 @@ function openCloseTR(theID) {
 	}
 }
 
-function closeOpen(theID) {
+function closeOpen(theID, display) {
+	if (typeof display == typeof undefined)
+		display = 'block';
 	if(document.getElementById(theID).style.display == "none") {
-		document.getElementById(theID).style.display = "block";
+		document.getElementById(theID).style.display = display;
 	} else {
 		document.getElementById(theID).style.display = "none";
 	}
@@ -537,18 +563,20 @@ function closeMenu(theID) {
 }
 
 function markRead(notifType) {
-	$.get('ping?f=&markRead='+notifType);
+	$.get('notifications?f=&markRead='+notifType);
 	$('.' + notifType + '-button').fadeOut(function() {
 		$("." + notifType + "-update").html('0');
 		$('#nav-' + notifType + '-menu').html('');
 		$('#nav-' + notifType + '-sub').removeClass('show');
 		sessionStorage.removeItem('notification_open');
-		sse_setNotificationsStatus();
+		$(document).trigger('hz:sse_setNotificationsStatus');
 	});
+
+
 }
 
 function markItemRead(itemId) {
-	$.get('ping?f=&markItemRead='+itemId);
+	$.get('notifications?f=&markItemRead='+itemId);
 	$('.unseen-wall-indicator-'+itemId).remove();
 }
 
@@ -712,52 +740,18 @@ function updateConvItems(mode,data) {
 			}
 		}
 
-		// take care of the notifications count updates
-		var nmids = $(this).data('b64mids');
-
-		nmids.forEach(function(nmid, index) {
-
-			sse_rmids.push(nmid);
-
-			if($('.notification[data-b64mid=\'' + nmid + '\']').length) {
-				$('.notification[data-b64mid=\'' + nmid + '\']').each(function() {
-					var n = this.parentElement.id.split('-');
-					return sse_updateNotifications(n[1], nmid);
-				});
-			}
-
-			// special handling for forum notifications
-			$('.notification-forum').filter(function() {
-				var fmids = decodeURIComponent($(this).data('b64mids'));
-				var n = this.parentElement.id.split('-');
-				if(fmids.indexOf(nmid) > -1) {
-					var fcount = Number($('.' + n[1] + '-update').html());
-					fcount--;
-					$('.' + n[1] + '-update').html(fcount);
-					if(fcount < 1)
-						$('.' + n[1] + '-button').fadeOut();
-
-					var count = Number($(this).find('.badge-secondary').html());
-					count--;
-					$(this).find('.badge-secondary').html(count);
-					if(count < 1)
-						$(this).remove();
-				}
-			});
-
-
-		});
-
-		sse_setNotificationsStatus();
+		$(document).trigger('hz:sse_setNotificationsStatus', [$(this).data('b64mids')]);
 
 	});
 
 	$(window).scrollTop(scroll_position);
 
-	if(followUpPageLoad)
-		sse_bs_counts();
-	else
-		sse_bs_init();
+	if(followUpPageLoad) {
+		$(document).trigger('hz:sse_bs_counts');
+	}
+	else {
+		$(document).trigger('hz:sse_bs_init');
+	}
 
 	if(commentBusy) {
 		commentBusy = false;
@@ -897,7 +891,7 @@ function updateInit() {
 		liveUpdate();
 	}
 	else {
-		sse_bs_init();
+		$(document).trigger('hz:sse_bs_init');
 	}
 
 	if($('#live-photos').length || $('#live-cards').length || $('#live-articles').length ) {
@@ -905,6 +899,20 @@ function updateInit() {
 			liking = 0;
 			window.location.href=window.location.href;
 		}
+	}
+}
+
+function prepareLiveUpdate(b64mid, notify_id) {
+	$(document).scrollTop(0);
+	$('.thread-wrapper').remove();
+	bParam_mid = b64mid;
+	mode = 'replace';
+	page_load = true;
+	if (module == 'hq') {
+		liveUpdate(notify_id);
+	}
+	if (module == 'display') {
+		liveUpdate();
 	}
 }
 
@@ -991,9 +999,9 @@ function liveUpdate(notify_id) {
 		// else data was valid - reset the recursion counter
 		liveRecurse = 0;
 
-		if(typeof notify_id !== 'undefined' && notify_id !== 'undefined') {
+		if(notify_id) {
 			$.post(
-				"hq",
+				"notify",
 				{
 					"notify_id" : notify_id
 				}
@@ -1027,7 +1035,7 @@ function liveUpdate(notify_id) {
 				//console.log('all images loaded, at least one is broken');
 			})
 			.progress( function( instance, image ) {
-				$('#image_counter').html(instance.progressedCount + '/' + instance.images.length);
+				$('#image_counter').html(Math.floor((instance.progressedCount*100)/instance.images.length) + '%');
 				//var result = image.isLoaded ? 'loaded' : 'broken';
 				//console.log( 'image is ' + result + ' for ' + image.img.src );
 			});
@@ -1155,8 +1163,18 @@ function dolike(ident, verb) {
 	if(typeof page_mode == typeof undefined)
 		page_mode = '';
 
-	$.get('like/' + ident.toString() + '?verb=' + verb + '&conv_mode=' + conv_mode + '&page_mode=' + page_mode, function (data) {
+	var reload = '';
+	if(module == 'photos')
+		reload = 1;
+
+	$.get('like/' + ident.toString() + '?verb=' + verb + '&conv_mode=' + conv_mode + '&page_mode=' + page_mode + '&reload=' + reload, function (data) {
 		if(data.success) {
+
+			// mod photos
+			if (data.reload) {
+				window.location.href = window.location.href;
+			}
+
 			// this is a bit tricky since the top level thread wrapper wraps the whole thread
 			if($('#thread-wrapper-' + data.orig_id).hasClass('toplevel_item')) {
 				var wrapper = $('<div></div>').html( data.html ).find('#wall-item-outside-wrapper-' + data.id);
@@ -1218,7 +1236,7 @@ function doscroll(parent, hidden) {
 	});
 
 	$('html, body').animate({scrollTop:(id.offset().top) - 50}, 'slow');
-	$('<a href="javascript:doscrollback(' + pos + ');" id="back-to-reply" class="float-right" title="' + aStr['to_reply'] + '"><i class="fa fa-angle-double-down">&nbsp;&nbsp;&nbsp;</i></a>').insertBefore('#wall-item-info-' + id.attr('id').replace(/\D/g,''));
+	$('<a href="javascript:doscrollback(' + pos + ');" id="back-to-reply" class="float-end" title="' + aStr['to_reply'] + '"><i class="fa fa-angle-double-down">&nbsp;&nbsp;&nbsp;</i></a>').insertBefore('#wall-item-info-' + id.attr('id').replace(/\D/g,''));
 }
 
 function doscrollback(pos) {
@@ -1243,7 +1261,7 @@ function dopin(id) {
                         $('.dropdown-item-pinnable').html($('.dropdown-item-pinnable').html().replace(aStr['unpin_item'],aStr['pin_item']));
                         $('.wall-item-pinned').remove()
                         if(i.length == 0) {
-                                $('<span class="float-right wall-item-pinned" title="' + aStr['pinned'] + '" id="wall-item-pinned-' + id + '"><i class="fa fa-thumb-tack">&nbsp;</i></span>').insertBefore('#wall-item-info-' + id);
+                                $('<span class="float-end wall-item-pinned" title="' + aStr['pinned'] + '" id="wall-item-pinned-' + id + '"><i class="fa fa-thumb-tack">&nbsp;</i></span>').insertBefore('#wall-item-info-' + id);
                                 me.html(me.html().replace(aStr['pin_item'],aStr['unpin_item']));
                         };
                 })
@@ -1255,7 +1273,7 @@ function dopin(id) {
                 });
 }
 
-function dropItem(url, object) {
+function dropItem(url, object, b64mid) {
 	var confirm = confirmDelete();
 	if(confirm) {
 		var id = url.split('/')[2];
@@ -1265,13 +1283,20 @@ function dropItem(url, object) {
 		$.get(url, function() {
 			$(object + ', #pinned-wrapper-' + id).remove();
 			$('body').css('cursor', 'auto');
+
+			if (typeof b64mid !== typeof undefined) {
+				$('[data-b64mid=\'' + b64mid + '\']').fadeOut(function() {
+					this.remove();
+				});
+			}
 		});
 
-		if($('#wall-item-pinned-' + id).length)
+		if($('#wall-item-pinned-' + id).length) {
 			$.post('pin/pin', { 'id' : id });
+		}
 
 		return true;
-        }
+	}
 	else {
 		return false;
 	}
@@ -1371,7 +1396,14 @@ function post_comment(id) {
 		"item",
 		form_data  + '&conv_mode=' + conv_mode,
 		function(data) {
-			if(data.success) {
+			if (data.success) {
+
+				//mod photos
+				if (data.reload) {
+					window.location.href = data.reload;
+				}
+
+
 				localStorage.removeItem("comment_body-" + id);
 				$("#comment-edit-preview-" + id).hide();
 				$("#comment-edit-text-" + id).val('').blur().attr('placeholder', aStr.comment);
@@ -1382,7 +1414,7 @@ function post_comment(id) {
 				commentBusy = false;
 
 				var tarea = document.getElementById("comment-edit-text-" + id);
-				if(tarea) {
+				if (tarea) {
 					commentClose(tarea, id);
 					$(document).off( "click.commentOpen");
 				}
@@ -1446,54 +1478,22 @@ function preview_post() {
 	return true;
 }
 
-function preview_mail() {
-	$("#mail-preview").val("1");
-	$("#mail-preview-content").show();
-	$.post(
-		"mail",
-		$("#prvmail-form").serialize(),
-		function(data) {
-			if(data.preview) {
-				$("#mail-preview-content").html(data.preview);
-				$("#mail-preview-content" + " a").click(function() { return false; });
-			}
-		},
-		"json"
-	);
-	$("#mail-preview").val("0");
-	return true;
-}
-
 function bin2hex(s) {
-	// Converts the binary representation of data to hex
-	//
-	// version: 812.316
-	// discuss at: http://phpjs.org/functions/bin2hex
-	// +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-	// +   bugfixed by: Onno Marsman
-	// +   bugfixed by: Linuxworld
-	// *     example 1: bin2hex('Kev');
-	// *     returns 1: '4b6576'
-	// *     example 2: bin2hex(String.fromCharCode(0x00));
-	// *     returns 2: '00'
-	var v,i, f = 0, a = [];
-	s += '';
-	f = s.length;
-
-	for (i = 0; i<f; i++) {
-		a[i] = s.charCodeAt(i).toString(16).replace(/^([\da-f])$/,"0$1");
-	}
-
-	return a.join('');
+	// UTF-8 encoding to hex is supported
+	var bytes = new TextEncoder().encode(s);
+	return Array.from(
+		bytes,
+		byte => byte.toString(16).padStart(2, "0")
+	).join("");
 }
 
 function hex2bin(hex) {
-	var bytes = [], str;
-
-	for(var i=0; i< hex.length-1; i+=2)
-		bytes.push(parseInt(hex.substr(i, 2), 16));
-
-	return String.fromCharCode.apply(String, bytes);
+	// UTF-8 decoding from hex is supported
+	var bytes = new Uint8Array(hex.length / 2);
+	for (i = 0; i !== bytes.length; i++) {
+		bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+	}
+	return new TextDecoder().decode(bytes);
 }
 
 function groupChangeMember(gid, cid, sec_token) {
@@ -1719,288 +1719,6 @@ function zid(s) {
 	return s;
 }
 
-function sse_bs_init() {
-	if(sessionStorage.getItem('notification_open') !== null || typeof sse_type !== 'undefined' ) {
-		if(typeof sse_type === 'undefined')
-			sse_type = sessionStorage.getItem('notification_open');
-
-		$("#nav-" + sse_type + "-sub").addClass('show');
-		sse_bs_notifications(sse_type, true, false);
-	}
-	else {
-		sse_bs_counts();
-	}
-}
-
-function sse_bs_counts() {
-	if(sse_bs_active)
-		return;
-
-	sse_bs_active = true;
-
-	$.ajax({
-		type: 'post',
-		url: '/sse_bs',
-		data: { sse_rmids }
-	}).done( function(obj) {
-		console.log(obj);
-		sse_bs_active = false;
-		sse_rmids = [];
-		sse_handleNotifications(obj, true, false);
-	});
-}
-
-function sse_bs_notifications(e, replace, followup) {
-
-	if(sse_bs_active)
-		return;
-
-
-	var manual = false;
-
-	if(typeof replace === 'undefined')
-		replace = e.data.replace;
-
-	if(typeof followup === 'undefined')
-		followup = e.data.followup;
-
-	if(typeof e === 'string') {
-		sse_type = e;
-	}
-	else {
-		manual = true;
-		sse_offset = 0;
-		sse_type = e.target.dataset.sse_type;
-	}
-
-	if(typeof sse_type === 'undefined')
-		return;
-
-	if(followup || !manual || !($('#nav-' + sse_type + '-sub').hasClass('collapse') && $('#nav-' + sse_type + '-sub').hasClass('show'))) {
-
-		if(sse_offset >= 0) {
-			$("#nav-" + sse_type + "-loading").show();
-		}
-
-		sessionStorage.setItem('notification_open', sse_type);
-		if(sse_offset !== -1 || replace) {
-
-			var cn_val = (($('#cn-' + sse_type + '-input').length && sse_partial_result) ? $('#cn-' + sse_type + '-input').val().toString().toLowerCase() : '');
-
-			$("#nav-" + sse_type + "-loading").show();
-
-			sse_bs_active = true;
-
-			$.ajax({
-				type: 'post',
-				url: '/sse_bs/' + sse_type + '/' + sse_offset,
-				nquery: encodeURIComponent(cn_val),
-				data: { sse_rmids }
-			}).done(function(obj) {
-				console.log('sse: bootstraping ' + sse_type);
-				console.log(obj);
-				sse_bs_active = false;
-				sse_rmids = [];
-				$("#nav-" + sse_type + "-loading").hide();
-				sse_offset = obj[sse_type].offset;
-				sse_handleNotifications(obj, replace, followup);
-			});
-		}
-		else
-			$("#nav-" + sse_type + "-loading").hide();
-
-	}
-	else {
-		sessionStorage.removeItem('notification_open');
-	}
-}
-
-function sse_handleNotifications(obj, replace, followup) {
-
-	var primary_notifications = ['dm', 'home', 'intros', 'register', 'mail', 'notify', 'files'];
-	var secondary_notifications = ['network', 'forums', 'all_events', 'pubs'];
-	var all_notifications = primary_notifications.concat(secondary_notifications);
-
-	all_notifications.forEach(function(type, index) {
-		if(typeof obj[type] === typeof undefined)
-			return true;
-
-		if(obj[type].count) {
-			$('.' + type + '-button').fadeIn();
-			if(replace || followup)
-				$('.' + type + '-update').html(Number(obj[type].count));
-			else
-				$('.' + type + '-update').html(Number(obj[type].count) + Number($('.' + type + '-update').html()));
-		}
-		else {
-			$('.' + type + '-update').html('0');
-			$('.' + type + '-button').fadeOut(function() {
-				sse_setNotificationsStatus();
-			});
-		}
-		if(obj[type].notifications.length)
-			sse_handleNotificationsItems(type, obj[type].notifications, replace, followup);
-	});
-
-	sse_setNotificationsStatus();
-
-	// notice and info
-	$.jGrowl.defaults.closerTemplate = '<div>[ ' + aStr.closeAll + ']</div>';
-
-	if(obj.notice) {
-		$(obj.notice.notifications).each(function() {
-			$.jGrowl(this, { sticky: true, theme: 'notice' });
-		});
-	}
-
-	if(obj.info) {
-		$(obj.info.notifications).each(function(){
-			$.jGrowl(this, { sticky: false, theme: 'info', life: 10000 });
-		});
-	}
-
-	// load more notifications if visible notifications count becomes low
-	if(sse_type  && sse_offset != -1 && $('#nav-' + sse_type + '-menu').children().length <= 20) {
-		sse_offset = 0;
-		sse_bs_notifications(sse_type, false, true);
-	}
-
-
-}
-
-function sse_handleNotificationsItems(notifyType, data, replace, followup) {
-
-	var notifications_tpl = ((notifyType == 'forums') ? decodeURIComponent($("#nav-notifications-forums-template[rel=template]").html().replace('data-src', 'src')) : decodeURIComponent($("#nav-notifications-template[rel=template]").html().replace('data-src', 'src')));
-	var notify_menu = $("#nav-" + notifyType + "-menu");
-	var notify_loading = $("#nav-" + notifyType + "-loading");
-	var notify_count = $("." + notifyType + "-update");
-
-	if(replace && !followup) {
-		notify_menu.html('');
-		notify_loading.hide();
-	}
-
-	$(data).each(function() {
-
-		// do not add a notification if it is already present
-		if($('#nav-' + notifyType + '-menu .notification[data-b64mid=\'' + this.b64mid + '\']').length)
-			return true;
-
-		html = notifications_tpl.format(this.notify_link,this.photo,this.name,this.addr,this.message,this.when,this.hclass,this.b64mid,this.notify_id,this.thread_top,this.unseen,this.private_forum, encodeURIComponent(this.mids), this.body);
-		notify_menu.append(html);
-	});
-
-	if(!replace && !followup) {
-		$("#nav-" + notifyType + "-menu .notification").sort(function(a,b) {
-			a = new Date(a.dataset.when);
-			b = new Date(b.dataset.when);
-			return a > b ? -1 : a < b ? 1 : 0;
-		}).appendTo('#nav-' + notifyType + '-menu');
-	}
-
-	$(document.body).trigger("sticky_kit:recalc");
-	$("#nav-" + notifyType + "-menu .notifications-autotime").timeago();
-
-	if($('#tt-' + notifyType + '-only').hasClass('active'))
-		$('#nav-' + notifyType + '-menu [data-thread_top=false]').addClass('tt-filter-active');
-
-	if($('#cn-' + notifyType + '-input').length) {
-		var filter = $('#cn-' + notifyType + '-input').val().toString().toLowerCase();
-		if(filter) {
-			filter = filter.indexOf('%') == 0 ? filter.substring(1) : filter;
-
-			$('#nav-' + notifyType + '-menu .notification').each(function(i, el) {
-				var cn = $(el).data('contact_name').toString().toLowerCase();
-				var ca = $(el).data('contact_addr').toString().toLowerCase();
-				if(cn.indexOf(filter) === -1 && ca.indexOf(filter) === -1)
-					$(el).addClass('cn-filter-active');
-				else
-					$(el).removeClass('cn-filter-active');
-			});
-		}
-	}
-}
-
-function sse_updateNotifications(type, mid) {
-
-	if(type === 'pubs')
-		return true;
-
-	if(type === 'notify' && (mid !== bParam_mid || sse_type !== 'notify'))
-		return true;
-/*
-	var count = Number($('.' + type + '-update').html());
-
-	count--;
-
-	if(count < 1) {
-		$('.' + type + '-update').html(count);
-		$('.' + type + '-button').fadeOut(function() {
-			sse_setNotificationsStatus();
-		});
-	}
-	else {
-		$('.' + type + '-update').html(count);
-	}
-*/
-
-	$('#nav-' + type + '-menu .notification[data-b64mid=\'' + mid + '\']').fadeOut(function() {
-		this.remove();
-	});
-
-}
-
-function sse_setNotificationsStatus() {
-	var primary_notifications = ['dm', 'home', 'intros', 'register', 'mail', 'notify', 'files'];
-	var secondary_notifications = ['network', 'forums', 'all_events', 'pubs'];
-	var all_notifications = primary_notifications.concat(secondary_notifications);
-
-	var primary_available = false;
-	var any_available = false;
-
-	all_notifications.forEach(function(type, index) {
-		if($('.' + type + '-button').css('display') == 'block') {
-			any_available = true;
-			if(primary_notifications.indexOf(type) > -1)
-				primary_available = true;
-		}
-	});
-
-	if(primary_available) {
-		$('.notifications-btn-icon').removeClass('fa-exclamation-circle');
-		$('.notifications-btn-icon').addClass('fa-exclamation-triangle');
-	}
-	else {
-		$('.notifications-btn-icon').removeClass('fa-exclamation-triangle');
-		$('.notifications-btn-icon').addClass('fa-exclamation-circle');
-	}
-
-	if(any_available) {
-		$('.notifications-btn').css('opacity', 1);
-		$('#no_notifications').hide();
-		$('#notifications').show();
-	}
-	else {
-		$('.notifications-btn').css('opacity', 0.5);
-		$('#navbar-collapse-1').removeClass('show');
-		$('#no_notifications').show();
-		$('#notifications').hide();
-	}
-
-}
-
-function sse_fallback() {
-	$.get('/sse', function(obj) {
-		if(! obj)
-			return;
-
-		console.log('sse fallback');
-		console.log(obj);
-
-		sse_handleNotifications(obj, false, false);
-	});
-}
-
 function makeid(length) {
 	var result = '';
 	var characters = 'abcdef0123456789';
@@ -2010,3 +1728,38 @@ function makeid(length) {
 	}
 	return result;
 }
+
+function push_notification_request(e) {
+    if (!('Notification' in window)) {
+        alert('This browser does not support push notifications');
+    }
+    else if (Notification.permission !== 'granted') {
+        Notification.requestPermission(function(permission) {
+			if(permission === 'granted') {
+				$(e.target).closest('div').hide();
+			}
+		});
+   }
+}
+
+
+function push_notification(title, body, b64mid) {
+	let options = {
+		body: body,
+		data: b64mid,
+		icon: '/images/app/hz-96.png',
+		silent: false
+	}
+
+	let n = new Notification(title, options);
+	n.onclick = function (e) {
+		if(module === 'hq') {
+			prepareLiveUpdate(e.target.data);
+		}
+		else {
+			window.location.href = baseurl + '/hq/' + e.target.data;
+		}
+	}
+}
+
+

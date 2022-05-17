@@ -119,7 +119,7 @@
 		"name": "Etiopiese birr"
 	},
 	"EUR": {
-		"name": "euro",
+		"name": "Euro",
 		"symbol": "€"
 	},
 	"FKP": {
@@ -481,7 +481,7 @@
 	},
 	"XOF": {
 		"name": "Wes-Afrikaanse CFA-frank",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"ISK": {
 		"name": "Yslandse kroon"

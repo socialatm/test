@@ -33,6 +33,7 @@ head_add_js('/library/colorbox/jquery.colorbox-min.js');
 
 head_add_js('/library/jquery.AreYouSure/jquery.are-you-sure.js');
 head_add_js('/library/tableofcontents/jquery.toc.js');
+head_add_js('/library/Sortable/Sortable.min.js');
 head_add_js('/vendor/desandro/imagesloaded/imagesloaded.pkgd.min.js');
 
 /**

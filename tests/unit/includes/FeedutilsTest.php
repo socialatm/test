@@ -4,6 +4,8 @@ namespace Zotlabs\Tests\Unit\includes;
 
 use Zotlabs\Tests\Unit\UnitTestCase;
 
+require_once('include/feedutils.php');
+
 /**
  * @brief Unit Test case for include/feedutils.php file.
  */

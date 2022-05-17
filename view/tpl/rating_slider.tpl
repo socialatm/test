@@ -1,4 +1,4 @@
-<div id="rating-slider" class="slider form-group"><input id="rating-range" type="text" name="fake-rating" value="{{$val}}" /></div>
+<div id="rating-slider" class="slider mb-3"><input id="rating-range" type="text" name="fake-rating" value="{{$val}}" /></div>
 <script>
 $(document).ready(function() {
 	// The slider does not render correct if width is given in % and

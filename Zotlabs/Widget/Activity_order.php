@@ -2,6 +2,12 @@
 
 namespace Zotlabs\Widget;
 
+/**
+ *   * Name: Activity order
+ *   * Description: Order the network stream by posted date, last commented or by date unthreaded
+ *   * Requires: network
+ */
+
 class Activity_order {
 
 	function widget($arr) {
@@ -22,7 +28,7 @@ class Activity_order {
 			switch($_GET['order']){
 				case 'post':
 					$postord_active = 'active';
-					set_pconfig(local_channel(), 'mod_network', 'order', 1); 
+					set_pconfig(local_channel(), 'mod_network', 'order', 1);
 					break;
 				case 'comment':
 					$commentord_active = 'active';

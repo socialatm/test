@@ -7,7 +7,6 @@ header #banner {
 }
 
 section {
-	display: block;
-	min-height: 112px;	
-	margin: 50px 10px;
+	height: 100vh;
+	padding: 4.5rem 7px 200px 7px;
 }

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Tag cloud wall
+ *   * Description: Display hashtags of your channel wall items in a cloud if the feature is enabled
+ *   * Requires: channel
+ */
+
 namespace Zotlabs\Widget;
 
 class Tagcloud_wall {

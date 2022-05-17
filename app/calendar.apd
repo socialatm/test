@@ -1,6 +1,7 @@
-version: 1
+version: 2
 url: $baseurl/cdav/calendar, $baseurl/settings/calendar
 requires: local_channel
 name: Calendar
 photo: icon:calendar
 categories: Productivity, nav_featured_app
+desc: DAV capable calendar

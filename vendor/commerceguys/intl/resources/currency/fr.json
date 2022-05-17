@@ -119,6 +119,10 @@
 		"name": "dollar de Singapour",
 		"symbol": "$SG"
 	},
+	"TTD": {
+		"name": "dollar de Trinité-et-Tobago",
+		"symbol": "$TT"
+	},
 	"XCD": {
 		"name": "dollar des Caraïbes orientales"
 	},
@@ -158,10 +162,6 @@
 		"name": "dollar surinamais",
 		"symbol": "$SR"
 	},
-	"TTD": {
-		"name": "dollar trinidadien",
-		"symbol": "$TT"
-	},
 	"ZWL": {
 		"name": "dollar zimbabwéen (2009)"
 	},
@@ -193,7 +193,7 @@
 	},
 	"XOF": {
 		"name": "franc CFA (BCEAO)",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XAF": {
 		"name": "franc CFA (BEAC)",

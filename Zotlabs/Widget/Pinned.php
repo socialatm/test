@@ -1,10 +1,13 @@
 <?php
 namespace Zotlabs\Widget;
 
-/*
- * Show pinned content
- *
+/**
+ *   * Name: Pinned items
+ *   * Description: Display pinned items
+ *   * Author: Max Kostikov
+ *   * Requires: disabled_for_pdledit_gui
  */
+
 
 class Pinned {
 
@@ -40,15 +43,15 @@ class Pinned {
 		$observer = \App::get_observer();
 
 		foreach($items as $item) {
-			
-			$midb64 = 'b64.' . base64url_encode($item['mid']);
-			
+
+			$midb64 = gen_link_id($item['mid']);
+
 			if(isset($observer['xchan_hash']) && in_array($observer['xchan_hash'], get_pconfig($item['uid'], 'pinned_hide', $midb64, [])))
 				continue;
-			
+
 			$author = channelx_by_hash($item['author_xchan']);
 			$owner = channelx_by_hash($item['owner_xchan']);
-			
+
 			$profile_avatar = $author['xchan_photo_m'];
 			$profile_link = chanlink_hash($item['author_xchan']);
 			$profile_name = $author['xchan_name'];
@@ -71,7 +74,7 @@ class Pinned {
 					$isevent = true;
 				}
 			}
-			
+
 			$consensus = (intval($item['item_consensus']) ? true : false);
 			if($consensus) {
 				$conv_responses['agree'] = [ 'title' => t('Agree','title') ];
@@ -87,7 +90,7 @@ class Pinned {
 
 			$verified = (intval($item['item_verified']) ? t('Message signature validated') : '');
 			$forged = ((! intval($item['item_verified']) && $item['sig']) ? t('Message signature incorrect') : '');
-			
+
 			$shareable = ((local_channel() && \App::$profile_uid == local_channel() && $item['item_private'] != 1) ? true : false);
 			if ($shareable) {
 				// This actually turns out not to be possible in some protocol stacks without opening up hundreds of new issues.
@@ -102,9 +105,9 @@ class Pinned {
 			$is_new = boolval(strcmp(datetime_convert('UTC','UTC',$item['created']),datetime_convert('UTC','UTC','now - 12 hours')) > 0);
 
 			$body = prepare_body($item,true);
-			
+
 			$str = [
-				'item_type'	 => intval($item['item_type']),			
+				'item_type'	 => intval($item['item_type']),
 				'body'		 => $body['html'],
 				'tags'		 => $body['tags'],
 				'categories'	 => $body['categories'],
@@ -115,7 +118,7 @@ class Pinned {
 				'id'		 => $item['id'],
 				'mids'		 => json_encode([ $midb64 ]),
 				'isevent'	 => $isevent,
-				'attend'	 => $attend, 
+				'attend'	 => $attend,
 				'consensus'	 => $consensus,
 				'conlabels'	 => ($canvote ? $conlabels : []),
 				'canvote'	 => $canvote,
@@ -158,55 +161,55 @@ class Pinned {
 				'modal_dismiss' => t('Close'),
 				'responses'	 => $conv_responses
 			];
-			
-			$tpl = get_markup_template('pinned_item.tpl');			
+
+			$tpl = get_markup_template('pinned_item.tpl');
 			$ret['html'] .= replace_macros($tpl, $str);
 		}
 
 		return $ret;
 	}
 
-	
+
 	/*
 	 * @brief List pinned items depend on type
 	 *
 	 * @param $types
 	 * @return array of pinned items
 	 *
-	 */	
+	 */
 	private function list($types) {
 
 		if(empty($types) || (! is_array($types)))
 			return [];
-		
+
 		$item_types = array_intersect($this->allowed_types, $types);
 		if(empty($item_types))
 			return [];
-		
+
 		$mids_list = [];
-		
+
 		foreach($item_types as $type) {
-		
+
 			$mids = get_pconfig($this->uid, 'pinned', $type, []);
 			foreach($mids as $mid) {
-				if(! empty($mid) && strpos($mid,'b64.') === 0)
-					$mids_list[] = @base64url_decode(substr($mid,4));
+				if(!empty($mid))
+					$mids_list[] = unpack_link_id($mid);
 			}
 		}
 		if(empty($mids_list))
 			return [];
-		
+
 		$r = q("SELECT * FROM item WHERE mid IN ( '%s' ) AND uid = %d AND id = parent AND item_private = 0 ORDER BY created DESC",
 			dbesc(implode(",", $mids_list)),
 			intval($this->uid)
 		);
 		if($r)
 			return $r;
-		
+
 		return [];
 	}
 
-	
+
 	/*
 	 * @brief List activities on item
 	 *
@@ -214,7 +217,7 @@ class Pinned {
 	 * @param array $conv_responses
 	 * @return array
 	 *
-	 */	
+	 */
 	private function activity($item, &$conv_responses) {
 
 		foreach(array_keys($conv_responses) as $verb) {
@@ -256,23 +259,23 @@ class Pinned {
 				unset($conv_responses[$verb]);
 				continue;
 			}
-			
+
 			$conv_responses[$verb]['count'] = count($r);
 			$conv_responses[$verb]['button'] = get_response_button_text($verb, $conv_responses[$verb]['count']);
-			
+
 			foreach($r as $rr) {
-			
+
 				$author = q("SELECT * FROM xchan WHERE xchan_hash = '%s' LIMIT 1",
 					dbesc($rr['author_xchan'])
 				);
 				$name = (($author && $author[0]['xchan_name']) ? $author[0]['xchan_name'] : t('Unknown'));
 				$conv_responses[$verb]['list'][] = (($rr['author_xchan'] && $author && $author[0]['xchan_photo_s']) ?
-					'<a class="dropdown-item" href="' . chanlink_hash($rr['author_xchan']) . '">' . '<img class="menu-img-1" src="' . zid($author[0]['xchan_photo_s']) . '" alt="' . urlencode($name) . '" /> ' . $name . '</a>' : 
+					'<a class="dropdown-item" href="' . chanlink_hash($rr['author_xchan']) . '">' . '<img class="menu-img-1" src="' . zid($author[0]['xchan_photo_s']) . '" alt="' . urlencode($name) . '" /> ' . $name . '</a>' :
 					'<a class="dropdown-item" href="#" class="disabled">' . $name . '</a>'
 				);
 			}
 		}
-		
+
 		$conv_responses['count'] = count($conv_responses);
 	}
 }

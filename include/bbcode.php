@@ -5,10 +5,10 @@
  */
 
 use Zotlabs\Lib\SvgSanitizer;
+use Zotlabs\Lib\Libzot;
 
 require_once('include/oembed.php');
 require_once('include/event.php');
-require_once('include/zot.php');
 require_once('include/html2plain.php');
 
 function get_bb_tag_pos($s, $name, $occurance = 1) {
@@ -308,7 +308,7 @@ function bb_parse_app($match) {
 
 	$app = Zotlabs\Lib\Apps::app_decode($match[1]);
 	if ($app)
-		return Zotlabs\Lib\Apps::app_render($app);
+		return preg_replace('/[[:cntrl:]]/', '', Zotlabs\Lib\Apps::app_render($app, 'inline'));
 }
 
 function bb_svg($match) {
@@ -488,9 +488,9 @@ function getAttachmentData($body) {
 		$data["preview"] = html_entity_decode($preview, ENT_QUOTES, 'UTF-8');
 	}
 
-	$data["description"] = trim($match[3]);
+	$data["description"] = ((isset($match[3])) ? trim($match[3]) : '');
 
-	$data["after"] = trim($match[4]);
+	$data["after"] = ((isset($match[4])) ? trim($match[4]) : '');
 
 	return $data;
 }
@@ -616,9 +616,9 @@ function bb_ShareAttributesSimple($match) {
 
 function rpost_callback($match) {
 	if ($match[2]) {
-		return str_replace($match[0], get_rpost_path(App::get_observer()) . '&title=' . urlencode($match[2]) . '&body=' . urlencode($match[3]), $match[0]);
+		return str_replace($match[0], Libzot::get_rpost_path(App::get_observer()) . '&title=' . urlencode($match[2]) . '&body=' . urlencode($match[3]), $match[0]);
 	} else {
-		return str_replace($match[0], get_rpost_path(App::get_observer()) . '&body=' . urlencode($match[3]), $match[0]);
+		return str_replace($match[0], Libzot::get_rpost_path(App::get_observer()) . '&body=' . urlencode($match[3]), $match[0]);
 	}
 }
 
@@ -1099,26 +1099,28 @@ function bbcode($Text, $options = []) {
 
 	call_hooks('bbcode_filter', $Text);
 
-	// Hide all [noparse] contained bbtags by spacefying them
-	if (strpos($Text,'[noparse]') !== false) {
-		$Text = preg_replace_callback("/\[noparse\](.*?)\[\/noparse\]/ism", 'bb_spacefy',$Text);
-	}
-	if (strpos($Text,'[nobb]') !== false) {
-		$Text = preg_replace_callback("/\[nobb\](.*?)\[\/nobb\]/ism", 'bb_spacefy',$Text);
-	}
-	if (strpos($Text,'[pre]') !== false) {
-		$Text = preg_replace_callback("/\[pre\](.*?)\[\/pre\]/ism", 'bb_spacefy',$Text);
-	}
-	if (strpos($Text,'[summary]') !== false) {
-		$Text = preg_replace_callback("/\[summary\](.*?)\[\/summary\]/ism", 'bb_spacefy',$Text);
+	if(isset($options['drop_media'])) {
+		if (strpos($Text,'[/img]') !== false) {
+			$Text = preg_replace('/\[img(.*?)\[\/(img)\]/ism', '', $Text);
+		}
+		if (strpos($Text,'[/audio]') !== false) {
+			$Text = preg_replace('/\[audio(.*?)\[\/(audio)\]/ism', '', $Text);
+		}
+		if (strpos($Text,'[/video]') !== false) {
+			$Text = preg_replace('/\[video(.*?)\[\/(video)\]/ism', '', $Text);
+		}
+		if (strpos($Text,'[/zmg]') !== false) {
+			$Text = preg_replace('/\[zmg(.*?)\[\/(zmg)\]/ism', '', $Text);
+		}
+		if (strpos($Text,'[/zaudio]') !== false) {
+			$Text = preg_replace('/\[zaudio(.*?)\[\/(zaudio)\]/ism', '', $Text);
+		}
+		if (strpos($Text,'[/zvideo]') !== false) {
+			$Text = preg_replace('/\[zvideo(.*?)\[\/(zvideo)\]/ism', '', $Text);
+		}
 	}
 
-	if (strpos($Text,'[/img]') !== false) {
-		$Text = preg_replace_callback('/\[img(.*?)\[\/(img)\]/ism','\red_escape_codeblock',$Text);
-	}
-	if (strpos($Text,'[/zmg]') !== false) {
-		$Text = preg_replace_callback('/\[zmg(.*?)\[\/(zmg)\]/ism','\red_escape_codeblock',$Text);
-	}
+
 
 	$Text = bb_format_attachdata($Text);
 
@@ -1178,13 +1180,13 @@ function bbcode($Text, $options = []) {
 
 	$Text = str_replace(array('[baseurl]','[sitename]'),array(z_root(),get_config('system','sitename')),$Text);
 
-
 	// Replace any html brackets with HTML Entities to prevent executing HTML or script
 	// Don't use strip_tags here because it breaks [url] search by replacing & with amp
 
 	$Text = str_replace("<", "&lt;", $Text);
 	$Text = str_replace(">", "&gt;", $Text);
-
+	$Text = preg_replace_callback("/\[table\](.*?)\[\/table\]/ism",'bb_fixtable_lf',$Text);
+	$Text = str_replace(array("\t", "  "), array("&nbsp;&nbsp;&nbsp;&nbsp;", "&nbsp;&nbsp;"), $Text);
 
 	// Check for [code] text here, before the linefeeds are messed with.
 	// The highlighter will unescape and re-escape the content.
@@ -1192,10 +1194,6 @@ function bbcode($Text, $options = []) {
 	if (strpos($Text,'[code=') !== false) {
 		$Text = preg_replace_callback("/\[code=(.*?)\](.*?)\[\/code\]/ism", 'bb_highlight', $Text);
 	}
-
-	$Text = preg_replace_callback("/\[table\](.*?)\[\/table\]/ism",'bb_fixtable_lf',$Text);
-
-	$Text = str_replace(array("\t", "  "), array("&nbsp;&nbsp;&nbsp;&nbsp;", "&nbsp;&nbsp;"), $Text);
 
 	// Check for [code] text
 	if (strpos($Text,'[code]') !== false) {
@@ -1205,6 +1203,26 @@ function bbcode($Text, $options = []) {
 	// Check for [code options] text
 	if (strpos($Text,'[code ') !== false) {
 		$Text = preg_replace_callback("/\[code(.*?)\](.*?)\[\/code\]/ism", 'bb_code_options', $Text);
+	}
+
+	// Hide all [noparse] contained bbtags by spacefying them
+	if (strpos($Text,'[noparse]') !== false) {
+		$Text = preg_replace_callback("/\[noparse\](.*?)\[\/noparse\]/ism", 'bb_spacefy',$Text);
+	}
+	if (strpos($Text,'[nobb]') !== false) {
+		$Text = preg_replace_callback("/\[nobb\](.*?)\[\/nobb\]/ism", 'bb_spacefy',$Text);
+	}
+	if (strpos($Text,'[pre]') !== false) {
+		$Text = preg_replace_callback("/\[pre\](.*?)\[\/pre\]/ism", 'bb_spacefy',$Text);
+	}
+	if (strpos($Text,'[summary]') !== false) {
+		$Text = preg_replace_callback("/\[summary\](.*?)\[\/summary\]/ism", 'bb_spacefy',$Text);
+	}
+	if (strpos($Text,'[/img]') !== false) {
+		$Text = preg_replace_callback('/\[img(.*?)\[\/(img)\]/ism','\red_escape_codeblock',$Text);
+	}
+	if (strpos($Text,'[/zmg]') !== false) {
+		$Text = preg_replace_callback('/\[zmg(.*?)\[\/(zmg)\]/ism','\red_escape_codeblock',$Text);
 	}
 
 	// Set up the parameters for a URL search string
@@ -1330,10 +1348,16 @@ function bbcode($Text, $options = []) {
 	if (strpos($Text,'[/color]') !== false) {
 		$Text = preg_replace("(\[color=(.*?)\](.*?)\[\/color\])ism", "<span style=\"color: $1;\">$2</span>", $Text);
 	}
-	// Check for colored text
+
+	// @DEPRECATED: Check for colored text (deprecated in favor of mark which is a html5 standard)
 	if (strpos($Text,'[/hl]') !== false) {
-        $Text = preg_replace("(\[hl\](.*?)\[\/hl\])ism", "<span class=\"default-highlight\">$1</span>", $Text);
+		$Text = preg_replace("(\[hl\](.*?)\[\/hl\])ism", "<span class=\"default-highlight\">$1</span>", $Text);
 		$Text = preg_replace("(\[hl=(.*?)\](.*?)\[\/hl\])ism", "<span style=\"background-color: $1;\">$2</span>", $Text);
+	}
+
+	if (strpos($Text,'[/mark]') !== false) {
+		$Text = preg_replace("(\[mark\](.*?)\[\/mark\])ism", "<mark class=\"mark\">$1</mark>", $Text);
+		$Text = preg_replace("(\[mark=(.*?)\](.*?)\[\/mark\])ism", "<mark style=\"background-color: $1;\">$2</mark>", $Text);
 	}
 
 	// Check for sized text
@@ -1376,7 +1400,7 @@ function bbcode($Text, $options = []) {
 	// Check for table of content without params
 	while(strpos($Text,'[toc]') !== false) {
 		$toc_id = 'toc-' . random_string(10);
-		$Text = preg_replace("/\[toc\]/ism", '<ul id="' . $toc_id . '" class="toc" data-toc=".section-content-wrapper"></ul><script>$("#' . $toc_id . '").toc();</script>', $Text, 1);
+		$Text = preg_replace("/\[toc\]/ism", '<ul id="' . $toc_id . '" class="toc"></ul><script>$(document).ready(function() { let toc_container = $("#' . $toc_id . '").parent().closest("div").attr("id") || ".section-content-wrapper"; $("#' . $toc_id . '").toc({content: "#" + toc_container, headings: "h1,h2,h3,h4"}); });</script>', $Text, 1);
 	}
 	// Check for table of content with params
 	while(strpos($Text,'[toc') !== false) {

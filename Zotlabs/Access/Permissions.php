@@ -41,7 +41,7 @@ class Permissions {
 	 * @return number
 	 */
 	static public function version() {
-		return 2;
+		return 3;
 	}
 
 	/**
@@ -65,11 +65,11 @@ class Permissions {
 			'write_wiki'    => t('Can write to my wiki pages'),
 			'post_wall'     => t('Can post on my channel (wall) page'),
 			'post_comments' => t('Can comment on or like my posts'),
-			'post_mail'     => t('Can send me private mail messages'),
+			'post_mail'     => t('Can send me direct messages'),
 			'post_like'     => t('Can like/dislike profiles and profile things'),
-			'tag_deliver'   => t('Can forward to all my channel connections via ! mentions in posts'),
 			'chat'          => t('Can chat with me'),
-			'republish'     => t('Can source my public posts in derived channels'),
+			'republish'     => t('Can source/mirror my public posts in derived channels'),
+			//'tag_deliver'   => t('Can forward to my contacts via direct messages (forum)'),
 			'delegate'      => t('Can administer my channel')
 		];
 
@@ -217,25 +217,23 @@ class Permissions {
 
 		$my_perms  = [];
 		$permcat   = null;
-		$automatic = 0;
+		$automatic = get_pconfig($channel_id, 'system', 'autoperms');
 
 		// If a default permcat exists, use that
 
-		$pc = ((feature_enabled($channel_id, 'permcats')) ? get_pconfig($channel_id, 'system', 'default_permcat') : 'default');
-		if (!in_array($pc, ['', 'default'])) {
-			$pcp     = new Zlib\Permcat($channel_id);
-			$permcat = $pcp->fetch($pc);
-			if ($permcat && $permcat['perms']) {
-				foreach ($permcat['perms'] as $p) {
-					$my_perms[$p['name']] = $p['value'];
-				}
+		$pc = get_pconfig($channel_id, 'system', 'default_permcat', 'default');
+		$pcp     = new Zlib\Permcat($channel_id);
+		$permcat = $pcp->fetch($pc);
+		if ($permcat && $permcat['perms']) {
+			foreach ($permcat['perms'] as $p) {
+				$my_perms[$p['name']] = $p['value'];
 			}
 		}
 
 		// look up the permission role to see if it specified auto-connect
 		// and if there was no permcat or a default permcat, set the perms
 		// from the role
-
+/*
 		$role = get_pconfig($channel_id, 'system', 'permissions_role');
 		if ($role) {
 			$xx = PermissionRoles::role_perms($role);
@@ -247,11 +245,12 @@ class Permissions {
 				$my_perms      = Permissions::FilledPerms($default_perms);
 			}
 		}
+*/
 
 		// If we reached this point without having any permission information,
 		// it is likely a custom permissions role. First see if there are any
 		// automatic permissions.
-
+/*
 		if (!$my_perms) {
 			$m = Permissions::FilledAutoperms($channel_id);
 			if ($m) {
@@ -259,11 +258,12 @@ class Permissions {
 				$my_perms  = $m;
 			}
 		}
-
+*/
 		// If we reached this point with no permissions, the channel is using
 		// custom perms but they are not automatic. They will be stored in abconfig with
 		// the channel's channel_hash (the 'self' connection).
 
+/*
 		if (!$my_perms) {
 			$r = q("select channel_hash from channel where channel_id = %d",
 				intval($channel_id)
@@ -280,10 +280,10 @@ class Permissions {
 				}
 			}
 		}
-
-		return (['perms' => $my_perms, 'automatic' => $automatic]);
+*/
+		return (['perms' => $my_perms, 'automatic' => $automatic, 'role' => $pc]);
 	}
-
+/*
 	static public function serialise($p) {
 		$n = [];
 		if ($p) {
@@ -295,4 +295,5 @@ class Permissions {
 		}
 		return implode(',', $n);
 	}
+*/
 }

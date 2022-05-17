@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/sources
 requires: local_channel
 name: Channel Sources
 photo: icon:commenting-o
 categories: Networking
+desc: Import channel content from other channels or feeds.

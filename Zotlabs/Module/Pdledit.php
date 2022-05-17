@@ -27,10 +27,10 @@ class Pdledit extends Controller {
 		info( t('Layout updated.') . EOL);
 		goaway(z_root() . '/pdledit/' . $_REQUEST['module']);
 	}
-	
-	
+
+
 	function get() {
-	
+
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
 			return;
@@ -39,10 +39,8 @@ class Pdledit extends Controller {
 		if(! Apps::system_app_installed(local_channel(), 'PDL Editor')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('PDL Editor App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Provides the ability to edit system page layouts');
-			return $o;
+			$papp = Apps::get_papp('PDL Editor');
+			return Apps::app_render($papp, 'module');
 		}
 
 		if(argc() > 2 && argv(2) === 'reset') {
@@ -68,7 +66,7 @@ class Pdledit extends Controller {
 					$edited[] = substr(str_replace('.pdl','',$rv['k']),4);
 				}
 			}
-			
+
 			$files = glob('Zotlabs/Module/*.php');
 			if($files) {
 				foreach($files as $f) {
@@ -81,21 +79,21 @@ class Pdledit extends Controller {
 			}
 
 			$o .= '</div>';
-			
+
 			// list module pdl files
 			return $o;
 		}
-	
+
 		$t = get_pconfig(local_channel(),'system',$module);
 		$s = file_get_contents(theme_include($module));
 		if(! $t) {
 			$t = $s;
-		}	
+		}
 		if(! $t) {
 			notice( t('Layout not found.') . EOL);
 			return '';
 		}
-	
+
 		$o = replace_macros(get_markup_template('pdledit.tpl'),array(
 			'$header' => t('Edit System Page Description'),
 			'$mname' => t('Module Name:'),
@@ -107,8 +105,8 @@ class Pdledit extends Controller {
 			'$content' => htmlspecialchars($t,ENT_COMPAT,'UTF-8'),
 			'$submit' => t('Submit')
 		));
-	    
+
 		return $o;
 	}
-	
+
 }

@@ -326,7 +326,7 @@ function group_side($every="connections",$each="group",$edit = false, $group_id 
 	$o = replace_macros($tpl, array(
 		'$title'		=> t('Privacy Groups'),
 		'$edittext'     => t('Edit group'),
-		'$createtext' 	=> t('Add privacy group'),
+		'$createtext' 	=> ((argv(1) == 'new' ) ? '' : t('Manage privacy groups')),
 		'$ungrouped'    => (($every === 'contacts') ? t('Channels not in any privacy group') : ''),
 		'$groups'		=> $groups,
 		'$add'			=> t('add'),

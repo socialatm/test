@@ -30,9 +30,9 @@ require_once('include/security.php');
  *  The return array is dependent on the login mechanism.
  *    $ret['account'] will be set if either an email or channel address validation was successful (local login).
  *    $ret['channel'] will be set if a channel address validation was successful.
- *    $ret['xchan'] will be set if a guest access token validation was successful. 
- *   Keys will exist for invalid return arrays but will be set to null. 
- *   This function does not perform a login. It merely validates systems passwords and tokens.  
+ *    $ret['xchan'] will be set if a guest access token validation was successful.
+ *   Keys will exist for invalid return arrays but will be set to null.
+ *   This function does not perform a login. It merely validates systems passwords and tokens.
  *
  */
 
@@ -44,7 +44,7 @@ function account_verify_password($login, $pass) {
 	$email_verify = get_config('system', 'verify_email');
 	$register_policy = get_config('system', 'register_policy');
 
-	if(! $login)
+	if(!$login || !$pass)
 		return null;
 
 	$account = null;
@@ -72,7 +72,7 @@ function account_verify_password($login, $pass) {
 		$ret['account'] = $addon_auth['user_record'];
 		return $ret;
 	}
-	else {	
+	else {
 		if(! strpos($login,'@')) {
 			$channel = channelx_by_nick($login);
 			if(! $channel) {
@@ -102,7 +102,7 @@ function account_verify_password($login, $pass) {
 		$account = $a[0];
 
 		// Currently we only verify email address if there is an open registration policy.
-		// This isn't because of any policy - it's because the workflow gets too complicated if 
+		// This isn't because of any policy - it's because the workflow gets too complicated if
 		// you have to verify the email and then go through the account approval workflow before
 		// letting them login.
 
@@ -112,7 +112,7 @@ function account_verify_password($login, $pass) {
 		}
 
 		if($channel) {
-			// Try the authentication plugin again since weve determined we are using the channel login instead of account login 
+			// Try the authentication plugin again since weve determined we are using the channel login instead of account login
 			$addon_auth = [
 				'username'      => $account['account_email'],
 				'password'      => trim($pass),
@@ -128,7 +128,7 @@ function account_verify_password($login, $pass) {
 			}
 		}
 
-		if(($account['account_flags'] == ACCOUNT_OK) 
+		if(($account['account_flags'] == ACCOUNT_OK)
 			&& (hash('whirlpool',$account['account_salt'] . $pass) === $account['account_password'])) {
 			logger('password verified for ' . $login);
 			$ret['account'] = $account;
@@ -193,7 +193,7 @@ if((isset($_SESSION)) && (x($_SESSION, 'authenticated')) &&
 			$_SESSION = $_SESSION['delegate_push'];
 			info( t('Delegation session ended.') . EOL);
 		}
-		else {	
+		else {
 			App::$session->nuke();
 			info( t('Logged out.') . EOL);
 		}
@@ -280,8 +280,11 @@ else {
 
 	// handle a fresh login request
 
-	if((x($_POST, 'password')) && strlen($_POST['password']))
-		$encrypted = hash('whirlpool', trim($_POST['password']));
+	$password = $_POST['main_login_password'] ?? $_POST['modal_login_password'];
+	$username = $_POST['main_login_username'] ?? $_POST['modal_login_username'];
+
+	if($password)
+		$encrypted = hash('whirlpool', trim($password));
 
 	if((x($_POST, 'auth-params')) && $_POST['auth-params'] === 'login') {
 
@@ -289,10 +292,10 @@ else {
 		$account = null;
 		$channel = null;
 
-		$verify = account_verify_password($_POST['username'], $_POST['password']);
+		$verify = account_verify_password($username, $password);
 		if($verify && array_key_exists('reason',$verify) && $verify['reason'] === 'unvalidated') {
 			notice( t('Email validation is incomplete. Please check your email.'));
-			goaway(z_root() . '/email_validation/' . bin2hex(punify(trim(escape_tags($_POST['username'])))));
+			goaway(z_root() . '/email_validation/' . bin2hex(punify(trim(escape_tags($username)))));
 		}
 		elseif($verify) {
 			$atoken  = $verify['xchan'];
@@ -311,8 +314,8 @@ else {
 		}
 
 		if(! ($account || $atoken)) {
-			$error = 'authenticate: failed login attempt: ' . notags(trim($_POST['username'])) . ' from IP ' . $_SERVER['REMOTE_ADDR'];
-			logger($error); 
+			$error = 'authenticate: failed login attempt: ' . notags(trim($username)) . ' from IP ' . $_SERVER['REMOTE_ADDR'];
+			logger($error);
 			// Also log failed logins to a separate auth log to reduce overhead for server side intrusion prevention
 			$authlog = get_config('system', 'authlog');
 			if ($authlog)
@@ -334,7 +337,9 @@ else {
 		// (i.e. expire when the browser is closed), even when there's a time expiration
 		// on the cookie
 
-		if(($_POST['remember_me']) || ($_POST['remember'])) {
+		$remember = $_POST['main_login_remember'] ?? $_POST['modal_login_remember'];
+
+		if($remember) {
 			$_SESSION['remember_me'] = 1;
 			App::$session->new_cookie(31449600); // one year
 		}
@@ -360,7 +365,7 @@ else {
  * and returns the corresponding channel_id.
  *
  * @fixme How do we prevent that an OpenID identity is used more than once?
- * 
+ *
  * @param string $authid
  *  The given openid_identity
  * @return int|bool

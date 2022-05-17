@@ -163,7 +163,16 @@ function string2bb(element) {
 
 		// Autocomplete contacts
 		contacts = {
-			match: /(^|\s)(@\!*)([^ \n]{3,})$/,
+			match: /(^|\s)(@\!)([^ \n]{3,})$/,
+			index: 3,
+			cache: true,
+			search: function(term, callback) { contact_search(term, callback, backend_url, 'm', extra_channels, spinelement=false); },
+			replace: editor_replace,
+			template: contact_format
+		};
+
+		channels = {
+			match: /(^(?=[^\!]{2})|\s)(@)([^ \n]{3,})$/,
 			index: 3,
 			cache: true,
 			search: function(term, callback) { contact_search(term, callback, backend_url, 'c', extra_channels, spinelement=false); },
@@ -202,7 +211,8 @@ function string2bb(element) {
 					maxCount: 100
 				}
 			});
-			textcomplete.register([contacts,smilies,tags]);
+			// it seems important that contacts are before channels here. Otherwise we run into regex issues.
+			textcomplete.register([contacts,channels,smilies,tags]);
 		});
 	};
 })( jQuery );
@@ -350,7 +360,7 @@ function string2bb(element) {
 			return;
 
 		if(type=='bbcode') {
-			var open_close_elements = ['bold', 'italic', 'underline', 'overline', 'strike', 'superscript', 'subscript', 'quote', 'code', 'open', 'spoiler', 'map', 'nobb', 'list', 'checklist', 'question', 'answer', 'ul', 'ol', 'dl', 'li', 'table', 'tr', 'th', 'td', 'center', 'color', 'font', 'size', 'zrl', 'zmg', 'rpost', 'qr', 'observer', 'observer.language','embed', 'highlight', 'url', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+			var open_close_elements = ['bold', 'italic', 'underline', 'overline', 'strike', 'superscript', 'subscript', 'quote', 'code', 'open', 'spoiler', 'map', 'nobb', 'list', 'checklist', 'question', 'answer', 'ul', 'ol', 'dl', 'li', 'table', 'tr', 'th', 'td', 'center', 'color', 'font', 'size', 'zrl', 'zmg', 'rpost', 'qr', 'observer', 'observer.language','embed', 'mark', 'url', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 			var open_elements = ['observer.baseurl', 'observer.address', 'observer.photo', 'observer.name', 'observer.webname', 'observer.url', '*', 'hr' ];
 
 			var elements = open_close_elements.concat(open_elements);

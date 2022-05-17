@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Wiki pages
+ *   * Description: A list of existing pages of a wiki
+ *   * Requires: wiki
+ */
+
 namespace Zotlabs\Widget;
 
 use Zotlabs\Lib\NativeWiki;
@@ -34,7 +40,7 @@ class Wiki_pages {
 				'$addnew' => t('Add new page'),
 				'$typelock' => $typelock,
 				'$lockedtype' => $w['mimeType'],
-				'$mimetype' => mimetype_select(0,$w['mimeType'], 
+				'$mimetype' => mimetype_select(0,$w['mimeType'],
 					[ 'text/markdown' => t('Markdown'), 'text/bbcode' => t('BBcode'), 'text/plain' => t('Text') ]),
 				'$pageName' => array('missingPageName', 'Create Page' , $pageName),
 				'$refresh' => $arr['refresh'],
@@ -91,7 +97,7 @@ class Wiki_pages {
 				'$addnew' => t('Add new page'),
 				'$typelock' => $typelock,
 				'$lockedtype' => $w['mimeType'],
-				'$mimetype' => mimetype_select(0,$w['mimeType'], 
+				'$mimetype' => mimetype_select(0,$w['mimeType'],
 					[ 'text/markdown' => t('Markdown'), 'text/bbcode' => t('BBcode'), 'text/plain' => t('Text') ]),
 				'$pageName' => array('pageName', t('Page name')),
 				'$refresh' => $arr['refresh'],

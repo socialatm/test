@@ -24,7 +24,7 @@ class Vote extends Controller {
 		$fetch = null;
 		$id = argv(1);
 		$response = $_REQUEST['answer'];
-		
+
 		if ($id) {
 			$fetch = q("select * from item where id = %d limit 1",
 				intval($id)
@@ -42,7 +42,7 @@ class Vote extends Controller {
 		}
 
 		$valid = false;
-		
+
 		if ($obj['oneOf']) {
 			foreach($obj['oneOf'] as $selection) {
 				//		logger('selection: ' . $selection);
@@ -80,7 +80,6 @@ class Vote extends Controller {
 
 			$item = [];
 
-
 			$item['aid'] = $channel['channel_account_id'];
 			$item['uid'] = $channel['channel_id'];
 			$item['item_origin'] = 1;
@@ -95,11 +94,8 @@ class Vote extends Controller {
 			$item['owner_xchan'] = $fetch[0]['author_xchan'];
 			$item['allow_cid'] = '<' . $fetch[0]['author_xchan'] . '>';
 			$item['item_private'] = 1;
-
-			
 			$item['obj_type'] = 'Note';
 			$item['author'] = channelx_by_n($channel['channel_id']);
-
 			$item['obj'] = Activity::encode_item($item);
 
 			// now reset the placeholders
@@ -108,9 +104,7 @@ class Vote extends Controller {
 			$item['obj_type'] = 'Answer';
 			unset($item['author']);
 
-
 			$x = item_store($item);
-
 
 			retain_item($fetch[0]['id']);
 
@@ -118,7 +112,7 @@ class Vote extends Controller {
 				$itemid = $x['item_id'];
 				Master::Summon( [ 'Notifier', 'like', $itemid ] );
 			}
-		
+
 			$r = q("select * from item where id = %d",
 				intval($itemid)
 			);
@@ -128,6 +122,7 @@ class Vote extends Controller {
 				Libsync::build_sync_packet($channel['channel_id'], [ 'item' => [ encode_item($sync_item[0],true) ] ]);
 			}
 		}
+
 		$ret['success'] = true;
 		$ret['message'] = t('Response submitted. Updates may not appear instantly.');
 		json_return_and_die($ret);

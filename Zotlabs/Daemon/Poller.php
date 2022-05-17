@@ -69,11 +69,11 @@ class Poller {
 			abook.abook_channel, abook.abook_id, abook.abook_archived, abook.abook_pending,
 			abook.abook_ignored, abook.abook_blocked,
 			xchan.xchan_network,
-			account.account_lastlog, account.account_flags 
-			FROM abook LEFT JOIN xchan on abook_xchan = xchan_hash 
+			account.account_lastlog, account.account_flags
+			FROM abook LEFT JOIN xchan on abook_xchan = xchan_hash
 			LEFT JOIN account on abook_account = account_id
 			where abook_self = 0
-			$sql_extra 
+			$sql_extra
 			AND (( account_flags = %d ) OR ( account_flags = %d )) $abandon_sql ORDER BY $randfunc",
 			intval(ACCOUNT_OK),
 			intval(ACCOUNT_UNVERIFIED)     // FIXME
@@ -102,8 +102,7 @@ class Poller {
 					continue;
 				}
 
-
-				if (!in_array($contact['xchan_network'], ['zot', 'zot6']))
+				if ($contact['xchan_network'] !== 'zot6')
 					continue;
 
 				if ($c == $t) {
@@ -191,7 +190,7 @@ class Poller {
 
 		set_config('system', 'lastpoll', datetime_convert());
 
-		//All done - clear the lockfile	
+		//All done - clear the lockfile
 
 		@unlink($lockfile);
 

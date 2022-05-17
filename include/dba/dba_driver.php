@@ -38,7 +38,7 @@ class DBA {
 	 * @param bool $install Defaults to false
 	 * @return null|dba_driver A database driver object (dba_pdo) or null if no driver found.
 	 */
-	static public function dba_factory($server,$port,$user,$pass,$db,$dbtype,$install = false) {
+	static public function dba_factory($server,$port,$user,$pass,$db,$dbtype,$db_charset,$install = false) {
 
 		self::$dba = null;
 		self::$dbtype = intval($dbtype);
@@ -65,7 +65,7 @@ class DBA {
 		}
 
 		require_once('include/dba/dba_pdo.php');
-		self::$dba = new dba_pdo($server,self::$scheme,$port,$user,$pass,$db,$install);
+		self::$dba = new dba_pdo($server,self::$scheme,$port,$user,$pass,$db,$db_charset,$install);
 
 		define('NULL_DATE', self::$null_date);
 		define('ACTIVE_DBTYPE', self::$dbtype);
@@ -105,7 +105,7 @@ abstract class dba_driver {
 	 * @param string $db database name
 	 * @return bool
 	 */
-	abstract function connect($server, $scheme, $port, $user, $pass, $db);
+	abstract function connect($server, $scheme, $port, $user, $pass, $db, $db_charset);
 
 	/**
 	 * @brief Perform a DB query with the SQL statement $sql.
@@ -139,11 +139,11 @@ abstract class dba_driver {
 	 */
 	abstract function getdriver();
 
-	function __construct($server, $scheme, $port, $user,$pass,$db,$install = false) {
-		if(($install) && (! $this->install($server, $scheme, $port, $user, $pass, $db))) {
+	function __construct($server, $scheme, $port, $user,$pass,$db,$db_charset,$install = false) {
+		if(($install) && (! $this->install($server, $scheme, $port, $user, $pass, $db, $db_charset))) {
 			return;
 		}
-		$this->connect($server, $scheme, $port, $user, $pass, $db);
+		$this->connect($server, $scheme, $port, $user, $pass, $db, $db_charset);
 	}
 
 	function get_null_date() {

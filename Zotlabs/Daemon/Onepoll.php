@@ -8,6 +8,7 @@ use Zotlabs\Lib\ASCollection;
 use Zotlabs\Lib\Libzot;
 
 require_once('include/socgraph.php');
+require_once('include/feedutils.php');
 
 class Onepoll {
 
@@ -44,17 +45,13 @@ class Onepoll {
 			return;
 		}
 
-		$contact      = array_shift($contacts);
+		$contact      = $contacts[0];
 		$importer_uid = $contact['abook_channel'];
 
-		$r = q("SELECT * from channel left join xchan on channel_hash = xchan_hash where channel_id = %d limit 1",
-			intval($importer_uid)
-		);
+		$importer = channelx_by_n($importer_uid);
 
-		if (!$r)
+		if (!$importer)
 			return;
-
-		$importer = $r[0];
 
 		logger("onepoll: poll: ({$contact['id']}) IMPORTER: {$importer['xchan_name']}, CONTACT: {$contact['xchan_name']}");
 
@@ -75,16 +72,12 @@ class Onepoll {
 			return;
 		}
 
-		if (!in_array($contact['xchan_network'], ['zot', 'zot6']))
+		if ($contact['xchan_network'] !== 'zot6')
 			return;
 
 		// update permissions
 
-		if ($contact['xchan_network'] === 'zot6')
-			$x = Libzot::refresh($contact, $importer);
-
-		if ($contact['xchan_network'] === 'zot')
-			$x = zot_refresh($contact, $importer);
+		$x = Libzot::refresh($contact, $importer);
 
 		$responded = false;
 		$updated   = datetime_convert();
@@ -109,46 +102,63 @@ class Onepoll {
 			return;
 
 		$fetch_feed = true;
-		$x          = null;
 
 		// They haven't given us permission to see their stream
-
 		$can_view_stream = intval(get_abconfig($importer_uid, $contact['abook_xchan'], 'their_perms', 'view_stream'));
 
-		if (!$can_view_stream)
+		if (!$can_view_stream) {
 			$fetch_feed = false;
+		}
 
 		// we haven't given them permission to send us their stream
-
 		$can_send_stream = intval(get_abconfig($importer_uid, $contact['abook_xchan'], 'my_perms', 'send_stream'));
 
-		if (!$can_send_stream)
+		if (!$can_send_stream) {
 			$fetch_feed = false;
+		}
 
-		if ($fetch_feed && $contact['xchan_network'] !== 'zot') {
+		if ($fetch_feed) {
 
 			$max = intval(get_config('system', 'max_imported_posts', 30));
 
 			if (intval($max)) {
-				$cl = get_xconfig($contact['abook_xchan'], 'activitypub', 'collections');
+				$cl = Activity::get_actor_collections($contact['abook_xchan']);
+				if(empty($cl)) {
+					$cl = get_xconfig($contact['abook_xchan'], 'activitypub', 'collections');
+				}
 
-				if (is_array($cl) && $cl) {
-					$url = ((array_key_exists('outbox', $cl)) ? $cl['outbox'] : '');
+				if (is_array($cl) && array_key_exists('outbox', $cl)) {
+					$url = $cl['outbox'];
 				}
 				else {
-					$url = str_replace('/poco/', '/zotfeed/', $contact['xchan_connurl']);
+					$url = str_replace('/poco/', '/outbox/', $contact['xchan_connurl']);
 				}
 
 				if ($url) {
 					logger('fetching outbox');
-					$url      = $url . '?date_begin=' .  urlencode($last_update);
+					$url = $url . '?date_begin=' .  urlencode($last_update);
+
+					if($contact['xchan_network'] === 'zot6') {
+						$url = $url . '&top=1';
+					}
+
 					$obj      = new ASCollection($url, $importer, 0, $max);
 					$messages = $obj->get();
+
 					if ($messages) {
 						foreach ($messages as $message) {
 							if (is_string($message)) {
 								$message = Activity::fetch($message, $importer);
 							}
+
+							if ($contact['xchan_network'] === 'zot6') {
+								// make sure we only fetch top level items
+								if ($message['type'] === 'Create' && !isset($message['object']['inReplyTo'])) {
+									Libzot::fetch_conversation($importer, $message['object']['id']);
+								}
+								continue;
+							}
+
 							$AS = new ActivityStreams($message);
 							if ($AS->is_valid() && is_array($AS->obj)) {
 								$item = Activity::decode_note($AS);
@@ -163,8 +173,10 @@ class Onepoll {
 		// update the poco details for this connection
 		$r = q("SELECT xlink_id from xlink where xlink_xchan = '%s' and xlink_updated > %s - INTERVAL %s and xlink_static = 0 limit 1",
 			intval($contact['xchan_hash']),
-			db_utcnow(), db_quoteinterval('1 DAY')
+			db_utcnow(),
+			db_quoteinterval('1 DAY')
 		);
+
 		if (!$r) {
 			poco_load($contact['xchan_hash'], $contact['xchan_connurl']);
 		}

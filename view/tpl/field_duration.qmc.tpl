@@ -1,4 +1,4 @@
-{{if $wrapper!="no"}}<div id="{{$qmc}}{{$field.name}}_wrapper" class="form-group">{{/if}}
+{{if $wrapper!="no"}}<div id="{{$qmc}}{{$field.name}}_wrapper" class="mb-3">{{/if}}
 
 <label for="{{$qmc}}{{$field.name}}fs">{{$label}}
 		{{if $qmcid}}<sup class="zuiqmid required">{{$qmcid}}</sup>{{/if}}	

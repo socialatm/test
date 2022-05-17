@@ -68,7 +68,7 @@ function bookmark_add($channel,$sender,$taxonomy,$private,$opts = null) {
 
 function get_bookmark_link($observer) {
 
-	if((! $observer) || !in_array($observer['xchan_network'], ['zot6', 'zot']))
+	if(!$observer || $observer['xchan_network'] !== 'zot6')
 		return '';
 
 	$h = @parse_url($observer['xchan_url']);

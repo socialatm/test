@@ -1,0 +1,7 @@
+version: 2
+url: $baseurl/hq
+requires: local_channel
+name: HQ
+photo: icon:user-circle-o
+categories: nav_pinned_app
+desc: The default landing page after login. It provides a quick overview over recent posts and direct messages.

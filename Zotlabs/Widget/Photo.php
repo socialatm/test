@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Photo
+ *   * Description: Displays a single photo
+ */
+
+
 namespace Zotlabs\Widget;
 
 

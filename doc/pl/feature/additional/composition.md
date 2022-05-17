@@ -2,7 +2,7 @@
 
 ### Duże obrazy
 
-Możliwość dołączania do wpisów dużych (1024px) miniatur zdjęć. Jeśli ta opcja nie jest jest włączona, będą uzywane małe miniatury (640 pikseli)
+Możliwość dołączania do wpisów dużych (1024px) miniatur zdjęć. Jeśli ta opcja nie jest jest włączona, będą używane małe miniatury (640 pikseli)
 <!-- TODO: full description for Large Photos -->
 
 Wymagany minimalny poziom umiejętności technicznych do korzystania z tej funkcji: 1

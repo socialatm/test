@@ -11,6 +11,7 @@ class ActivityStreams {
 
 	public $raw = null;
 	public $data = null;
+	public $meta = null;
 	public $valid = false;
 	public $deleted = false;
 	public $id = '';
@@ -36,10 +37,14 @@ class ActivityStreams {
 	 */
 	function __construct($string) {
 
+		if(!$string)
+			return;
+
 		$this->raw = $string;
 
 		if (is_array($string)) {
 			$this->data = $string;
+			$this->raw = json_encode($string, JSON_UNESCAPED_SLASHES);
 		}
 		else {
 			$this->data = json_decode($string, true);
@@ -56,10 +61,10 @@ class ActivityStreams {
 					if ($ret['signer']) {
 						$saved                     = json_encode($this->data, JSON_UNESCAPED_SLASHES);
 						$this->data                = $tmp;
-						$this->data['signer']      = $ret['signer'];
-						$this->data['signed_data'] = $saved;
+						$this->meta['signer']      = $ret['signer'];
+						$this->meta['signed_data'] = $saved;
 						if ($ret['hubloc']) {
-							$this->data['hubloc'] = $ret['hubloc'];
+							$this->meta['hubloc'] = $ret['hubloc'];
 						}
 					}
 				}
@@ -87,7 +92,7 @@ class ActivityStreams {
 
 			$this->ldsig = $this->get_compound_property('signature');
 			if ($this->ldsig) {
-				$this->signer = $this->get_compound_property('creator', $this->ldsig);
+				$this->signer = $this->get_actor('creator', $this->ldsig);
 				if ($this->signer && is_array($this->signer) && array_key_exists('publicKey', $this->signer) && is_array($this->signer['publicKey']) && $this->signer['publicKey']['publicKeyPem']) {
 					$this->sigok = LDSignatures::verify($this->data, $this->signer['publicKey']['publicKeyPem']);
 				}
@@ -285,7 +290,7 @@ class ActivityStreams {
 		if (!$s) {
 			return false;
 		}
-		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
+		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Announce', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
 	}
 
 	/**
@@ -300,16 +305,8 @@ class ActivityStreams {
 	function get_actor($property, $base = '', $namespace = '') {
 		$x = $this->get_property_obj($property, $base, $namespace);
 		if ($this->is_url($x)) {
-
-			// SECURITY: If we have already stored the actor profile, re-generate it
-			// from cached data - don't refetch it from the network
-
-			$r = q("select * from xchan join hubloc on xchan_hash = hubloc_hash where hubloc_network in ('zot6', 'activitypub') and hubloc_id_url = '%s'",
-				dbesc($x)
-			);
-			if ($r) {
-				$y           = Activity::encode_person($r[0]);
-				$y['cached'] = true;
+			$y = Activity::get_cached_actor($x);
+			if ($y) {
 				return $y;
 			}
 		}
@@ -351,10 +348,10 @@ class ActivityStreams {
 				if ($ret['signer']) {
 					$saved            = json_encode($x, JSON_UNESCAPED_SLASHES);
 					$x                = $tmp;
-					$x['signer']      = $ret['signer'];
-					$x['signed_data'] = $saved;
+					$x['meta']['signer']      = $ret['signer'];
+					$x['meta']['signed_data'] = $saved;
 					if ($ret['hubloc']) {
-						$x['hubloc'] = $ret['hubloc'];
+						$x['meta']['hubloc'] = $ret['hubloc'];
 					}
 				}
 			}
@@ -425,15 +422,19 @@ class ActivityStreams {
 
 	static function get_accept_header_string($channel = null) {
 
+		$ret = '';
+
 		$hookdata = [];
 		if ($channel)
 			$hookdata['channel'] = $channel;
 
-		$hookdata['data'] = 'application/x-zot-activity+json';
+		$hookdata['data'] = ['application/x-zot-activity+json'];
 
 		call_hooks('get_accept_header_string', $hookdata);
 
-		return $hookdata['data'];
+		$ret = implode(', ', $hookdata['data']);
+
+		return $ret;
 
 	}
 

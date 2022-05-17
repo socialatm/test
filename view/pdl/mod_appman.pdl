@@ -1,5 +1,8 @@
 [region=aside]
-[widget=appcategories][/widget]
+[widget=appstore][/widget]
+[/region]
+[region=content]
+$content
 [/region]
 [region=right_aside]
 [widget=notifications][/widget]

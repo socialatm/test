@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Zcard
+ *   * Description: Your default profile card including your cover photo
+ */
+
 namespace Zotlabs\Widget;
 
 class Zcard {

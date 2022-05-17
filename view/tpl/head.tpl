@@ -17,6 +17,7 @@
 	var channelId = {{if $channel_id}}{{$channel_id}}{{else}}false{{/if}};{{* Used in e.g. autocomplete *}}
 	var preloadImages = {{$preload_images}};
 	var auto_save_draft = {{$auto_save_draft}};
+	{{if $module}}var module = '{{$module}}';{{/if}}
 </script>
 
 

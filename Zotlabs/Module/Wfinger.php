@@ -1,8 +1,6 @@
 <?php
 namespace Zotlabs\Module;
 
-require_once('include/zot.php');
-
 use Zotlabs\Lib\Keyutils;
 use Zotlabs\Lib\Libzot;
 
@@ -21,7 +19,7 @@ class Wfinger extends \Zotlabs\Web\Controller {
 		elseif(x($_SERVER,'SERVER_PORT') && (intval($_SERVER['SERVER_PORT']) == 443))
 			$scheme = 'https';
 		elseif(x($_SERVER,'HTTP_X_FORWARDED_PROTO') && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'))
-			$scheme = 'https';			
+			$scheme = 'https';
 
 		$zot = intval($_REQUEST['zot']);
 
@@ -69,24 +67,20 @@ class Wfinger extends \Zotlabs\Web\Controller {
 				$channel = substr($channel,1);
 				$channel = substr($channel,0,-1);
 				$pchan = true;
-				$r = q("select * from pchan left join xchan on pchan_hash = xchan_hash 
+				$r = q("select * from pchan left join xchan on pchan_hash = xchan_hash
 					where pchan_guid = '%s' limit 1",
 					dbesc($channel)
 				);
 				if($r) {
-					$r[0] = pchan_to_chan($r[0]);
+					$r = pchan_to_chan($r[0]);
 				}
 			}
 			else {
-				$r = q("select * from channel left join xchan on channel_hash = xchan_hash 
-					where channel_address = '%s' limit 1",
-					dbesc($channel)
-				);
+				$r = channelx_by_nick($channel);
 			}
 		}
 
 		header('Access-Control-Allow-Origin: *');
-
 
 		if($root_resource) {
 			$result['subject'] = $resource;
@@ -109,15 +103,15 @@ class Wfinger extends \Zotlabs\Web\Controller {
 		if($resource && $r) {
 
 			$h = q("select hubloc_addr from hubloc where hubloc_hash = '%s' and hubloc_deleted = 0",
-				dbesc($r[0]['channel_hash'])
+				dbesc($r['channel_hash'])
 			);
 
 			$result['subject'] = $resource;
 
 			$aliases = array(
-				z_root() . (($pchan) ? '/pchan/' : '/channel/') . $r[0]['channel_address'],
-				z_root() . '/~' . $r[0]['channel_address'],
-				z_root() . '/@' . $r[0]['channel_address']
+				z_root() . (($pchan) ? '/pchan/' : '/channel/') . $r['channel_address'],
+				z_root() . '/~' . $r['channel_address'],
+				z_root() . '/@' . $r['channel_address']
 			);
 
 			if($h) {
@@ -129,10 +123,10 @@ class Wfinger extends \Zotlabs\Web\Controller {
 			$result['aliases'] = [];
 
 			$result['properties'] = [
-					'http://webfinger.net/ns/name'   => $r[0]['channel_name'],
-					'http://xmlns.com/foaf/0.1/name' => $r[0]['channel_name'],
-					'https://w3id.org/security/v1#publicKeyPem' => $r[0]['xchan_pubkey'],
-					'http://purl.org/zot/federation' => 'zot6,zot'
+					'http://webfinger.net/ns/name'   => $r['channel_name'],
+					'http://xmlns.com/foaf/0.1/name' => $r['channel_name'],
+					'https://w3id.org/security/v1#publicKeyPem' => $r['xchan_pubkey'],
+					'http://purl.org/zot/federation' => 'zot6'
 			];
 
 			foreach($aliases as $alias)
@@ -145,18 +139,18 @@ class Wfinger extends \Zotlabs\Web\Controller {
 
 					[
 						'rel'  => 'http://webfinger.net/rel/avatar',
-						'type' => $r[0]['xchan_photo_mimetype'],
-						'href' => $r[0]['xchan_photo_l']
+						'type' => $r['xchan_photo_mimetype'],
+						'href' => $r['xchan_photo_l']
 					],
 
 					[
 						'rel'  => 'http://webfinger.net/rel/profile-page',
-						'href' => $r[0]['xchan_url'],
+						'href' => $r['xchan_url'],
 					],
 
 					[
 						'rel'  => 'magic-public-key',
-						'href' => 'data:application/magic-public-key,' . Keyutils::salmonKey($r[0]['channel_pubkey']),
+						'href' => 'data:application/magic-public-key,' . Keyutils::salmonKey($r['channel_pubkey']),
 					]
 
 				];
@@ -169,14 +163,14 @@ class Wfinger extends \Zotlabs\Web\Controller {
 
 					[
 						'rel'  => 'http://webfinger.net/rel/avatar',
-						'type' => $r[0]['xchan_photo_mimetype'],
-						'href' => $r[0]['xchan_photo_l']
+						'type' => $r['xchan_photo_mimetype'],
+						'href' => $r['xchan_photo_l']
 					],
 
 					[
 						'rel'  => 'http://microformats.org/profile/hcard',
 						'type' => 'text/html',
-						'href' => z_root() . '/hcard/' . $r[0]['channel_address']
+						'href' => z_root() . '/hcard/' . $r['channel_address']
 					],
 
 					[
@@ -186,18 +180,12 @@ class Wfinger extends \Zotlabs\Web\Controller {
 
 					[
 						'rel'  => 'http://webfinger.net/rel/profile-page',
-						'href' => z_root() . '/profile/' . $r[0]['channel_address'],
-					],
-
-					[
-						'rel'  => 'http://schemas.google.com/g/2010#updates-from',
-						'type' => 'application/atom+xml',
-						'href' => z_root() . '/ofeed/'  . $r[0]['channel_address']
+						'href' => z_root() . '/profile/' . $r['channel_address'],
 					],
 
 					[
 						'rel'  => 'http://webfinger.net/rel/blog',
-						'href' => z_root() . '/channel/' . $r[0]['channel_address'],
+						'href' => z_root() . '/channel/' . $r['channel_address'],
 					],
 
 					[
@@ -208,12 +196,7 @@ class Wfinger extends \Zotlabs\Web\Controller {
 					[
 						'rel'  => 'http://purl.org/zot/protocol/6.0',
 						'type' => 'application/x-zot+json',
-						'href' => channel_url($r[0])
-					],
-
-					[
-						'rel'  => 'http://purl.org/zot/protocol',
-						'href' => z_root() . '/.well-known/zot-info' . '?address=' . $r[0]['xchan_addr'],
+						'href' => channel_url($r)
 					],
 
 					[
@@ -224,14 +207,14 @@ class Wfinger extends \Zotlabs\Web\Controller {
 
 					[
 						'rel'  => 'magic-public-key',
-						'href' => 'data:application/magic-public-key,' . Keyutils::salmonKey($r[0]['channel_pubkey']),
+						'href' => 'data:application/magic-public-key,' . Keyutils::salmonKey($r['channel_pubkey']),
 					]
 				];
 			}
 
 			if($zot) {
 				// get a zotinfo packet and return it with webfinger
-				$result['zot'] = Libzot::zotinfo( [ 'address' => $r[0]['xchan_addr'] ]);
+				$result['zot'] = Libzot::zotinfo( [ 'address' => $r['xchan_addr'] ]);
 			}
 		}
 
@@ -240,7 +223,7 @@ class Wfinger extends \Zotlabs\Web\Controller {
 			killme();
 		}
 
-		$arr = [ 'channel' => $r[0], 'pchan' => $pchan, 'request' => $_REQUEST, 'result' => $result ];
+		$arr = [ 'channel' => $r, 'pchan' => $pchan, 'request' => $_REQUEST, 'result' => $result ];
 		call_hooks('webfinger',$arr);
 
 		json_return_and_die($arr['result'],'application/jrd+json');

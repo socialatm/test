@@ -77,17 +77,18 @@ if($argc == 2) {
 						}
 
 						if(! file_put_contents($filename, dbunescbin($xx['content']))) {
-							echo PHP_EOL . 'Failed to save file ' . $filename . PHP_EOL;
-							continue;
-						}
-				
-						$z = q("UPDATE photo SET content = '%s', os_storage = 1 WHERE id = %d",
-							dbescbin($filename),
-							intval($xx['id'])
-						);
-						if(! $z) {
 							@unlink($filename);
-							echo PHP_EOL . 'Failed to update metadata for saved file ' . $filename . PHP_EOL;
+							echo PHP_EOL . 'Failed to save file ' . $filename . PHP_EOL;
+						}
+						else {
+							$z = q("UPDATE photo SET content = '%s', os_storage = 1 WHERE id = %d",
+								dbescbin($filename),
+								intval($xx['id'])
+							);
+							if(! $z) {
+								@unlink($filename);
+								echo PHP_EOL . 'Failed to update metadata for saved file ' . $filename . PHP_EOL;
+							}
 						}
 
 						$cur_id = $xx['id'];

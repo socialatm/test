@@ -207,8 +207,6 @@ class Libzotdir {
 			);
 		}
 
-
-
 		// If there are no directory servers, setup the fallback master
 		/** @FIXME What to do if we're in a different realm? */
 
@@ -249,11 +247,12 @@ class Libzotdir {
 
 			$syncdate = (($rr['site_sync'] <= NULL_DATE) ? datetime_convert('UTC','UTC','now - 2 days') : $rr['site_sync']);
 			$x = z_fetch_url($rr['site_directory'] . '?f=&sync=' . urlencode($syncdate) . (($token) ? '&t=' . $token : ''));
+
 			if (! $x['success'])
 				continue;
 
 			$j = json_decode($x['body'],true);
-			if (!($j['transactions']) || ($j['ratings']))
+			if (!$j['transactions'])
 				continue;
 
 			q("update site set site_sync = '%s' where site_url = '%s'",
@@ -265,6 +264,11 @@ class Libzotdir {
 
 			if (is_array($j['transactions']) && count($j['transactions'])) {
 				foreach ($j['transactions'] as $t) {
+
+					if (empty($t['hash']) || empty($t['transaction_id']) || empty($t['address'])) {
+						continue;
+					}
+
 					$r = q("select * from updates where ud_guid = '%s' limit 1",
 						dbesc($t['transaction_id'])
 					);
@@ -319,6 +323,14 @@ class Libzotdir {
 			}
 			if(array_path_exists('signature/signer',$zf) && $zf['signature']['signer'] === $href && intval($zf['signature']['header_valid'])) {
 				$xc = Libzot::import_xchan($zf['data'], 0, $ud);
+				// This is a workaround for a missing xchan_updated column
+				// TODO: implement xchan_updated in the xchan table and update this column instead
+				if($zf['data']['primary_location']['address'] && $zf['data']['primary_location']['url']) {
+					q("UPDATE hubloc SET hubloc_updated = '%s' WHERE hubloc_id_url = '%s' AND hubloc_primary = 1",
+						dbesc(datetime_convert()),
+						dbesc($zf['data']['primary_location']['url'])
+					);
+				}
 			}
 			else {
 				q("update updates set ud_last = '%s' where ud_addr = '%s'",
@@ -345,7 +357,7 @@ class Libzotdir {
 
 		logger('local_dir_update: uid: ' . $uid, LOGGER_DEBUG);
 
-		$p = q("select channel.channel_hash, channel_address, channel_timezone, channel_portable_id, profile.* from profile left join channel on channel_id = uid where uid = %d and is_default = 1",
+		$p = q("select channel.channel_hash, channel_address, channel_timezone, profile.* from profile left join channel on channel_id = uid where uid = %d and is_default = 1",
 			intval($uid)
 		);
 
@@ -354,7 +366,6 @@ class Libzotdir {
 
 		if ($p) {
 			$hash = $p[0]['channel_hash'];
-			$legacy_hash = $p[0]['channel_portable_id'];
 
 			$profile['description'] = $p[0]['pdesc'];
 			$profile['birthday']    = $p[0]['dob'];
@@ -393,10 +404,9 @@ class Libzotdir {
 			);
 
 			if(intval($r[0]['xchan_hidden']) != $hidden) {
-				$r = q("update xchan set xchan_hidden = %d where xchan_hash in ('%s', '%s')",
+				$r = q("update xchan set xchan_hidden = %d where xchan_hash = '%s'",
 					intval($hidden),
-					dbesc($hash),
-					dbesc($legacy_hash)
+					dbesc($hash)
 				);
 			}
 
@@ -410,13 +420,11 @@ class Libzotdir {
 			}
 			else {
 				// they may have made it private
-				q("delete from xprof where xprof_hash in ('%s', '%s')",
-					dbesc($hash),
-					dbesc($legacy_hash)
+				q("delete from xprof where xprof_hash = '%s'",
+					dbesc($hash)
 				);
-				q("delete from xtag where xtag_hash in ('%s', '%s')",
-					dbesc($hash),
-					dbesc($legacy_hash)
+				q("delete from xtag where xtag_hash = '%s'",
+					dbesc($hash)
 				);
 			}
 
@@ -635,8 +643,13 @@ class Libzotdir {
 
 		$dirmode = intval(get_config('system', 'directory_mode'));
 
-		if($dirmode == DIRECTORY_MODE_NORMAL)
+		if($dirmode == DIRECTORY_MODE_NORMAL) {
 			return;
+		}
+
+		if (empty($hash) || empty($guid) || empty($addr)) {
+			return;
+		}
 
 		if($flags) {
 			q("insert into updates (ud_hash, ud_guid, ud_date, ud_flags, ud_addr ) values ( '%s', '%s', '%s', %d, '%s' )",
@@ -655,10 +668,5 @@ class Libzotdir {
 			);
 		}
 	}
-
-
-
-
-
 
 }

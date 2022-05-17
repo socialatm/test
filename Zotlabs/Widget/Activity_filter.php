@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *   * Name: Activity filters
+ *   * Description: Filters for the network stream
+ *   * Requires: network
+ */
+
+
 namespace Zotlabs\Widget;
 
 use App;

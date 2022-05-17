@@ -5,7 +5,7 @@ namespace Zotlabs\Module;
 class Hcard extends \Zotlabs\Web\Controller {
 
 	function init() {
-	
+
 	   if(argc() > 1)
 	        $which = argv(1);
 	    else {
@@ -13,12 +13,12 @@ class Hcard extends \Zotlabs\Web\Controller {
 	        \App::$error = 404;
 	        return;
 	    }
-	
+
 		logger('hcard_request: ' . $which, LOGGER_DEBUG);
 
 	    $profile = '';
 	    $channel = \App::get_channel();
-	
+
 	    if((local_channel()) && (argc() > 2) && (argv(2) === 'view')) {
 	        $which = $channel['channel_address'];
 	        $profile = argv(1);
@@ -30,22 +30,22 @@ class Hcard extends \Zotlabs\Web\Controller {
 	            $profile = '';
 	        $profile = $r[0]['profile_guid'];
 	    }
-	
-		head_add_link( [ 
-			'rel'   => 'alternate', 
+
+		head_add_link( [
+			'rel'   => 'alternate',
 			'type'  => 'application/atom+xml',
 			'title' => t('Posts and comments'),
 			'href'  => z_root() . '/feed/' . $which
 		]);
 
-		head_add_link( [ 
-			'rel'   => 'alternate', 
+		head_add_link( [
+			'rel'   => 'alternate',
 			'type'  => 'application/atom+xml',
 			'title' => t('Only posts'),
 			'href'  => z_root() . '/feed/' . $which . '?f=&top=1'
 		]);
 
-	
+
 	    if(! $profile) {
 	        $x = q("select channel_id as profile_uid from channel where channel_address = '%s' limit 1",
 	            dbesc(argv(1))
@@ -54,20 +54,20 @@ class Hcard extends \Zotlabs\Web\Controller {
 	            \App::$profile = $x[0];
 	        }
 	    }
-	
+
 		profile_load($which,$profile);
-	
-	
+
+
 	}
-	
-	
+
+
 	function get() {
 
-		$x = new \Zotlabs\Widget\Profile();	
+		$x = new \Zotlabs\Widget\Fullprofile();
 		return $x->widget(array());
-	
+
 	}
-	
-	
-	
+
+
+
 }

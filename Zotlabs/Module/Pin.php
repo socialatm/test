@@ -37,7 +37,7 @@ class Pin extends \Zotlabs\Web\Controller {
 			http_status_exit(404, 'Not found');
 		}
 
-		$midb64 = 'b64.' . base64url_encode($r[0]['mid']);
+		$midb64 = gen_link_id($r[0]['mid']);
 		$pinned = (in_array($midb64, get_pconfig($r[0]['uid'], 'pinned', $r[0]['item_type'], [])) ? true : false);
 
 		switch(argv(1)) {

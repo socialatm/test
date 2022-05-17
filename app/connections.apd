@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/connections, $baseurl/settings/connections
 requires: local_channel
 name: Connections
 photo: icon:users
 categories: nav_featured_app, Networking
+desc: Manage your connections.

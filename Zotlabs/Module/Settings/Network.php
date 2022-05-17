@@ -21,10 +21,10 @@ class Network {
 			$network_divmore_height = 50;
 
 		set_pconfig(local_channel(),'system','network_divmore_height', $network_divmore_height);
-		
+
 		Libsync::build_sync_packet();
 
-		if($_POST['rpath'])
+		if(isset($_POST['rpath']) && is_local_url($_POST['rpath']))
 			goaway($_POST['rpath']);
 
 		return;
@@ -53,7 +53,7 @@ class Network {
 		$tpl = get_markup_template("settings_module.tpl");
 
 		$o .= replace_macros($tpl, array(
-			'$rpath' => $rpath,
+			'$rpath' => escape_url($rpath),
 			'$action_url' => 'settings/' . $module,
 			'$form_security_token' => get_form_security_token('settings_' . $module),
 			'$title' => t('Stream Settings'),
@@ -61,7 +61,7 @@ class Network {
 			'$extra_settings_html' => $extra_settings_html,
 			'$submit' => t('Submit')
 		));
-	
+
 		return $o;
 	}
 

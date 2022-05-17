@@ -17,22 +17,22 @@ class Oauth extends Controller {
 
 		if(! Apps::system_app_installed(local_channel(), 'OAuth Apps Manager'))
 			return;
-	
+
 		if(x($_POST,'remove')){
 			check_form_security_token_redirectOnErr('/oauth', 'oauth');
-			
+
 			$key = $_POST['remove'];
 			q("DELETE FROM tokens WHERE id='%s' AND uid=%d",
 				dbesc($key),
 				local_channel());
 			goaway(z_root()."/oauth");
-			return;			
+			return;
 		}
-	
+
 		if((argc() > 1) && (argv(1) === 'edit' || argv(1) === 'add') && x($_POST,'submit')) {
-			
+
 			check_form_security_token_redirectOnErr('oauth', 'oauth');
-			
+
 			$name   	= ((x($_POST,'name')) ? escape_tags($_POST['name']) : '');
 			$key		= ((x($_POST,'key')) ? escape_tags($_POST['key']) : '');
 			$secret		= ((x($_POST,'secret')) ? escape_tags($_POST['secret']) : '');
@@ -48,7 +48,7 @@ class Oauth extends Controller {
 				$ok = false;
 				notice( t('Key and Secret are required') . EOL);
 			}
-		
+
 			if($ok) {
 				if ($_POST['submit']==t("Update")){
 					$r = q("UPDATE clients SET
@@ -96,13 +96,11 @@ class Oauth extends Controller {
 		if(! Apps::system_app_installed(local_channel(), 'OAuth Apps Manager')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('OAuth Apps Manager App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('OAuth authentication tokens for mobile and remote apps');
-			return $o;
+			$papp = Apps::get_papp('OAuth Apps Manager');
+			return Apps::app_render($papp, 'module');
 		}
 
-			
+
 		if((argc() > 1) && (argv(1) === 'add')) {
 			$tpl = get_markup_template("oauth_edit.tpl");
 			$o .= replace_macros($tpl, array(
@@ -118,18 +116,18 @@ class Oauth extends Controller {
 			));
 			return $o;
 		}
-			
+
 		if((argc() > 2) && (argv(1) === 'edit')) {
 			$r = q("SELECT * FROM clients WHERE client_id='%s' AND uid=%d",
 					dbesc(argv(2)),
 					local_channel());
-			
+
 			if (!count($r)){
 				notice(t('Application not found.'));
 				return;
 			}
 			$app = $r[0];
-				
+
 			$tpl = get_markup_template("oauth_edit.tpl");
 			$o .= replace_macros($tpl, array(
 				'$form_security_token' => get_form_security_token("oauth"),
@@ -144,26 +142,26 @@ class Oauth extends Controller {
 			));
 			return $o;
 		}
-			
+
 		if((argc() > 2) && (argv(1) === 'delete')) {
 			check_form_security_token_redirectOnErr('/oauth', 'oauth', 't');
-			
+
 			$r = q("DELETE FROM clients WHERE client_id='%s' AND uid=%d",
 					dbesc(argv(2)),
 					local_channel());
 			goaway(z_root()."/oauth");
-			return;			
+			return;
 		}
-			
-			
-		$r = q("SELECT clients.*, tokens.id as oauth_token, (clients.uid=%d) AS my 
+
+
+		$r = q("SELECT clients.*, tokens.id as oauth_token, (clients.uid=%d) AS my
 				FROM clients
 				LEFT JOIN tokens ON clients.client_id=tokens.client_id
 				WHERE clients.uid IN (%d,0)",
 				local_channel(),
 				local_channel());
-		
-			
+
+
 		$tpl = get_markup_template("oauth.tpl");
 		$o .= replace_macros($tpl, array(
 			'$form_security_token' => get_form_security_token("oauth"),
@@ -178,7 +176,7 @@ class Oauth extends Controller {
 			'$apps'		=> $r,
 		));
 		return $o;
-			
+
 	}
 
 }

@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/pubstream
 requires: public_stream
 name: Public Stream
 photo: icon:globe
 categories: Social, nav_featured_app
+desc: View the unmoderated public content known to this hub.

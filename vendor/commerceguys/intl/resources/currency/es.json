@@ -43,7 +43,7 @@
 		"name": "colón salvadoreño"
 	},
 	"NIO": {
-		"name": "córdoba nicaragüense"
+		"name": "córdoba oro"
 	},
 	"CZK": {
 		"name": "corona checa"
@@ -67,7 +67,7 @@
 		"name": "dinar argelino"
 	},
 	"BHD": {
-		"name": "dinar bahreiní"
+		"name": "dinar bareiní"
 	},
 	"IQD": {
 		"name": "dinar iraquí"
@@ -111,15 +111,14 @@
 	"BZD": {
 		"name": "dólar beliceño"
 	},
+	"BMD": {
+		"name": "dólar bermudeño"
+	},
 	"BND": {
 		"name": "dólar bruneano"
 	},
 	"CAD": {
-		"name": "dólar canadiense",
-		"symbol": "CA$"
-	},
-	"BMD": {
-		"name": "dólar de Bermudas"
+		"name": "dólar canadiense"
 	},
 	"KYD": {
 		"name": "dólar de las Islas Caimán"
@@ -184,11 +183,11 @@
 		"name": "euro",
 		"symbol": "€"
 	},
+	"ANG": {
+		"name": "florín antillano"
+	},
 	"AWG": {
 		"name": "florín arubeño"
-	},
-	"ANG": {
-		"name": "florín de las Antillas Neerlandesas"
 	},
 	"HUF": {
 		"name": "forinto húngaro"
@@ -224,9 +223,6 @@
 	"DJF": {
 		"name": "franco yibutiano"
 	},
-	"HTG": {
-		"name": "gourde haitiano"
-	},
 	"UAH": {
 		"name": "grivna"
 	},
@@ -235,6 +231,9 @@
 	},
 	"BTN": {
 		"name": "gultrum"
+	},
+	"HTG": {
+		"name": "gurde haitiano"
 	},
 	"MMK": {
 		"name": "kiat"
@@ -276,7 +275,7 @@
 		"name": "leu rumano"
 	},
 	"BGN": {
-		"name": "lev búlgaro"
+		"name": "leva búlgara"
 	},
 	"SHP": {
 		"name": "libra de Santa Elena"
@@ -312,7 +311,7 @@
 		"name": "lira turca"
 	},
 	"LSL": {
-		"name": "loti lesothense"
+		"name": "loti lesotense"
 	},
 	"AZN": {
 		"name": "manat azerbaiyano"
@@ -453,7 +452,7 @@
 		"name": "tala"
 	},
 	"KZT": {
-		"name": "tenge kazako"
+		"name": "tengue kazajo"
 	},
 	"MNT": {
 		"name": "tugrik"

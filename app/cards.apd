@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/cards/$nick
 name: Cards
 requires: local_channel
 photo: icon:list
 categories: nav_featured_app, Productivity
+desc: Create interactive personal planning cards.

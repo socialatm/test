@@ -63,11 +63,6 @@ class LanguageTest extends UnitTestCase {
 
 	public function languageExamplesProvider() {
 		return [
-				'empty text' => [
-						'',
-						'',
-						null
-				],
 				'English' => [
 						'English is a West Germanic language that was first spoken in early medieval England and is now a global lingua franca.[4][5] Named after the Angles, one of the Germanic tribes that migrated to England, it ultimately derives its name from the Anglia (Angeln) peninsula in the Baltic Sea. It is closely related to the Frisian languages, but its vocabulary has been significantly influenced by other Germanic languages, particularly Norse (a North Germanic language), as well as by Latin and Romance languages, especially French.',
 						'en',
@@ -155,7 +150,7 @@ class LanguageTest extends UnitTestCase {
 						'nb',
 						'Norwegian Bokmål',
 						[
-								'de' => 'Norwegisch Bokmål',
+								'de' => 'Norwegisch (Bokmål)',
 								'nb' => 'norsk bokmål'
 						]
 				]

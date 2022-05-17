@@ -2,8 +2,6 @@
 [widget=activity_order][/widget]
 [widget=activity_filter][/widget]
 [widget=savedsearch][/widget]
-[widget=suggestions][/widget]
-[widget=notes][/widget]
 [/region]
 
 [region=content]

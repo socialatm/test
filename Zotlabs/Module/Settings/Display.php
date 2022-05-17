@@ -24,7 +24,6 @@ class Display {
 
 
 		$preload_images    = ((x($_POST,'preload_images')) ? intval($_POST['preload_images'])  : 0);
-		$channel_menu      = ((x($_POST,'channel_menu')) ? intval($_POST['channel_menu'])  : 0);
 		$user_scalable     = ((x($_POST,'user_scalable')) ? intval($_POST['user_scalable'])  : 0);
 		$nosmile           = ((x($_POST,'nosmile')) ? intval($_POST['nosmile'])  : 0);
 		$title_tosource    = ((x($_POST,'title_tosource')) ? intval($_POST['title_tosource'])  : 0);
@@ -46,7 +45,6 @@ class Display {
 		set_pconfig(local_channel(),'system','itemspage', $itemspage);
 		set_pconfig(local_channel(),'system','no_smilies',1-intval($nosmile));
 		set_pconfig(local_channel(),'system','title_tosource',$title_tosource);
-		set_pconfig(local_channel(),'system','channel_menu', $channel_menu);
 		set_pconfig(local_channel(),'system','start_menu', $start_menu);
 
 		$newschema = '';
@@ -197,7 +195,6 @@ class Display {
 			'$ajaxint'   => array('browser_update',  t("Update browser every xx seconds"), $browser_update, t('Minimum of 10 seconds, no maximum')),
 			'$itemspage'   => array('itemspage',  t("Maximum number of conversations to load at any time:"), $itemspage, t('Maximum of 30 items')),
 			'$nosmile'	=> array('nosmile', t("Show emoticons (smilies) as images"), 1-intval($nosmile), '', $yes_no),
-			'$channel_menu' => [ 'channel_menu', t('Provide channel menu in navigation bar'), get_pconfig(local_channel(),'system','channel_menu',get_config('system','channel_menu',0)), t('Default: channel menu located in app menu'),$yes_no ],
 			'$title_tosource'	=> array('title_tosource', t("Link post titles to source"), $title_tosource, '', $yes_no),
 			'$theme_config' => $theme_config,
 			'$start_menu' => ['start_menu', t('New Member Links'), $start_menu, t('Display new member quick links menu'), $yes_no]

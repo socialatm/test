@@ -36,10 +36,8 @@ class Suggest extends \Zotlabs\Web\Controller {
 		if(! Apps::system_app_installed(local_channel(), 'Suggest Channels')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('Suggest Channels App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Suggestions for channels in the $Projectname network you might be interested in');
-			return $o;
+			$papp = Apps::get_papp('Suggest Channels');
+			return Apps::app_render($papp, 'module');
 		}
 
 		$o = '';

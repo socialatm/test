@@ -12,8 +12,8 @@ class NativeWiki {
 	public static function listwikis($channel, $observer_hash) {
 
 		$sql_extra = item_permissions_sql($channel['channel_id'], $observer_hash);
-		$wikis = q("SELECT * FROM item 
-			WHERE resource_type = '%s' AND mid = parent_mid AND uid = %d AND item_deleted = 0 $sql_extra", 
+		$wikis = q("SELECT * FROM item
+			WHERE resource_type = '%s' AND mid = parent_mid AND uid = %d AND item_deleted = 0 $sql_extra",
 			dbesc(NWIKI_ITEM_RESOURCE_TYPE),
 			intval($channel['channel_id'])
 		);
@@ -49,7 +49,7 @@ class NativeWiki {
 		$mid = z_root() . '/item/' . $uuid;
 
 		$arr = array();	// Initialize the array of parameters for the post
-		$item_hidden = ((intval($wiki['postVisible']) === 0) ? 1 : 0); 
+		$item_hidden = ((intval($wiki['postVisible']) === 0) ? 1 : 0);
 		$wiki_url = z_root() . '/wiki/' . $channel['channel_address'] . '/' . $wiki['urlName'];
 		$arr['aid'] = $channel['channel_account_id'];
 		$arr['uuid'] = $uuid;
@@ -61,8 +61,8 @@ class NativeWiki {
 		$arr['resource_id'] = $resource_id;
 		$arr['owner_xchan'] = $channel['channel_hash'];
 		$arr['author_xchan'] = $observer_hash;
-		$arr['plink'] = z_root() . '/channel/' . $channel['channel_address'] . '/?f=&mid=' . urlencode($arr['mid']);
-		$arr['llink'] = $arr['plink'];
+		$arr['plink'] = $mid;
+		$arr['llink'] = z_root() . '/display/' . gen_link_id($mid);
 		$arr['title'] = $wiki['htmlName'];  // name of new wiki;
 		$arr['allow_cid'] = $ac['allow_cid'];
 		$arr['allow_gid'] = $ac['allow_gid'];
@@ -133,13 +133,13 @@ class NativeWiki {
 		// update acl for any existing wiki pages
 
 		q("update item set allow_cid = '%s', allow_gid = '%s', deny_cid = '%s', deny_gid = '%s', item_private = %d where resource_type = 'nwikipage' and resource_id = '%s'",
-			dbesc($item['allow_cid']), 
-			dbesc($item['allow_gid']), 
-			dbesc($item['deny_cid']), 
-			dbesc($item['deny_gid']), 
-			dbesc($item['item_private']), 
+			dbesc($item['allow_cid']),
+			dbesc($item['allow_gid']),
+			dbesc($item['deny_cid']),
+			dbesc($item['deny_gid']),
+			dbesc($item['item_private']),
 			dbesc($arr['resource_id'])
-		); 
+		);
 
 
 		if($update['item_id']) {
@@ -211,12 +211,12 @@ class NativeWiki {
 
 
 	public static function get_wiki($channel_id, $observer_hash, $resource_id) {
-		
+
 		$sql_extra = item_permissions_sql($channel_id,$observer_hash);
 
-		$item = q("SELECT * FROM item WHERE uid = %d AND resource_type = '%s' AND resource_id = '%s' AND item_deleted = 0 
+		$item = q("SELECT * FROM item WHERE uid = %d AND resource_type = '%s' AND resource_id = '%s' AND item_deleted = 0
 			$sql_extra ORDER BY id LIMIT 1",
-			intval($channel_id), 
+			intval($channel_id),
 			dbesc(NWIKI_ITEM_RESOURCE_TYPE),
 			dbesc($resource_id)
 		);
@@ -224,7 +224,7 @@ class NativeWiki {
 			return [ 'wiki' => null ];
 		}
 		else {
-		
+
 			$w = $item[0];	// wiki item table record
 			// Get wiki metadata
 			$rawName  = get_iconfig($w, 'wiki', 'rawName');
@@ -246,20 +246,20 @@ class NativeWiki {
 
 	public static function exists_by_name($uid, $urlName) {
 
-		$sql_extra = item_permissions_sql($uid);		
+		$sql_extra = item_permissions_sql($uid);
 
-		$item = q("SELECT item.id, resource_id FROM item left join iconfig on iconfig.iid = item.id 
-			WHERE resource_type = '%s' AND iconfig.v = '%s' AND uid = %d 
-			AND item_deleted = 0 $sql_extra limit 1", 
-			dbesc(NWIKI_ITEM_RESOURCE_TYPE), 
-			//dbesc(urldecode($urlName)), 
+		$item = q("SELECT item.id, resource_id FROM item left join iconfig on iconfig.iid = item.id
+			WHERE resource_type = '%s' AND iconfig.v = '%s' AND uid = %d
+			AND item_deleted = 0 $sql_extra limit 1",
+			dbesc(NWIKI_ITEM_RESOURCE_TYPE),
+			//dbesc(urldecode($urlName)),
 			dbesc(self::name_decode($urlName)),
 			intval($uid)
 		);
 
 		if($item) {
 			return array('id' => $item[0]['id'], 'resource_id' => $item[0]['resource_id']);
-		} 
+		}
 		else {
 			return array('id' => null, 'resource_id' => null);
 		}
@@ -277,7 +277,7 @@ class NativeWiki {
 
 		$r = q("SELECT * FROM item WHERE uid = %d and resource_type = '%s' AND resource_id = '%s' $sql_extra LIMIT 1",
 			intval($owner_id),
-			dbesc(NWIKI_ITEM_RESOURCE_TYPE), 
+			dbesc(NWIKI_ITEM_RESOURCE_TYPE),
 			dbesc($resource_id)
 		);
 
@@ -285,8 +285,6 @@ class NativeWiki {
 			return array('read' => false, 'write' => false, 'success' => true);
 		}
 		else {
-			// TODO: Create a new permission setting for wiki analogous to webpages. Until
-			// then, use webpage permissions
 			$write = perm_is_allowed($owner_id, $observer_hash,'write_wiki');
 			return array('read' => true, 'write' => $write, 'success' => true);
 		}

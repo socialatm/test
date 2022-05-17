@@ -16,10 +16,8 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			if(! Apps::system_app_installed(local_channel(), 'Public Stream')) {
 				//Do not display any associated widgets at this point
 				App::$pdl = '';
-
-				$o = '<b>' . t('Public Stream App') . ' (' . t('Not Installed') . '):</b><br>';
-				$o .= t('The unmoderated public stream of this hub');
-				return $o;
+				$papp = Apps::get_papp('Public Stream');
+				return Apps::app_render($papp, 'module');
 			}
 		}
 
@@ -44,19 +42,16 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			$site_firehose = false;
 		}
 
-		$mid = ((x($_REQUEST,'mid')) ? $_REQUEST['mid'] : '');
-		$hashtags   = ((x($_REQUEST,'tag')) ? $_REQUEST['tag'] : '');
+		$mid = ((x($_REQUEST, 'mid')) ? unpack_link_id($_REQUEST['mid']) : '');
+		if ($mid === false) {
+			notice(t('Malformed message id.') . EOL);
+			return;
+		}
 
-
-		if(strpos($mid,'b64.') === 0)
-			$decoded = @base64url_decode(substr($mid,4));
-		if($decoded)
-			$mid = $decoded;
-
+		$hashtags = ((x($_REQUEST,'tag')) ? $_REQUEST['tag'] : '');
 		$item_normal = item_normal();
 		$item_normal_update = item_normal_update();
-
-		$net    = ((array_key_exists('net',$_REQUEST))    ? escape_tags($_REQUEST['net']) : '');
+		$net = ((array_key_exists('net',$_REQUEST))    ? escape_tags($_REQUEST['net']) : '');
 
 		$title = replace_macros(get_markup_template("section_title.tpl"),array(
 			'$title' => (($hashtags) ? '#' . htmlspecialchars($hashtags, ENT_COMPAT,'UTF-8') : '')
@@ -65,15 +60,15 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		$o = (($hashtags) ? $title : '');
 
 		if(local_channel() && (! $update)) {
-	
+
 			$channel = \App::get_channel();
 
 			$channel_acl = array(
-				'allow_cid' => $channel['channel_allow_cid'], 
-				'allow_gid' => $channel['channel_allow_gid'], 
-				'deny_cid'  => $channel['channel_deny_cid'], 
+				'allow_cid' => $channel['channel_allow_cid'],
+				'allow_gid' => $channel['channel_allow_gid'],
+				'deny_cid'  => $channel['channel_deny_cid'],
 				'deny_gid'  => $channel['channel_deny_gid']
-			); 
+			);
 
 			$x = array(
 				'is_owner'            => true,
@@ -94,12 +89,12 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				'jotnets'             => true,
 				'reset'               => t('Reset form')
 			);
-	
+
 			$o .= '<div id="jot-popup">';
 			$o .= status_editor($a,$x,false,'Pubstream');
 			$o .= '</div>';
 		}
-	
+
 		if(! $update && !$load) {
 
 			nav_set_selected(t('Public Stream'));
@@ -110,15 +105,14 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			$maxheight = get_config('system','home_divmore_height');
 			if(! $maxheight)
 				$maxheight = 400;
-	
+
 			$o .= '<div id="live-pubstream"></div>' . "\r\n";
-			$o .= "<script> var profile_uid = " . ((intval(local_channel())) ? local_channel() : (-1)) 
-				. "; var profile_page = " . \App::$pager['page'] 
+			$o .= "<script> var profile_uid = " . ((intval(local_channel())) ? local_channel() : (-1))
+				. "; var profile_page = " . \App::$pager['page']
 				. "; divmore_height = " . intval($maxheight) . "; </script>\r\n";
-	
-			//if we got a decoded hash we must encode it again before handing to javascript 
-			if($decoded)
-				$mid = 'b64.' . base64url_encode($mid);
+
+			//if we got a decoded hash we must encode it again before handing to javascript
+			$mid = gen_link_id($mid);
 
 			\App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"),array(
 				'$baseurl' => z_root(),
@@ -151,7 +145,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				'$dbegin'  => ''
 			));
 		}
-	
+
 		if($update && ! $load) {
 			// only setup pagination on initial page view
 			$pager_sql = '';
@@ -160,10 +154,10 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			\App::set_pager_itemspage(10);
 			$pager_sql = sprintf(" LIMIT %d OFFSET %d ", intval(\App::$pager['itemspage']), intval(\App::$pager['start']));
 		}
-	
+
 		require_once('include/channel.php');
 		require_once('include/security.php');
-	
+
 		if($site_firehose) {
 			$uids = " and item.uid in ( " . stream_perms_api_uids(PERMS_PUBLIC) . " ) and item_private = 0  and item_wall = 1 ";
 		}
@@ -173,7 +167,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			$sql_extra = item_permissions_sql($sys['channel_id']);
 			\App::$data['firehose'] = intval($sys['channel_id']);
 		}
-	
+
 		if(get_config('system','public_list_mode'))
 			$page_mode = 'list';
 		else
@@ -184,7 +178,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			$sql_extra .= protect_sprintf(term_query('item', $hashtags, TERM_HASHTAG, TERM_COMMUNITYTAG));
 		}
 
-		$net_query = (($net) ? " left join xchan on xchan_hash = author_xchan " : ''); 
+		$net_query = (($net) ? " left join xchan on xchan_hash = author_xchan " : '');
 		$net_query2 = (($net) ? " and xchan_network = '" . protect_sprintf(dbesc($net)) . "' " : '');
 
 		$abook_uids = " and abook.abook_channel = " . intval(\App::$profile['profile_uid']) . " ";
@@ -196,13 +190,13 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		//logger('update: ' . $update . ' load: ' . $load);
 
 		if($update) {
-	
-			$ordering = "commented";
-	
+
+			$ordering = get_config('system', 'pubstream_ordering', 'commented');
+
 			if($load) {
 				if($mid) {
 					$r = q("SELECT parent AS item_id FROM item
-						left join abook on item.author_xchan = abook.abook_xchan 
+						left join abook on item.author_xchan = abook.abook_xchan
 						$net_query
 						WHERE mid = '%s' $uids $item_normal
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)
@@ -212,7 +206,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				}
 				else {
 					// Fetch a page full of parent items for this page
-					$r = q("SELECT item.id AS item_id FROM item 
+					$r = dbq("SELECT item.id AS item_id FROM item
 						left join abook on ( item.author_xchan = abook.abook_xchan $abook_uids )
 						$net_query
 						WHERE true $uids and item.item_thread_top = 1 $item_normal
@@ -234,7 +228,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 					);
 				}
 				else {
-					$r = q("SELECT parent AS item_id FROM item
+					$r = dbq("SELECT parent AS item_id FROM item
 						left join abook on item.author_xchan = abook.abook_xchan
 						$net_query
 						WHERE true $uids $item_normal_update
@@ -247,20 +241,19 @@ class Pubstream extends \Zotlabs\Web\Controller {
 
 			// Then fetch all the children of the parents that are on this page
 			$parents_str = '';
-	
+
 			if($r) {
-	
+
 				$parents_str = ids_to_querystr($r,'item_id');
-	
-				$items = q("SELECT item.*, item.id AS item_id FROM item
+
+				$items = dbq("SELECT item.*, item.id AS item_id FROM item
 					WHERE true $uids $item_normal
-					AND item.parent IN ( %s )
-					$sql_extra ",
-					dbesc($parents_str)
+					AND item.parent IN ( $parents_str )
+					$sql_extra"
 				);
-	
+
 				// use effective_uid param of xchan_query to help sort out comment permission
-				// for sys_channel owned items. 
+				// for sys_channel owned items.
 
 				xchan_query($items,true,(($sys) ? local_channel() : 0));
 				$items = fetch_post_tags($items,true);
@@ -269,9 +262,9 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			else {
 				$items = array();
 			}
-	
+
 		}
-	
+
 		// fake it
 		$mode = (($hashtags) ? 'search' : 'pubstream');
 
@@ -279,13 +272,13 @@ class Pubstream extends \Zotlabs\Web\Controller {
 
 		if($mid)
 			$o .= '<div id="content-complete"></div>';
-	
+
 		if(($items) && (! $update))
 			$o .= alt_pager(count($items));
 
 		$_SESSION['loadtime'] = datetime_convert();
 
 		return $o;
-	
+
 	}
 }

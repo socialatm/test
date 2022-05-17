@@ -1,5 +1,12 @@
 /* override some bootstrap settings */
 
+/* scroll-behavior smooth is behaving weird on mobile devices. */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: unset;
+  }
+}
+
 /* nav overrides */
 
 nav .badge {
@@ -52,8 +59,28 @@ nav .dropdown-menu {
 .navbar-dark .navbar-toggler {
 	color: rgba(255,255,255,1);
 }
+
+/* offcanvas */
+.offcanvas,
+.offcanvas-backdrop.fade {
+	transition: none;
+}
+
+.offcanvas-end {
+	width: unset;
+	min-width: 250px;
+}
+
 /* nav overrides end */
 
 label {
 	font-weight: bold;
+}
+
+a {
+	text-decoration: none !important;
+}
+
+.mark {
+	background-color: yellow;
 }

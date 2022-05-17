@@ -70,8 +70,87 @@ function format_event_html($ev) {
 }
 
 function format_event_obj($jobject) {
-	$event = [];
 
+	$event = [];
+	$object = json_decode($jobject, true);
+
+/*******
+	This is our encoded format
+
+		$x = [
+			'type'      => 'Event',
+			'id'        => z_root() . '/event/' . $r[0]['resource_id'],
+			'summary'   => bbcode($arr['summary']),
+			// RFC3339 Section 4.3
+			'startTime' => (($arr['adjust']) ? datetime_convert('UTC','UTC',$arr['dtstart'], ATOM_TIME) : datetime_convert('UTC','UTC',$arr['dtstart'],'Y-m-d\\TH:i:s-00:00')),
+			'content'   => bbcode($arr['description']),
+			'location'  => [ 'type' => 'Place', 'content' => $arr['location'] ],
+			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+			'url'       => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
+			'actor'     => Activity::encode_person($r[0],false),
+		];
+		if(! $arr['nofinish']) {
+			$x['endTime'] = (($arr['adjust']) ? datetime_convert('UTC','UTC',$arr['dtend'], ATOM_TIME) : datetime_convert('UTC','UTC',$arr['dtend'],'Y-m-d\\TH:i:s-00:00'));
+		}
+
+******/
+
+	if (is_array($object) && (array_key_exists('summary', $object) || array_key_exists('name', $object))) {
+
+		$dtend = ((array_key_exists('endTime', $object)) ? $object['endTime'] : NULL_DATE);
+		$title = ((isset($object['summary']) && $object['summary']) ? zidify_links(smilies(bbcode($object['summary']))) : $object['name']);
+
+		// mobilizon sets a timezone in the object
+		// we will assume that events with an timezone should be adjusted
+		$tz = $object['timezone'] ?? '';
+
+		// friendica has its own flag for adjust
+		$dfrn_adjust = $object['dfrn:adjust'] ?? '';
+
+		$adjust = ((strpos($object['startTime'], 'Z') !== false) || $tz || $dfrn_adjust);
+
+		$allday = (($adjust) ? false : true);
+
+		$dtstart = new DateTime($object['startTime']);
+		$dtend_obj = new DateTime($dtend);
+
+		$dtdiff = $dtstart->diff($dtend_obj);
+
+		if($allday && ($dtdiff->days < 2))
+			$oneday = true;
+
+		if($allday && !$oneday) {
+			// Subtract one day from the end date so we can use the "first day - last day" format for display.
+			$dtend_obj->modify('-1 day');
+			$dtend = datetime_convert('UTC', 'UTC', $dtend_obj->format('Y-m-d H:i:s'));
+		}
+
+		$bd_format = (($allday) ? t('l F d, Y') : t('l F d, Y \@ g:i A')); // Friday January 18, 2011 @ 8:01 AM or Friday January 18, 2011 for allday events
+
+		$event['header'] = replace_macros(get_markup_template('event_item_header.tpl'), array(
+			'$title'          => $title,
+			'$dtstart_label' => t('Start:'),
+			'$dtstart_title' => datetime_convert('UTC', 'UTC', $object['startTime'], ((strpos($object['startTime'], 'Z')) ? ATOM_TIME : 'Y-m-d\TH:i:s' )),
+			'$dtstart_dt'    => (($adjust) ? day_translate(datetime_convert('UTC', date_default_timezone_get(), $object['startTime'], $bd_format)) : day_translate(datetime_convert('UTC', 'UTC', $object['startTime'], $bd_format))),
+			'$finish'        => ((array_key_exists('endTime', $object)) ? true : false),
+			'$dtend_label'   => t('End:'),
+			'$dtend_title'   => datetime_convert('UTC', 'UTC', $dtend, ((strpos($object['startTime'], 'Z')) ? ATOM_TIME : 'Y-m-d\TH:i:s' )),
+			'$dtend_dt'      => (($adjust) ? day_translate(datetime_convert('UTC', date_default_timezone_get(), $dtend, $bd_format)) :  day_translate(datetime_convert('UTC', 'UTC', $dtend, $bd_format))),
+			'$allday'        => $allday,
+			'$oneday'        => $oneday,
+			'$event_tz'      => ['label' => t('Timezone'), 'value' => (($tz === date_default_timezone_get()) ? '' : $tz)]
+		));
+
+		$event['content'] = replace_macros(get_markup_template('event_item_content.tpl'), array(
+			'$description'    => $object['content'],
+			'$location_label' => t('Location:'),
+			'$location'   => ((array_path_exists('location/name', $object)) ? zidify_links(smilies(bbcode($object['location']['name']))) : EMPTY_STR)
+		));
+	}
+
+    return $event;
+/*
+	$event = [];
 	$object = json_decode($jobject,true);
 
 	$event_tz = '';
@@ -136,6 +215,7 @@ function format_event_obj($jobject) {
 	));
 
 	return $event;
+*/
 }
 
 function ical_wrapper($ev) {
@@ -1122,34 +1202,35 @@ function event_store_item($arr, $event) {
 
 	if($r) {
 
-		set_iconfig($r[0]['id'], 'event', 'timezone', $arr['timezone'], true);
-		xchan_query($r);
-		$r = fetch_post_tags($r,true);
+		//set_iconfig($r[0]['id'], 'event', 'timezone', $arr['timezone'], true);
+		//xchan_query($r);
+		//$r = fetch_post_tags($r,true);
 
-		$object = json_encode(array(
-			'type'    => ACTIVITY_OBJ_EVENT,
-			'id'      => z_root() . '/event/' . $r[0]['resource_id'],
-			'title'   => $arr['summary'],
-			'timezone' => $arr['timezone'],
-			'dtstart' => $arr['dtstart'],
-			'dtend'  => $arr['dtend'],
-			'nofinish'  => $arr['nofinish'],
-			'description' => $arr['description'],
-			'location'   => $arr['location'],
-			'adjust'   => $arr['adjust'],
-			'content' => format_event_bbcode($arr),
+		$x = [
+			'type'      => 'Event',
+			'id'        => z_root() . '/event/' . $r[0]['resource_id'],
+			'name'      => $arr['summary'],
+//          'summary'   => bbcode($arr['summary']),
+			// RFC3339 Section 4.3
+			'startTime' => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
+			'content'   => bbcode($arr['description']),
+			'location'  => [ 'type' => 'Place', 'name' => $arr['location'] ],
+			'source'    => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+			'url'       => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
+			'actor'     => Activity::encode_person($r[0], false),
 			'attachment' => Activity::encode_attachment($r[0]),
-			'author'  => array(
-				'name'     => $r[0]['author']['xchan_name'],
-				'address'  => $r[0]['author']['xchan_addr'],
-				'guid'     => $r[0]['author']['xchan_guid'],
-				'guid_sig' => $r[0]['author']['xchan_guid_sig'],
-				'link'     => array(
-					array('rel' => 'alternate', 'type' => 'text/html', 'href' => $r[0]['author']['xchan_url']),
-					array('rel' => 'photo', 'type' => $r[0]['author']['xchan_photo_mimetype'], 'href' => $r[0]['author']['xchan_photo_m'])
-				),
-			),
-		));
+			'tag'       => Activity::encode_taxonomy($r[0])
+		];
+
+		if (! $arr['nofinish']) {
+			$x['endTime'] = (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtend'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtend'], 'Y-m-d\\TH:i:s-00:00'));
+		}
+
+		if ($event['event_repeat']) {
+			$x['eventRepeat'] = $event['event_repeat'];
+		}
+
+		$object = json_encode($x);
 
 		$private = (($arr['allow_cid'] || $arr['allow_gid'] || $arr['deny_cid'] || $arr['deny_gid']) ? 1 : 0);
 
@@ -1285,29 +1366,30 @@ function event_store_item($arr, $event) {
 				dbesc($arr['event_xchan'])
 		);
 		if($x) {
-			$item_arr['obj'] = json_encode(array(
-				'type'    => ACTIVITY_OBJ_EVENT,
-				'id'      => z_root() . '/event/' . $event['event_hash'],
-				'title'   => $arr['summary'],
-				'timezone' => $arr['timezone'],
-				'dtstart' => $arr['dtstart'],
-				'dtend'  => $arr['dtend'],
-				'nofinish'  => $arr['nofinish'],
-				'description' => $arr['description'],
-				'location'   => $arr['location'],
-				'adjust'   => $arr['adjust'],
-				'content' => format_event_bbcode($arr),
-				'attachment'  => Activity::encode_attachment($item_arr),
-				'author'  => array(
-					'name'     => $x[0]['xchan_name'],
-					'address'  => $x[0]['xchan_addr'],
-					'guid'     => $x[0]['xchan_guid'],
-					'guid_sig' => $x[0]['xchan_guid_sig'],
-					'link'     => array(
-						array('rel' => 'alternate', 'type' => 'text/html', 'href' => $x[0]['xchan_url']),
-						array('rel' => 'photo', 'type' => $x[0]['xchan_photo_mimetype'], 'href' => $x[0]['xchan_photo_m'])),
-					),
-			));
+			$y = [
+				'type'       => 'Event',
+				'id'         => z_root() . '/event/' . $event['event_hash'],
+				'name'       => $arr['summary'],
+//              'summary'    => bbcode($arr['summary']),
+				// RFC3339 Section 4.3
+				'startTime'  => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
+				'content'    => bbcode($arr['description']),
+				'location'   => [ 'type' => 'Place', 'name' => bbcode($arr['location']) ],
+				'source'     => [ 'content' => format_event_bbcode($arr), 'mediaType' => 'text/x-multicode' ],
+				'url'        => [ [ 'mediaType' => 'text/calendar', 'href' => z_root() . '/events/ical/' . $event['event_hash'] ] ],
+				'actor'      => Activity::encode_person($z, false),
+				'attachment' => Activity::encode_attachment($item_arr),
+				'tag'        => Activity::encode_taxonomy($item_arr)
+			];
+
+			if (! $arr['nofinish']) {
+				$y['endTime'] = (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtend'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtend'], 'Y-m-d\\TH:i:s-00:00'));
+			}
+			if ($arr['event_repeat']) {
+				$y['eventRepeat'] = $arr['event_repeat'];
+			}
+
+			$item_arr['obj']  = json_encode($y);
 		}
 
 		// propagate the event resource_id so that posts containing it are easily searchable in downstream copies

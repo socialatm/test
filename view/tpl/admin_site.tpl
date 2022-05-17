@@ -1,6 +1,6 @@
 <div id="adminpage" class="generic-content-wrapper-styled">
 	<h1>{{$title}} - {{$page}}</h1>
-	
+
 	<form action="{{$baseurl}}/admin/site" method="post">
     <input type='hidden' name='form_security_token' value='{{$form_security_token}}'>
 
@@ -24,14 +24,14 @@
 	{{if $directory_server}}
 		{{include file="field_select.tpl" field=$directory_server}}
 	{{/if}}
-	
+
 	<div class="submit">
 	    <input type="submit" name="page_site" class="btn btn-primary" value="{{$submit}}" />
     </div>
-	
+
 	<h3>{{$registration}}</h3>
 	{{include file="field_input.tpl" field=$register_text}}
-	{{include file="field_select_grouped.tpl" field=$role}}
+	{{include file="field_select.tpl" field=$role}}
 	{{include file="field_select.tpl" field=$register_policy}}
 	{{** include file="field_checkbox.tpl" field=$register_wo_email **}}
 	{{include file="register_duty.tpl" field=$register_duty}}
@@ -61,11 +61,11 @@
 	{{include file="field_textarea.tpl" field=$incl}}
 	{{include file="field_textarea.tpl" field=$excl}}
 	{{include file="field_input.tpl" field=$abandon_days}}
-	
+
 	<div class="submit">
-        <input type="submit" name="page_site" class="btn btn-primary" value="{{$submit}}" /></div>
+        <input type="submit" name="page_site" class="btn btn-primary" value="{{$submit}}" />
     </div>
-	
+
 	<h3>{{$advanced}}</h3>
 	{{include file="field_checkbox.tpl" field=$sse_enabled}}
 	{{include file="field_input.tpl" field=$imagick_path}}
@@ -80,29 +80,29 @@
 	{{include file="field_input.tpl" field=$default_expire_days}}
 	{{include file="field_input.tpl" field=$active_expire_days}}
 
-	
+
 	<div class="submit">
         <input type="submit" name="page_site" class="btn btn-primary" value="{{$submit}}" />
     </div>
-	
+
 	</form>
 </div>
-{{* 
+{{*
 	COMMENTS for this template:
 	hilmar, 2020.01
 	script placed at the end
 *}}
 <script>
 	$(function(){
-		
+
 		$("#cnftheme").colorbox({
 			width: 800,
 			onLoad: function(){
 				var theme = $("#id_theme :selected").val();
 				$("#cnftheme").attr('href',"{{$baseurl}}/admin/themes/"+theme);
-			}, 
+			},
 			onComplete: function(){
-				$(this).colorbox.resize(); 
+				$(this).colorbox.resize();
 				$("#colorbox form").submit(function(e){
 					var url = $(this).attr('action');
 					// can't get .serialize() to work...
@@ -114,16 +114,16 @@
 						data[$(this).attr('name')] = $(this).children(":selected").val();
 					});
 					console.log(":)", url, data);
-					
+
 					$.post(url, data, function(data) {
 						if(timer) clearTimeout(timer);
 						updateInit();
 						$.colorbox.close();
 					})
-					
+
 					return false;
 				});
-				
+
 			}
 		});
 	});

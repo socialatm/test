@@ -2,32 +2,32 @@
 namespace Zotlabs\Module;
 
 use App;
+use Zotlabs\Lib\Permcat;
 
 require_once('include/socgraph.php');
 require_once('include/selectors.php');
-require_once('include/group.php');
 
 class Connections extends \Zotlabs\Web\Controller {
 
 	function init() {
-	
+
 		if(! local_channel())
 			return;
 
 		App::$profile_uid = local_channel();
-	
+
 		$channel = App::get_channel();
 		if($channel)
 			head_set_icon($channel['xchan_photo_s']);
-	
+
 	}
-	
+
 	function get() {
-	
+
 		$sort_type = 0;
 		$o = '';
-	
-	
+
+
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
 			return login();
@@ -44,13 +44,13 @@ class Connections extends \Zotlabs\Web\Controller {
 		$pending     = false;
 		$unconnected = false;
 		$all         = false;
-	
+
 		if(! $_REQUEST['aj'])
 			$_SESSION['return_url'] = App::$query_string;
-	
+
 		$search_flags = "";
 		$head = '';
-	
+
 		if(argc() == 2) {
 			switch(argv(1)) {
 				case 'active':
@@ -106,7 +106,7 @@ class Connections extends \Zotlabs\Web\Controller {
 	//				$head = t('Unconnected');
 	//				$unconnected = true;
 	//				break;
-	
+
 				case 'all':
 					$head = t('All');
 					break;
@@ -115,19 +115,19 @@ class Connections extends \Zotlabs\Web\Controller {
 					$active = true;
 					$head = t('Active');
 					break;
-	
+
 			}
-	
+
 			$sql_extra = $search_flags;
 			if(argv(1) === 'pending')
 				$sql_extra .= " and abook_ignored = 0 ";
-	
+
 		}
 		else {
 			$sql_extra = " and abook_blocked = 0 ";
 			$unblocked = true;
 		}
-	
+
 		switch($_REQUEST['order']) {
 			case 'name_desc':
 				$sql_order = 'xchan_name DESC';
@@ -143,32 +143,32 @@ class Connections extends \Zotlabs\Web\Controller {
 		}
 
 		$search = ((x($_REQUEST,'search')) ? notags(trim($_REQUEST['search'])) : '');
-	
+
 		$tabs = array(
 			/*
 			array(
 				'label' => t('Suggestions'),
-				'url'   => z_root() . '/suggest', 
+				'url'   => z_root() . '/suggest',
 				'sel'   => '',
 				'title' => t('Suggest new connections'),
 			),
 			*/
-	
+
 			'active' => array(
 				'label' => t('Active Connections'),
-				'url'   => z_root() . '/connections/active', 
+				'url'   => z_root() . '/connections/active',
 				'sel'   => ($active) ? 'active' : '',
 				'title' => t('Show active connections'),
 			),
 
 			'pending' => array(
 				'label' => t('New Connections'),
-				'url'   => z_root() . '/connections/pending', 
+				'url'   => z_root() . '/connections/pending',
 				'sel'   => ($pending) ? 'active' : '',
 				'title' => t('Show pending (new) connections'),
 			),
-	
-	
+
+
 			/*
 			array(
 				'label' => t('Unblocked'),
@@ -177,55 +177,55 @@ class Connections extends \Zotlabs\Web\Controller {
 				'title' => t('Only show unblocked connections'),
 			),
 			*/
-	
+
 			'blocked' => array(
 				'label' => t('Blocked'),
 				'url'   => z_root() . '/connections/blocked',
 				'sel'   => ($blocked) ? 'active' : '',
 				'title' => t('Only show blocked connections'),
 			),
-	
+
 			'ignored' => array(
 				'label' => t('Ignored'),
 				'url'   => z_root() . '/connections/ignored',
 				'sel'   => ($ignored) ? 'active' : '',
 				'title' => t('Only show ignored connections'),
 			),
-	
+
 			'archived' => array(
 				'label' => t('Archived/Unreachable'),
 				'url'   => z_root() . '/connections/archived',
 				'sel'   => ($archived) ? 'active' : '',
 				'title' => t('Only show archived/unreachable connections'),
 			),
-	
+
 			'hidden' => array(
 				'label' => t('Hidden'),
 				'url'   => z_root() . '/connections/hidden',
 				'sel'   => ($hidden) ? 'active' : '',
 				'title' => t('Only show hidden connections'),
 			),
-	
+
 	//		array(
 	//			'label' => t('Unconnected'),
 	//			'url'   => z_root() . '/connections/unconnected',
 	//			'sel'   => ($unconnected) ? 'active' : '',
 	//			'title' => t('Only show one-way connections'),
 	//		),
-	
+
 
 			'all' => array(
 				'label' => t('All Connections'),
-				'url'   => z_root() . '/connections', 
+				'url'   => z_root() . '/connections',
 				'sel'   => ($all) ? 'active' : '',
 				'title' => t('Show all connections'),
 			),
-	
+
 		);
-	
+
 		//$tab_tpl = get_markup_template('common_tabs.tpl');
 		//$t = replace_macros($tab_tpl, array('$tabs'=>$tabs));
-	
+
 		$searching = false;
 		if($search) {
 			$search_hdr = $search;
@@ -233,12 +233,12 @@ class Connections extends \Zotlabs\Web\Controller {
 			$searching = true;
 		}
 		$sql_extra .= (($searching) ? protect_sprintf(" AND xchan_name like '%$search_txt%' ") : "");
-	
+
 		if($_REQUEST['gid']) {
 			$sql_extra .= " and xchan_hash in ( select xchan from pgrp_member where gid = " . intval($_REQUEST['gid']) . " and uid = " . intval(local_channel()) . " ) ";
 		}
-	 	
-		$r = q("SELECT COUNT(abook.abook_id) AS total FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash 
+
+		$r = q("SELECT COUNT(abook.abook_id) AS total FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash
 			where abook_channel = %d and abook_self = 0 and xchan_deleted = 0 and xchan_orphan = 0 $sql_extra ",
 			intval(local_channel())
 		);
@@ -246,19 +246,27 @@ class Connections extends \Zotlabs\Web\Controller {
 			App::set_pager_total($r[0]['total']);
 			$total = $r[0]['total'];
 		}
-	
+
 		$r = q("SELECT abook.*, xchan.* FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash
 			WHERE abook_channel = %d and abook_self = 0 and xchan_deleted = 0 and xchan_orphan = 0 $sql_extra ORDER BY $sql_order LIMIT %d OFFSET %d ",
 			intval(local_channel()),
 			intval(App::$pager['itemspage']),
 			intval(App::$pager['start'])
 		);
-	
+
+		$roles = new Permcat(local_channel());
+		$roles_list = $roles->listing();
+		$roles_dict = [];
+
+		foreach ($roles_list as $role) {
+			$roles_dict[$role['name']] = $role['localname'];
+		}
+
 		$contacts = array();
-	
+
 		if($r) {
 
-			vcard_query($r);
+			//vcard_query($r);
 
 
 			foreach($r as $rr) {
@@ -268,7 +276,7 @@ class Connections extends \Zotlabs\Web\Controller {
 						$phone = $rr['vcard']['tels'][0]['nr'];
 					else
 						$phone = '';
-	
+
 					$status_str = '';
 					$status = array(
 						((intval($rr['abook_active'])) ? t('Active') : ''),
@@ -306,7 +314,7 @@ class Connections extends \Zotlabs\Web\Controller {
 						$perminfo['connperms'] .= t('Nothing');
 					}
 
-	
+
 					foreach($status as $str) {
 						if(!$str)
 							continue;
@@ -314,19 +322,16 @@ class Connections extends \Zotlabs\Web\Controller {
 						$status_str .= ', ';
 					}
 					$status_str = rtrim($status_str, ', ');
-	
+
 					$contacts[] = array(
 						'img_hover' => sprintf( t('%1$s [%2$s]'),$rr['xchan_name'],$rr['xchan_url']),
 						'edit_hover' => t('Edit connection'),
 						'edit' => t('Edit'),
 						'delete_hover' => t('Delete connection'),
 						'id' => $rr['abook_id'],
-						'thumb' => $rr['xchan_photo_m'], 
+						'thumb' => $rr['xchan_photo_m'],
 						'name' => $rr['xchan_name'],
 						'classes' => ((intval($rr['abook_archived']) || intval($rr['abook_not_here'])) ? 'archived' : ''),
-						'link' => z_root() . '/connedit/' . $rr['abook_id'],
-						'deletelink' => z_root() . '/connedit/' . intval($rr['abook_id']) . '/drop',
-						'delete' => t('Delete'),
 						'url' => chanlink_hash($rr['xchan_hash']),
 						'webbie_label' => t('Channel address'),
 						'webbie' => $rr['xchan_addr'],
@@ -337,6 +342,7 @@ class Connections extends \Zotlabs\Web\Controller {
 						'phone' => $phone,
 						'status_label' => t('Status'),
 						'status' => $status_str,
+						'states' => $status,
 						'connected_label' => t('Connected'),
 						'connected' => datetime_convert('UTC',date_default_timezone_get(),$rr['abook_created'], 'c'),
 						'approve_hover' => t('Approve connection'),
@@ -349,13 +355,22 @@ class Connections extends \Zotlabs\Web\Controller {
 						'perminfo' => $perminfo,
 						'connect' => (intval($rr['abook_not_here']) ? t('Connect') : ''),
 						'follow' => z_root() . '/follow/?f=&url=' . urlencode($rr['xchan_hash']) . '&interactive=0',
-						'connect_hover' => t('Connect at this location')
+						'connect_hover' => t('Connect at this location'),
+						'role' => $roles_dict[$rr['abook_role']],
+						'pending' => intval($rr['abook_pending'])
 					);
 				}
 			}
 		}
-		
-	
+
+		$limit = service_class_fetch(local_channel(),'total_channels');
+		if($limit !== false) {
+			$abook_usage_message = sprintf( t("You have %1$.0f of %2$.0f allowed connections."), $$total, $limit);
+		}
+		else {
+			$abook_usage_message = '';
+ 		}
+
 		if($_REQUEST['aj']) {
 			if($contacts) {
 				$o = replace_macros(get_markup_template('contactsajax.tpl'),array(
@@ -371,27 +386,30 @@ class Connections extends \Zotlabs\Web\Controller {
 		}
 		else {
 			$o .= "<script> var page_query = '" . escape_tags(urlencode($_GET['q'])) . "'; var extra_args = '" . extra_query_args() . "' ; </script>";
-			$o .= replace_macros(get_markup_template('connections.tpl'),array(
+			$o .= replace_macros(get_markup_template('connections.tpl'), [
 				'$header' => t('Connections') . (($head) ? ': ' . $head : ''),
 				'$tabs' => $tabs,
 				'$total' => $total,
 				'$search' => $search_hdr,
 				'$label' => t('Search'),
+				'$role_label' => t('Contact role'),
 				'$desc' => t('Search your connections'),
-				'$finding' => (($searching) ? t('Connections search') . ": '" . $search . "'" : ""),
+				'$finding' => (($searching) ? t('Contact search') . ": '" . $search . "'" : ""),
 				'$submit' => t('Find'),
 				'$edit' => t('Edit'),
+				'$approve' => t('Approve'),
 				'$cmd' => App::$cmd,
 				'$contacts' => $contacts,
 				'$paginate' => paginate($a),
-	
-			)); 
+				'$abook_usage_message' => $abook_usage_message,
+				'$group_label' => t('This is a group/forum channel')
+			]);
 		}
-	
+
 		if(! $contacts)
 			$o .= '<div id="content-complete"></div>';
-	
+
 		return $o;
 	}
-	
+
 }

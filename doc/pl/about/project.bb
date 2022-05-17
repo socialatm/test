@@ -7,7 +7,7 @@ Projekt jest utrzymywany przez społeczność $Projectname i decyzje podejmowane
 [ol]
 [*] Opóźniony konsensus
 
-Jeśli propozycja projektu zostanie złożona na jednym z forów zarządzania projektem i nie ma poważnych zastrzeżeń w "rozsądnym" terminie od daty złożenia wniosku (zazwyczaj zapewniamy wszystkim zainteresowanym 2-3 dni na ustosunkowanie się), nie musi być głosowania aby decyzja została podjęta i propozyzja zostanie uznana za zatwierdzoną przez aklamację. Po tym czasie mogą zostać zgłoszone jakieś zastrzeżenie i oabawy, ale jeśli zostaną one uwzględnione podczas dyskusji i przedstawione zostaną rozwiązania, nadal będą uznawane za zatwierdzone.
+Jeśli propozycja projektowa zostanie złożona na jednym z forów zarządzania projektem i nie ma poważnych zastrzeżeń w "rozsądnym" terminie od daty złożenia wniosku (zazwyczaj zapewniamy wszystkim zainteresowanym 2-3 dni na ustosunkowanie się), nie musi być głosowania aby decyzja została podjęta i propozyzja zostanie uznana za zatwierdzoną przez aklamację. Po tym czasie mogą zostać zgłoszone jakieś zastrzeżenie i oabawy, ale jeśli zostaną one uwzględnione podczas dyskusji i przedstawione zostaną rozwiązania, nadal będą uznawane za zatwierdzone.
 
 
 [*] Weto
@@ -20,7 +20,7 @@ Starsi deweloperzy, z długim stażem w projekcie, mogą zawetować każdą decy
 Decyzja, która nie ma wyraźnego mandatu lub wyraźnego konsensusu, ale nie jest zawetowana, może zostać podjęta po głosowaniu spółeczności. Obecnie jest to zwykłe popularne głosowanie na jednym z odpowiednich forów społeczności. W tej chwili o wyniku decyduje głosowanie powszechne. Może się to zmienić w przyszłości, jeśli społeczność przyjmie model zarządzania "przez radę". Ten dokument zostanie wówczas zaktualizowany o zaktualizowane zasady zarządzania.
 [/ol]
 
-Głosowanie społeczności nie zawsze zapewnia Powszechnie akceptowany wynik i może polaryzować społeczność, wytwarzając frakcje  (stąd przyczyna, dla której rozważane są inne modele). Jeśli propozycja została przegłosowana, nadal jest kilka rozwiązań, które można zrobić, aby propozycja została przesłana ponownie z nieco innymi parametrami (przekształcenie na dodatek, przekształcenie na opcjonalną funkcję, która jest domyślnie wyłączona itp.). Jeśli zainteresowanie funkcją jest duże, a głosowanie jest „bliskie”, może to wywołać wiele złych uczuć wśród przegranych wyborców. W przypadku tak bliskich głosów [b] zdecydowanie zaleca się [/ b], aby wnioskodawca podjął kroki w celu rozwiązania wszelkich zgłoszonych wątpliwości i ponownie przedłożył.
+Głosowanie społeczności nie zawsze zapewnia powszechnie akceptowany wynik i może polaryzować społeczność, wytwarzając frakcje  (stąd przyczyna, dla której rozważane są inne modele). Jeśli propozycja została przegłosowana, nadal jest kilka rozwiązań, które można zrobić, aby propozycja została przesłana ponownie z nieco innymi parametrami (przekształcenie na dodatek, przekształcenie na opcjonalną funkcję, która jest domyślnie wyłączona itp.). Jeśli zainteresowanie funkcją jest duże, a głosowanie jest "bliskie", może to wywołać wiele złych uczuć wśród przegranych wyborców. W przypadku tak bliskich głosów [b] zdecydowanie zaleca się [/ b], aby wnioskodawca podjął kroki w celu rozwiązania wszelkich zgłoszonych wątpliwości i ponownie przedłożył.
  
 [h4]Polityka prywatności[/h4]
 

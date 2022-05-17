@@ -4,7 +4,6 @@
 // Red cli interpreter
 
 require_once('include/cli_startup.php');
-require_once('include/zot.php');
 
 cli_startup();
 
@@ -23,7 +22,7 @@ function fresh_main($argc,$argv) {
 			$line = fgets(STDIN);
 		}
 
-	
+
 		if($line === FALSE) {
 			if(feof(STDIN)) {
 				break;
@@ -34,7 +33,7 @@ function fresh_main($argc,$argv) {
 		$line = trim($line);
  		if($line == 'quit' || $line == 'exit')
 			exit();
-		
+
 		process_command($line);
 	}
 
@@ -62,8 +61,8 @@ function process_command($line) {
 		case '?':
 		case 'help':
 			fresh_help();
-			break;	
-
+			break;
+/*
 		case 'finger':
 			if(argv(1)) {
 				$x = Zotlabs\Zot\Finger::run(argv(1),$channel);
@@ -71,7 +70,7 @@ function process_command($line) {
 					echo jindent($x);
 			}
 			break;
-
+*/
 		case 'login':
 			if(argv(1)) {
 				echo 'Password: ';
@@ -92,13 +91,13 @@ function process_command($line) {
 					echo 'logged in';
 					$channel = App::get_channel();
 					if($channel)
-						echo ' as ' . $channel['channel_name'];					
+						echo ' as ' . $channel['channel_name'];
 				}
 				else
 					echo 'login failed.';
 
 			}
-			break;				
+			break;
 		case 'channel':
 			if(! local_channel())
 					echo 'Permission denied.';
@@ -115,19 +114,19 @@ function process_command($line) {
 				else
 					echo 'Channel not found.';
 			}
-			break;	
+			break;
 		case 'conn':
 			if(! local_channel()) {
 				echo "Permission denied.";
 				break;
 			}
 			if(argc() > 1) {
-				for($x = 1; $x < argc(); $x ++) { 
+				for($x = 1; $x < argc(); $x ++) {
 					$r = q("select * from abook left join xchan on abook_xchan = xchan_hash where abook_id = %d and abook_channel = %d",
 						intval(argv($x)),
 						intval(local_channel())
 					);
-					if($r) echo jindent(json_encode($r[0])) . "\n";	
+					if($r) echo jindent(json_encode($r[0])) . "\n";
 				}
 			}
 			else {
@@ -144,18 +143,18 @@ function process_command($line) {
 		default:
 			break;
 
-	}	
+	}
 
 
 }
 
-	
+
 function fresh_help() {
 
 	if(argc() == 1) {
 		echo "help - this text\n";
 		echo "login email_address - login with email_address, prompts for password\n";
-		echo "finger channel_address - lookup channel_address remotely\n";
+//		echo "finger channel_address - lookup channel_address remotely\n";
 		echo "channel new_channel - change active channel to new_channel (nickname)\n";
 		echo "conn [id1] [id2...] - without args list connections, or report detail of connection id1 (etc.)\n";
 		echo "quit|exit - terminate fresh\n";

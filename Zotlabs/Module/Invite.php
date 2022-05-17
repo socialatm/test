@@ -129,11 +129,11 @@ class Invite extends Controller {
 				if(! $recip) continue;
 
 				// see if we have an email address who@domain.tld
-				if (!preg_match('/^.{2,64}\@[a-z0-9.-]{4,32}\.[a-z]{2,12}$/', $recip)) {
-					$feedbk .= 'ZAI0203E ' . ($n+1) . ': ' . sprintf( t('(%s) : Not a valid email address'), $recip) . $eol;
-					$ko++;
-					continue;
-				}
+				//if (!preg_match('/^.{2,64}\@[a-z0-9.-]{2,32}\.[a-z]{2,12}$/', $recip)) {
+					//$feedbk .= 'ZAI0203E ' . ($n+1) . ': ' . sprintf( t('(%s) : Not a valid email address'), $recip) . $eol;
+					//$ko++;
+					//continue;
+				//}
 				if(! validate_email($recip)) {
 					$feedbk .= 'ZAI0204E ' . ($n+1) . ': ' . sprintf( t('(%s) : Not a real email address'), $recip) . $eol;
 					$ko++;
@@ -225,7 +225,7 @@ class Invite extends Controller {
 					'$projectname'		=> t('$Projectname'),
 					'$invite_code'		=> $invite_code,
 					'$invite_where' 	=> z_root() . '/register',
-					'$invite_whereami'	=> str_replace('@', '@+', $reonar['whereami']),
+					'$invite_whereami'	=> $reonar['whereami'],
 					'$invite_whoami'	=> z_root() . '/channel/' . $reonar['whoami'],
 					'$invite_anywhere'	=> z_root() . '/pubsites'
 				)
@@ -306,9 +306,8 @@ class Invite extends Controller {
 		if(! Apps::system_app_installed(local_channel(), 'Invite')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = 'ZAI0102E,' . t('Invite App') . ' (' . t('Not Installed') . ')' . EOL;
-			return $o;
+			$papp = Apps::get_papp('Invite');
+			return Apps::app_render($papp, 'module');
 		}
 
 		if (! (get_config('system','invitation_also') || get_config('system','invitation_only')) ) {
@@ -423,8 +422,6 @@ class Invite extends Controller {
 		// let take one descriptive for template (as said is never used)
 		$invite_code = 'INVITATE2020';
 
-		// what languages we use now
-		$lccmy	= ((isset(App::$config['system']['language'])) ? App::$config['system']['language'] : 'en');
 		// and all the localized templates belonging to invite
 		$tpls	= glob('view/*/invite.*.tpl');
 
@@ -444,6 +441,9 @@ class Invite extends Controller {
 
 		$langs = array_keys($tpla);
 		asort($langs);
+
+		// Use the current language if we have a template for it. Otherwise fall back to 'en'.
+		$lccmy	= ((in_array(App::$language, $langs)) ? App::$language : 'en');
 
 		$tplx = array_unique($tplx);
 		asort($tplx);

@@ -227,7 +227,7 @@
 	},
 	"XOF": {
 		"name": "КФА ВСЕАО франкі",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XPF": {
 		"name": "КФП франкі",
@@ -246,6 +246,10 @@
 	},
 	"LAK": {
 		"name": "Лаос кипі"
+	},
+	"LSL": {
+		"name": "Лесото лотиі",
+		"symbol": "ЛСЛ"
 	},
 	"LRD": {
 		"name": "Либерия доллары"
@@ -483,9 +487,6 @@
 	},
 	"JMD": {
 		"name": "Ямайка доллары"
-	},
-	"LSL": {
-		"name": "Lesotho Loti"
 	},
 	"SVC": {
 		"name": "Salvadoran Colón"

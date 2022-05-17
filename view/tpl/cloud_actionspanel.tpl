@@ -6,15 +6,15 @@
 			<input type="hidden" name="folder" value="{{$folder}}" />
 			<input type="hidden" name="channick" value="{{$channick}}" />
 			<input type="hidden" name="return_url" value="{{$return_url}}" />
-			<input id="files-mkdir" type="text" name="filename" class="form-control form-group">
-			<div class="pull-right btn-group">
+			<input id="files-mkdir" type="text" name="filename" class="form-control mb-3">
+			<div class="float-end btn-group">
 				<div class="btn-group">
 					{{if $lockstate}}
-					<button class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" type="button">
+					<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" type="button">
 						<i class="jot-perms-icon fa fa-{{$lockstate}}"></i>
 					</button>
 					{{/if}}
-					<button class="btn btn-primary btn-sm pull-right" type="submit" value="{{$folder_submit}}">{{$folder_submit}}</button>
+					<button class="btn btn-primary btn-sm float-end" type="submit" value="{{$folder_submit}}">{{$folder_submit}}</button>
 				</div>
 			</div>
 		</form>
@@ -33,14 +33,14 @@
 			<div class="cloud-index attach-drop attach-drop-zone text-center p-4 mb-3" data-folder="{{$folder}}">
 				<span class="text-muted">{{$drop_area_label}}</span>
 			</div>
-			<div class="pull-right btn-group">
+			<div class="float-end btn-group">
 				<div class="btn-group">
 					{{if $lockstate}}
-					<button class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" type="button">
+					<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" type="button">
 						<i class="jot-perms-icon fa fa-{{$lockstate}}"></i>
 					</button>
 					{{/if}}
-					<button id="upload-submit" class="btn btn-primary btn-sm pull-right">{{$upload_submit}}</button>
+					<button id="upload-submit" class="btn btn-primary btn-sm float-end">{{$upload_submit}}</button>
 				</div>
 			</div>
 		</form>

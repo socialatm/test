@@ -365,9 +365,14 @@ function z_post_url($url, $params, $redirects = 0, $opts = array()) {
 	if($http_code == 301 || $http_code == 302 || $http_code == 303 || $http_code == 307 || $http_code == 308) {
 		$matches = array();
 		preg_match('/(Location:|URI:)(.*?)\n/', $header, $matches);
-		$newurl = trim(array_pop($matches));
-		if(strpos($newurl,'/') === 0)
+
+		$newurl = '';
+		if (array_pop($matches))
+			$newurl = trim(array_pop($matches));
+
+		if($newurl && strpos($newurl,'/') === 0)
 			$newurl = $url . $newurl;
+
 		$url_parsed = @parse_url($newurl);
 		if (isset($url_parsed)) {
 			curl_close($ch);
@@ -398,6 +403,18 @@ function z_post_url($url, $params, $redirects = 0, $opts = array()) {
 
 	curl_close($ch);
 	return($ret);
+}
+
+function z_curl_error($ret) {
+	$output = EMPTY_STR;
+	if (isset($ret['debug'])) {
+		$output .= datetime_convert() . EOL;
+		$output .= t('url: ') . $ret['debug']['url'] . EOL;
+		$output .= t('error_code: ') . $ret['debug']['error_code'] . EOL;
+		$output .= t('error_string: ') . $ret['error'] . EOL;
+		$output .= t('content-type: ') . $ret['debug']['content_type'] . EOL;
+	}
+	return $output;
 }
 
 function json_return_and_die($x, $content_type = 'application/json') {
@@ -540,6 +557,14 @@ function z_dns_check($h,$check_mx = 0) {
 		$opts += DNS_MX;
 
 	return((@dns_get_record($h,$opts) || filter_var($h, FILTER_VALIDATE_IP)) ? true : false);
+}
+
+function is_local_url($url) {
+  if (str_starts_with($url, z_root()) || str_starts_with($url, '/')) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -1159,31 +1184,6 @@ function discover_by_webbie($webbie, $protocol = '') {
 				}
 			}
 		}
-
-		foreach($x['links'] as $link) {
-			if(array_key_exists('rel',$link)) {
-
-				// If we discover zot - don't search further; grab the info and get out of
-				// here.
-
-				if($link['rel'] === PROTOCOL_ZOT && ((! $protocol) || (strtolower($protocol) === 'zot'))) {
-					logger('zot found for ' . $webbie, LOGGER_DEBUG);
-					if(array_key_exists('zot',$x) && $x['zot']['success']) {
-						$i = import_xchan($x['zot']);
-						return true;
-					}
-					else {
-						$z = z_fetch_url($link['href']);
-						if($z['success']) {
-							$j = json_decode($z['body'],true);
-							$i = import_xchan($j);
-							return true;
-						}
-					}
-				}
-			}
-		}
-
 	}
 
 	logger('webfinger: ' . print_r($x,true), LOGGER_DATA, LOG_INFO);
@@ -1999,6 +1999,10 @@ function getBestSupportedMimeType($mimeTypes = null, $acceptedTypes = false) {
 	if($acceptedTypes === false)
 		$acceptedTypes = $_SERVER['HTTP_ACCEPT'];
 
+	if (!$acceptedTypes) {
+		return null;
+	}
+
 	// Accept header is case insensitive, and whitespace isn’t important
 	$accept = strtolower(str_replace(' ', '', $acceptedTypes));
 	// divide it into parts in the place of a ","
@@ -2039,6 +2043,21 @@ function getBestSupportedMimeType($mimeTypes = null, $acceptedTypes = false) {
  */
 function jsonld_document_loader($url) {
 
+	switch ($url) {
+		case 'https://www.w3.org/ns/activitystreams':
+			$url = z_root() . '/library/w3org/activitystreams.jsonld';
+			break;
+		case 'https://w3id.org/identity/v1':
+			$url = z_root() . '/library/w3org/identity-v1.jsonld';
+			break;
+		case 'https://w3id.org/security/v1':
+			$url = z_root() . '/library/w3org/security-v1.jsonld';
+			break;
+		default:
+			logger('URL: ' . $url, LOGGER_DEBUG);
+			break;
+	}
+
 	require_once('library/jsonld/jsonld.php');
 
 	$recursion = 0;
@@ -2051,11 +2070,11 @@ function jsonld_document_loader($url) {
 			}
 		}
 	}
+
 	if($recursion > 5) {
 		logger('jsonld bomb detected at: ' . $url);
 		killme();
 	}
-
 
 	$cachepath = 'store/[data]/ldcache';
 	if(! is_dir($cachepath))

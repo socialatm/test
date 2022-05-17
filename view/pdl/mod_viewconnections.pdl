@@ -1,5 +1,8 @@
 [region=aside]
-[widget=fullprofile][/widget]
+[widget=profile][/widget]
+[/region]
+[region=content]
+$content
 [/region]
 [region=right_aside]
 [widget=notifications][/widget]

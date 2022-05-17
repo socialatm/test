@@ -15,26 +15,26 @@ require_once('include/acl_selectors.php');
 class Webpages extends Controller {
 
 	function init() {
-	
+
 		if(argc() > 1 && argv(1) === 'sys' && is_site_admin()) {
 			$sys = get_sys_channel();
 			if($sys && intval($sys['channel_id'])) {
 				App::$is_sys = true;
 			}
 		}
-	
+
 		if(argc() > 1)
 			$which = argv(1);
 		else
 			return;
-	
+
 		profile_load($which);
-	
+
 	}
-	
-	
+
+
 	function get() {
-	
+
 		if(! App::$profile) {
 			notice( t('Requested profile is not available.') . EOL );
 			App::$error = 404;
@@ -44,22 +44,20 @@ class Webpages extends Controller {
 		if(! Apps::system_app_installed(App::$profile_uid, 'Webpages')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('Webpages App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Provide managed web pages on your channel');
-			return $o;
+			$papp = Apps::get_papp('Webpages');
+			return Apps::app_render($papp, 'module');
 		}
 
 		nav_set_selected('Webpages');
 
 		$which = argv(1);
-		
+
 		$_SESSION['return_url'] = App::$query_string;
-	
+
 		$uid = local_channel();
 		$owner = 0;
 		$observer = App::get_observer();
-	
+
 		$channel = App::get_channel();
 
 		switch ($_SESSION['action']) {
@@ -74,7 +72,7 @@ class Webpages extends Controller {
 							'$blocks' => $_SESSION['blocks'],
 						));
 						return $o;
-				
+
         case 'importselected':
 						$_SESSION['action'] = null;
 						break;
@@ -85,7 +83,7 @@ class Webpages extends Controller {
 								break;
 						}
 						require_once('include/import.php');
-						
+
 						$pages = get_webpage_elements($channel, 'pages');
 						$layouts = get_webpage_elements($channel, 'layouts');
 						$blocks = get_webpage_elements($channel, 'blocks');
@@ -99,13 +97,13 @@ class Webpages extends Controller {
 						));
 						$_SESSION['export'] = null;
 						return $o;
-				
+
 				default :
 						$_SESSION['action'] = null;
 						break;
 		}
-		
-		
+
+
 		if(App::$is_sys && is_site_admin()) {
 			$sys = get_sys_channel();
 			if($sys && intval($sys['channel_id'])) {
@@ -114,7 +112,7 @@ class Webpages extends Controller {
 				$observer = $sys;
 			}
 		}
-	
+
 		if(! $owner) {
 			// Figure out who the page owner is.
 			$r = q("select channel_id from channel where channel_address = '%s'",
@@ -124,24 +122,24 @@ class Webpages extends Controller {
 				$owner = intval($r[0]['channel_id']);
 			}
 		}
-	
+
 		$ob_hash = (($observer) ? $observer['xchan_hash'] : '');
-	
+
 		$perms = get_all_perms($owner,$ob_hash);
-	
+
 		if(! $perms['write_pages']) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
-	
+
 		$mimetype = (($_REQUEST['mimetype']) ? $_REQUEST['mimetype'] : get_pconfig($owner,'system','page_mimetype'));
-	
+
 		$layout = (($_REQUEST['layout']) ? $_REQUEST['layout'] : get_pconfig($owner,'system','page_layout'));
-	
+
 		// Create a status editor (for now - we'll need a WYSIWYG eventually) to create pages
-		// Nickname is set to the observers xchan, and profile_uid to the owner's.  
+		// Nickname is set to the observers xchan, and profile_uid to the owner's.
 		// This lets you post pages at other people's channels.
-	
+
 		if((! $channel) && ($uid) && ($uid == App::$profile_uid)) {
 			$channel = App::get_channel();
 		}
@@ -156,12 +154,12 @@ class Webpages extends Controller {
 		else {
 			$channel_acl = [ 'allow_cid' => '', 'allow_gid' => '', 'deny_cid' => '', 'deny_gid' => '' ];
 		}
-	
+
 
 		$is_owner = ($uid && $uid == $owner);
 
 		$o = '';
-	
+
 		$x = array(
 			'webpage' => ITEM_TYPE_WEBPAGE,
 			'is_owner' => true,
@@ -183,23 +181,23 @@ class Webpages extends Controller {
 			'bbco_autocomplete' => 'bbcode',
 			'bbcode' => true
 		);
-		
+
 		if($_REQUEST['title'])
 			$x['title'] = $_REQUEST['title'];
 		if($_REQUEST['body'])
 			$x['body'] = $_REQUEST['body'];
 		if($_REQUEST['pagetitle'])
 			$x['pagetitle'] = $_REQUEST['pagetitle'];
-	
-	
-		// Get a list of webpages.  We can't display all them because endless scroll makes that unusable, 
+
+
+		// Get a list of webpages.  We can't display all them because endless scroll makes that unusable,
 		// so just list titles and an edit link.
-	
-	
+
+
 		$sql_extra = item_permissions_sql($owner);
-	
-		$r = q("select * from iconfig left join item on iconfig.iid = item.id 
-			where item.uid = %d and iconfig.cat = 'system' and iconfig.k = 'WEBPAGE' and item_type = %d 
+
+		$r = q("select * from iconfig left join item on iconfig.iid = item.id
+			where item.uid = %d and iconfig.cat = 'system' and iconfig.k = 'WEBPAGE' and item_type = %d
 			$sql_extra order by item.created desc",
 			intval($owner),
 			intval(ITEM_TYPE_WEBPAGE)
@@ -211,14 +209,13 @@ class Webpages extends Controller {
 		$editor = status_editor($a,$x,false,'Webpages');
 
 		$pages = null;
-	
+
 		if($r) {
 			$pages = array();
 			foreach($r as $rr) {
-				unobscure($rr);
-	
+
 				$lockstate = (($rr['allow_cid'] || $rr['allow_gid'] || $rr['deny_cid'] || $rr['deny_gid']) ? 'lock' : 'unlock');
-	
+
 				$element_arr = array(
 					'type'		=> 'webpage',
 					'title'		=> $rr['title'],
@@ -243,11 +240,11 @@ class Webpages extends Controller {
 				);
 			}
 		}
-	
-	
+
+
 		//Build the base URL for edit links
 		$url = z_root() . '/editwebpage/' . $which;
-		
+
 		$o .= replace_macros(get_markup_template('webpagelist.tpl'), array(
 			'$listtitle'    => t('Webpages'),
 			'$baseurl'      => $url,
@@ -266,19 +263,19 @@ class Webpages extends Controller {
 			'$created_txt'  => t('Created'),
 			'$edited_txt'   => t('Edited')
 		));
-	
+
 		return $o;
 	}
-	
+
 	function post() {
     $action = $_REQUEST['action'];
 		if( $action ){
 			switch ($action) {
         case 'scan':
-					
+
 					// the state of this variable tracks whether website files have been scanned (null, true, false)
-					$cloud = null;	
-					
+					$cloud = null;
+
 					// Website files are to be imported from an uploaded zip file
 					if(($_FILES) && array_key_exists('zip_file',$_FILES) && isset($_POST['w_upload'])) {
 						$source = $_FILES["zip_file"]["tmp_name"];
@@ -306,8 +303,8 @@ class Webpages extends Controller {
 						} else {
 							notice( t('Error opening zip file') . EOL);
 							return null;
-						}	
-					} 
+						}
+					}
 
 					// Website files are to be imported from the channel cloud files
 					if (($_POST) && array_key_exists('path',$_POST) && isset($_POST['cloudsubmit'])) {
@@ -321,7 +318,7 @@ class Webpages extends Controller {
 						$cloud = true;
 
 					}
-					
+
 					// If the website files were uploaded or specified in the cloud files, then $cloud
 					// should be either true or false
 					if ($cloud !== null) {
@@ -345,24 +342,24 @@ class Webpages extends Controller {
 							notice( t('No webpage elements detected.') . EOL);
 							$_SESSION['action'] = null;
 						}
-						
+
 					}
-					
+
 					// If the website elements were imported from a zip file, delete the temporary decompressed files
 					if ($cloud === false && $website && $elements) {
 						$_SESSION['tempimportpath'] = $website;
 						//rrmdir($website);	// Delete the temporary decompressed files
 					}
-					
+
 					break;
-					
+
 				case 'importselected':
 						require_once('include/import.php');
 						$channel = App::get_channel();
-						
+
 						// Import layout first so that pages that reference new layouts will find
-						// the mid of layout items in the database						
-						
+						// the mid of layout items in the database
+
             // Obtain the user-selected layouts to import and import them
             $checkedlayouts = $_POST['layout'];
             $layouts = [];
@@ -380,7 +377,7 @@ class Webpages extends Controller {
 								}
             }
             $_SESSION['import_layouts'] = $layouts;
-            
+
             // Obtain the user-selected blocks to import and import them
             $checkedblocks = $_POST['block'];
             $blocks = [];
@@ -398,7 +395,7 @@ class Webpages extends Controller {
 								}
             }
             $_SESSION['import_blocks'] = $blocks;
-            
+
             // Obtain the user-selected pages to import and import them
             $checkedpages = $_POST['page'];
             $pages = [];
@@ -424,9 +421,9 @@ class Webpages extends Controller {
 								unset($_SESSION['tempimportpath']);
 						}
 						break;
-				
+
 				case 'exportzipfile':
-						
+
 						if(isset($_POST['w_download'])) {
 								$_SESSION['action'] = 'export_select_list';
 								$_SESSION['export'] = 'zipfile';
@@ -436,45 +433,45 @@ class Webpages extends Controller {
 										$filename = 'website.zip';
 								}
 								$_SESSION['zipfilename'] = $filename;
-								
+
 						}
-						
+
 						break;
-				
+
 				case 'exportcloud':
 						if(isset($_POST['exportcloudpath']) && $_POST['exportcloudpath'] !== '') {
 								$_SESSION['action'] = 'export_select_list';
 								$_SESSION['export'] = 'cloud';
 								$_SESSION['exportcloudpath'] = filter_var($_POST['exportcloudpath'], FILTER_SANITIZE_ENCODED);
 						}
-						
+
 						break;
-				
+
 				case 'cloud':
 				case 'zipfile':
-						
+
 						$channel = App::get_channel();
-						
+
 						$tmp_folder_name = random_string(10);
 						$zip_folder_name = random_string(10);
 						$zip_filename = $_SESSION['zipfilename'];
 						$tmp_folderpath = '/tmp/' . $tmp_folder_name;
 						$zip_folderpath = '/tmp/' . $zip_folder_name;
-						if (!mkdir($zip_folderpath, 0770, false)) {	
+						if (!mkdir($zip_folderpath, 0770, false)) {
 								logger('Error creating zip file export folder: ' . $zip_folderpath, LOGGER_NORMAL);
 								json_return_and_die(array('message' => 'Error creating zip file export folder'));
 						}
 						$zip_filepath = '/tmp/' . $zip_folder_name . '/' . $zip_filename;
-						
+
 						$checkedblocks = $_POST['block'];
             $blocks = [];
             if (!empty($checkedblocks)) {
                 foreach ($checkedblocks as $mid) {
-										$b = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig 
-												left join item on item.id = iconfig.iid 
+										$b = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig
+												left join item on item.id = iconfig.iid
 												where mid = '%s' and item.uid = %d and iconfig.cat = 'system' and iconfig.k = 'BUILDBLOCK' order by iconfig.v asc limit 1",
 												dbesc($mid),
-												intval($channel['channel_id'])																	
+												intval($channel['channel_id'])
 										);
 										if($b) {
 												$b = $b[0];
@@ -514,25 +511,25 @@ class Webpages extends Controller {
 												$block_filepath = $tmp_blockfolder . '/' . $block_filename;
 												$blockinfo['json']['contentfile'] = $block_filename;
 												$block_jsonpath = $tmp_blockfolder . '/block.json';
-												if (!is_dir($tmp_blockfolder) && !mkdir($tmp_blockfolder, 0770, true)) {	
+												if (!is_dir($tmp_blockfolder) && !mkdir($tmp_blockfolder, 0770, true)) {
 														logger('Error creating temp export folder: ' . $tmp_blockfolder, LOGGER_NORMAL);
 														json_return_and_die(array('message' => 'Error creating temp export folder'));
 												}
 												file_put_contents($block_filepath, $blockinfo['body']);
-												file_put_contents($block_jsonpath, json_encode($blockinfo['json'], JSON_UNESCAPED_SLASHES));																		
+												file_put_contents($block_jsonpath, json_encode($blockinfo['json'], JSON_UNESCAPED_SLASHES));
 										}
 								}
 						}
-						
+
 						$checkedlayouts = $_POST['layout'];
             $layouts = [];
             if (!empty($checkedlayouts)) {
                 foreach ($checkedlayouts as $mid) {
-										$l = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig 
-												left join item on item.id = iconfig.iid 
+										$l = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig
+												left join item on item.id = iconfig.iid
 												where mid = '%s' and item.uid = %d and iconfig.cat = 'system' and iconfig.k = 'PDL' order by iconfig.v asc limit 1",
 												dbesc($mid),
-												intval($channel['channel_id'])																	
+												intval($channel['channel_id'])
 										);
 										if($l) {
 												$l = $l[0];
@@ -558,38 +555,38 @@ class Webpages extends Controller {
 												$layout_filepath = $tmp_layoutfolder . '/' . $layout_filename;
 												$layoutinfo['json']['contentfile'] = $layout_filename;
 												$layout_jsonpath = $tmp_layoutfolder . '/layout.json';
-												if (!is_dir($tmp_layoutfolder) && !mkdir($tmp_layoutfolder, 0770, true)) {	
+												if (!is_dir($tmp_layoutfolder) && !mkdir($tmp_layoutfolder, 0770, true)) {
 														logger('Error creating temp export folder: ' . $tmp_layoutfolder, LOGGER_NORMAL);
 														json_return_and_die(array('message' => 'Error creating temp export folder'));
 												}
 												file_put_contents($layout_filepath, $layoutinfo['body']);
-												file_put_contents($layout_jsonpath, json_encode($layoutinfo['json'], JSON_UNESCAPED_SLASHES));																		
+												file_put_contents($layout_jsonpath, json_encode($layoutinfo['json'], JSON_UNESCAPED_SLASHES));
 										}
 								}
 						}
-						
+
 						$checkedpages = $_POST['page'];
             $pages = [];
             if (!empty($checkedpages)) {
                 foreach ($checkedpages as $mid) {
-										
-										$p = q("select * from iconfig left join item on iconfig.iid = item.id 
+
+										$p = q("select * from iconfig left join item on iconfig.iid = item.id
 												where item.uid = %d and item.mid = '%s' and iconfig.cat = 'system' and iconfig.k = 'WEBPAGE' and item_type = %d",
 												intval($channel['channel_id']),
 												dbesc($mid),
 												intval(ITEM_TYPE_WEBPAGE)
 											);
-										
+
 										if($p) {
 												foreach ($p as $pp) {
 														// Get the associated layout
 														$layoutinfo = array();
 														if($pp['layout_mid']) {
-																$l = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig 
-																		left join item on item.id = iconfig.iid 
+																$l = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig
+																		left join item on item.id = iconfig.iid
 																		where mid = '%s' and item.uid = %d and iconfig.cat = 'system' and iconfig.k = 'PDL' order by iconfig.v asc limit 1",
 																		dbesc($pp['layout_mid']),
-																		intval($channel['channel_id'])																	
+																		intval($channel['channel_id'])
 																);
 																if($l) {
 																		$l = $l[0];
@@ -614,12 +611,12 @@ class Webpages extends Controller {
 																		$layout_filepath = $tmp_layoutfolder . '/' . $layout_filename;
 																		$layoutinfo['json']['contentfile'] = $layout_filename;
 																		$layout_jsonpath = $tmp_layoutfolder . '/layout.json';
-																		if (!is_dir($tmp_layoutfolder) && !mkdir($tmp_layoutfolder, 0770, true)) {	
+																		if (!is_dir($tmp_layoutfolder) && !mkdir($tmp_layoutfolder, 0770, true)) {
 																				logger('Error creating temp export folder: ' . $tmp_layoutfolder, LOGGER_NORMAL);
 																				json_return_and_die(array('message' => 'Error creating temp export folder'));
 																		}
 																		file_put_contents($layout_filepath, $layoutinfo['body']);
-																		file_put_contents($layout_jsonpath, json_encode($layoutinfo['json'], JSON_UNESCAPED_SLASHES));																		
+																		file_put_contents($layout_jsonpath, json_encode($layoutinfo['json'], JSON_UNESCAPED_SLASHES));
 																}
 														}
 														switch ($pp['mimetype']) {
@@ -660,14 +657,14 @@ class Webpages extends Controller {
 														$page_filepath = $tmp_pagefolder . '/' . $page_filename;
 														$page_jsonpath = $tmp_pagefolder . '/page.json';
 														$pageinfo['json']['contentfile'] = $page_filename;
-														if (!is_dir($tmp_pagefolder) && !mkdir($tmp_pagefolder, 0770, true)) {	
+														if (!is_dir($tmp_pagefolder) && !mkdir($tmp_pagefolder, 0770, true)) {
 																logger('Error creating temp export folder: ' . $tmp_pagefolder, LOGGER_NORMAL);
 																json_return_and_die(array('message' => 'Error creating temp export folder'));
 														}
 														file_put_contents($page_filepath, $pageinfo['body']);
 														file_put_contents($page_jsonpath, json_encode($pageinfo['json'], JSON_UNESCAPED_SLASHES));
 												}
-										}										
+										}
                 }
             }
 						if($action === 'zipfile') {
@@ -686,23 +683,23 @@ class Webpages extends Controller {
 										if(!$dirpath) {
 												$x = attach_mkdirp($channel, $channel['channel_hash'], array('pathname' => $cloudpath));
 												$folder_hash = (($x['success']) ? $x['data']['hash'] : '');
-												
+
 												if (!$x['success']) {
 														logger('Failed to create cloud file folder', LOGGER_NORMAL);
 												}
 												$dirpath = get_dirpath_by_cloudpath($channel, $cloudpath);
 												if (!is_dir($dirpath)) {
 														logger('Failed to create cloud file folder', LOGGER_NORMAL);
-												} 
+												}
 										}
-										
+
 										$success = copy_folder_to_cloudfiles($channel, $channel['channel_hash'], $tmp_folderpath, $cloudpath);
 								}
 						}
 						if(!$success) {
 								logger('Error exporting webpage elements', LOGGER_NORMAL);
 						}
-						
+
 						rrmdir($zip_folderpath); rrmdir($tmp_folderpath);		// delete temporary files
 						killme();
 
@@ -710,9 +707,9 @@ class Webpages extends Controller {
 				default :
 					break;
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

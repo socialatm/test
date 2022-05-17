@@ -7,24 +7,20 @@ use Zotlabs\Lib\Queue;
 
 class Zot6Handler implements IHandler {
 
-	function Notify($data,$hub) {
-		return self::reply_notify($data,$hub);
+	function Notify($data, $hub) {
+		return self::reply_notify($data, $hub);
 	}
 
-	function Request($data,$hub) {
-		return self::reply_message_request($data,$hub);
+	function Rekey($sender, $data, $hub) {
+		return self::reply_rekey_request($sender, $data, $hub);
 	}
 
-	function Rekey($sender,$data,$hub) {
-		return self::reply_rekey_request($sender,$data,$hub);
+	function Refresh($sender, $recipients, $hub, $force) {
+		return self::reply_refresh($sender, $recipients, $hub, $force);
 	}
 
-	function Refresh($sender,$recipients,$hub) {
-		return self::reply_refresh($sender,$recipients,$hub);
-	}
-
-	function Purge($sender,$recipients,$hub) {
-		return self::reply_purge($sender,$recipients,$hub);
+	function Purge($sender, $recipients, $hub) {
+		return self::reply_purge($sender, $recipients, $hub);
 	}
 
 
@@ -38,7 +34,7 @@ class Zot6Handler implements IHandler {
 
 		logger('notify received from ' . $hub['hubloc_url']);
 
-		$x = Libzot::fetch($data);
+		$x = Libzot::fetch($data, $hub);
 		$ret['delivery_report'] = $x;
 
 
@@ -62,7 +58,7 @@ class Zot6Handler implements IHandler {
 	 *
 	 * @return array
 	 */
-	static function reply_refresh($sender, $recipients, $hub) {
+	static function reply_refresh($sender, $recipients, $hub, $force) {
 		$ret = array('success' => false);
 
 		if($recipients) {
@@ -75,85 +71,16 @@ class Zot6Handler implements IHandler {
 					where xchan_hash ='%s' limit 1",
 					dbesc($recip)
 				);
-				/// @FIXME $msgtype is undefined
-				$x = Libzot::refresh( [ 'hubloc_id_url' => $hub['hubloc_id_url'] ], $r[0], (($msgtype === 'force_refresh') ? true : false));
+				$x = Libzot::refresh([ 'hubloc_id_url' => $hub['hubloc_id_url']], $r[0], $force);
 			}
 		}
 		else {
 			// system wide refresh
-			/// @FIXME $msgtype is undefined
-			$x = Libzot::refresh( [ 'hubloc_id_url' => $hub['hubloc_id_url'] ], null, (($msgtype === 'force_refresh') ? true : false));
+			$x = Libzot::refresh(['hubloc_id_url' => $hub['hubloc_id_url']], null, $force);
 		}
 
 		$ret['success'] = true;
 		return $ret;
-	}
-
-
-
-	/**
-	 * @brief Process a message request.
-	 *
-	 * If a site receives a comment to a post but finds they have no parent to attach it with, they
-	 * may send a 'request' packet containing the message_id of the missing parent. This is the handler
-	 * for that packet. We will create a message_list array of the entire conversation starting with
-	 * the missing parent and invoke delivery to the sender of the packet.
-	 *
-	 * Zotlabs/Daemon/Deliver.php (for local delivery) and
-	 * mod/post.php???? @fixme (for web delivery) detect the existence of
-	 * this 'message_list' at the destination and split it into individual messages which are
-	 * processed/delivered in order.
-	 *
-	 * @param array $data
-	 * @param array $hub
-	 * @return array
-	 */
-	static function reply_message_request($data, $hub) {
-		$ret = [ 'success' => false ];
-
-		$message_id = EMPTY_STR;
-
-		if(array_key_exists('data',$data))
-		$ptr = $data['data'];
-		if(is_array($ptr) && array_key_exists(0,$ptr)) {
-			$ptr = $ptr[0];
-		}
-		if(is_string($ptr)) {
-			$message_id = $ptr;
-		}
-		if(is_array($ptr) && array_key_exists('id',$ptr)) {
-			$message_id = $ptr['id'];
-		}
-
-		if (! $message_id) {
-			$ret['message'] = 'no message_id';
-			logger('no message_id');
-			return $ret;
-		}
-
-		$sender = $hub['hubloc_hash'];
-
-		/*
-		 * Find the local channel in charge of this post (the first and only recipient of the request packet)
-		 */
-
-		$arr = $data['recipients'][0];
-
-		$c = q("select * from channel left join xchan on channel_hash = xchan_hash where channel_hash = '%s' limit 1",
-			dbesc($arr['portable_id'])
-		);
-		if (! $c) {
-			logger('recipient channel not found.');
-			$ret['message'] .= 'recipient not found.' . EOL;
-			return $ret;
-		}
-
-		/*
-		 * fetch the requested conversation
-		 */
-		$messages = zot_feed($c[0]['channel_id'], $sender, [ 'message_id' => $data['message_id'], 'encoding' => 'activitystreams' ]);
-
-		return (($messages) ? : [] );
 	}
 
 	static function rekey_request($sender,$data,$hub) {
@@ -174,7 +101,7 @@ class Zot6Handler implements IHandler {
 		$old = null;
 
 		if(Libzot::verify($data['old_guid'],$data['old_guid_sig'],$data['old_key'])) {
-			$oldhash = make_xchan_hash($data['old_guid'],$data['old_key']);
+			$oldhash = Libzot::make_xchan_hash($data['old_guid'],$data['old_key']);
 			$old = q("select * from xchan where xchan_hash = '%s' limit 1",
 				dbesc($oldhash)
 			);
@@ -222,6 +149,10 @@ class Zot6Handler implements IHandler {
 	static function reply_purge($sender, $recipients, $hub) {
 
 		$ret = array('success' => false);
+
+		if (! $sender) {
+			return $ret;
+		}
 
 		if ($recipients) {
 			// basically this means "unfriend"

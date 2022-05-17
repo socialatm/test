@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Suggestions
+ *   * Description: Display suggestions for new contacts
+ */
+
 namespace Zotlabs\Widget;
 
 use Zotlabs\Lib\Apps;
@@ -12,7 +17,7 @@ class Suggestions {
 	function widget($arr) {
 
 
-		if((! local_channel()) || (! Apps::system_app_installed(local_channel(), 'Suggest Channels')))
+		if(! local_channel())
 			return EMPTY_STR;
 
 		$r = suggestion_query(local_channel(),get_observer_hash(),0,20);
@@ -23,14 +28,14 @@ class Suggestions {
 
 		$arr = array();
 
-		// Get two random entries from the top 20 returned.
+		// Get four random entries from the top 20 returned.
 		// We'll grab the first one and the one immediately following.
 		// This will throw some entropy intot he situation so you won't
 		// be looking at the same two mug shots every time the widget runs
 
-		$index = ((count($r) > 2) ? mt_rand(0,count($r) - 2) : 0);
+		$index = ((count($r) > 4) ? mt_rand(0,count($r) - 4) : 0);
 
-		for($x = $index; $x <= ($index+1); $x ++) {
+		for($x = $index; $x <= ($index+3); $x ++) {
 			$rr = $r[$x];
 			if(! $rr['xchan_url'])
 				break;

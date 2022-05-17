@@ -1,4 +1,4 @@
-<div class="form-group">
+<div class="mb-3">
 	<label class="" for='id_{{$field.0}}' id='id_{{$field.0}}_label'>{{$field.1}}</label>
 	<input class="form-control" id="id_{{$field.0}}" type="text" list="data_{{$field.0}}"{{if $field.5}} {{$field.5}}{{/if}}>
 	<datalist id="data_{{$field.0}}" >

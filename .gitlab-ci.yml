@@ -1,7 +1,9 @@
 # Select image from https://hub.docker.com/_/php/
 #image: php:7.3
 # Use a prepared Hubzilla image to optimise pipeline duration
-image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
+# image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
+
+image: php:8.0
 
 stages:
   - test
@@ -35,7 +37,12 @@ before_script:
 - if [ -f /usr/local/etc/php/conf.d/z_prod.ini ]; then mv /usr/local/etc/php/conf.d/z_prod.ini /usr/local/etc/php/conf.d/z_prod.ini.off; fi
 # Install & enable Xdebug for code coverage reports
 - pecl install xdebug
+- apt-get update
+- apt-get install zip unzip libjpeg-dev libpng-dev -yqq
 - docker-php-ext-enable xdebug
+- docker-php-ext-install gd
+
+
 # Install composer
 - curl -sS https://getcomposer.org/installer | php
 # Install dev libraries from composer
@@ -43,31 +50,38 @@ before_script:
 # php.ini settings
 - echo 'xdebug.mode=coverage' >> /usr/local/etc/php/php.ini
 
-# hidden job definition with template for MySQL/MariaDB
-.job_template_mysql: &job_definition_mysql
+# hidden job definition with template for PHP
+.job_template_php: &job_definition_php
   stage: test
   script:
-  - echo "USE $MYSQL_DATABASE; $(cat ./install/schema_mysql.sql)" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-  - echo "SHOW DATABASES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-  - echo "USE $MYSQL_DATABASE; SHOW TABLES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
   - vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-text
 
+
+# hidden job definition with template for MySQL/MariaDB
+#.job_template_mysql: &job_definition_mysql
+#  stage: test
+#  script:
+#  - echo "USE $MYSQL_DATABASE; $(cat ./install/schema_mysql.sql)" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+#  - echo "SHOW DATABASES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+#  - echo "USE $MYSQL_DATABASE; SHOW TABLES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+#  - vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-text
+
 # hidden job definition with template for PostgreSQL
-.job_template_postgres: &job_definition_postgres
-  stage: test
-  services:
-  - postgres:latest
-  script:
-  - export PGPASSWORD=$POSTGRES_PASSWORD
-  - psql --version
-  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT VERSION();"
+#.job_template_postgres: &job_definition_postgres
+#  stage: test
+#  services:
+#  - postgres:latest
+#  script:
+#  - export PGPASSWORD=$POSTGRES_PASSWORD
+#  - psql --version
+#  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT VERSION();"
   # Import hubzilla's DB schema
-  - psql -h "postgres" -U "$POSTGRES_USER" -v ON_ERROR_STOP=1 --quiet "$POSTGRES_DB" < ./install/schema_postgres.sql
+#  - psql -h "postgres" -U "$POSTGRES_USER" -v ON_ERROR_STOP=1 --quiet "$POSTGRES_DB" < ./install/schema_postgres.sql
   # Show databases and relations/tables of hubzilla's database
   #- psql -h "postgres" -U "$POSTGRES_USER" -l
   #- psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\dt;"
   # Run the actual tests
-  - vendor/bin/phpunit --configuration tests/phpunit-pgsql.xml --testdox
+#  - vendor/bin/phpunit --configuration tests/phpunit-pgsql.xml --testdox
 
 # hidden job definition with artifacts config template
 .artifacts_template:
@@ -82,56 +96,61 @@ before_script:
       - tests/results/
 
 
-# PHP7.3 with MySQL 5.7
-php7.3_mysql5.7:
-  <<: *job_definition_mysql
-  services:
-  - mysql:5.7
+# PHP8.0
+php8.0:
+  <<: *job_definition_php
+
+# PHP8.0 with MySQL 5.7
+#php8.0_mysql5.7:
+#  <<: *job_definition_mysql
+#  services:
+#  - mysql:5.7
 
 
-# PHP7.3 with MySQL 8 (latest)
-php7.3_mysql8:
-  <<: *job_definition_mysql
-  services:
-  - name: mysql:8
-    command: ["--default-authentication-plugin=mysql_native_password"]
+# PHP8.0 with MySQL 8 (latest)
+#php8.0_mysql8:
+#  <<: *job_definition_mysql
+#  services:
+#  - name: mysql:8
+#    command: ["--default-authentication-plugin=mysql_native_password"]
 
 
-# PHP7.3 with MariaDB 10.2
-php7.3_mariadb10.2:
-  <<: *job_definition_mysql
-  services:
-  - name: mariadb:10.2
-    alias: mysql
+# PHP8.0 with MariaDB 10.2
+#php8.0_mariadb10.2:
+#  <<: *job_definition_mysql
+#  services:
+#  - name: mariadb:10.2
+#    alias: mysql
 
 
-# PHP7.3 with MariaDB 10.3 (latest)
-php7.3_mariadb10.3:
-  <<: *job_definition_mysql
-  image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
-  services:
-  - name: mariadb:10.3
-    alias: mysql
+# PHP8.0 with MariaDB 10.3 (latest)
+#php8.0_mariadb10.3:
+#  <<: *job_definition_mysql
+#  image: php:8.0
+  #image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
+#  services:
+#  - name: mariadb:10.3
+#    alias: mysql
 
 
 # PHP7.3 with PostgreSQL latest (11)
-php7.3_postgres11:
-  <<: *job_definition_postgres
-  artifacts: *artifacts_template
+#php7.3_postgres11:
+#  <<: *job_definition_postgres
+#  artifacts: *artifacts_template
 
 
 # PHP7.3 with PostgreSQL latest (11)
-php7.3_postgres11:
-  <<: *job_definition_postgres
-  image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
-  artifacts: *artifacts_template
+#php7.3_postgres11:
+#  <<: *job_definition_postgres
+#  image: registry.gitlab.com/dawnbreak/hubzilla/core:php7.3
+#  artifacts: *artifacts_template
 
 
 # Generate Doxygen API Documentation and deploy it as GitLab pages
 pages:
   stage: deploy
   cache: {}
-  image: php:7-cli-alpine
+  image: php:8-cli-alpine
   before_script:
     - apk update
     - apk add doxygen ttf-freefont graphviz

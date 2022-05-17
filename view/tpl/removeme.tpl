@@ -8,7 +8,7 @@
 	<div class="section-content-tools-wrapper">
 		<form action="{{$basedir}}/removeme" autocomplete="off" method="post" >
 			<input type="hidden" name="verify" value="{{$hash}}" />
-			<div class="form-group" id="remove-account-pass-wrapper">
+			<div class="mb-3" id="remove-account-pass-wrapper">
 				<label id="remove-account-pass-label" for="remove-account-pass">{{$passwd}}</label>
 				<input class="form-control" type="password" id="remove-account-pass" autocomplete="off" name="qxz_password" value=" " />
 			</div>

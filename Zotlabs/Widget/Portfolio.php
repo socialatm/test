@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Portfolio
+ *   * Description: Display a photo album in a portfolio style
+ *   * Requires: channel, articles, cards, wiki
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/attach.php');
@@ -8,10 +14,8 @@ class Portfolio {
 
 	function widget($args) {
 
-
 		$owner_uid = \App::$profile_uid;
 		$sql_extra = permissions_sql($owner_uid);
-
 
 		if(! perm_is_allowed($owner_uid,get_observer_hash(),'view_storage'))
 			return '';
@@ -112,7 +116,7 @@ class Portfolio {
 			'$upload_form' => $upload_form,
 			'$usage' => $usage_message
 		));
-	
+
 		return $o;
 	}
 }

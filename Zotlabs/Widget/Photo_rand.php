@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Random photo
+ *   * Description: Display a random photo
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/photos.php');
@@ -40,15 +45,15 @@ class Photo_rand {
 
 		if(strpos($url, 'http') !== 0)
 			return '';
-	
+
 		if(array_key_exists('style', $arr) && isset($arr['style']))
 			$style = $arr['style'];
-	
+
 		// ensure they can't sneak in an eval(js) function
 
 		if(strpos($style,'(') !== false)
 			return '';
-	
+
 		$url = zid($url);
 
 		$o = '<div class="widget">';

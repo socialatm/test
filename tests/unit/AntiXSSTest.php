@@ -24,6 +24,26 @@ class AntiXSSTest extends TestCase {
 		$this->assertEquals("&lt;submit type=&quot;button&quot; onclick=&quot;alert('failed!');&quot; /&gt;", $escapedString);
 	}
 
+  /**
+   * @dataProvider urlTestProvider
+   */
+  public function testEscapeURL($url, $expected) : void {
+    $this->assertEquals($expected, escape_url($url));
+  }
+
+  public function urlTestProvider() : array {
+    return [
+      [
+        "https://example.com/settings/calendar/?f=&rpath=https://example.com/cdav/calendar'><script>alert('boom')</script>",
+        "https://example.com/settings/calendar/?f=&amp;rpath=https://example.com/cdav/calendar&apos;&gt;&lt;script&gt;alert(&apos;boom&apos;)&lt;/script&gt;"
+      ],
+      [
+        "settings/calendar/?f=&rpath=https://example.com'+accesskey=x+onclick=alert(/boom/);a='",
+        "settings/calendar/?f=&amp;rpath=https://example.com&apos;+accesskey=x+onclick=alert(/boom/);a=&apos;"
+      ],
+    ];
+  }
+
 	/**
 	 *xmlify and unxmlify
 	 */

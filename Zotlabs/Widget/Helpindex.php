@@ -1,10 +1,17 @@
 <?php
 
+/**
+ *   * Name: Help index
+ *   * Description: Help pages index
+ */
+
 namespace Zotlabs\Widget;
 
 class Helpindex {
 
 	function widget($arr) {
+
+		require_once('include/help.php');
 
 		$o .= '<div class="widget">';
 

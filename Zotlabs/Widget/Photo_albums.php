@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Photo albums
+ *   * Description: Displays a menu with links to existing photo albums
+ *   * Requires: photos
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/photos.php');

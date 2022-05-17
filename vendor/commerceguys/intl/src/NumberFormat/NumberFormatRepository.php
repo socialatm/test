@@ -83,6 +83,12 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'minus_sign' => '؜-',
                 'percent_sign' => '٪؜',
             ],
+            'ar-AE' => [
+                'currency_pattern' => '¤ #,##0.00',
+                'plus_sign' => '‎+',
+                'minus_sign' => '‎-',
+                'percent_sign' => '‎%‎',
+            ],
             'ar-DZ' => [
                 'currency_pattern' => '¤ #,##0.00',
                 'decimal_separator' => ',',
@@ -238,6 +244,9 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'currency_pattern' => '¤ #,##0.00',
                 'accounting_currency_pattern' => '#,##0.00 ¤',
                 'grouping_separator' => '’',
+            ],
+            'doi' => [
+                'accounting_currency_pattern' => '¤#,##0.00',
             ],
             'dz' => [
                 'decimal_pattern' => '#,##,##0.###',
@@ -534,6 +543,7 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'accounting_currency_pattern' => '#,##0.00 ¤',
                 'decimal_separator' => ',',
                 'grouping_separator' => '.',
+                'minus_sign' => '−',
             ],
             'hu' => [
                 'currency_pattern' => '#,##0.00 ¤',
@@ -644,6 +654,10 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'decimal_separator' => ',',
                 'grouping_separator' => ' ',
             ],
+            'mai' => [
+                'currency_pattern' => '¤ #,##0.00',
+                'accounting_currency_pattern' => '¤ #,##0.00',
+            ],
             'mg' => [
                 'currency_pattern' => '¤ #,##0.00',
                 'accounting_currency_pattern' => '¤#,##0.00',
@@ -662,6 +676,11 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'currency_pattern' => '¤ #,##0.00',
                 'accounting_currency_pattern' => '¤ #,##0.00',
             ],
+            'mni' => [
+                'numbering_system' => 'beng',
+                'currency_pattern' => '¤ #,##0.00',
+                'accounting_currency_pattern' => '¤ #,##0.00',
+            ],
             'mr' => [
                 'numbering_system' => 'deva',
                 'decimal_pattern' => '#,##,##0.###',
@@ -672,20 +691,17 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'decimal_separator' => ',',
                 'grouping_separator' => '.',
             ],
+            'ms-ID' => [
+                'accounting_currency_pattern' => '¤#,##0.00',
+                'decimal_separator' => ',',
+                'grouping_separator' => '.',
+            ],
             'mt' => [
                 'accounting_currency_pattern' => '¤#,##0.00',
             ],
             'my' => [
                 'currency_pattern' => '#,##0.00 ¤',
                 'accounting_currency_pattern' => '¤ #,##0.00',
-            ],
-            'nb' => [
-                'percent_pattern' => '#,##0 %',
-                'currency_pattern' => '¤ #,##0.00',
-                'accounting_currency_pattern' => '¤ #,##0.00',
-                'decimal_separator' => ',',
-                'grouping_separator' => ' ',
-                'minus_sign' => '−',
             ],
             'ne' => [
                 'numbering_system' => 'deva',
@@ -704,6 +720,14 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'percent_pattern' => '#,##0 %',
                 'currency_pattern' => '#,##0.00 ¤',
                 'accounting_currency_pattern' => '#,##0.00 ¤',
+                'decimal_separator' => ',',
+                'grouping_separator' => ' ',
+                'minus_sign' => '−',
+            ],
+            'no' => [
+                'percent_pattern' => '#,##0 %',
+                'currency_pattern' => '¤ #,##0.00;¤ -#,##0.00',
+                'accounting_currency_pattern' => '¤ #,##0.00;(¤ #,##0.00)',
                 'decimal_separator' => ',',
                 'grouping_separator' => ' ',
                 'minus_sign' => '−',
@@ -778,6 +802,10 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'decimal_separator' => ',',
                 'grouping_separator' => '.',
             ],
+            'sat' => [
+                'currency_pattern' => '¤ #,##0.00',
+                'accounting_currency_pattern' => '¤ #,##0.00',
+            ],
             'sd' => [
                 'numbering_system' => 'arab',
                 'currency_pattern' => '#,##0.00 ¤',
@@ -787,6 +815,10 @@ class NumberFormatRepository implements NumberFormatRepositoryInterface
                 'plus_sign' => '؜+',
                 'minus_sign' => '؜-',
                 'percent_sign' => '٪؜',
+            ],
+            'sd-Deva' => [
+                'currency_pattern' => '¤ #,##0.00',
+                'accounting_currency_pattern' => '¤ #,##0.00',
             ],
             'si' => [],
             'sk' => [

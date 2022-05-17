@@ -1,8 +1,12 @@
 <?php
 
+/**
+ *   * Name: CalDAV/CardDAV tools
+ *   * Description: A widget with various CalDAV and CardDAV tools
+ *   * Requires: cdav
+ */
+
 namespace Zotlabs\Widget;
-
-
 
 class Cdav {
 
@@ -164,7 +168,7 @@ class Cdav {
 					'uri' => $sabreabook['uri'],
 					'displayname' => $sabreabook['{DAV:}displayname'],
 					'id' => $sabreabook['id']
-	
+
 				];
 			}
 

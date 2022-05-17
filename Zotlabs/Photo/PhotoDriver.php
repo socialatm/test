@@ -2,7 +2,7 @@
 
 namespace Zotlabs\Photo;
 
-use Zotlabs\Lib\Hashpath; 
+use Zotlabs\Lib\Hashpath;
 
 /**
  * @brief Abstract photo driver class.
@@ -494,11 +494,11 @@ abstract class PhotoDriver {
 				( aid, uid, xchan, resource_id, created, edited, filename, mimetype, album, height, width, content, os_storage, filesize, imgscale, photo_usage, title, description, os_path, display_path, allow_cid, allow_gid, deny_cid, deny_gid, expires, profile )
 				VALUES ( %d, %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', %d, %d, %d, %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d)", intval($p['aid']), intval($p['uid']), dbesc($p['xchan']), dbesc($p['resource_id']), dbescdate($p['created']), dbescdate($p['edited']), dbesc(basename($p['filename'])), dbesc($p['mimetype']), dbesc($p['album']), intval($p['height']), intval($p['width']), (intval($p['os_storage']) ? dbescbin($p['os_syspath']) : dbescbin($this->imageString())), intval($p['os_storage']), (intval($p['os_storage']) ? @filesize($p['os_syspath']) : strlen($this->imageString())), intval($p['imgscale']), intval($p['photo_usage']), dbesc($p['title']), dbesc($p['description']), dbesc($p['os_path']), dbesc($p['display_path']), dbesc($p['allow_cid']), dbesc($p['allow_gid']), dbesc($p['deny_cid']), dbesc($p['deny_gid']), dbescdate($p['expires']), intval($p['profile']));
 		}
-		logger('Photo save imgscale ' . $p['imgscale'] . ' returned ' . intval($r));
+		logger('Photo save imgscale ' . $p['imgscale'] . ' returned: ' . (($r) ? 1 : 0));
 
 		return $r;
 	}
-	
+
 	/**
 	 * @brief Stores thumbnail to database or filesystem.
 	 *
@@ -530,13 +530,13 @@ abstract class PhotoDriver {
 		}
 		else
 		    $arr['os_storage'] = 0;
-		
+
 		if(! $this->save($arr)) {
 			if(array_key_exists('os_syspath', $arr))
 				@unlink($arr['os_syspath']);
 			return false;
 		}
-		
+
 		return true;
 	}
 

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Wiki page history
+ *   * Description: History of an existing wiki page
+ *   * Requires: wiki
+ */
+
 namespace Zotlabs\Widget;
 
 class Wiki_page_history {
@@ -10,7 +16,7 @@ class Wiki_page_history {
 		$resource_id = ((array_key_exists('resource_id', $arr)) ? $arr['resource_id'] : '');
 
 		$pageHistory = \Zotlabs\Lib\NativeWikiPage::page_history([
-			'channel_id'    => \App::$profile_uid, 
+			'channel_id'    => \App::$profile_uid,
 			'observer_hash' => get_observer_hash(),
 			'resource_id'   => $resource_id,
 			'pageUrlName'   => $pageUrlName

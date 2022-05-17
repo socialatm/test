@@ -38,15 +38,26 @@ li:hover .widget-nav-pills-icons {
 	margin-top: 10px;
 }
 
-/* notes */ 
+/* notes */
 
 #note-text {
-	border: 1px solid rgba(0,0,0,.125);
-	padding: 5px;
+	padding: 7px 10px;
 	width: 100%;
-	resize: none;
+	resize: vertical;
 	min-height: 250px;
-	overflow: hidden;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#note-text-html {
+	padding: 7px 10px;
+	height: 250px;
+	width: 100%;
+	resize: vertical;
+	min-height: 250px;
+	overflow-y: auto;
+	overflow-x: hidden;
+
 }
 
 /* saved searches */
@@ -124,17 +135,6 @@ li:hover .group-edit-icon {
 	margin-top: 15px;
 }
 
-
-/* tasklist */
-
-.tasklist-tasks {
-	max-height: 300px;
-	overflow-y: auto;
-}
-
-#tasklist-new-summary {
-	width: 250px;
-}
 
 /* cover photo */
 
@@ -232,12 +232,20 @@ a.wikilist {
 
 /* contact block */
 .contact-block-div .oneway-overlay {
-	font-size: 20px;
-	margin-left: -25px;
-	margin-top: 25px;
-	opacity: 0.8;
+	font-size: .9rem;
+	margin-left: -1rem;
+	margin-top: 1.9rem;
 }
 
 #cid-filter-wrapper {
 	position: relative;
+}
+
+/* hq_controls */
+.hq_controls_fixed_bottom_center {
+	z-index: 1028;
+	position: fixed;
+	bottom: 0px;
+	left: 50%;
+	transform: translateX(-50%);
 }

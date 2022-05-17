@@ -1,4 +1,5 @@
-version: 2
+version: 3
 url: $baseurl/search
 name: Search
 photo: icon:search
+desc: A separate search app to look up content, channels, tags, documentation or remote content depending on the search string prefix.

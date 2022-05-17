@@ -1,5 +1,5 @@
 <?php
-	
+
 	if (! $nav_bg)
 		$nav_bg = "#000";
 	if (! $nav_gradient_top)
@@ -35,7 +35,7 @@
 	if (! $font_colour)
 		$font_colour = "#ccc";
 	if (! $converse_width)
-		$converse_width = "1024";
-		
+		$converse_width = '52'; //unit: rem;
+
 
 

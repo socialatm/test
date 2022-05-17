@@ -108,7 +108,7 @@ class Follow extends Controller {
 		}
 		Libsync::build_sync_packet(0, [ 'abook' => [ $clone ] ], true);
 
-		$can_view_stream = their_perms_contains($channel['channel_id'],$clone['abook_xchan'],'view_stream');
+		$can_view_stream = intval(get_abconfig($channel['channel_id'], $clone['abook_xchan'], 'their_perms', 'view_stream'));
 
 		// If we can view their stream, pull in some posts
 
@@ -117,7 +117,7 @@ class Follow extends Controller {
 		}
 
 		if ($interactive) {
-			goaway(z_root() . '/connedit/' . $result['abook']['abook_id'] . '?follow=1');
+			goaway(z_root() . '/connections#' . $result['abook']['abook_id']);
 		}
 		else {
 			json_return_and_die([ 'success' => true ]);

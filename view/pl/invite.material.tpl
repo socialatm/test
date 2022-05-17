@@ -1,0 +1,1 @@
+{{* szablon PL dla zaproszenia zawierającego niezbędne dane potrzebne do zarejestrowania się *}}

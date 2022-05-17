@@ -1,9 +1,7 @@
 [h3]Co to jest $Projectname?[/h3]
-$Projectname to bezpłatny i otwartoźródłowy zestaw aplikacji i usług internetowych działających na specjalnym portalu internetowym, zwanym też "hubem", który może łączyć się z innymi portalami w sfederalizowanej sieci internetowej.
-$Projectname zapewnia użytkownikom zaawansowaną komunikację, tożsamości i usługę kontroli dostępu, które bezproblemowo współpracują w różnych domenach i niezależnych
-serwisach internetowych. $Projectname pozwala użytkownikom publikować treści, [b]publicznie[/b] lub [b]prywatnie[/b], w swoich "kanałach" (ang. channels), które są zabezpieczonymi kryptograficznie tożsamościami zapewniającymi
-uwierzytelnianie użytkowników niezależnie od portali, które hostują te kanały. To rewolucyjne uwolnienie tożsamości inernetowej z poszczególnych serwerów i domen jest nazywane "tożsamością nomadyczną" i jest oparte na protokole Zot - nowej strukturze
-zdecentralizowanej kontroli dostępu ze szczegółowymi, rozszerzalnymi uprawnieniami.
+$Projectname Hubzilla to bezpłatny i otwartoźródłowy zestaw aplikacji i usług internetowych, które można wdrożyć na własnym serwerze internetowym jako samodzielny portal społecznościowy, zwanym też "hubem". Portal ten może łączyć się z innymi portalami tego typu, tworząc sfederowaną sieć społecznościową.
+$Projectname zapewnia użytkownikom zaawansowaną komunikację, tożsamości i usługę kontroli dostępu, które bezproblemowo współpracują w różnych domenach i niezależnych serwisach internetowych.
+$Projectname pozwala użytkownikom komunikować się i publikować treści w swoich "kanałach" z możliwością bardzo szczegółowej kontroli dostępu. Kanały są zabezpieczonymi kryptograficznie tożsamościami internetowymi, zapewniającymi uwierzytelnianie użytkowników niezależnie od portali na których są hostowane. To rewolucyjne uwolnienie tożsamości inernetowej z poszczególnych serwerów i domen jest nazywane "tożsamością nomadyczną" i jest oparte na protokole Zot - nowej strukturze zdecentralizowanej kontroli dostępu ze szczegółowymi, rozszerzalnymi uprawnieniami.
 Z praktycznego punktu widzenia członków danego portalu, korzystających z oprogramowania $Projectname, oferuje ono szereg znanych, zintegrowanych aplikacji i usług internetowych, w tym:
 [ul]
 [li]wątki dyskusyjne w sieciach społecznościowych[/li]
@@ -16,12 +14,7 @@ Chociaż wszystkie te aplikacje i usługi można znaleźć w innych pakietach op
 Dzięki oferowanym aplikacjom, $Projectname świetnie się nadaje do budowy platformy komunikacyjno-publikacyjnej o charkterze społecznościowym dla realnych grup społecznych, takich jak rodziny, lokalne grupy, organizacje społeczne, środowiska szkolne, wspólnoty mieszkańców czy wspólnoty religijne. 
  
 [h3]Stos programów[/h3]
-Pakiet oprogramowania $Projectname jest stosunkowo standardową aplikacją serwerową napisaną głównie w PHP i MySQL,
-[url=https://framagit.org/$Projectname/core/blob/master/install/INSTALL.txt]wymagającą niewiele więcej niż serwera WWW,
-bazy danych zgodnej z MySQL i środowiska wykonawczego PHP[/url]. System został zaprojektowany tak, aby był łatwy do
-zainstalowania przez osoby z podstawowymi umiejętnościami administrowania witryną, na typowych platformach współdzielonego
-hostingu, z uwzglednieniem szerokiej gamy sprzętu komputerowego. Można go również łatwo rozszerzyć za pomocą wtyczek i motywów
-oraz innych narzędzi zewnętrznych.
+Pakiet oprogramowania $Projectname jest stosunkowo standardową aplikacją serwerową napisaną głównie w PHP i MySQL, wymagającą niewiele więcej niż [url=https://framagit.org/$Projectname/core/blob/master/install/INSTALL.txt]serwera WWW, bazy danych zgodnej z MySQL i środowiska wykonawczego PHP[/url]. System został zaprojektowany tak, aby był łatwy do zainstalowania przez osoby z podstawowymi umiejętnościami administrowania witryną, na typowych platformach współdzielonego hostingu, z uwzglednieniem szerokiej gamy sprzętu komputerowego. Można go również łatwo rozszerzyć za pomocą wtyczek i motywów oraz innych narzędzi zewnętrznych.
 
 [h3]Słownik[/h3]
 [dl terms="b"]
@@ -35,7 +28,7 @@ oraz innych narzędzi zewnętrznych.
 
 [*= konto ([i]ang. account[/i])] Umowny rejestr zawierajacy dane rejestracyjne i ewentualnie inne dane użytkownika serwisu internetowego (portalu), ściśle związane z umową jaką zwiera użytkownik z operatorem (właścicielem) serwisu o świadczenie usług drogą internetową. Posiadanie konta umożliwia użytkownikowi korzystanie z usług serwisu. Nie jest to pojęcie specyficzne dla platformy Hubzilla ale ma tu znaczenie węższe i należy go odróżniać od profilu lub tożsamości użytkownika. W Hubzilla, użytkownik (w ramach swojego konta) może mieć wiele tożsamości i te tożsamości utrzymywać na wielu odrębnych portalach w sieci Zot, w sposób zsynchronizowany. Na tych portalach użytkownik musi mieć odrębne konta.
 
-[*= tożsamość nomadyczna ([i]ang. nomadic identity[/i])] Możliwość uwierzytelniania i łatwej migracji tożsamości pomiędzy niezależnymi portalami i domenami internetowymi. Tożsamość nomadyczna zapewnia prawdziwą własność tożsamości internetową, ponieważ tożsamości kontrolowane przez konto na portalu nie są ściśle związane z tym portalem. Portal bardziej przypomina "hosta" kanałów. W serwisie $Projectname nie masz "konta" na serwerze, tak jak na typowych serwisach internetowych - posiadasz tożsamość, którą możesz przenosić w całej sieci za pomocą mechanizmu klonowania.
+[*= tożsamość nomadyczna ([i]ang. nomadic identity[/i])] Możliwość uwierzytelniania i łatwej migracji tożsamości i powiązanych danych użytkownika pomiędzy niezależnymi portalami i domenami internetowymi. Tożsamość nomadyczna zapewnia prawdziwą własność tożsamości internetowej i suwerenność danych użytkownika oraz przenoszalność usług.
 
 [*= [url=[baseurl]/help/developer/zot_protocol]Protokół Zot[/url]] Nowy protokół, oparty na JSON, do wdrażania bezpiecznej, zdecentralizowanej komunikacji i usług. Różni się od wielu innych protokołów komunikacyjnych, budując komunikację na podstawie zdecentralizowanej struktury tożsamości i uwierzytelniania. Składnik uwierzytelniania jest koncepcyjnie podobny do OpenID, ale jest odizolowany od tożsamości opartej na DNS. Tam, gdzie to możliwe, zdalne uwierzytelnianie jest ciche i niewidoczne. Zapewnia to mechanizm kontroli dostępu rozproszonego na skalę sieci WWW, który jest dyskretny.
 [/dl]
@@ -181,7 +174,7 @@ Wpisy i komentarze można przeglądać przed wysłaniem i edytować po wysłaniu
 [h4]Głosowanie i konsensus[/h4]
 Wpisy mogą być przekształcane w elementy "konsensusu", które pozwalają czytelnikom oferować opinie, które są zestawiane w liczniki "zgadzam się", "nie zgadzam się" i "wstrzymuję się". Pozwala to ocenić zainteresowanie pomysłami i tworzyć nieformalne ankiety. 
 
-[h4]Rozszerzaie $Projectname[/h4]
+[h4]Rozszerzanie $Projectname[/h4]
 
 $Projectname może zostać rozszerzona na wiele sposobów, poprzez dostosowanie witryny, personalizację, ustawienia opcji, motywy i dodatki - wtyczki. 
 

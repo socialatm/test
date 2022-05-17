@@ -1,6 +1,8 @@
 <?php
 namespace Zotlabs\Module;
 
+use App;
+
 require_once("include/bbcode.php");
 require_once('include/security.php');
 require_once('include/conversation.php');
@@ -34,11 +36,20 @@ class Display extends \Zotlabs\Web\Controller {
 			}
 		}
 
-		if($_REQUEST['mid'])
+		if($_REQUEST['mid']) {
 			$item_hash = $_REQUEST['mid'];
+		}
 
-		if(! $item_hash) {
-			\App::$error = 404;
+		$item_hash = unpack_link_id($item_hash);
+
+		if ($item_hash === false) {
+			App::$error = 400;
+			notice(t('Malformed message id.') . EOL);
+			return;
+		}
+
+		if(!$item_hash) {
+			App::$error = 404;
 			notice( t('Item not found.') . EOL);
 			return;
 		}
@@ -47,7 +58,7 @@ class Display extends \Zotlabs\Web\Controller {
 
 		if(local_channel() && (! $update)) {
 
-			$channel = \App::get_channel();
+			$channel = App::get_channel();
 
 			$channel_acl = array(
 				'allow_cid' => $channel['channel_allow_cid'],
@@ -92,11 +103,6 @@ class Display extends \Zotlabs\Web\Controller {
 
 		$target_item = null;
 
-		if(strpos($item_hash,'b64.') === 0)
-			$decoded = @base64url_decode(substr($item_hash,4));
-		if($decoded)
-			$item_hash = $decoded;
-
 		$r = q("select id, uid, mid, parent, parent_mid, thr_parent, verb, item_type, item_deleted, author_xchan, item_blocked from item where mid = '%s' limit 1",
 			dbesc($item_hash)
 		);
@@ -110,7 +116,7 @@ class Display extends \Zotlabs\Web\Controller {
 		);
 		if($x) {
 // not yet ready for prime time
-//			\App::$poi = $x[0];
+//			App::$poi = $x[0];
 		}
 
 		//if the item is to be moderated redirect to /moderate
@@ -189,17 +195,15 @@ class Display extends \Zotlabs\Web\Controller {
 			// if the target item is not a post (eg a like) we want to address its thread parent
 
 			//$mid = ((($target_item['verb'] == ACTIVITY_LIKE) || ($target_item['verb'] == ACTIVITY_DISLIKE)) ? $target_item['thr_parent'] : $target_item['mid']);
-			$mid = $target_item['mid'];
 
 			// if we got a decoded hash we must encode it again before handing to javascript
-			if($decoded)
-				$mid = 'b64.' . base64url_encode($mid);
+			$mid = gen_link_id($target_item['mid']);
 
 			$o .= '<div id="live-display"></div>' . "\r\n";
 			$o .= "<script> var profile_uid = " . ((intval(local_channel())) ? local_channel() : (-1))
-				. "; var netargs = '?f='; var profile_page = " . \App::$pager['page'] . "; </script>\r\n";
+				. "; var netargs = '?f='; var profile_page = " . App::$pager['page'] . "; </script>\r\n";
 
-			\App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"),array(
+			App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"),array(
 				'$baseurl' => z_root(),
 				'$pgtype'  => 'display',
 				'$uid'     => '0',
@@ -215,7 +219,7 @@ class Display extends \Zotlabs\Web\Controller {
 				'$dm'      => '0',
 				'$nouveau' => '0',
 				'$wall'    => '0',
-				'$page'    => ((\App::$pager['page'] != 1) ? \App::$pager['page'] : 1),
+				'$page'    => ((App::$pager['page'] != 1) ? App::$pager['page'] : 1),
 				'$list'    => ((x($_REQUEST,'list')) ? intval($_REQUEST['list']) : 0),
 				'$search'  => '',
 				'$xchan'   => '',
@@ -233,7 +237,7 @@ class Display extends \Zotlabs\Web\Controller {
 			head_add_link([
 				'rel'   => 'alternate',
 				'type'  => 'application/json+oembed',
-				'href'  => z_root() . '/oep?f=&url=' . urlencode(z_root() . '/' . \App::$query_string),
+				'href'  => z_root() . '/oep?f=&url=' . urlencode(z_root() . '/' . App::$query_string),
 				'title' => 'oembed'
 			]);
 
@@ -355,7 +359,7 @@ class Display extends \Zotlabs\Web\Controller {
 				}
 				$o .= '</noscript>';
 
-				\App::$page['title'] = (($items[0]['title']) ? $items[0]['title'] . " - " . \App::$page['title'] : \App::$page['title']);
+				App::$page['title'] = (($items[0]['title']) ? $items[0]['title'] . " - " . App::$page['title'] : App::$page['title']);
 
 				$o .= conversation($items, 'display', $update, 'client');
 			}
@@ -368,12 +372,12 @@ class Display extends \Zotlabs\Web\Controller {
 				'$version'       => xmlify(\Zotlabs\Lib\System::get_project_version()),
 				'$generator'     => xmlify(\Zotlabs\Lib\System::get_platform_name()),
 				'$generator_uri' => 'https://hubzilla.org',
-				'$feed_id'       => xmlify(\App::$cmd),
+				'$feed_id'       => xmlify(App::$cmd),
 				'$feed_title'    => xmlify(t('Article')),
 				'$feed_updated'  => xmlify(datetime_convert('UTC', 'UTC', 'now', ATOM_TIME)),
 				'$author'        => '',
 				'$owner'         => '',
-				'$profile_page'  => xmlify(z_root() . '/display/' . $target_item['mid']),
+				'$profile_page'  => xmlify(z_root() . '/display/' . gen_link_id($target_item['mid'])),
 			));
 
 			$x = [ 'xml' => $atom, 'channel' => $channel, 'observer_hash' => $observer_hash, 'params' => $params ];

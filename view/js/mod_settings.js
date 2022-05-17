@@ -24,8 +24,14 @@ $(document).ready(function() {
 		loadPermcat(permName);
 	});
 
+	if (Notification.permission !== 'granted') {
+		$('#desktop-notifications-info').show();
+	}
 
-
+	$('#desktop-notifications-request').on('click', function(e) {
+		e.preventDefault();
+		push_notification_request(e);
+	});
 
 });
 

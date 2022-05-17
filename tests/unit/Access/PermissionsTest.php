@@ -37,7 +37,7 @@ class PermissionsTest extends UnitTestCase {
 	use PHPMock;
 
 	public function testVersion() {
-		$expectedVersion = 2;
+		$expectedVersion = 3;
 
 		// static call
 		$this->assertEquals($expectedVersion, Permissions::version());
@@ -60,8 +60,8 @@ class PermissionsTest extends UnitTestCase {
 	 * @uses ::call_hooks
 	 */
 	public function testPerms() {
-		// There are 18 default perms
-		$permsCount = 18;
+		// There are 17 default perms
+		$permsCount = 17;
 
 		// Create a stub for global function t() with expectation
 		$t = $this->getFunctionMock('Zotlabs\Access', 't');
@@ -94,8 +94,8 @@ class PermissionsTest extends UnitTestCase {
 	 * @uses ::call_hooks
 	 */
 	public function testPermsFilter() {
-		// There are 18 default perms
-		$permsCount = 18;
+		// There are 17 default perms
+		$permsCount = 17;
 
 		// Create a stub for global function t() with expectation
 		$t = $this->getFunctionMock('Zotlabs\Access', 't');
@@ -154,7 +154,6 @@ class PermissionsTest extends UnitTestCase {
 								'post_comments' => 0,
 								'post_mail' => 0,
 								'post_like' => 0,
-								'tag_deliver' => 0,
 								'chat' => 0,
 								'republish' => 0,
 								'delegate' => 0
@@ -177,7 +176,6 @@ class PermissionsTest extends UnitTestCase {
 								'post_comments' => 0,
 								'post_mail' => 0,
 								'post_like' => 0,
-								'tag_deliver' => 0,
 								'chat' => 0,
 								'republish' => 0,
 								'delegate' => 0
@@ -200,7 +198,6 @@ class PermissionsTest extends UnitTestCase {
 								'post_comments' => 0,
 								'post_mail' => 0,
 								'post_like' => 0,
-								'tag_deliver' => 0,
 								'chat' => 0,
 								'republish' => 0,
 								'delegate' => 0
@@ -234,7 +231,6 @@ class PermissionsTest extends UnitTestCase {
 				'post_comments' => 0,
 				'post_mail' => 0,
 				'post_like' => 0,
-				'tag_deliver' => 0,
 				'chat' => 0,
 				'republish' => 0,
 				'delegate' => 0

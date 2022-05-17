@@ -40,7 +40,7 @@ class Home extends Controller {
 			if (!$dest)
 				$dest = get_config('system', 'startpage');
 			if (!$dest)
-				$dest = z_root() . '/network';
+				$dest = z_root() . '/hq';
 
 			goaway($dest);
 		}

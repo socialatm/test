@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: App cloud
+ *   * Description: Shows a cloud with various app categories
+ *   * Requires: apps
+ */
+
 namespace Zotlabs\Widget;
 
 class Appcloud {

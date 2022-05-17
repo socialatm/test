@@ -8,7 +8,6 @@ use Zotlabs\Lib\Libzotdir;
 
 
 require_once('include/socgraph.php');
-require_once('include/dir_fns.php');
 require_once('include/bbcode.php');
 require_once('include/html2plain.php');
 
@@ -255,21 +254,21 @@ class Directory extends Controller {
 								$connect_link = '';
 
 							$location = '';
-							if(strlen($rr['locale']))
+							if(isset($rr['locale']))
 								$location .= $rr['locale'];
-							if(strlen($rr['region'])) {
-								if(strlen($rr['locale']))
+							if(isset($rr['region'])) {
+								if($location)
 									$location .= ', ';
 								$location .= $rr['region'];
 							}
-							if(strlen($rr['country'])) {
-								if(strlen($location))
+							if(isset($rr['country'])) {
+								if($location)
 									$location .= ', ';
 								$location .= $rr['country'];
 							}
 
 							$age = '';
-							if(strlen($rr['birthday'])) {
+							if(isset($rr['birthday'])) {
 								if(($years = age($rr['birthday'],'UTC','')) > 0)
 									$age = $years;
 							}

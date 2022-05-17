@@ -5,8 +5,6 @@ use Zotlabs\Lib\Libzot;
 use Zotlabs\Lib\Libzotdir;
 use Zotlabs\Lib\Zotfinger;
 
-require_once('include/dir_fns.php');
-require_once('include/zot.php');
 
 /**
  * poco_load
@@ -24,7 +22,7 @@ require_once('include/zot.php');
  *
  * Once the global contact is stored add (if necessary) the contact linkage which associates
  * the given uid, cid to the global contact entry. There can be many uid/cid combinations
- * pointing to the same global contact id. 
+ * pointing to the same global contact id.
  *
  * @param string $xchan
  * @param string $url
@@ -127,14 +125,14 @@ function poco_load($xchan = '', $url = null) {
 					$profile_url = $url['value'];
 					continue;
 				}
-				if(in_array($url['type'], ['zot','zot6'] )) {
+				if($url['type'] === 'zot6') {
 					$network = $url['type'];
 					$address = str_replace('acct:' , '', $url['value']);
 					continue;
 				}
 			}
 		}
-		if(x($entry,'photos') && is_array($entry['photos'])) { 
+		if(x($entry,'photos') && is_array($entry['photos'])) {
 			foreach($entry['photos'] as $photo) {
 				if($photo['type'] == 'profile') {
 					$profile_photo = $photo['value'];
@@ -145,7 +143,7 @@ function poco_load($xchan = '', $url = null) {
 
 		if((! $name) || (! $profile_url) || (! $profile_photo) || (! $hash) || (! $address)) {
 			logger('poco_load: missing data');
-			continue; 
+			continue;
 		}
 
 		$x = q("select xchan_hash from xchan where xchan_hash = '%s' limit 1",
@@ -160,18 +158,6 @@ function poco_load($xchan = '', $url = null) {
 					$j = Zotfinger::exec($profile_url);
 					if(array_path_exists('signature/signer',$j) && $j['signature']['signer'] === $profile_url && intval($j['signature']['header_valid'])) {
 						Libzot::import_xchan($j['data']);
-					}
-					$x = q("select xchan_hash from xchan where xchan_hash = '%s' limit 1",
-						dbesc($hash)
-					);
-					if(! $x) {
-						continue;
-					}
-				}
-				if($network === 'zot') {
-					$j = Zotlabs\Zot\Finger::run($address,null);
-					if($j['success']) {
-						import_xchan($j);
 					}
 					$x = q("select xchan_hash from xchan where xchan_hash = '%s' limit 1",
 						dbesc($hash)
@@ -242,7 +228,7 @@ function common_friends($uid,$xchan,$start = 0,$limit=100000000,$shuffle = false
 	if($shuffle)
 		$sql_extra = " order by $rand ";
 	else
-		$sql_extra = " order by xchan_name asc "; 
+		$sql_extra = " order by xchan_name asc ";
 
 	$r = q("SELECT * from xchan left join xlink on xlink_link = xchan_hash where xlink_xchan = '%s' and xlink_static = 0 and xlink_link in
 		(select abook_xchan from abook where abook_xchan != '%s' and abook_channel = %d and abook_self = 0 ) $sql_extra limit %d offset %d",
@@ -318,7 +304,7 @@ function update_suggestions() {
 		$url = z_root() . '/sitelist';
 	}
 	else {
-		$directory = find_upstream_directory($dirmode);
+		$directory = Libzotdir::find_upstream_directory($dirmode);
 		$url = $directory['url'] . '/sitelist';
 	}
 	if(! $url)
@@ -329,8 +315,8 @@ function update_suggestions() {
 	if($ret['success']) {
 
 		// We will grab fresh data once a day via the poller. Remove anything over a week old because
-		// the targets may have changed their preferences and don't want to be suggested - and they 
-		// may have simply gone away. 
+		// the targets may have changed their preferences and don't want to be suggested - and they
+		// may have simply gone away.
 
 		$r = q("delete from xlink where xlink_xchan = '' and xlink_updated < %s - INTERVAL %s and xlink_static = 0",
 			db_utcnow(), db_quoteinterval('7 DAY')
@@ -413,11 +399,11 @@ function poco($a,$extended = false) {
 		$sql_extra = sprintf(" and abook_id = %d and abook_hidden = 0 and abook_pending = 0 ",intval($cid));
 
 	if($system_mode) {
-		$r = q("SELECT count(*) as total from abook where abook_self = 1 
+		$r = q("SELECT count(*) as total from abook where abook_self = 1
 			and abook_channel in (select uid from pconfig where cat = 'system' and k = 'suggestme' and v = '1') ");
 	}
 	else {
-		$r = q("SELECT count(*) as total from abook where abook_channel = %d 
+		$r = q("SELECT count(*) as total from abook where abook_channel = %d
 			$sql_extra ",
 			intval($channel_id)
 		);
@@ -437,14 +423,14 @@ function poco($a,$extended = false) {
 	$itemsPerPage = ((x($_GET,'count') && intval($_GET['count'])) ? intval($_GET['count']) : $totalResults);
 
 	if($system_mode) {
-		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_self = 1 
-			and abook_channel in (select uid from pconfig where cat = 'system' and k = 'suggestme' and v = '1') 
+		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_self = 1
+			and abook_channel in (select uid from pconfig where cat = 'system' and k = 'suggestme' and v = '1')
 			limit %d offset %d ",
 			intval($itemsPerPage),
 			intval($startIndex)
 		);
 	} else {
-		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_channel = %d 
+		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_channel = %d
 			$sql_extra LIMIT %d OFFSET %d",
 			intval($channel_id),
 			intval($itemsPerPage),
@@ -513,7 +499,7 @@ function poco($a,$extended = false) {
 					$entry['urls'] = array(array('value' => $rr['xchan_url'], 'type' => 'profile'));
 					$network = $rr['xchan_network'];
 					if($rr['xchan_addr'])
-						$entry['urls'][] = array('value' => 'acct:' . $rr['xchan_addr'], 'type' => $network);  
+						$entry['urls'][] = array('value' => 'acct:' . $rr['xchan_addr'], 'type' => $network);
 				}
 				if($fields_ret['preferredUsername'])
 					$entry['preferredUsername'] = substr($rr['xchan_addr'],0,strpos($rr['xchan_addr'],'@'));
@@ -536,7 +522,7 @@ function poco($a,$extended = false) {
 	if($format === 'json') {
 		header('Content-type: application/json');
 		echo json_encode($ret);
-		killme();	
+		killme();
 	}
 	else
 		http_status_exit(500);

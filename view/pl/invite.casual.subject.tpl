@@ -1,0 +1,1 @@
+Dołącz do nas na {{$projectname}} {{$invite_loc}}

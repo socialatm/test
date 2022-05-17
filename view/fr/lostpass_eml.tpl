@@ -1,6 +1,6 @@
-
 Cher {{$username}},
-	Une demande pour réinitialiser votre mot de passe a récemment été reçue par {{$sitename}} 
+
+Une demande pour réinitialiser votre mot de passe a récemment été reçue par {{$sitename}} 
 Pour confirmer cette requête, veuillez suivre le lien de vérification
 ci-dessous ou en faire un copier-coller dans la barre d'adresse de votre navigateur. 
 
@@ -18,13 +18,15 @@ Vous pouvez changer ce mot de passe à partir des réglages du profil après vou
 
 Voici les détails de connexion:
 
-Emplacement du site:⇥{{$siteurl}}
-Utilisateur:⇥{{$email}}
-
-
+Emplacement du site: {{$siteurl}}
+Utilisateur: {{$email}}
 
 
 Sincèrement,
-	L'administrateur {{$sitename}}
+L'administrateur de {{$sitename}}
+
+-- 
+Conditions d'utilisation : 
+{{$siteurl}}/help/TermsOfService
 
  

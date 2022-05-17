@@ -1,6 +1,6 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<div class="pull-right">
+		<div class="float-end">
 			{{if $can_post}}
 			<button class="btn btn-sm btn-success acl-form-trigger" title="{{$usage}}" onclick="openClose('photo-upload-form');" data-form_id="photos-upload-form"><i class="fa fa-plus-circle"></i>&nbsp;{{$upload.0}}</button>
 			{{/if}}
@@ -15,7 +15,7 @@
 				{{include file="photo_top.tpl"}}
 			{{/foreach}}
 			{{** make sure this element is at the bottom - we rely on that in endless scroll **}}
-			<span id="page-end" class="d-block float-left w-100" style="position: absolute; bottom: 0px"></span>
+			<span id="page-end" class="d-block float-start w-100" style="position: absolute; bottom: 0px"></span>
 		</div>
 	</div>
 </div>

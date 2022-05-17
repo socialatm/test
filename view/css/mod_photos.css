@@ -43,8 +43,11 @@
 	padding: 7px 3px 7px 10px;
 }
 
+#upload-index td:nth-child(3){
+	padding: 7px 3px;
+}
+
 #upload-index td:nth-child(4){
-	padding: 7px 10px 7px 3px;
 	white-space: nowrap;
 }
 
@@ -55,8 +58,5 @@
 }
 
 .upload-progress-bar {
-	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOM2RFTDwAE2QHxFMHIIwAAAABJRU5ErkJggg==') repeat-y;
-	background-size: 0px;
 	padding: 0px !important;
-	height: 3px;
 }

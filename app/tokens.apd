@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/tokens
 requires: local_channel
 name: Guest Access
 photo: icon:user-secret
 categories: Access Control
+desc: Create and manage guest access tokens. Those tokens are useful to share private content with people outside the Zot network.

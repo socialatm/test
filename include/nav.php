@@ -18,26 +18,23 @@ function nav($template = 'default') {
 	App::$page['htmlhead'] = App::$page['htmlhead'] ?? '';
 	App::$page['htmlhead'] .= '<script>$(document).ready(function() { $("#nav-search-text").search_autocomplete(\'' . z_root() . '/acl' . '\');});</script>';
 	$is_owner = (((local_channel()) && ((App::$profile_uid == local_channel()) || (App::$profile_uid == 0))) ? true : false);
-	$observer = [];
-	$sitelocation = '';
+	$observer = App::get_observer();
 
 	if (local_channel()) {
-		$channel  = App::get_channel();
-		$observer = App::get_observer();
-
-		$prof     = q("select id from profile where uid = %d and is_default = 1",
+		$channel = App::get_channel();
+		$prof = q("select id from profile where uid = %d and is_default = 1",
 			intval($channel['channel_id'])
 		);
 
-		if (empty($_SESSION['delegate'])) {
+		if (empty($_SESSION['delegate']) && feature_enabled(local_channel(), 'nav_channel_select')) {
 			$chans = q("select channel_name, channel_id from channel where channel_account_id = %d and channel_removed = 0 order by channel_name ",
 				intval(get_account_id())
 			);
 		}
+
 		$sitelocation = (($is_owner) ? '' : App::$profile['reddress']);
 	}
-	elseif (remote_channel()) {
-		$observer     = App::get_observer();
+	else {
 		$sitelocation = ((App::$profile['reddress']) ? App::$profile['reddress'] : '@' . App::get_hostname());
 	}
 
@@ -47,9 +44,9 @@ function nav($template = 'default') {
 	$navbar_apps  = [];
 	$channel_apps = [];
 
-	if (isset(App::$profile['channel_address']))
+	if (isset(App::$profile['channel_address'])) {
 		$channel_apps[] = channel_apps($is_owner, App::$profile['channel_address']);
-
+	}
 
 	/**
 	 *
@@ -98,15 +95,13 @@ function nav($template = 'default') {
 	if (local_channel()) {
 
 		if (empty($_SESSION['delegate'])) {
-			$nav['manage'] = ['manage', t('Channel Manager'), "", t('Manage your channels'), 'manage_nav_btn'];
+			$nav['manage'] = ['manage', t('Channels'), "", t('Manage your channels'), 'manage_nav_btn'];
 		}
-		if (Apps::system_app_installed(local_channel(), 'Privacy Groups'))
-			$nav['group'] = ['group', t('Privacy Groups'), "", t('Manage your privacy groups'), 'group_nav_btn'];
 
 		$nav['settings'] = ['settings', t('Settings'), "", t('Account/Channel Settings'), 'settings_nav_btn'];
 
 
-		if ($chans && count($chans) > 1 && feature_enabled(local_channel(), 'nav_channel_select'))
+		if ($chans && count($chans) > 1)
 			$nav['channels'] = $chans;
 
 		$nav['logout'] = ['logout', t('Logout'), "", t('End this session'), 'logout_nav_btn'];
@@ -123,11 +118,11 @@ function nav($template = 'default') {
 	else {
 		if (!get_account_id()) {
 			if (App::$module === 'channel') {
-				$nav['login']       = login(true, 'main-login', false, false);
+				$nav['login']       = login(true, 'modal_login', false, false);
 				$nav['loginmenu'][] = ['login', t('Login'), '', t('Sign in'), ''];
 			}
 			else {
-				$nav['login']         = login(true, 'main-login', false, false);
+				$nav['login']         = login(true, 'modal_login', false, false);
 				$nav['loginmenu'][]   = ['login', t('Login'), '', t('Sign in'), 'login_nav_btn'];
 
 				App::$page['content'] .= replace_macros(get_markup_template('nav_login.tpl'),
@@ -164,8 +159,9 @@ function nav($template = 'default') {
 		];
 	}
 
-	if (((get_config('system', 'register_policy') == REGISTER_OPEN) || (get_config('system', 'register_policy') == REGISTER_APPROVE)) && (empty($_SESSION['authenticated'])))
+	if ((get_config('system', 'register_policy') == REGISTER_OPEN || get_config('system', 'register_policy') == REGISTER_APPROVE) && empty($_SESSION['authenticated'])) {
 		$nav['register'] = ['register', t('Register'), "", t('Create an account'), 'register_nav_btn'];
+	}
 
 	if (!get_config('system', 'hide_help')) {
 		$help_url            = z_root() . '/help?f=&cmd=' . App::$cmd;
@@ -203,10 +199,6 @@ function nav($template = 'default') {
 	$x = ['nav' => $nav, 'usermenu' => $userinfo];
 
 	call_hooks('nav', $x);
-
-	// Not sure the best place to put this on the page. So I'm implementing it but leaving it
-	// turned off until somebody discovers this and figures out a good location for it.
-	$powered_by = '';
 
 	$url          = '';
 	$settings_url = '';
@@ -253,6 +245,7 @@ function nav($template = 'default') {
 				$pinned_list[] = Apps::app_encode($li);
 			}
 		}
+
 		Apps::translate_system_apps($pinned_list);
 
 		usort($pinned_list, 'Zotlabs\\Lib\\Apps::app_name_compare');
@@ -266,6 +259,7 @@ function nav($template = 'default') {
 				$syslist[] = Apps::app_encode($li);
 			}
 		}
+
 		Apps::translate_system_apps($syslist);
 
 	}
@@ -293,12 +287,13 @@ function nav($template = 'default') {
 
 	if ($syslist) {
 		foreach ($syslist as $app) {
-			if (isset(App::$nav_sel['name']) && App::$nav_sel['name'] == $app['name'])
+			if (isset(App::$nav_sel['name']) && App::$nav_sel['name'] == $app['name']) {
 				$app['active'] = true;
+			}
 			if ($is_owner) {
 				$nav_apps[] = Apps::app_render($app, 'nav');
 			}
-			elseif (!$is_owner && (!isset($app['requires']) || (isset($app['requires']) && strpos($app['requires'], 'local_channel') === false))) {
+			elseif (!isset($app['requires']) || (isset($app['requires']) && strpos($app['requires'], 'local_channel') === false)) {
 				$nav_apps[] = Apps::app_render($app, 'nav');
 			}
 		}
@@ -326,19 +321,23 @@ function nav($template = 'default') {
 		'$localuser'          => local_channel(),
 		'$is_owner'           => $is_owner,
 		'$sel'                => App::$nav_sel,
-		'$powered_by'         => $powered_by,
-		'$help'               => t('@name, !forum, #tag, ?doc, content'),
+		'$help'               => t('@name, #tag, ?doc, content'),
 		'$pleasewait'         => t('Please wait...'),
 		'$nav_apps'           => $nav_apps,
 		'$navbar_apps'        => $navbar_apps,
 		'$channel_menu'       => get_pconfig(App::$profile_uid, 'system', 'channel_menu', get_config('system', 'channel_menu')),
 		'$channel_thumb'      => ((App::$profile) ? App::$profile['thumb'] : ''),
 		'$channel_apps'       => $channel_apps,
-		'$addapps'            => t('Add Apps'),
-		'$orderapps'          => t('Arrange Apps'),
-		'$sysapps_toggle'     => t('Toggle System Apps'),
+		'$addapps'            => t('Apps'),
+		'$channelapps'        => t('Channel Apps'),
+		'$sysapps'            => t('System Apps'),
+		'$pinned_apps'        => t('Pinned Apps'),
+		'$featured_apps'      => t('Featured Apps'),
 		'$url'                => (($url) ? $url : z_root() . '/' . App::$cmd),
-		'$settings_url'       => $settings_url
+		'$settings_url'       => $settings_url,
+		'$name'               => ((!$is_owner) ? App::$profile['fullname'] : ''),
+		'$thumb'              => ((!$is_owner) ? App::$profile['thumb'] : ''),
+		'$form_security_token' => get_form_security_token('pconfig')
 	]);
 
 	if (x($_SESSION, 'reload_avatar') && $observer) {
@@ -368,29 +367,33 @@ function nav_set_selected($raw_name, $settings_url = '') {
 
 	App::$nav_sel['name'] = $item['name'];
 
-	if ($settings_url)
+	if ($settings_url) {
 		App::$nav_sel['settings_url'] = z_root() . '/' . $settings_url;
+	}
 }
 
 function channel_apps($is_owner = false, $nickname = null) {
 
 	// Don't provide any channel apps if we're running as the sys channel
 
-	if (App::$is_sys)
-		return '';
+	if (App::$is_sys) {
+		return EMPTY_STR;
+	}
 
 	$channel = App::get_channel();
 
-	if ($channel && is_null($nickname))
+	if ($channel && is_null($nickname)) {
 		$nickname = $channel['channel_address'];
+	}
 
 	$uid = ((isset(App::$profile['profile_uid'])) ? App::$profile['profile_uid'] : local_channel());
 
-	if (!get_pconfig($uid, 'system', 'channelapps', '1'))
-		return;
+	if (!get_pconfig($uid, 'system', 'channelapps', '1')) {
+		return EMPTY_STR;
+	}
 
 	if ($uid == local_channel()) {
-		return;
+		return EMPTY_STR;
 	}
 	else {
 		$cal_link = '/cal/' . $nickname;
@@ -549,8 +552,6 @@ function channel_apps($is_owner = false, $nickname = null) {
 	return replace_macros(get_markup_template('profile_tabs.tpl'),
 		[
 			'$tabs'  => $arr['tabs'],
-			'$name'  => App::$profile['channel_name'],
-			'$thumb' => App::$profile['thumb'],
 		]
 	);
 }

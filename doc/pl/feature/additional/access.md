@@ -3,7 +3,7 @@
 
 ### Prywatne grupy
 
-Włączenie zarządzania i wybóru grup prywatności.
+Włączenie zarządzania i wyboru grup prywatności.
 <!-- TODO: full description for Privacy Groups -->
 
 Wymagany minimalny poziom umiejętności technicznych do korzystania z tej funkcji: 0

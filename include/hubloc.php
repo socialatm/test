@@ -16,6 +16,8 @@ use Zotlabs\Daemon\Master;
  */
 function hubloc_store_lowlevel($arr) {
 
+    $update = ((array_key_exists('hubloc_id',$arr) && $arr['hubloc_id']) ? 'hubloc_id = ' . intval($arr['hubloc_id']) : false);
+
 	$store = [
 		'hubloc_guid'        => ((array_key_exists('hubloc_guid',$arr))        ? $arr['hubloc_guid']        : ''),
 		'hubloc_guid_sig'    => ((array_key_exists('hubloc_guid_sig',$arr))    ? $arr['hubloc_guid_sig']    : ''),
@@ -40,7 +42,7 @@ function hubloc_store_lowlevel($arr) {
 		'hubloc_deleted'     => ((array_key_exists('hubloc_deleted',$arr))     ? $arr['hubloc_deleted']     : 0)
 	];
 
-	return create_table_from_array('hubloc', $store);
+	return (($update) ? update_table_from_array('hubloc', $store, $update) : create_table_from_array('hubloc', $store));
 }
 
 function site_store_lowlevel($arr) {
@@ -283,6 +285,13 @@ function hubloc_change_primary($hubloc) {
 	return true;
 }
 
+function hubloc_delete($hubloc) {
+	if (is_array($hubloc) && array_key_exists('hubloc_id', $hubloc)) {
+		q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_id = %d",
+			intval($hubloc['hubloc_id'])
+		);
+	}
+}
 
 /**
  * @brief Mark a hubloc as down.

@@ -1,6 +1,6 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<a title="{{$removechannel}}" class="btn btn-danger btn-sm pull-right" href="removeme"><i class="fa fa-trash-o"></i>&nbsp;{{$removeme}}</a>
+		<a title="{{$removechannel}}" class="btn btn-danger btn-sm float-end" href="removeme"><i class="fa fa-trash-o"></i>&nbsp;{{$removeme}}</a>
 		<h2>{{$ptitle}}</h2>
 		<div class="clear"></div>
 	</div>
@@ -11,20 +11,25 @@
 			<div class="panel">
 				<div class="section-subtitle-wrapper" role="tab" id="basic-settings">
 					<h3>
-						<a data-toggle="collapse" data-target="#basic-settings-collapse" href="#">
+						<a data-bs-toggle="collapse" data-bs-target="#basic-settings-collapse" href="#">
 							{{$h_basic}}
 						</a>
 					</h3>
 				</div>
-				<div id="basic-settings-collapse" class="collapse show" role="tabpanel" aria-labelledby="basic-settings" data-parent="#settings">
+				<div id="basic-settings-collapse" class="collapse show" role="tabpanel" aria-labelledby="basic-settings" data-bs-parent="#settings">
 					<div class="section-content-tools-wrapper">
-						{{include file="field_input.tpl" field=$username}}
+						{{include file="field_select.tpl" field=$role}}
 						{{include file="field_select_grouped.tpl" field=$timezone}}
 						{{include file="field_input.tpl" field=$defloc}}
 						{{include file="field_checkbox.tpl" field=$allowloc}}
 						{{include file="field_checkbox.tpl" field=$adult}}
 						{{include file="field_input.tpl" field=$photo_path}}
 						{{include file="field_input.tpl" field=$attach_path}}
+						{{include file="field_input.tpl" field=$expire}}
+
+						{{include file="field_textarea.tpl" field=$message_filter_excl}}
+						{{include file="field_textarea.tpl" field=$message_filter_incl}}
+
 						{{if $basic_addon}}
 						{{$basic_addon}}
 						{{/if}}
@@ -35,78 +40,23 @@
 				</div>
 			</div>
 			<div class="panel">
-				<div class="section-subtitle-wrapper" role="tab" id="privacy-settings">
-					<h3>
-						<a data-toggle="collapse" data-target="#privacy-settings-collapse" href="#">
-							{{$h_prv}}
-						</a>
-					</h3>
-				</div>
-				<div id="privacy-settings-collapse" class="collapse" role="tabpanel" aria-labelledby="privacy-settings" data-parent="#settings">
-					<div class="section-content-tools-wrapper">
-						{{include file="field_select_grouped.tpl" field=$role}}
-						{{$autoperms}}
-						<div id="advanced-perm" style="display:{{if $permissions_set}}none{{else}}block{{/if}};">
-							<div class="form-group">
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#apsModal">{{$lbl_p2macro}}</button>
-							</div>
-							<div class="modal" id="apsModal">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h4 class="modal-title">{{$lbl_p2macro}}</h4>
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										</div>
-										<div class="modal-body">
-										{{foreach $permiss_arr as $permit}}
-											{{include file="field_select.tpl" field=$permit}}
-										{{/foreach}}
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-										</div>
-									</div><!-- /.modal-content -->
-								</div><!-- /.modal-dialog -->
-							</div><!-- /.modal -->
-
-							<div id="settings-default-perms" class="form-group" >
-								<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#aclModal"><i id="jot-perms-icon" class="fa"></i>&nbsp;{{$permissions}}</button>
-							</div>
-							{{$group_select}}
-							{{include file="field_checkbox.tpl" field=$hide_presence}}
-							{{$profile_in_dir}}
-						</div>
-						<div class="settings-common-perms">
-							{{$suggestme}}
-							{{include file="field_checkbox.tpl" field=$blocktags}}
-							{{include file="field_input.tpl" field=$expire}}
-						</div>
-						{{if $permcat_enable}}
-						{{include file="field_select.tpl" field=$defpermcat}}
-						{{/if}}
-
-						{{if $sec_addon}}
-						{{$sec_addon}}
-						{{/if}}
-						<div class="settings-submit-wrapper" >
-							<button type="submit" name="submit" class="btn btn-primary">{{$submit}}</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="panel">
 				<div class="section-subtitle-wrapper" role="tab" id="notification-settings">
 					<h3>
-						<a data-toggle="collapse" data-target="#notification-settings-collapse" href="#">
+						<a data-bs-toggle="collapse" data-bs-target="#notification-settings-collapse" href="#">
 							{{$h_not}}
 						</a>
 					</h3>
 				</div>
-				<div id="notification-settings-collapse" class="collapse" role="tabpanel" aria-labelledby="notification-settings" data-parent="#settings">
+				<div id="notification-settings-collapse" class="collapse" role="tabpanel" aria-labelledby="notification-settings" data-bs-parent="#settings">
 					<div class="section-content-tools-wrapper">
 						<div id="settings-notifications">
 
-								{{include file="field_input.tpl" field=$mailhost}}
+							<div id="desktop-notifications-info" class="section-content-warning-wrapper" style="display: none;">
+								{{$desktop_notifications_info}}<br>
+								<a id="desktop-notifications-request" href="#">{{$desktop_notifications_request}}</a>
+							</div>
+
+							{{include file="field_input.tpl" field=$mailhost}}
 
 							<h3>{{$activity_options}}</h3>
 							<div class="group">
@@ -149,6 +99,7 @@
 								{{include file="field_intcheckbox.tpl" field=$vnotify14}}
 								{{include file="field_intcheckbox.tpl" field=$vnotify15}}
 								{{include file="field_intcheckbox.tpl" field=$always_show_in_notices}}
+								{{include file="field_intcheckbox.tpl" field=$update_notices_per_parent}}
 								{{include file="field_input.tpl" field=$evdays}}
 							</div>
 						</div>

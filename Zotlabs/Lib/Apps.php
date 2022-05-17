@@ -2,7 +2,7 @@
 
 namespace Zotlabs\Lib;
 
-use Zotlabs\Lib\Libsync;
+use App;
 
 require_once('include/plugin.php');
 require_once('include/channel.php');
@@ -21,9 +21,10 @@ class Apps {
 	 * @brief
 	 *
 	 * @param boolean $translate (optional) default true
+	 * @param boolean $sync (optional) default false used if called from sync_sysapps()
 	 * @return array
 	 */
-	static public function get_system_apps($translate = true) {
+	static public function get_system_apps($translate = true, $sync = false) {
 		$ret = [];
 
 		if(is_dir('apps'))
@@ -33,7 +34,7 @@ class Apps {
 
 		if($files) {
 			foreach($files as $f) {
-				$x = self::parse_app_description($f,$translate);
+				$x = self::parse_app_description($f, $translate, $sync);
 				if($x) {
 					$ret[] = $x;
 				}
@@ -45,7 +46,7 @@ class Apps {
 				$path = explode('/',$f);
 				$plugin = trim($path[1]);
 				if(plugin_is_installed($plugin)) {
-					$x = self::parse_app_description($f,$translate);
+					$x = self::parse_app_description($f, $translate, $sync);
 					if($x) {
 						$x['plugin'] = $plugin;
 						$ret[] = $x;
@@ -66,17 +67,17 @@ class Apps {
 	static public function get_base_apps() {
 		$x = get_config('system','base_apps',[
 			'Connections',
+			'Contact Roles',
 			'Network',
-			'Settings',
 			'Files',
-			'Channel Home',
-			'View Profile',
+			'Channel',
 			'Photos',
 			'Calendar',
 			'Directory',
 			'Search',
 			'Help',
-			'Profile Photo'
+			'HQ',
+			'Post'
 		]);
 
 		/**
@@ -207,9 +208,10 @@ class Apps {
 	 *
 	 * @param string $f filename
 	 * @param boolean $translate (optional) default true
+	 * @param boolean $sync (optional) default false
 	 * @return boolean|array
 	 */
-	static public function parse_app_description($f, $translate = true) {
+	static public function parse_app_description($f, $translate = true, $sync = false) {
 		$ret = [];
 		$matches = [];
 
@@ -255,7 +257,7 @@ class Apps {
 		if(array_key_exists('categories',$ret))
 			$ret['categories'] = str_replace(array('\'','"'),array('&#39;','&dquot;'),$ret['categories']);
 
-		if(array_key_exists('requires',$ret)) {
+		if(array_key_exists('requires',$ret) && !$sync) {
 			$requires = explode(',',$ret['requires']);
 			foreach($requires as $require) {
 				$require = trim(strtolower($require));
@@ -307,14 +309,16 @@ class Apps {
 				}
 			}
 		}
-		if(isset($ret)) {
-			if($translate)
-				self::translate_system_apps($ret);
 
-			return $ret;
+		if(empty($ret)) {
+			return false;
 		}
 
-		return false;
+		if($translate) {
+			self::translate_system_apps($ret);
+		}
+
+		return $ret;
 	}
 
 
@@ -340,7 +344,7 @@ class Apps {
 			'Files' => t('Files'),
 			'Webpages' => t('Webpages'),
 			'Wiki' => t('Wiki'),
-			'Channel Home' => t('Channel Home'),
+			'Channel' => t('Channel'),
 			'View Profile' => t('View Profile'),
 			'Photos' => t('Photos'),
 			'Calendar' => t('Calendar'),
@@ -371,7 +375,7 @@ class Apps {
 			'OAuth Apps Manager' => t('OAuth Apps Manager'),
 			'OAuth2 Apps Manager' => t('OAuth2 Apps Manager'),
 			'PDL Editor' => t('PDL Editor'),
-			'Permission Categories' => t('Permission Categories'),
+			'Contact Roles' => t('Contact Roles'),
 			'Public Stream' => t('Public Stream'),
 			'My Chatrooms' => t('My Chatrooms'),
 			'Channel Export' => t('Channel Export')
@@ -422,7 +426,7 @@ class Apps {
 
 		self::translate_system_apps($papp);
 
-		if(trim($papp['plugin']) && (! plugin_is_installed(trim($papp['plugin']))))
+		if(isset($papp['plugin']) && trim($papp['plugin']) && (! plugin_is_installed(trim($papp['plugin']))))
 			return '';
 
 		$papp['papp'] = self::papp_encode($papp);
@@ -524,7 +528,7 @@ class Apps {
 		}
 		elseif(remote_channel()) {
 			$observer = \App::get_observer();
-			if($observer && in_array($observer['xchan_network'], ['zot6', 'zot'])) {
+			if($observer && $observer['xchan_network'] === 'zot6') {
 				// some folks might have xchan_url redirected offsite, use the connurl
 				$x = parse_url($observer['xchan_connurl']);
 				if($x) {
@@ -536,10 +540,44 @@ class Apps {
 		$install_action = (($installed) ? t('Update') : t('Install'));
 		$icon = ((strpos($papp['photo'],'icon:') === 0) ? substr($papp['photo'],5) : '');
 
+		if (!$installed && $mode === 'module') {
+			$_SESSION['return_url'] = App::$query_string;
+			return replace_macros(get_markup_template('app_install.tpl'), [
+				'$papp' => $papp,
+				'$install' => $install_action
+			]);
+		}
+
 		if($mode === 'navbar') {
+			return replace_macros(get_markup_template('app_nav_pinned.tpl'),array(
+				'$app' => $papp,
+				'$icon' => $icon,
+			));
+		}
+
+		if($mode === 'nav') {
 			return replace_macros(get_markup_template('app_nav.tpl'),array(
 				'$app' => $papp,
 				'$icon' => $icon,
+			));
+		}
+
+		if($mode === 'inline') {
+			return replace_macros(get_markup_template('app_inline.tpl'),array(
+				'$app' => $papp,
+				'$icon' => $icon,
+				'$installed' => $installed,
+				'$purchase' => ((isset($papp['page']) && (! $installed)) ? t('Purchase') : ''),
+				'$action_label' => $install_action
+			));
+		}
+
+		if(in_array($mode, ['nav-order', 'nav-order-pinned'])) {
+			return replace_macros(get_markup_template('app_order.tpl'),array(
+				'$app' => $papp,
+				'$icon' => $icon,
+				'$hosturl' => $hosturl,
+				'$mode' => $mode
 			));
 		}
 
@@ -563,8 +601,6 @@ class Apps {
 			'$pin' => ((isset($papp['embed']) || $mode == 'edit') ? false : true),
 			'$featured' => ((strpos($papp['categories'], 'nav_featured_app') === false) ? false : true),
 			'$pinned' => ((strpos($papp['categories'], 'nav_pinned_app') === false) ? false : true),
-			'$navapps' => (($mode == 'nav') ? true : false),
-			'$order' => (($mode === 'nav-order' || $mode === 'nav-order-pinned') ? true : false),
 			'$mode' => $mode,
 			'$add' => t('Add to app-tray'),
 			'$remove' => t('Remove from app-tray'),
@@ -573,6 +609,7 @@ class Apps {
 			'$rpath' => z_root() . '/apps'
 		));
 	}
+
 
 	static public function app_install($uid,$app) {
 
@@ -588,10 +625,12 @@ class Apps {
 
 		$app['uid'] = $uid;
 
-		if(self::app_installed($uid,$app,true))
+		if(self::app_installed($uid,$app,true)) {
 			$x = self::app_update($app);
-		else
+		}
+		else {
 			$x = self::app_store($app);
+		}
 
 		if($x['success']) {
 			$r = q("select * from app where app_id = '%s' and app_channel = %d limit 1",
@@ -599,13 +638,12 @@ class Apps {
 				intval($uid)
 			);
 			if($r) {
-				if(($app['uid']) && (! $r[0]['app_system'])) {
+				if($app['uid']) {
 					if($app['categories'] && (! $app['term'])) {
 						$r[0]['term'] = q("select * from term where otype = %d and oid = %d",
 							intval(TERM_OBJ_APP),
 							intval($r[0]['id'])
 						);
-						Libsync::build_sync_packet($uid,array('app' => $r[0]));
 					}
 				}
 			}
@@ -634,6 +672,7 @@ class Apps {
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -645,38 +684,35 @@ class Apps {
 				dbesc($app['guid']),
 				intval($uid)
 			);
-			if($x) {
-				if(! intval($x[0]['app_deleted'])) {
-					$x[0]['app_deleted'] = 1;
-					if(self::can_delete($uid,$app)) {
-						q("delete from app where app_id = '%s' and app_channel = %d",
-							dbesc($app['guid']),
-							intval($uid)
-						);
-						q("delete from term where otype = %d and oid = %d",
-							intval(TERM_OBJ_APP),
-							intval($x[0]['id'])
-						);
-						/**
-						 * @hooks app_destroy
-						 *  Called after app entry got removed from database
-						 *  and provide app array from database.
-						 */
-						call_hooks('app_destroy', $x[0]);
-					}
-					else {
-						q("update app set app_deleted = 1 where app_id = '%s' and app_channel = %d",
-							dbesc($app['guid']),
-							intval($uid)
-						);
-					}
-					if(! intval($x[0]['app_system'])) {
-						Libsync::build_sync_packet($uid,array('app' => $x));
-					}
-				}
-				else {
-					self::app_undestroy($uid,$app);
-				}
+
+			if($x && intval($x[0]['app_deleted'])) {
+				self::app_undestroy($uid, $app);
+				return;
+			}
+
+			if(self::can_delete($uid,$app)) {
+				q("delete from app where app_id = '%s' and app_channel = %d",
+					dbesc($app['guid']),
+					intval($uid)
+				);
+
+				q("delete from term where otype = %d and oid = %d",
+					intval(TERM_OBJ_APP),
+					intval($x[0]['id'])
+				);
+
+				/**
+				 * @hooks app_destroy
+				 *  Called after app entry got removed from database
+				 *  and provide app array from database.
+				 */
+				call_hooks('app_destroy', $x[0]);
+			}
+			else {
+				q("update app set app_deleted = 1 where app_id = '%s' and app_channel = %d",
+					dbesc($app['guid']),
+					intval($uid)
+				);
 			}
 		}
 	}
@@ -693,13 +729,11 @@ class Apps {
 				dbesc($app['guid']),
 				intval($uid)
 			);
-			if($x) {
-				if($x[0]['app_system']) {
-					q("update app set app_deleted = 0 where app_id = '%s' and app_channel = %d",
-						dbesc($app['guid']),
-						intval($uid)
-					);
-				}
+			if($x && intval($x[0]['app_deleted']) && $x[0]['app_system']) {
+				q("update app set app_deleted = 0 where app_id = '%s' and app_channel = %d",
+					dbesc($app['guid']),
+					intval($uid)
+				);
 			}
 		}
 	}
@@ -1158,9 +1192,9 @@ class Apps {
 			$y = explode(',',$arr['categories']);
 			if($y) {
 				foreach($y as $t) {
-					$t = trim($t);
+					$t = escape_tags(trim($t));
 					if($t) {
-						store_item_tag($darray['app_channel'],$x[0]['id'],TERM_OBJ_APP,TERM_CATEGORY,escape_tags($t),escape_tags(z_root() . '/apps/?f=&cat=' . escape_tags($t)));
+						store_item_tag($darray['app_channel'], $x[0]['id'], TERM_OBJ_APP, TERM_CATEGORY, $t, z_root() . '/apps/?f=&cat=' . $t);
 					}
 				}
 			}
@@ -1356,4 +1390,17 @@ class Apps {
 		return chunk_split(base64_encode(json_encode($papp)),72,"\n");
 	}
 
+	static public function get_papp($app) {
+
+		$r = q("select * from app where app_id = '%s' and app_channel = 0 limit 1",
+			dbesc(hash('whirlpool', $app))
+		);
+
+		if ($r) {
+			$papp = self::app_encode($r[0]);
+			return $papp;
+		}
+
+		return false;
+	}
 }

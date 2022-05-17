@@ -48,7 +48,7 @@ function check_account_email($email) {
 			$result['message'] = t('The provided email address is already registered at this site');
 		}
 
-		$register = q("select reg_did2 from register where reg_vital = 1 and reg_did2 = '%s' limit 1",
+		$register = q("select reg_did2 from register where reg_vital = 1 and reg_did2 = '%s' and reg_didx = 'e' limit 1",
 			dbesc($email)
 		);
 		if ($register) {

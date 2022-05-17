@@ -339,11 +339,14 @@ class Site {
 		// now invert the logic for the setting.
 		$discover_tab = (1 - $discover_tab);
 
-		$perm_roles = \Zotlabs\Access\PermissionRoles::roles();
-		$default_role = get_config('system','default_permissions_role','social');
+		$perm_roles = \Zotlabs\Access\PermissionRoles::channel_roles();
+		$default_role = get_config('system', 'default_permissions_role', 'personal');
+
+		if (!in_array($default_role, array_keys($perm_roles))) {
+			$default_role = 'personal';
+		}
 
 		$role = array('permissions_role' , t('Default permission role for new accounts'), $default_role, t('This role will be used for the first channel created after registration.'),$perm_roles);
-
 
 		$homelogin = get_config('system','login_on_homepage');
 		$enable_context_help = get_config('system','enable_context_help');
@@ -480,12 +483,12 @@ class Site {
 			'$invitation_only' => [
 				'invitation_only',
 				t("Require invite code"),
-				$invitation_only
+				get_config('system', 'invitation_only', 0)
 			],
 			'$invitation_also' => [
 				'invitation_also',
 				t("Allow invite code"),
-				$invitation_also
+				get_config('system', 'invitation_also', 0)
 			],
 			'$verify_email'		=> [
 				'verify_email',

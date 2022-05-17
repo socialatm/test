@@ -1,8 +1,12 @@
 <?php
 
-namespace Zotlabs\Widget;
+/**
+ *   * Name: Directory tags
+ *   * Description: Show directory tags in a cloud
+ *   * Requires: directory
+ */
 
-require_once('include/dir_fns.php');
+namespace Zotlabs\Widget;
 
 class Dirtags {
 

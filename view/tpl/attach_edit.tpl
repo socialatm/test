@@ -5,7 +5,7 @@
 	<input type="hidden" name="fileid" value="{{$file.id}}" />
 	{{if !$isadir}}{{include file="field_checkbox.tpl" field=$notify}}{{/if}}
 	{{if $isadir}}{{include file="field_checkbox.tpl" field=$recurse}}{{/if}}
-	<div id="attach-edit-tools-share" class="btn-group form-group">
+	<div id="attach-edit-tools-share" class="btn-group mb-3">
 		{{if !$isadir}}
 		<a href="/rpost?attachment=[attachment]{{$file.hash}},{{$file.revision}}[/attachment]" id="attach-btn" class="btn btn-outline-secondary btn-sm" title="{{$attach_btn_title}}">
 			<i class="fa fa-share-square-o jot-icons"></i>
@@ -15,15 +15,15 @@
 			<i class="fa fa-link jot-icons"></i>
 		</button>
 	</div>
-	<div id="attach-edit-perms" class="btn-group pull-right">
-		<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" title="{{$permset}}" type="button">
+	<div id="attach-edit-perms" class="btn-group float-end">
+		<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" title="{{$permset}}" type="button">
 			<i id="jot-perms-icon" class="fa fa-{{$lockstate}} jot-icons"></i>
 		</button>
 		<button id="dbtn-submit" class="btn btn-primary btn-sm" type="submit" name="submit">
 			{{$submit}}
 		</button>
 	</div>
-	<div id="link-code" class="form-group">
+	<div id="link-code" class="mb-3">
 		<label for="">{{$cpldesc}}</label>
 		<input type="text" class="form-control" id="linkpasteinput" name="cutpasteextlink" value="{{$cloudpath}}" onclick="this.select();"/>
 	</div>

@@ -14,7 +14,7 @@
 <form action="poke" method="get">
 
 
-<div class="form-group field input">
+<div class="mb-3 field input">
 	<label id="poke-recip-label" for="poke-recip">{{$clabel}}</label>
 	<input class="form-control" id="poke-recip" type="text" value="{{$name}}" name="pokename" autocomplete="off" />
 </div>
@@ -26,7 +26,7 @@
 {{if $poke_basic}}
 <input type="hidden" name="verb" value="poke" />
 {{else}}
-<div class="form-group field custom">
+<div class="mb-3 field custom">
 	<label for="poke-verb-select" id="poke-verb-lbl">{{$choice}}</label>
 	<select class="form-control" name="verb" id="poke-verb-select" >
 	{{foreach $verbs as $v}}

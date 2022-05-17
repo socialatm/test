@@ -19,7 +19,12 @@ class Notes extends Controller {
 		if(! Apps::system_app_installed(local_channel(), 'Notes'))
 			return EMPTY_STR;
 
-		$ret = array('success' => true);
+		$ret = [
+			'success' => false,
+			'html' => ''
+		];
+
+
 		if(array_key_exists('note_text',$_REQUEST)) {
 			$body = escape_tags($_REQUEST['note_text']);
 
@@ -33,12 +38,15 @@ class Notes extends Controller {
 					set_pconfig(local_channel(),'notes','text.bak',$old_text);
 			}
 			set_pconfig(local_channel(),'notes','text',$body);
+
+			$ret['html'] = bbcode($body);
+			$ret['success'] = true;
+
 		}
 
 		// push updates to channel clones
 
 		if((argc() > 1) && (argv(1) === 'sync')) {
-			require_once('include/zot.php');
 			Libsync::build_sync_packet();
 		}
 
@@ -52,11 +60,9 @@ class Notes extends Controller {
 
 		if(! Apps::system_app_installed(local_channel(), 'Notes')) {
 			//Do not display any associated widgets at this point
-			App::$pdl = EMPTY_STR;
-
-			$o = '<b>' . t('Notes App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('A simple notes app with a widget (note: notes are not encrypted)');
-			return $o;
+			App::$pdl = '';
+			$papp = Apps::get_papp('Notes');
+			return Apps::app_render($papp, 'module');
 		}
 
 		$w = new \Zotlabs\Widget\Notes;

@@ -22,6 +22,8 @@
 		api_register_func('api/z/1.0/filedata', 'api_file_data', true);
 		api_register_func('api/red/file/export', 'api_file_export', true);
 		api_register_func('api/z/1.0/file/export', 'api_file_export', true);
+		api_register_func('api/red/file/export_page', 'api_file_export_page', true);
+		api_register_func('api/z/1.0/file/export_page', 'api_file_export_page', true);
 		api_register_func('api/red/file', 'api_file_detail', true);
 		api_register_func('api/z/1.0/file', 'api_file_detail', true);
 		api_register_func('api/red/albums','api_albums', true);
@@ -88,10 +90,6 @@
 		}
 		$sections = (($_REQUEST['sections']) ? explode(',',$_REQUEST['sections']) : '');
 		$codebase = ((isset($_REQUEST['zap_compat']) && $_REQUEST['zap_compat']) ? true : false);
-		if($_REQUEST['posts']) {
-			$sections = get_default_export_sections();
-			$sections[] = 'items';
-		}
 
 		json_return_and_die(identity_basic_export(api_user(),$sections,$codebase));
 	}
@@ -104,7 +102,7 @@
 		$page = intval($_REQUEST['page']);
 		$records = intval($_REQUEST['records']);
 		if(! $records) {
-			$records = 50;
+			$records = 10;
 		}
 		if(! $_REQUEST['since'])
 			$start = NULL_DATE;
@@ -139,7 +137,7 @@
 				$_REQUEST['datequery'] = $_REQUEST['dend'];
 
 			$arr = $_REQUEST;
-			$ret = [];	
+			$ret = [];
 			$i = items_fetch($arr,App::get_channel(),get_observer_hash());
 			if($i) {
 				foreach($i as $iv) {
@@ -202,7 +200,7 @@
 	}
 
 	function api_attach_list($type) {
-		if(api_user() === false) 
+		if(api_user() === false)
 			return false;
 
 		logger('api_user: ' . api_user());
@@ -235,7 +233,7 @@
 			dbesc($_REQUEST['file_id'])
 		);
 		if($r) {
-			unset($r[0]['content']);				
+			unset($r[0]['content']);
 			$ret = array('attach' => $r[0]);
 			json_return_and_die($ret);
 		}
@@ -278,7 +276,7 @@
 					$ptr['content'] = base64_encode($x);
 				}
 			}
-				
+
 			$ret = array('attach' => $ptr);
 			json_return_and_die($ret);
 		}
@@ -303,6 +301,45 @@
 		killme();
 	}
 
+	function api_file_export_page($type) {
+		if(api_user() === false)
+			return false;
+
+		$codebase = ((isset($_REQUEST['zap_compat']) && $_REQUEST['zap_compat']) ? true : false);
+		$channel = channelx_by_n(api_user());
+		$page = ((array_key_exists('page',$_REQUEST)) ? intval($_REQUEST['page']) : 0);
+
+		$ret['success'] = false;
+		$ret['total'] = 0;
+		$ret['results'] = [];
+
+		$count = attach_count_files($channel['channel_id'], get_observer_hash());
+		if($count['success']) {
+			$ret['total'] = $count['results'];
+		}
+
+		if (!$ret['total']) {
+			json_return_and_die($ret);
+		}
+
+		$files = attach_list_files($channel['channel_id'], get_observer_hash(), '', '', '', 'created asc' ,$page, 1);
+
+		if (!$files['success']) {
+			json_return_and_die($ret);
+		}
+
+		foreach($files['results'] as $file) {
+			$ret['results'][] = attach_export_data($channel, $file['hash'], false, $codebase);
+		}
+
+		if($ret['results']) {
+			$ret['success'] = true;
+			json_return_and_die($ret);
+		}
+
+		killme();
+	}
+
 
 	function api_file_detail($type) {
 		if(api_user() === false)
@@ -315,11 +352,11 @@
 		if($r) {
 			if($r[0]['is_dir'])
 				$r[0]['content'] = '';
-			elseif(intval($r[0]['os_storage'])) 
+			elseif(intval($r[0]['os_storage']))
 				$r[0]['content'] = base64_encode(file_get_contents(dbunescbin($r[0]['content'])));
 			else
 				$r[0]['content'] = base64_encode(dbunescbin($r[0]['content']));
-				
+
 			$ret = array('attach' => $r[0]);
 			json_return_and_die($ret);
 		}
@@ -401,7 +438,7 @@
 		}
 
 		if($r) {
-			$x = q("select * from pgrp_member left join abook on abook_xchan = xchan and abook_channel = pgrp_member.uid left join xchan on pgrp_member.xchan = xchan.xchan_hash 
+			$x = q("select * from pgrp_member left join abook on abook_xchan = xchan and abook_channel = pgrp_member.uid left join xchan on pgrp_member.xchan = xchan.xchan_hash
 				where gid = %d",
 				intval($r[0]['id'])
 			);
@@ -426,7 +463,7 @@
 			return false;
 		logger('api_xchan');
 
-		if($_SERVER['REQUEST_METHOD'] === 'POST') {			
+		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$r = xchan_store($_REQUEST);
 		}
 		$r = xchan_fetch($_REQUEST);
@@ -497,7 +534,7 @@
 				}
 			}
 		}
-		
+
 		json_return_and_die($x);
 
 	}
@@ -528,7 +565,7 @@
 		}
 
 		$mod = new Zotlabs\Module\Item();
-		$x = $mod->post();	
+		$x = $mod->post();
 		json_return_and_die($x);
 	}
 
@@ -564,8 +601,8 @@
 		foreach($i as $ii) {
 			$tmp[] = encode_item($ii,true);
 		}
-		$ret['item'] = $tmp;	
-					 
+		$ret['item'] = $tmp;
+
 		json_return_and_die($ret);
 	}
 

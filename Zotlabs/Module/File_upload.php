@@ -99,6 +99,9 @@ class File_upload extends \Zotlabs\Web\Controller {
 			}
 		}
 
+		if(is_ajax())
+			killme();
+
 		goaway(z_root() . '/' . $_REQUEST['return_url']);
 
 	}

@@ -44,17 +44,14 @@ class Affinity extends \Zotlabs\Web\Controller {
 		if(! local_channel())
 			return;
 
-		$desc = t('This app presents a slider control in your connection editor and also on your network page. The slider represents your degree of friendship (affinity) with each connection. It allows you to zoom in or out and display conversations from only your closest friends or everybody in your stream.');
-		if(! Apps::system_app_installed(local_channel(),'Affinity Tool')) {
+		if(! Apps::system_app_installed(local_channel(), 'Affinity Tool')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('Affinity Tool App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= $desc;
-			return $o;
+			$papp = Apps::get_papp('Affinity Tool');
+			return Apps::app_render($papp, 'module');
 		}
 
-		$text = t('The numbers below represent the minimum and maximum slider default positions for your network/stream page as a percentage.'); 			
+		$text = t('The numbers below represent the minimum and maximum slider default positions for your network/stream page as a percentage.');
 
 		$content = '<div class="section-content-info-wrapper">' . $text . '</div>';
 

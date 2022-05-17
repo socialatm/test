@@ -2,6 +2,9 @@
 
 namespace Zotlabs\Lib;
 
+use Zotlabs\Zot6\Receiver;
+use Zotlabs\Zot6\Zot6Handler;
+
 class Queue {
 
 	static function update($id, $add_priority = 0) {
@@ -28,19 +31,19 @@ class Queue {
 			$might_be_down = ((datetime_convert('UTC','UTC',$y[0]['earliest']) < datetime_convert('UTC','UTC','now - 2 days')) ? true : false);
 
 
-		// Set all other records for this destination way into the future. 
+		// Set all other records for this destination way into the future.
 		// The queue delivers by destination. We'll keep one queue item for
 		// this destination (this one) with a shorter delivery. If we succeed
 		// once, we'll try to deliver everything for that destination.
-		// The delivery will be set to at most once per hour, and if the 
+		// The delivery will be set to at most once per hour, and if the
 		// queue item is less than 12 hours old, we'll schedule for fifteen
-		// minutes. 
+		// minutes.
 
 		q("UPDATE outq SET outq_scheduled = '%s' WHERE outq_posturl = '%s'",
 			dbesc(datetime_convert('UTC','UTC','now + 5 days')),
 			dbesc($x[0]['outq_posturl'])
 		);
- 
+
 		$since = datetime_convert('UTC','UTC',$x[0]['outq_created']);
 
 		if(($might_be_down) || ($since < datetime_convert('UTC','UTC','now - 12 hour'))) {
@@ -50,9 +53,9 @@ class Queue {
 			$next = datetime_convert('UTC','UTC','now + ' . intval($add_priority) . ' minutes');
 		}
 
-		q("UPDATE outq SET outq_updated = '%s', 
-			outq_priority = outq_priority + %d, 
-			outq_scheduled = '%s' 
+		q("UPDATE outq SET outq_updated = '%s',
+			outq_priority = outq_priority + %d,
+			outq_scheduled = '%s'
 			WHERE outq_hash = '%s'",
 
 			dbesc(datetime_convert()),
@@ -66,7 +69,7 @@ class Queue {
 	static function remove($id,$channel_id = 0) {
 		logger('queue: remove queue item ' . $id,LOGGER_DEBUG);
 		$sql_extra = (($channel_id) ? " and outq_channel = " . intval($channel_id) . " " : '');
-		
+
 		q("DELETE FROM outq WHERE outq_hash = '%s' $sql_extra",
 			dbesc($id)
 		);
@@ -75,7 +78,7 @@ class Queue {
 
 	static function remove_by_posturl($posturl) {
 		logger('queue: remove queue posturl ' . $posturl,LOGGER_DEBUG);
-		
+
 		q("DELETE FROM outq WHERE outq_posturl = '%s' ",
 			dbesc($posturl)
 		);
@@ -88,7 +91,7 @@ class Queue {
 		$sql_extra = (($channel['channel_id']) ? " and outq_channel = " . intval($channel['channel_id']) . " " : '');
 
 		// Set the next scheduled run date so far in the future that it will be expired
-		// long before it ever makes it back into the delivery chain. 
+		// long before it ever makes it back into the delivery chain.
 
 		q("update outq set outq_delivered = 1, outq_updated = '%s', outq_scheduled = '%s' where outq_hash = '%s' $sql_extra ",
 			dbesc(datetime_convert()),
@@ -108,7 +111,7 @@ class Queue {
 		}
 
 		$x = q("insert into outq ( outq_hash, outq_account, outq_channel, outq_driver, outq_posturl, outq_async, outq_priority,
-			outq_created, outq_updated, outq_scheduled, outq_notify, outq_msg ) 
+			outq_created, outq_updated, outq_scheduled, outq_notify, outq_msg )
 			values ( '%s', %d, %d, '%s', '%s', %d, %d, '%s', '%s', '%s', '%s', '%s' )",
 			dbesc($arr['hash']),
 			intval($arr['account_id']),
@@ -133,7 +136,7 @@ class Queue {
 
 		$base = null;
 		$h = parse_url($outq['outq_posturl']);
-		if($h !== false) 
+		if($h !== false)
 			$base = $h['scheme'] . '://' . $h['host'] . (isset($h['port']) ? ':' . $h['port'] : '');
 
 		if(($base) && ($base !== z_root()) && ($immediate)) {
@@ -147,7 +150,7 @@ class Queue {
 					return;
 				}
 				if($y[0]['site_update'] < datetime_convert('UTC','UTC','now - 1 month')) {
-					self::update($outq['outq_hash'],10);
+					self::update($outq['outq_hash'], 10);
 					logger('immediate delivery deferred for site ' . $base);
 					return;
 				}
@@ -158,12 +161,12 @@ class Queue {
 				// your site has existed. Since we don't know for sure what these sites are,
 				// call them unknown
 
-				site_store_lowlevel( 
+				site_store_lowlevel(
 					[
 						'site_url'    => $base,
 						'site_update' => datetime_convert(),
 						'site_dead'   => 0,
-						'site_type'   => intval(($outq['outq_driver'] === 'post') ? SITE_TYPE_NOTZOT : SITE_TYPE_UNKNOWN),
+						'site_type'   => SITE_TYPE_UNKNOWN,
 						'site_crypto' => ''
 					]
 				);
@@ -171,57 +174,9 @@ class Queue {
 		}
 
 		$arr = array('outq' => $outq, 'base' => $base, 'handled' => false, 'immediate' => $immediate);
-		call_hooks('queue_deliver',$arr);
+		call_hooks('queue_deliver', $arr);
 		if($arr['handled'])
 			return;
-
-		// "post" queue driver - used for diaspora and friendica-over-diaspora communications.
-
-		if($outq['outq_driver'] === 'post') {
-			$result = z_post_url($outq['outq_posturl'],$outq['outq_msg']);
-			if($result['success'] && $result['return_code'] < 300) {
-				logger('deliver: queue post success to ' . $outq['outq_posturl'], LOGGER_DEBUG);
-				if($base) {
-					q("update site set site_update = '%s', site_dead = 0 where site_url = '%s' ",
-						dbesc(datetime_convert()),
-						dbesc($base)
-					);
-				}
-				q("update dreport set dreport_result = '%s', dreport_time = '%s' where dreport_queue = '%s'",
-					dbesc('accepted for delivery'),
-					dbesc(datetime_convert()),
-					dbesc($outq['outq_hash'])
-				);
-				self::remove($outq['outq_hash']);
-
-				// server is responding - see if anything else is going to this destination and is piled up 
-				// and try to send some more. We're relying on the fact that do_delivery() results in an 
-				// immediate delivery otherwise we could get into a queue loop. 
-
-				if(! $immediate) {
-					$x = q("select outq_hash from outq where outq_posturl = '%s' and outq_delivered = 0",
-						dbesc($outq['outq_posturl'])
-					);
-	
-					$piled_up = array();
-					if($x) {
-						foreach($x as $xx) {
-							 $piled_up[] = $xx['outq_hash'];
-						}
-					}
-					if($piled_up) {
-						// call do_delivery() with the force flag
-						do_delivery($piled_up, true);
-					}
-				}
-			}
-			else {
-				logger('deliver: queue post returned ' . $result['return_code'] 
-					. ' from ' . $outq['outq_posturl'],LOGGER_DEBUG);
-					self::update($outq['outq_hash'],10);
-			}
-			return;
-		}
 
 		// normal zot delivery
 
@@ -229,7 +184,7 @@ class Queue {
 
 		if($outq['outq_posturl'] === z_root() . '/zot') {
 			// local delivery
-			$zot = new \Zotlabs\Zot6\Receiver(new \Zotlabs\Zot6\Zot6Handler(),$outq['outq_notify']);
+			$zot = new Receiver(new Zot6Handler(), $outq['outq_notify']);
 			$result = $zot->run();
 			logger('returned_json: ' . json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), LOGGER_DATA);
 			logger('deliver: local zot delivery succeeded to ' . $outq['outq_posturl']);
@@ -240,13 +195,14 @@ class Queue {
 			$channel = null;
 
 			if($outq['outq_channel']) {
-				$channel = channelx_by_n($outq['outq_channel']);
+				$channel = channelx_by_n($outq['outq_channel'], true);
 			}
 
 			$host_crypto = null;
 
 			if($channel && $base) {
-				$h = q("select hubloc_sitekey, site_crypto from hubloc left join site on hubloc_url = site_url where site_url = '%s' and hubloc_sitekey != '' order by hubloc_id desc limit 1",
+				$h = q("SELECT hubloc_sitekey, site_crypto FROM hubloc LEFT JOIN site ON hubloc_url = site_url
+					WHERE site_url = '%s' AND hubloc_network = 'zot6' ORDER BY hubloc_id DESC LIMIT 1",
 					dbesc($base)
 				);
 				if($h) {
@@ -256,7 +212,7 @@ class Queue {
 
 			$msg = $outq['outq_notify'];
 
-			$result = Libzot::zot($outq['outq_posturl'],$msg,$channel,$host_crypto);
+			$result = Libzot::zot($outq['outq_posturl'], $msg, $channel, $host_crypto);
 
 			if($result['success']) {
 				logger('deliver: remote zot delivery succeeded to ' . $outq['outq_posturl']);
@@ -265,7 +221,7 @@ class Queue {
 			else {
 				logger('deliver: remote zot delivery failed to ' . $outq['outq_posturl']);
 				logger('deliver: remote zot delivery fail data: ' . print_r($result,true), LOGGER_DATA);
-				self::update($outq['outq_hash'],10);
+				self::update($outq['outq_hash'], 10);
 			}
 		}
 		return;

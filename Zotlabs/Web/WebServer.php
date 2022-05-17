@@ -107,7 +107,8 @@ class WebServer {
 
 		$Router->Dispatch();
 
-		$this->set_homebase();
+		// TODO: this is not used for anything atm and messes up comanche templates by adding some javascript
+		//$this->set_homebase();
 
 		// now that we've been through the module content, see if the page reported
 		// a permission problem and if so, a 403 response would seem to be in order.

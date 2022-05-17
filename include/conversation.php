@@ -558,7 +558,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 		$page_writeable = ($profile_owner == local_channel());
 
 		if (!$update) {
-			$tab = notags(trim($_GET['tab']));
+			$tab = notags(trim((string)$_GET['tab']));
 			if ($tab === 'posts') {
 				// This is ugly, but we can't pass the profile_uid through the session to the ajax updater,
 				// because browser prefetching might change it on us. We have to deliver it with the page.
@@ -730,10 +730,13 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					'delete' => t('Delete'),
 				);
 
-				$star = array(
-					'toggle' => t("Toggle Star Status"),
-					'isstarred' => ((intval($item['item_starred'])) ? true : false),
-				);
+				$star = [];
+				if ((local_channel() && local_channel() === intval($item['uid'])) && intval($item['item_thread_top']) && feature_enabled(local_channel(), 'star_posts')) {
+					$star = [
+						'toggle' => t("Toggle Star Status"),
+						'isstarred' => ((intval($item['item_starred'])) ? true : false),
+					];
+				}
 
 				$lock = (($item['item_private'] || strlen($item['allow_cid']) || strlen($item['allow_gid']) || strlen($item['deny_cid']) || strlen($item['deny_gid']))
 					? t('Private Message')
@@ -765,8 +768,18 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 
 				$conv_link_mid = (($mode == 'moderate') ? $item['parent_mid'] : $item['mid']);
 
-				$conv_link = ((in_array($item['item_type'],[ ITEM_TYPE_CARD, ITEM_TYPE_ARTICLE] )) ? $item['plink'] : z_root() . '/display/' . gen_link_id($conv_link_mid));
+				$conv_link_module = 'display';
+				if(local_channel()) {
+					$conv_link_module = 'hq';
+				}
 
+				$conv_link = ((in_array($item['item_type'],[ ITEM_TYPE_CARD, ITEM_TYPE_ARTICLE] )) ? $item['plink'] : z_root() . '/' . $conv_link_module . '/' . gen_link_id($conv_link_mid));
+
+				$contact = [];
+
+				if(App::$contacts && array_key_exists($item['author_xchan'],App::$contacts)) {
+					$contact = App::$contacts[$item['author_xchan']];
+				}
 
 				$tmp_item = array(
 					'template' => $tpl,
@@ -777,7 +790,8 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					'delete' => t('Delete'),
 					'preview_lbl' => $preview_lbl,
 					'id' => (($preview) ? 'P0' : $item['item_id']),
-					'mids' => json_encode(['b64.' . base64url_encode($item['mid'])]),
+					'mid' => gen_link_id($item['mid']),
+					'mids' => json_encode([gen_link_id($item['mid'])]),
 					'linktitle' => sprintf( t('View %s\'s profile @ %s'), $profile_name, $profile_url),
 					'profile_url' => $profile_link,
 					'thread_action_menu' => thread_action_menu($item,$mode),
@@ -819,7 +833,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					'owner_photo' => $owner_photo,
 					'plink' => get_plink($item,false),
 					'edpost' => false,
-					'star' => ((feature_enabled(local_channel(),'star_posts')) ? $star : ''),
+					'star' => $star,
 					'drop' => $drop,
 					'vote' => $likebuttons,
 					'like' => '',
@@ -830,7 +844,8 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					'wait' => t('Please wait'),
 					'thread_level' => 1,
 					'has_tags' => $has_tags,
-					'is_new' => $is_new
+					'is_new' => $is_new,
+					'contact_id' => (($contact) ? $contact['abook_id'] : '')
 				);
 
 				$arr = array('item' => $item, 'output' => $tmp_item);
@@ -932,7 +947,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 		'$user' => App::$user,
 		'$threads' => $threads,
 		'$wait' => t('Loading...'),
-		'$conversation_tools' => t('Conversation Tools'),
+		'$conversation_tools' => t('Conversation Features'),
 		'$dropping' => ($page_dropping?t('Delete Selected Items'):False),
 		'$preview' => $preview
 	));
@@ -959,7 +974,7 @@ function best_link_url($item) {
 		}
 	}
 	if(! $best_url) {
-		if(strlen($item['author-link']))
+		if($item['author-link'])
 			$best_url = $item['author-link'];
 		else
 			$best_url = $item['url'];
@@ -1022,8 +1037,6 @@ function author_is_pmable($xchan, $abook) {
 	if($x['result'] !== 'unset')
 		return $x['result'];
 
-	if($xchan['xchan_network'] === 'zot' && get_observer_hash())
-		return true;
 	return false;
 
 }
@@ -1055,19 +1068,16 @@ function thread_author_menu($item, $mode = '') {
 		}
 		else {
 			$url = (($item['author']['xchan_addr']) ? $item['author']['xchan_addr'] : $item['author']['xchan_url']);
-			if($local_channel && $url && (! in_array($item['author']['xchan_network'],[ 'rss', 'anon','unknown' ]))) {
+			if($local_channel && $url && (! in_array($item['author']['xchan_network'],[ 'rss', 'anon','unknown', 'zot', 'token']))) {
 				$follow_url = z_root() . '/follow/?f=&url=' . urlencode($url) . '&interactive=0';
 			}
-		}
-		if($item['uid'] > 0 && author_is_pmable($item['author'],$contact)) {
-			$pm_url = z_root() . '/mail/new/?f=&hash=' . urlencode($item['author_xchan']);
 		}
 	}
 
 	if($contact) {
 		$poke_link = ((Apps::system_app_installed($local_channel, 'Poke')) ? z_root() . '/poke/?f=&c=' . $contact['abook_id'] : '');
 		if (! intval($contact['abook_self']))
-			$contact_url = z_root() . '/connedit/' . $contact['abook_id'];
+			$contact_url = z_root() . '/connections#' . $contact['abook_id'];
 		$posts_link = z_root() . '/network/?cid=' . $contact['abook_id'];
 
 		$clean_url = normalise_link($item['author-link']);
@@ -1083,7 +1093,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('View Profile'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $profile_link
+			'href' => $profile_link,
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1093,7 +1105,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('Recent Activity'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $posts_link
+			'href' => $posts_link,
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1104,6 +1118,8 @@ function thread_author_menu($item, $mode = '') {
 			'icon' => 'fw',
 			'action' => 'doFollowAuthor(\'' . $follow_url . '\'); return false;',
 			'href' => '#',
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1113,7 +1129,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('Edit Connection'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $contact_url
+			'href' => $contact_url,
+			'data' => 'data-id="' . $contact['abook_id'] . '"',
+			'class' => 'contact-edit'
 		];
 	}
 
@@ -1123,7 +1141,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('Message'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $pm_url
+			'href' => $pm_url,
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1133,7 +1153,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('Ratings'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $ratings_url
+			'href' => $ratings_url,
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1143,7 +1165,9 @@ function thread_author_menu($item, $mode = '') {
 			'title' => t('Poke'),
 			'icon' => 'fw',
 			'action' => '',
-			'href' => $poke_link
+			'href' => $poke_link,
+			'data' => '',
+			'class' => ''
 		];
 	}
 
@@ -1220,7 +1244,7 @@ function builtin_activity_puller($item, &$conv_responses) {
 			if(! $item['thr_parent'])
 				$item['thr_parent'] = $item['parent_mid'];
 
-			$conv_responses[$mode]['mids'][$item['thr_parent']][] = 'b64.' . base64url_encode($item['mid']);
+			$conv_responses[$mode]['mids'][$item['thr_parent']][] = gen_link_id($item['mid']);
 
 			if($item['obj_type'] === 'Answer')
 				continue;
@@ -1393,7 +1417,8 @@ function hz_status_editor($a, $x, $popup = false) {
 		'$nocomment_enabled' => t('Comments enabled'),
 		'$nocomment_disabled' => t('Comments disabled'),
 		'$auto_save_draft' => $feature_auto_save_draft,
-		'$reset' => $reset
+		'$reset' => $reset,
+		'$popup' => $popup
 	];
 
 	call_hooks('jot_header_tpl_filter',$tplmacros);
@@ -1693,10 +1718,8 @@ function prepare_page($item) {
 		// ... other possible options
 	}
 
-	// prepare_body calls unobscure() as a side effect. Do it here so that
-	// the template will get passed an unobscured title.
+	$body = prepare_body($item, true, [ 'newwin' => false ]);
 
-	$body = prepare_body($item, [ 'newwin' => false ]);
 	if(App::$page['template'] == 'none') {
 		$tpl = 'page_display_empty.tpl';
 

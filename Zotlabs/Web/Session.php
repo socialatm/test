@@ -25,7 +25,7 @@ class Session {
 		ini_set('session.cookie_httponly', 1);
 
 		$this->custom_handler = boolval(get_config('system', 'session_custom', false));
-				
+
 		/*
 		 * Set our session storage functions.
 		 */
@@ -67,23 +67,24 @@ class Session {
 		}
 
 
-		// Force cookies to be secure (https only) if this site is SSL enabled. 
+		// Force cookies to be secure (https only) if this site is SSL enabled.
 		// Must be done before session_start().
 
 
 		$arr = session_get_cookie_params();
-		
+
 		// Note when setting cookies: set the domain to false which creates a single domain
 		// cookie. If you use a hostname it will create a .domain.com wildcard which will
-		// have some nasty side effects if you have any other subdomains running hubzilla. 
+		// have some nasty side effects if you have any other subdomains running hubzilla.
 
-		session_set_cookie_params(
-			((isset($arr['lifetime']))   ? $arr['lifetime'] : 0),
-			((isset($arr['path']))      ? $arr['path']     : '/'),
-			(($arr['domain'])    ? $arr['domain']   : false),
-			((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),
-			((isset($arr['httponly']))  ? $arr['httponly'] : true)
-		);
+		session_set_cookie_params([
+			'lifetime' => ((isset($arr['lifetime'])) ? $arr['lifetime'] : 0),
+			'path' => ((isset($arr['path'])) ? $arr['path'] : '/'),
+			'domain' => (($arr['domain']) ? $arr['domain'] : false),
+			'secure' => ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),
+			'httponly' => ((isset($arr['httponly'])) ? $arr['httponly'] : true),
+			'samesite' => 'None'
+		]);
 
 		register_shutdown_function('session_write_close');
 
@@ -127,13 +128,36 @@ class Session {
 				$this->handler->read(session_id());
 			}
 		}
-		else 
+		else
 			logger('no session handler');
 
 		if (x($_COOKIE, 'jsdisabled')) {
-			setcookie('jsdisabled', $_COOKIE['jsdisabled'], $newxtime, '/', false,((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),((isset($arr['httponly']))  ? $arr['httponly'] : true));
+			setcookie(
+				'jsdisabled',
+				$_COOKIE['jsdisabled'],
+				[
+					'expires' => $newxtime,
+					'path' => '/',
+					'domain' => false,
+					'secure' => ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),
+					'httponly' => ((isset($arr['httponly'])) ? $arr['httponly'] : true),
+					'samesite' => 'None'
+				]
+			);
 		}
-		setcookie(session_name(),session_id(),$newxtime, '/', false,((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),((isset($arr['httponly']))  ? $arr['httponly'] : true));
+
+		setcookie(
+			session_name(),
+			session_id(),
+			[
+				'expires' => $newxtime,
+				'path' => '/',
+				'domain' => false,
+				'secure' => ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),
+				'httponly' => ((isset($arr['httponly'])) ? $arr['httponly'] : true),
+				'samesite' => 'None'
+			]
+		);
 
 		$arr = array('expire' => $xtime);
 		call_hooks('new_cookie', $arr);
@@ -148,8 +172,21 @@ class Session {
 
 		$xtime = (($_SESSION['remember_me']) ? (60 * 60 * 24 * 365) : 0 );
 
-		if($xtime)
-			setcookie(session_name(),session_id(),(time() + $xtime), '/', false,((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),((isset($arr['httponly']))  ? $arr['httponly'] : true));
+		if($xtime) {
+			setcookie(
+				session_name(),
+				session_id(),
+				[
+					'expires' => time() + $xtime,
+					'path' => '/',
+					'domain' => false,
+					'secure' => ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? true : false),
+					'httponly' => ((isset($arr['httponly'])) ? $arr['httponly'] : true),
+					'samesite' => 'None'
+				]
+			);
+		}
+
 		$arr = array('expire' => $xtime);
 		call_hooks('extend_cookie', $arr);
 
@@ -169,8 +206,8 @@ class Session {
 		if($_SESSION['addr'] && $_SESSION['addr'] != $_SERVER['REMOTE_ADDR']) {
 			logger('SECURITY: Session IP address changed: ' . $_SESSION['addr'] . ' != ' . $_SERVER['REMOTE_ADDR']);
 
-			$partial1 = substr($_SESSION['addr'], 0, strrpos($_SESSION['addr'], '.')); 
-			$partial2 = substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'], '.')); 
+			$partial1 = substr($_SESSION['addr'], 0, strrpos($_SESSION['addr'], '.'));
+			$partial2 = substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'], '.'));
 
 			$paranoia = intval(get_pconfig($_SESSION['uid'], 'system', 'paranoia'));
 

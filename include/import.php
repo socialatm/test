@@ -1,5 +1,6 @@
 <?php
 
+use Zotlabs\Lib\Apps;
 use Zotlabs\Lib\IConfig;
 use Zotlabs\Lib\Libzot;
 
@@ -161,6 +162,64 @@ function import_config($channel, $configs) {
 	}
 }
 
+function import_atoken($channel, $atokens) {
+	if ($channel && $atokens) {
+		foreach ($atokens as $atoken) {
+			unset($atoken['atoken_id']);
+			$atoken['atoken_aid'] = $channel['channel_account_id'];
+			$atoken['atoken_uid'] = $channel['channel_id'];
+			create_table_from_array('atoken', $atoken);
+		}
+	}
+}
+
+function sync_atoken($channel, $atokens) {
+
+	if ($channel && $atokens) {
+		foreach ($atokens as $atoken) {
+			unset($atoken['atoken_id']);
+			$atoken['atoken_aid'] = $channel['channel_account_id'];
+			$atoken['atoken_uid'] = $channel['channel_id'];
+
+			if ($atoken['deleted']) {
+				q("delete from atoken where atoken_uid = %d and atoken_guid = '%s' ",
+					intval($atoken['atoken_uid']),
+					dbesc($atoken['atoken_guid'])
+				);
+				continue;
+			}
+
+			$r = q("select * from atoken where atoken_uid = %d and atoken_guid = '%s' ",
+				intval($atoken['atoken_uid']),
+				dbesc($atoken['atoken_guid'])
+			);
+			if (! $r) {
+				create_table_from_array('atoken', $atoken);
+			}
+			else {
+				$columns = db_columns('atoken');
+				foreach ($atoken as $k => $v) {
+					if (! in_array($k,$columns)) {
+						continue;
+					}
+
+					if (in_array($k, ['atoken_guid','atoken_uid','atoken_aid'])) {
+						continue;
+					}
+
+					$r = q("UPDATE atoken SET " . TQUOT . "%s" . TQUOT . " = '%s' WHERE atoken_guid = '%s' AND atoken_uid = %d",
+						dbesc($k),
+						dbesc($v),
+						dbesc($atoken['atoken_guid']),
+						intval($channel['channel_id'])
+					);
+				}
+			}
+		}
+	}
+}
+
+
 /**
  * @brief Import profiles.
  *
@@ -238,7 +297,8 @@ function import_hublocs($channel, $hublocs, $seize, $moving = false) {
 				'id'           => $hubloc['hubloc_guid'],
 				'id_sig'       => $hubloc['hubloc_guid_sig'],
 				'location'     => $hubloc['hubloc_url'],
-				'location_sig' => $hubloc['hubloc_url_sig']
+				'location_sig' => $hubloc['hubloc_url_sig'],
+				'site_id'      => $hubloc['hubloc_site_id']
 			];
 
 			if (($hubloc['hubloc_hash'] === $channel['channel_hash']) && intval($hubloc['hubloc_primary']) && ($seize)) {
@@ -524,7 +584,6 @@ function sync_apps($channel, $apps) {
 }
 
 
-
 /**
  * @brief Import system apps.
  * System apps from the original server may not exist on this system
@@ -538,49 +597,48 @@ function sync_apps($channel, $apps) {
  */
 function import_sysapps($channel, $apps) {
 
-	if($channel && $apps) {
+	if ($channel && $apps) {
 
-		$sysapps = \Zotlabs\Lib\Apps::get_system_apps(false);
+		$sysapps = Apps::get_system_apps(false, true);
 
-		foreach($apps as $app) {
+		foreach ($apps as $app) {
 
-			if(array_key_exists('app_system',$app) && (! intval($app['app_system'])))
+			if (array_key_exists('app_system',$app) && (! intval($app['app_system']))) {
 				continue;
+			}
+
+			if (array_key_exists('app_deleted',$app) && (intval($app['app_deleted']))) {
+				continue;
+			}
 
 			$term = ((array_key_exists('term',$app) && is_array($app['term'])) ? $app['term'] : null);
 
-			foreach($sysapps as $sysapp) {
-				if($app['app_id'] === hash('whirlpool',$sysapp['app_name'])) {
+			foreach ($sysapps as $sysapp) {
+				if ($app['app_id'] === hash('whirlpool', $sysapp['name'])) {
 					// install this app on this server
 					$newapp = $sysapp;
 					$newapp['uid'] = $channel['channel_id'];
-					$newapp['guid'] = hash('whirlpool',$newapp['name']);
+					$newapp['guid'] = hash('whirlpool', $newapp['name']);
 
 					$installed = q("select id from app where app_id = '%s' and app_channel = %d limit 1",
 						dbesc($newapp['guid']),
 						intval($channel['channel_id'])
 					);
-					if($installed) {
+					if ($installed) {
 						break;
 					}
 
 					$newapp['system'] = 1;
-					if($term) {
-						$s = EMPTY_STR;
-						foreach($term as $t) {
-							if($s) {
-								$s .= ',';
-							}
-							$s .= $t['term'];
-						}
-						$newapp['categories'] = $s;
+					if ($term) {
+						$newapp['categories'] = array_elm_to_str($term, 'term');
 					}
-					\Zotlabs\Lib\Apps::app_install($channel['channel_id'],$newapp);
+					Apps::app_install($channel['channel_id'], $newapp);
 				}
 			}
 		}
 	}
 }
+
 
 /**
  * @brief Sync system apps.
@@ -590,13 +648,41 @@ function import_sysapps($channel, $apps) {
  */
 function sync_sysapps($channel, $apps) {
 
-	if($channel && $apps) {
+	$sysapps = Apps::get_system_apps(false, true);
+	if ($channel && $apps) {
 
-		// we do not currently sync system apps
+		$columns = db_columns('app');
 
+		foreach ($apps as $app) {
+
+			$term = ((array_key_exists('term',$app)) ? $app['term'] : null);
+
+			if (array_key_exists('app_system',$app) && (! intval($app['app_system']))) {
+				continue;
+			}
+
+			foreach ($sysapps as $sysapp) {
+
+				if ($app['app_id'] === hash('whirlpool', $sysapp['name'])) {
+					if (array_key_exists('app_deleted',$app) && $app['app_deleted'] == 1 && $app['app_id']) {
+						Apps::app_destroy($channel['channel_id'], ['guid' => $app['app_id']]);
+					}
+					else {
+						// install this app on this server
+						$newapp = $sysapp;
+						$newapp['uid'] = $channel['channel_id'];
+						$newapp['guid'] = hash('whirlpool', $newapp['name']);
+						$newapp['system'] = 1;
+						if ($term) {
+							$newapp['categories'] = array_elm_to_str($term, 'term');
+						}
+						Apps::app_install($channel['channel_id'], $newapp);
+					}
+				}
+			}
+		}
 	}
 }
-
 
 
 
@@ -778,7 +864,7 @@ function sync_items($channel, $items, $relocate = null) {
         // to avoid confusing with cloned channels
         $size = count($items);
         for($i = 0; $i < $size; $i++) {
-                if(($items[$i]['owner']['network'] != 'zot') && ($items[$i]['owner']['network'] != 'zot6')) {
+                if($items[$i]['owner']['network'] !== 'zot6') {
                         $r = q("SELECT * FROM abook WHERE abook_channel = %d
                                         AND abook_xchan = ( SELECT xchan_hash FROM xchan WHERE xchan_guid = '%s' LIMIT 1 )
                                         AND abook_not_here = 0 AND abook_ignored = 0 AND abook_blocked = 0",
@@ -1089,85 +1175,6 @@ function import_likes($channel, $likes) {
 	}
 }
 
-function import_conv($channel,$convs) {
-	if($channel && $convs) {
-		foreach($convs as $conv) {
-			if($conv['deleted']) {
-				q("delete from conv where guid = '%s' and uid = %d",
-					dbesc($conv['guid']),
-					intval($channel['channel_id'])
-				);
-				continue;
-			}
-
-			unset($conv['id']);
-
-			$conv['uid'] = $channel['channel_id'];
-			$conv['subject'] = str_rot47(base64url_encode($conv['subject']));
-
-			$r = q("select id from conv where guid = '%s' and uid = %d limit 1",
-				dbesc($conv['guid']),
-				intval($channel['channel_id'])
-			);
-			if($r)
-				continue;
-
-			create_table_from_array('conv',$conv);
-		}
-	}
-}
-
-/**
- * @brief Import mails.
- *
- * @param array $channel
- * @param array $mails
- * @param boolean $sync (optional) default false
- */
-function import_mail($channel, $mails, $sync = false) {
-	if($channel && $mails) {
-		foreach($mails as $mail) {
-			if(array_key_exists('flags',$mail) && in_array('deleted',$mail['flags'])) {
-				q("delete from mail where mid = '%s' and uid = %d",
-					dbesc($mail['message_id']),
-					intval($channel['channel_id'])
-				);
-				continue;
-			}
-			if(array_key_exists('flags',$mail) && in_array('recalled',$mail['flags'])) {
-				q("update mail set mail_recalled = 1 where mid = '%s' and uid = %d",
-					dbesc($mail['message_id']),
-					intval($channel['channel_id'])
-				);
-				continue;
-			}
-
-			$m = get_mail_elements($mail);
-			if(! $m)
-				continue;
-
-			$m['account_id'] = $channel['channel_account_id'];
-			$m['channel_id'] = $channel['channel_id'];
-
-			$mail_id = mail_store($m);
-			if($sync && $mail_id) {
-				Zotlabs\Daemon\Master::Summon(array('Notifier','single_mail',$mail_id));
-			}
- 		}
-	}
-}
-
-/**
- * @brief Synchronise mails.
- *
- * @see import_mail()
- * @param array $channel
- * @param array $mails
- */
-function sync_mail($channel, $mails) {
-	import_mail($channel, $mails, true);
-}
-
 /**
  * @brief Synchronise files.
  *
@@ -1343,6 +1350,7 @@ function sync_files($channel, $files) {
 						);
 
 						$store_path = $newfname;
+
 
 						$fp = fopen($newfname,'w');
 						if(! $fp) {
@@ -1769,8 +1777,7 @@ function import_webpage_element($element, $channel, $type) {
 			$namespace = 'WEBPAGE';
 			$name = $element['pagelink'];
 			if($name) {
-				require_once('library/urlify/URLify.php');
-				$name = strtolower(\URLify::transliterate($name));
+				$name = strtolower(URLify::transliterate($name));
 			}
 			$arr['title'] = $element['title'];
 			$arr['term'] = $element['term'];
@@ -1925,7 +1932,6 @@ function get_webpage_elements($channel, $type = 'all') {
 				$elements['pages'] = array();
 				$pages = array();
 				foreach($r as $rr) {
-					unobscure($rr);
 
 					//$lockstate = (($rr['allow_cid'] || $rr['allow_gid'] || $rr['deny_cid'] || $rr['deny_gid']) ? 'lock' : 'unlock');
 
@@ -1973,8 +1979,6 @@ function get_webpage_elements($channel, $type = 'all') {
 				$elements['layouts'] = array();
 
 				foreach($r as $rr) {
-					unobscure($rr);
-
 					$elements['layouts'][] = array(
 						'type'        => 'layout',
 						'description' => $rr['title'],		// description of the layout
@@ -2010,8 +2014,6 @@ function get_webpage_elements($channel, $type = 'all') {
 				$elements['blocks'] = array();
 
 				foreach($r as $rr) {
-					unobscure($rr);
-
 					$elements['blocks'][] = array(
 						'type'      => 'block',
 						'title'     => $rr['title'],

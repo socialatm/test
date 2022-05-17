@@ -1,6 +1,7 @@
-version: 2
+version: 5
 url: $baseurl/permcats
 requires: local_channel
-name: Permission Categories
-photo: icon:unlock-alt
+name: Contact Roles
+photo: icon:user-o
 categories: Access Control
+desc: Create and manage custom contact roles.

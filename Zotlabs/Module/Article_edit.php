@@ -85,7 +85,6 @@ class Article_edit extends \Zotlabs\Web\Controller {
 
 		$mimetype = $itm[0]['mimetype'];
 
-		$summary = (($itm[0]['summary']) ? '[summary]' . $itm[0]['summary'] . '[/summary]' . "\r\n" : '');
 		$content = $itm[0]['body'];
 
 		$rp = 'articles/' . $channel['channel_address'];
@@ -109,7 +108,7 @@ class Article_edit extends \Zotlabs\Web\Controller {
 			'ptyp' => $itm[0]['type'],
 			'mimeselect' => false,
 			'mimetype' => $itm[0]['mimetype'],
-			'body' => $summary . undo_post_tagging($content),
+			'body' => undo_post_tagging($content),
 			'post_id' => $post_id,
 			'visitor' => true,
 			'title' => htmlspecialchars($itm[0]['title'],ENT_COMPAT,'UTF-8'),

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Activity
+ *   * Description: Shows the unseen activity count per contact
+ */
+
 namespace Zotlabs\Widget;
 
 class Activity {
@@ -35,7 +40,7 @@ class Activity {
 				}
 			}
 			foreach($contributors as $k => $v) {
-				$arr[] = [ 'author_xchan' => $k, 'total' => $v	];	
+				$arr[] = [ 'author_xchan' => $k, 'total' => $v	];
 			}
 			usort($arr,'total_sort');
 			xchan_query($arr);
@@ -43,19 +48,19 @@ class Activity {
 
 		$x = [ 'entries' => $arr ];
 		call_hooks('activity_widget',$x);
-		$arr = $x['entries']; 
+		$arr = $x['entries'];
 
 		if($arr) {
 			$o .= '<div class="widget">';
-			$o .= '<h3>' . t('Activity','widget') . '</h3><ul class="nav nav-pills flex-column">';
+			$o .= '<h3>' . t('Activity','widget') . '</h3><ul class="nav rounded-pill flex-column">';
 
 			foreach($arr as $rv) {
-				$o .= '<li class="nav-item"><a class="nav-link" href="network?f=&xchan=' . urlencode($rv['author_xchan']) . '" ><span class="badge badge-secondary float-right">' . ((intval($rv['total'])) ? intval($rv['total']) : '') . '</span><img src="' . $rv['author']['xchan_photo_s'] . '" class="menu-img-1" /> ' . $rv['author']['xchan_name'] . '</a></li>';
+				$o .= '<li class="nav-item"><a class="nav-link" href="network?f=&xchan=' . urlencode($rv['author_xchan']) . '" ><span class="badge bg-secondary float-end">' . ((intval($rv['total'])) ? intval($rv['total']) : '') . '</span><img src="' . $rv['author']['xchan_photo_s'] . '" class="menu-img-1" /> ' . $rv['author']['xchan_name'] . '</a></li>';
 			}
 			$o .= '</ul></div>';
 		}
 		return $o;
 	}
 
-}	
+}
 

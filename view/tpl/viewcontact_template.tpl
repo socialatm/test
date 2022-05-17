@@ -7,7 +7,7 @@
 		{{include file="contact_template.tpl"}}
 		{{/foreach}}
 		{{** make sure this element is at the bottom - we rely on that in endless scroll **}}
-		<div id="page-end" class="float-left w-100"></div>
+		<div id="page-end" class="float-start w-100"></div>
 	</div>
 </div>
 <script>$(document).ready(function() { loadingPage = false;});</script>

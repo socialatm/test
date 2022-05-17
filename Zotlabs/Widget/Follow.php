@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Follow
+ *   * Description: A simple form which allows you to enter an address and send a follow request
+ */
+
 namespace Zotlabs\Widget;
 
 
@@ -24,7 +29,7 @@ class Follow {
 		else {
 			$abook_usage_message = '';
  		}
-	
+
 		return replace_macros(get_markup_template('follow.tpl'),array(
 			'$connect' => t('Add New Connection'),
 			'$desc' => t('Enter channel address'),

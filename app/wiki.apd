@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/wiki/$nick
 requires: local_channel
 name: Wiki
 photo: icon:pencil-square-o
 categories: nav_featured_app, Productivity
+desc: A simple yet powerful wiki for your channel.

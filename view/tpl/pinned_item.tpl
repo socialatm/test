@@ -41,12 +41,12 @@
 				{{/if}}
 			{{/if}}
 			<div class="p-2 clearfix wall-item-head{{if !$title && !$event && !$photo}} rounded-top{{/if}}{{if $is_new && !$event}} wall-item-head-new{{/if}}">
-				<span class="float-right" title="{{$pinned}}"><i class="fa fa-thumb-tack">&nbsp;</i></span>
+				<span class="float-end" title="{{$pinned}}"><i class="fa fa-thumb-tack">&nbsp;</i></span>
 				<div class="wall-item-info" id="pinned-item-info-{{$id}}" >
 					<div class="wall-item-photo-wrapper{{if $owner_url}} wwfrom{{/if}} h-card p-author" id="pinned-item-photo-wrapper-{{$id}}">
-						<img src="{{$thumb}}" class="fakelink wall-item-photo u-photo p-name" id="pinned-item-photo-{{$id}}" alt="{{$name}}" data-toggle="dropdown" />
+						<img src="{{$thumb}}" class="fakelink wall-item-photo u-photo p-name" id="pinned-item-photo-{{$id}}" alt="{{$name}}" data-bs-toggle="dropdown" />
 						{{if $thread_author_menu}}
-							<i class="fa fa-caret-down wall-item-photo-caret cursor-pointer" data-toggle="dropdown"></i>
+							<i class="fa fa-caret-down wall-item-photo-caret cursor-pointer" data-bs-toggle="dropdown"></i>
 							<div class="dropdown-menu">
 								{{foreach $thread_author_menu as $mitem}}
 									<a class="dropdown-item" {{if $mitem.href}}href="{{$mitem.href}}"{{/if}} {{if $mitem.action}}onclick="{{$mitem.action}}"{{/if}} {{if $mitem.title}}title="{{$mitem.title}}"{{/if}} >{{$mitem.title}}</a>
@@ -80,7 +80,7 @@
 				</div>
 			{{/if}}
 				<div class="p-2 clearfix wall-item-tools">
-					<div class="float-right wall-item-tools-right">
+					<div class="float-end wall-item-tools-right">
 						<div class="btn-group">
 							<div id="pinned-rotator-{{$id}}" class="spinner-wrapper">
 								<div class="spinner s"></div>
@@ -89,10 +89,10 @@
 						<div class="btn-group">
 						{{if $isevent}}
 							<div class="btn-group">
-								<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" id="pinned-item-attend-menu-{{$id}}" title="{{$attend_title}}">
+								<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pinned-item-attend-menu-{{$id}}" title="{{$attend_title}}">
 									<i class="fa fa-calendar-check-o"></i>
 								</button>
-								<div class="dropdown-menu dropdown-menu-right">
+								<div class="dropdown-menu dropdown-menu-end">
 									<a class="dropdown-item" href="#" title="{{$attend.0}}" onclick="itemAddToCal({{$id}}); dolike({{$id}},'attendyes'); return false;">
 										<i class="item-act-list fa fa-check{{if $my_responses.attend}} ivoted{{/if}}" ></i> {{$attend.0}}
 									</a>
@@ -107,16 +107,16 @@
 						{{/if}}
 						{{if $canvote}}
 							<div class="btn-group">
-								<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" id="pinned-item-consensus-menu-{{$id}}" title="{{$vote_title}}">
+								<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pinned-item-consensus-menu-{{$id}}" title="{{$vote_title}}">
 									<i class="fa fa-check-square-o"></i>
 								</button>
-								<div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="wall-item-consensus-menu-{{$id}}">
+								<div class="dropdown-menu dropdown-menu-end" role="menu" aria-labelledby="wall-item-consensus-menu-{{$id}}">
 									<a class="dropdown-item" href="#" title="{{$conlabels.0}}" onclick="dolike({{$id}},'agree'); return false;">
 										<i class="item-act-list fa fa-check{{if $my_responses.agree}} ivoted{{/if}}" ></i> {{$conlabels.0}}
 									</a>
 									<a class="dropdown-item" href="#" title="{{$conlabels.1}}" onclick="dolike({{$id}},'disagree'); return false;">
 										<i class="item-act-list fa fa-times{{if $my_responses.disagree}} ivoted{{/if}}" ></i> {{$conlabels.1}}
-									</a> 
+									</a>
 									<a class="dropdown-item" href="#" title="{{$conlabels.2}}" onclick="dolike({{$id}},'abstain'); return false;">
 										<i class="item-act-list fa fa-question{{if $my_responses.abstain}} ivoted{{/if}}" ></i> {{$conlabels.2}}
 									</a>
@@ -124,10 +124,10 @@
 							</div>
 						{{/if}}
 						<div class="btn-group">
-							<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" id="pinned-item-menu-{{$id}}">
+							<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="pinned-item-menu-{{$id}}">
 								<i class="fa fa-cog"></i>
 							</button>
-							<div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="wall-item-menu-{{$id}}">
+							<div class="dropdown-menu dropdown-menu-end" role="menu" aria-labelledby="wall-item-menu-{{$id}}">
 								{{if $share}}
 									<a class="dropdown-item" href="#" onclick="jotShare({{$id}},{{$item_type}}); return false;"><i class="generic-icons-nav fa fa-fw fa-retweet" title="{{$share.0}}"></i>{{$share.0}}</a>
 								{{/if}}
@@ -152,7 +152,7 @@
 						{{if $attachments}}
 							<div class="wall-item-tools-left btn-group" id="pinned-item-tools-left-{{$id}}">
 								<div class="btn-group">
-									<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-toggle="dropdown" id="pinned-attachment-menu-{{$id}}">
+									<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-bs-toggle="dropdown" id="pinned-attachment-menu-{{$id}}">
 										<i class="fa fa-paperclip"></i>
 									</button>
 									<div class="dropdown-menu">{{$attachments}}</div>
@@ -162,14 +162,14 @@
 						{{foreach $responses as $verb=>$response}}
 							{{if $response.count}}
 								<div class="btn-group">
-									<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle"{{if $response.modal}} data-toggle="modal" data-target="#{{$verb}}Modal-{{$id}}"{{else}} data-toggle="dropdown"{{/if}} id="pinned-item-{{$verb}}-{{$id}}">{{$response.count}} {{$response.button}}</button>
+									<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle"{{if $response.modal}} data-bs-toggle="modal" data-bs-target="#{{$verb}}Modal-{{$id}}"{{else}} data-bs-toggle="dropdown"{{/if}} id="pinned-item-{{$verb}}-{{$id}}">{{$response.count}} {{$response.button}}</button>
 									{{if $response.modal}}
 										<div class="modal" id="pinned-{{$verb}}Modal-{{$id}}">
 											<div class="modal-dialog">
 												<div class="modal-content">
 													<div class="modal-header">
 														<h3 class="modal-title">{{$response.count}} {{$response.button}}</h3>
-														<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 													</div>
 													<div class="modal-body response-list">
 														<ul class="nav nav-pills flex-column">
@@ -177,7 +177,7 @@
 														</ul>
 													</div>
 													<div class="modal-footer clear">
-														<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{$modal_dismiss}}</button>
+														<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{$modal_dismiss}}</button>
 													</div>
 												</div>
 											</div>

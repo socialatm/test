@@ -6,7 +6,6 @@ use Zotlabs\Lib\Libzotdir;
 class Pubsites extends \Zotlabs\Web\Controller {
 
 	function get() {
-		require_once('include/dir_fns.php');
 		$dirmode = intval(get_config('system','directory_mode'));
 
 		if(($dirmode == DIRECTORY_MODE_PRIMARY) || ($dirmode == DIRECTORY_MODE_STANDALONE)) {

@@ -2,6 +2,9 @@
 
 namespace Zotlabs\Module;
 
+use Zotlabs\Lib\Connect;
+use Zotlabs\Daemon\Master;
+
 require_once('include/security.php');
 
 /**
@@ -184,7 +187,24 @@ class Regate extends \Zotlabs\Web\Controller {
 												$new_channel = auto_channel_create($cra['account']['account_id']);
 
 												if($new_channel['success']) {
+
 													$channel_id = $new_channel['channel']['channel_id'];
+
+													// If we have an inviter, connect.
+													if ($didx === 'i' && intval($r['reg_byc'])) {
+														$invite_channel = channelx_by_n($r['reg_byc']);
+														if ($invite_channel) {
+															$f = Connect::connect($new_channel['channel'], $invite_channel['xchan_addr']);
+															if ($f['success']) {
+																$can_view_stream = intval(get_abconfig($channel_id, $f['abook']['abook_xchan'], 'their_perms', 'view_stream'));
+																// If we can view their stream, pull in some posts
+																if ($can_view_stream) {
+																	Master::Summon(['Onepoll', $f['abook']['abook_id']]);
+																}
+															}
+														}
+													}
+
 													change_channel($channel_id);
 													$nextpage = 'profiles/' . $channel_id;
 													$msg_code = 'ZAR1239I';

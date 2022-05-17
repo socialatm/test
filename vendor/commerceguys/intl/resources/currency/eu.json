@@ -8,7 +8,7 @@
 	},
 	"XOF": {
 		"name": "Afrika mendebaldeko CFA frankoa",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"AED": {
 		"name": "Arabiar Emirerri Batuetako dirhama"
@@ -39,14 +39,14 @@
 		"name": "CFP frankoa",
 		"symbol": "CFPF"
 	},
-	"NIO": {
-		"name": "córdoba nikaraguarra"
-	},
 	"CRC": {
-		"name": "Costa Ricako colona"
+		"name": "colon costarricarra"
+	},
+	"NIO": {
+		"name": "cordoba nikaraguarra"
 	},
 	"GMD": {
-		"name": "dalasi ganbiarra"
+		"name": "dalasi gambiarra"
 	},
 	"DZD": {
 		"name": "dinar aljeriarra"
@@ -100,6 +100,10 @@
 	"BND": {
 		"name": "dolar bruneitarra"
 	},
+	"XCD": {
+		"name": "dolar ekikaribearra",
+		"symbol": "EC$"
+	},
 	"USD": {
 		"name": "dolar estatubatuarra",
 		"symbol": "US$"
@@ -113,6 +117,9 @@
 	"HKD": {
 		"name": "dolar hongkongtarra",
 		"symbol": "HK$"
+	},
+	"JMD": {
+		"name": "dolar jamaikarra"
 	},
 	"KYD": {
 		"name": "dolar kaimandarra"
@@ -140,9 +147,15 @@
 		"name": "dolar taiwandar berria",
 		"symbol": "NT$"
 	},
+	"TTD": {
+		"name": "dolar trinitatearra"
+	},
 	"NZD": {
 		"name": "dolar zeelandaberritarra",
 		"symbol": "NZ$"
+	},
+	"ZWL": {
+		"name": "dolar zimbabwetarra (2009)"
 	},
 	"VND": {
 		"name": "dong vietnamdarra",
@@ -168,9 +181,6 @@
 	"IDR": {
 		"name": "errupia indonesiarra"
 	},
-	"MVR": {
-		"name": "errupia maldivarra"
-	},
 	"MUR": {
 		"name": "errupia mauriziarra"
 	},
@@ -193,11 +203,14 @@
 	"CVE": {
 		"name": "ezkutu caboverdetarra"
 	},
+	"ANG": {
+		"name": "florin antillarra"
+	},
 	"AWG": {
 		"name": "florin arubarra"
 	},
 	"HUF": {
-		"name": "florin hungariarra"
+		"name": "forint hungariarra"
 	},
 	"BIF": {
 		"name": "franko burundiarra"
@@ -226,15 +239,8 @@
 	"PYG": {
 		"name": "guarani paraguaitarra"
 	},
-	"ANG": {
-		"name": "Holandarren Antilletako florina"
-	},
-	"JMD": {
-		"name": "Jamaikako dolarra"
-	},
-	"XCD": {
-		"name": "Karibe ekialdeko dolarra",
-		"symbol": "EC$"
+	"UAH": {
+		"name": "hryvnia ukrainarra"
 	},
 	"GTQ": {
 		"name": "ketzal guatemalarra"
@@ -244,6 +250,9 @@
 	},
 	"LAK": {
 		"name": "kip laostarra"
+	},
+	"SVC": {
+		"name": "kolon salvadortarra"
 	},
 	"DKK": {
 		"name": "koroa danimarkarra"
@@ -287,9 +296,6 @@
 	"SLL": {
 		"name": "leone sierraleonarra"
 	},
-	"LSL": {
-		"name": "Lesothoko lotia"
-	},
 	"RON": {
 		"name": "leu errumaniarra"
 	},
@@ -330,6 +336,9 @@
 	"TRY": {
 		"name": "lira turkiarra"
 	},
+	"LSL": {
+		"name": "loti lesothoarra"
+	},
 	"AZN": {
 		"name": "manat azerbaijandarra"
 	},
@@ -350,6 +359,9 @@
 	},
 	"BTN": {
 		"name": "ngultrum bhutandarra"
+	},
+	"TOP": {
+		"name": "paʻanga tongatarra"
 	},
 	"MOP": {
 		"name": "pataca macauarra"
@@ -409,8 +421,8 @@
 	"SAR": {
 		"name": "riyal saudiarabiarra"
 	},
-	"SVC": {
-		"name": "Salvadoran Colón"
+	"MVR": {
+		"name": "rufiyaa maldivarra"
 	},
 	"SHP": {
 		"name": "Santa Helenako libera"
@@ -421,6 +433,9 @@
 	},
 	"PEN": {
 		"name": "sol perutarra"
+	},
+	"UYW": {
+		"name": "soldata nominalaren indize-unitate uruguaitarra"
 	},
 	"KGS": {
 		"name": "som kirgizistandarra"
@@ -440,12 +455,6 @@
 	"KZT": {
 		"name": "tenge kazakhstandarra"
 	},
-	"TOP": {
-		"name": "Tongako Paʻanga"
-	},
-	"TTD": {
-		"name": "Trinidad eta Tobagoko dolarra"
-	},
 	"MNT": {
 		"name": "tugrik mongoliarra"
 	},
@@ -464,12 +473,6 @@
 	"MRU": {
 		"name": "uguiya mauritaniarra"
 	},
-	"UAH": {
-		"name": "Ukrainako hryvnia"
-	},
-	"UYW": {
-		"name": "Uruguayan Nominal Wage Index Unit"
-	},
 	"VUV": {
 		"name": "vatu vanuatuarra"
 	},
@@ -487,9 +490,6 @@
 	"CNY": {
 		"name": "yuan txinatarra",
 		"symbol": "CN¥"
-	},
-	"ZWL": {
-		"name": "Zimbabwean Dollar (2009)"
 	},
 	"PLN": {
 		"name": "zloty poloniarra"

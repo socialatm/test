@@ -14,7 +14,6 @@ if(!file_exists('include/cli_startup.php')) {
 
 
 require_once('include/cli_startup.php');
-require_once('include/zot.php');
 
 cli_startup();
 
@@ -36,7 +35,7 @@ Usage: util/pconfig
 	Displays all of the the channel's config entries
 
   util/pconfig <channel_id> <family>
-	Displays all of the channel's config entries for the specified family 
+	Displays all of the channel's config entries for the specified family
 	(system, database, etc)
 
   util/pconfig <channel_id> <family> <key>

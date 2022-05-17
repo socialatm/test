@@ -2,7 +2,7 @@
 
 namespace Zotlabs\Daemon;
 
-require_once('include/queue_fn.php');
+use Zotlabs\Lib\Queue;
 
 class Deliver {
 
@@ -23,7 +23,7 @@ class Deliver {
 			);
 
 			if ($r) {
-				queue_deliver($r[0], true);
+				Queue::deliver($r[0], true);
 			}
 
 		}

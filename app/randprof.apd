@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/randprof
 name: Random Channel
 target: randprof
 photo: icon:random
 categories: Networking
+desc: Visit a random channel in the network.

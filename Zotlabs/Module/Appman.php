@@ -1,18 +1,18 @@
 <?php /** @file */
 
-namespace Zotlabs\Module; 
+namespace Zotlabs\Module;
 
-//require_once('include/apps.php');
-
-use \Zotlabs\Lib as Zlib;
+use App;
+use Zotlabs\Lib\Apps;
+use Zotlabs\Lib\Libsync;
 
 class Appman extends \Zotlabs\Web\Controller {
 
 	function post() {
-	
+
 		if(! local_channel())
 			return;
-	
+
 		if($_POST['url']) {
 			$arr = array(
 				'uid' => intval($_REQUEST['uid']),
@@ -32,32 +32,70 @@ class Appman extends \Zotlabs\Web\Controller {
 				'sig' => escape_tags($_REQUEST['sig']),
 				'categories' => escape_tags($_REQUEST['categories'])
 			);
-	
-			$_REQUEST['appid'] = Zlib\Apps::app_install(local_channel(),$arr);
-	
-			if(Zlib\Apps::app_installed(local_channel(),$arr))
+
+			$_REQUEST['appid'] = Apps::app_install(local_channel(),$arr);
+
+			if(Apps::app_installed(local_channel(),$arr))
 				info( t('App installed.') . EOL);
 
 			goaway(z_root() . '/apps');
 			return; //not reached
 		}
-	
-	
-		$papp = Zlib\Apps::app_decode($_POST['papp']);
-	
+
+
+		$papp = Apps::app_decode($_POST['papp']);
+
 		if(! is_array($papp)) {
 			notice( t('Malformed app.') . EOL);
 			return;
 		}
-	
+
 		if($_POST['install']) {
-			Zlib\Apps::app_install(local_channel(),$papp);
-			if(Zlib\Apps::app_installed(local_channel(),$papp))
+			Apps::app_install(local_channel(),$papp);
+			if(Apps::app_installed(local_channel(),$papp))
 				info( t('App installed.') . EOL);
+
+			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
+				intval(local_channel()),
+				dbesc($papp['guid'])
+			);
+
+			if (!$sync) {
+				return;
+			}
+
+			if (intval($sync[0]['app_system'])) {
+				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+			}
+			else {
+				Libsync::build_sync_packet($uid, ['app' => $sync]);
+			}
+
 		}
-	
+
 		if($_POST['delete']) {
-			Zlib\Apps::app_destroy(local_channel(),$papp);
+
+			// Fetch the app for sync before it is deleted (if it is deletable))
+			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
+				intval(local_channel()),
+				dbesc($papp['guid'])
+			);
+
+			if (!$sync) {
+				return;
+			}
+
+			Apps::app_destroy(local_channel(), $papp);
+
+			// Now flag it deleted
+			$sync[0]['app_deleted'] = 1;
+
+			if (intval($sync[0]['app_system'])) {
+				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+			}
+			else {
+				Libsync::build_sync_packet($uid, ['app' => $sync]);
+			}
 		}
 
 		if($_POST['edit']) {
@@ -65,37 +103,65 @@ class Appman extends \Zotlabs\Web\Controller {
 		}
 
 		if($_POST['feature']) {
-			Zlib\Apps::app_feature(local_channel(), $papp, $_POST['feature']);
+			Apps::app_feature(local_channel(), $papp, $_POST['feature']);
+
+			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
+				intval(local_channel()),
+				dbesc($papp['guid'])
+			);
+
+			if (intval($sync[0]['app_system'])) {
+				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+			}
+			else {
+				Libsync::build_sync_packet($uid, ['app' => $sync]);
+			}
 		}
 
 		if($_POST['pin']) {
-			Zlib\Apps::app_feature(local_channel(), $papp, $_POST['pin']);
+			Apps::app_feature(local_channel(), $papp, $_POST['pin']);
+
+			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
+				intval(local_channel()),
+				dbesc($papp['guid'])
+			);
+
+			if (intval($sync[0]['app_system'])) {
+				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+			}
+			else {
+				Libsync::build_sync_packet($uid, ['app' => $sync]);
+			}
 		}
 
-		if($_SESSION['return_url']) 
+		if($_POST['aj']) {
+			killme();
+		}
+
+		if($_SESSION['return_url'])
 			goaway(z_root() . '/' . $_SESSION['return_url']);
 
 		goaway(z_root() . '/apps');
-	
-	
+
+
 	}
-	
-	
+
+
 	function get() {
-	
+
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
 
-		$channel = \App::get_channel();
+		$channel = App::get_channel();
 
 		if(argc() > 3) {
 			if(argv(2) === 'moveup') {
-				Zlib\Apps::moveup(local_channel(),argv(1),argv(3));
+				Apps::moveup(local_channel(),argv(1),argv(3));
 			}
 			if(argv(2) === 'movedown') {
-				Zlib\Apps::movedown(local_channel(),argv(1),argv(3));
+				Apps::movedown(local_channel(),argv(1),argv(3));
 			}
 			goaway(z_root() . '/apporder');
 		}
@@ -129,12 +195,12 @@ class Appman extends \Zotlabs\Web\Controller {
 				}
 			}
 
-			$embed = array('embed', t('Embed code'), Zlib\Apps::app_encode($app,true),'', 'onclick="this.select();"');
-	
+			$embed = array('embed', t('Embed code'), Apps::app_encode($app,true),'', 'onclick="this.select();"');
+
 		}
-				
+
 		return replace_macros(get_markup_template('app_create.tpl'), array(
-	
+
 			'$banner' => (($app) ? t('Edit App') : t('Create App')),
 			'$app' => $app,
 			'$guid' => (($app) ? $app['app_id'] : ''),
@@ -154,7 +220,7 @@ class Appman extends \Zotlabs\Web\Controller {
 			'$embed' => $embed,
 			'$submit' => t('Submit')
 		));
-	
+
 	}
-	
+
 }

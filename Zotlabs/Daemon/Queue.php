@@ -2,8 +2,7 @@
 
 namespace Zotlabs\Daemon;
 
-require_once('include/queue_fn.php');
-require_once('include/zot.php');
+use Zotlabs\Lib\Queue as LibQueue;
 
 class Queue {
 
@@ -48,17 +47,17 @@ class Queue {
 		else {
 
 			// For the first 12 hours we'll try to deliver every 15 minutes
-			// After that, we'll only attempt delivery once per hour. 
-			// This currently only handles the default queue drivers ('zot' or '') which we will group by posturl 
+			// After that, we'll only attempt delivery once per hour.
+			// This currently only handles the default queue drivers ('zot' or '') which we will group by posturl
 			// so that we don't start off a thousand deliveries for a couple of dead hubs.
 			// The zot driver will deliver everything destined for a single hub once contact is made (*if* contact is made).
 			// Other drivers will have to do something different here and may need their own query.
 
-			// Note: this requires some tweaking as new posts to long dead hubs once a day will keep them in the 
+			// Note: this requires some tweaking as new posts to long dead hubs once a day will keep them in the
 			// "every 15 minutes" category. We probably need to prioritise them when inserted into the queue
 			// or just prior to this query based on recent and long-term delivery history. If we have good reason to believe
-			// the site is permanently down, there's no reason to attempt delivery at all, or at most not more than once 
-			// or twice a day. 
+			// the site is permanently down, there's no reason to attempt delivery at all, or at most not more than once
+			// or twice a day.
 
 			$sqlrandfunc = db_getfunc('rand');
 
@@ -67,7 +66,7 @@ class Queue {
 			);
 			while ($r) {
 				foreach ($r as $rv) {
-					queue_deliver($rv);
+					LibQueue::deliver($rv);
 				}
 				$r = q("SELECT *,$sqlrandfunc as rn FROM outq WHERE outq_delivered = 0 and outq_scheduled < %s order by rn limit 1",
 					db_utcnow()
@@ -78,7 +77,7 @@ class Queue {
 			return;
 
 		foreach ($r as $rv) {
-			queue_deliver($rv);
+			LibQueue::deliver($rv);
 		}
 	}
 }

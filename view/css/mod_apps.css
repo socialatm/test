@@ -10,3 +10,16 @@
 	text-overflow: ellipsis;
 	margin: 10px 0px;
 }
+
+.app-icon {
+	display: table-cell;
+	table-layout: fixed;
+	vertical-align: top;
+}
+
+.app-info {
+	display: table-cell;
+	table-layout: fixed;
+	vertical-align: top;
+	padding-left: 10px;
+}

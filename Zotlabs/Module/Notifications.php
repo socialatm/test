@@ -8,8 +8,56 @@ class Notifications extends \Zotlabs\Web\Controller {
 	function get() {
 
 		if(! local_channel()) {
-			notice( t('Permission denied.') . EOL);
 			return;
+		}
+
+		// ajax mark all unseen items read
+		if(x($_REQUEST, 'markRead')) {
+			switch($_REQUEST['markRead']) {
+				case 'dm':
+					$r = q("UPDATE item SET item_unseen = 0 WHERE uid = %d AND item_unseen = 1 AND item_private = 2",
+						intval(local_channel())
+					);
+					break;
+				case 'network':
+					$r = q("UPDATE item SET item_unseen = 0 WHERE uid = %d AND item_unseen = 1 AND item_private IN (0, 1)",
+						intval(local_channel())
+					);
+					break;
+				case 'home':
+					$r = q("UPDATE item SET item_unseen = 0 WHERE uid = %d AND item_unseen = 1 AND item_wall = 1 AND item_private IN (0, 1)",
+						intval(local_channel())
+					);
+					break;
+				case 'all_events':
+					$evdays = intval(get_pconfig(local_channel(), 'system', 'evdays', 3));
+					$r = q("UPDATE event SET dismissed = 1 WHERE uid = %d AND dismissed = 0 AND dtstart < '%s' AND dtstart > '%s' ",
+						intval(local_channel()),
+						dbesc(datetime_convert('UTC', date_default_timezone_get(), 'now + ' . intval($evdays) . ' days')),
+						dbesc(datetime_convert('UTC', date_default_timezone_get(), 'now - 1 days'))
+					);
+					break;
+				case 'notify':
+					$r = q("UPDATE notify SET seen = 1 WHERE seen = 0 AND uid = %d",
+						intval(local_channel())
+					);
+					break;
+				case 'pubs':
+					unset($_SESSION['static_loadtime']);
+					break;
+				default:
+					break;
+			}
+			killme();
+		}
+
+		// ajax mark all comments of a parent item read
+		if(x($_REQUEST, 'markItemRead') && local_channel()) {
+			$r = q("UPDATE item SET item_unseen = 0 WHERE  uid = %d AND parent = %d",
+				intval(local_channel()),
+				intval($_REQUEST['markItemRead'])
+			);
+			killme();
 		}
 
 		nav_set_selected('Notifications');

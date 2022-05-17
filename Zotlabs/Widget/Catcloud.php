@@ -2,6 +2,13 @@
 
 namespace Zotlabs\Widget;
 
+/**
+ *   * Name: Category cloud
+ *   * Description: Display category links in a cloud
+ *   * Requires: channel, cards, articles
+ */
+
+
 class Catcloud {
 
 	function widget($arr) {
@@ -22,7 +29,7 @@ class Catcloud {
 					return card_catblock(\App::$profile['profile_uid'], $limit, '', \App::$profile['channel_hash']);
 
 				case 'articles':
-			
+
 					if(! perm_is_allowed(\App::$profile['profile_uid'], get_observer_hash(), 'view_pages'))
 						return '';
 

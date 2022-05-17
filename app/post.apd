@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/rpost?f=&body=
 requires: observer
 name: Post
 photo: icon:pencil-square
 categories: Productivity
+desc: A separate post editor.

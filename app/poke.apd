@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/poke
 requires: local_channel
 name: Poke
 photo: icon:hand-o-right
 categories: Social
+desc: Poke somebody in your addressbook.

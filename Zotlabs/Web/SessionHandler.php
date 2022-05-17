@@ -6,7 +6,7 @@ namespace Zotlabs\Web;
 class SessionHandler implements \SessionHandlerInterface {
 
 
-	function open ($s, $n) {
+	function open ($s, $n) : bool {
 		return true;
 	}
 
@@ -15,7 +15,7 @@ class SessionHandler implements \SessionHandlerInterface {
 	// some which call read explicitly and some that do not. So we call it explicitly
 	// just after sid regeneration to force a record to exist.
 
-	function read ($id) {
+	function read ($id) : string {
 
 		if($id) {
 			$r = q("SELECT sess_data FROM session WHERE sid= '%s'", dbesc($id));
@@ -36,7 +36,7 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 
-	function write ($id, $data) {
+	function write ($id, $data) : bool {
 
 		// Pretend everything is hunky-dory, even though it isn't.
 		// There probably isn't anything we can do about it in any event.
@@ -49,9 +49,9 @@ class SessionHandler implements \SessionHandlerInterface {
 
 		// Unless we authenticate somehow, only keep a session for 5 minutes
 		// The viewer can extend this by performing any web action using the
-		// original cookie, but this allows us to cleanup the hundreds or 
+		// original cookie, but this allows us to cleanup the hundreds or
 		// thousands of empty sessions left around from web crawlers which are
-		// assigned cookies on each page that they never use. 
+		// assigned cookies on each page that they never use.
 
 		$expire = time() + 300;
 
@@ -74,19 +74,19 @@ class SessionHandler implements \SessionHandlerInterface {
 		return true;
 	}
 
-	
-	function close() {
+
+	function close() : bool {
 		return true;
 	}
 
 
-	function destroy ($id) {
+	function destroy ($id) : bool {
 		q("DELETE FROM session WHERE sid = '%s'", dbesc($id));
 		return true;
 	}
 
 
-	function gc($expire) {
+	function gc($expire) : int {
 		q("DELETE FROM session WHERE expire < %d", dbesc(time()));
 		return true;
 	}

@@ -36,7 +36,6 @@ class Cron {
 		// run queue delivery process in the background
 
 		Master::Summon(array('Queue'));
-
 		Master::Summon(array('Poller'));
 
 		/**
@@ -46,13 +45,6 @@ class Cron {
 		q("delete from chatpresence where cp_last < %s - INTERVAL %s and cp_client != 'auto' ",
 			db_utcnow(),
 			db_quoteinterval('3 MINUTE')
-		);
-
-		// expire any expired mail
-
-		q("delete from mail where expires > '%s' and expires < %s ",
-			dbesc(NULL_DATE),
-			db_utcnow()
 		);
 
 		require_once('include/account.php');
@@ -165,11 +157,6 @@ class Cron {
 			}
 		}
 
-
-		// check if any connections transitioned to zot6 and upgrade the connections to zot6 at this hub if so.
-		require_once('include/connections.php');
-		z6trans_connections();
-
 		require_once('include/attach.php');
 		attach_upgrade();
 
@@ -218,10 +205,9 @@ class Cron {
 
 		// pull in some public posts
 
-/*		$disable_discover_tab = get_config('system', 'disable_discover_tab') || get_config('system', 'disable_discover_tab') === false;
+		$disable_discover_tab = get_config('system', 'disable_discover_tab') || get_config('system', 'disable_discover_tab') === false;
 		if (!$disable_discover_tab)
-			Master::Summon(array('Externals'));
-*/
+			Master::Summon(['Externals']);
 
 		$restart = false;
 

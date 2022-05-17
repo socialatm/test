@@ -8,7 +8,6 @@ use Zotlabs\Lib\Libsync;
 
 require_once('include/socgraph.php');
 require_once('include/selectors.php');
-require_once('include/group.php');
 require_once('include/photos.php');
 
 class Defperms extends Controller {
@@ -19,13 +18,13 @@ class Defperms extends Controller {
 	 */
 
 	function init() {
-	
+
 		if(! local_channel())
 			return;
 
-		if(! Apps::system_app_installed(local_channel(), 'Default Permissions'))
-			return;
-	
+		//if(! Apps::system_app_installed(local_channel(), 'Default Permissions'))
+		//	return;
+
 		$r = q("SELECT abook.*, xchan.*
 			FROM abook left join xchan on abook_xchan = xchan_hash
 			WHERE abook_self = 1 and abook_channel = %d LIMIT 1",
@@ -37,39 +36,39 @@ class Defperms extends Controller {
 
 		$channel = App::get_channel();
 		if($channel)
-			head_set_icon($channel['xchan_photo_s']);	
+			head_set_icon($channel['xchan_photo_s']);
 	}
 
-	
+
 	/* @brief Evaluate posted values and set changes
 	 *
 	 */
-	
+
 	function post() {
-	
+
 		if(! local_channel())
 			return;
 
-		if(! Apps::system_app_installed(local_channel(), 'Default Permissions'))
-			return;
-	
+		//if(! Apps::system_app_installed(local_channel(), 'Default Permissions'))
+		//	return;
+
 		$contact_id = intval(argv(1));
 		if(! $contact_id)
 			return;
-	
+
 		$channel = App::get_channel();
-	
+
 		$orig_record = q("SELECT * FROM abook WHERE abook_id = %d AND abook_channel = %d LIMIT 1",
 			intval($contact_id),
 			intval(local_channel())
 		);
-	
+
 		if(! $orig_record) {
 			notice( t('Could not access contact record.') . EOL);
 			goaway(z_root() . '/connections');
 			return; // NOTREACHED
 		}
-	
+
 
 		if(intval($orig_record[0]['abook_self'])) {
 			$autoperms = intval($_POST['autoperms']);
@@ -79,8 +78,8 @@ class Defperms extends Controller {
 			$autoperms = null;
 			$is_self = false;
 		}
-	
-	
+
+
 		$all_perms = \Zotlabs\Access\Permissions::Perms();
 
 		if($all_perms) {
@@ -105,15 +104,15 @@ class Defperms extends Controller {
 			}
 		}
 
-		if(! is_null($autoperms)) 
+		if(! is_null($autoperms))
 			set_pconfig($channel['channel_id'],'system','autoperms',$autoperms);
-				
-	
+
+
 		notice( t('Settings updated.') . EOL);
 
-	
+
 		// Refresh the structure in memory with the new data
-	
+
 		$r = q("SELECT abook.*, xchan.*
 			FROM abook left join xchan on abook_xchan = xchan_hash
 			WHERE abook_channel = %d and abook_id = %d LIMIT 1",
@@ -123,28 +122,28 @@ class Defperms extends Controller {
 		if($r) {
 			App::$poi = $r[0];
 		}
-	
-	
+
+
 		$this->defperms_clone($a);
-	
+
 		goaway(z_root() . '/defperms');
-	
+
 		return;
-	
+
 	}
-	
+
 	/* @brief Clone connection
 	 *
 	 *
 	 */
-	
+
 	function defperms_clone(&$a) {
-	
+
 			if(! App::$poi)
 				return;
-		
+
 			$channel = App::get_channel();
-	
+
 			$r = q("SELECT abook.*, xchan.*
 				FROM abook left join xchan on abook_xchan = xchan_hash
 				WHERE abook_channel = %d and abook_id = %d LIMIT 1",
@@ -154,49 +153,47 @@ class Defperms extends Controller {
 			if($r) {
 				App::$poi = array_shift($r);
 			}
-	
+
 			$clone = App::$poi;
-	
+
 			unset($clone['abook_id']);
 			unset($clone['abook_account']);
 			unset($clone['abook_channel']);
-	
+
 			$abconfig = load_abconfig($channel['channel_id'],$clone['abook_xchan']);
 			if($abconfig)
 				$clone['abconfig'] = $abconfig;
-	
+
 			Libsync::build_sync_packet(0 /* use the current local_channel */, array('abook' => array($clone)));
 	}
-	
+
 	/* @brief Generate content of connection default permissions page
 	 *
 	 *
 	 */
-	
+
 	function get() {
-	
+
 		$sort_type = 0;
 		$o = '';
-	
+
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
 			return login();
 		}
 
-		if(! Apps::system_app_installed(local_channel(), 'Default Permissions')) {
-			//Do not display any associated widgets at this point
-			App::$pdl = '';
+		//~ if(! Apps::system_app_installed(local_channel(), 'Default Permissions')) {
+			//~ //Do not display any associated widgets at this point
+			//~ App::$pdl = '';
+			//~ $papp = Apps::get_papp('Default Permissions');
+			//~ return Apps::app_render($papp, 'module');
+		//~ }
 
-			$o = '<b>' . t('Default Permissions App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Set custom default permissions for new connections');
-			return $o;
-		}
-	
 		$section = ((array_key_exists('section',$_REQUEST)) ? $_REQUEST['section'] : '');
 		$channel = App::get_channel();
-	
+
 		$yes_no = array(t('No'),t('Yes'));
-	
+
 		$connect_perms = \Zotlabs\Access\Permissions::connect_perms(local_channel());
 
 		$o .= "<script>function connectDefaultShare() {
@@ -210,28 +207,28 @@ class Defperms extends Controller {
 			}
 		}
 		$o .= " }\n</script>\n";
-	
+
 		if(App::$poi) {
-	
+
 			$sections = [];
 
 			$self = false;
-	
+
 			$tpl = get_markup_template('defperms.tpl');
-	
-	
+
+
 			$perms = array();
 			$channel = App::get_channel();
 
 			$contact = App::$poi;
-	
+
 			$global_perms = \Zotlabs\Access\Permissions::Perms();
 
 			$hidden_perms = [];
-	
+
 			foreach($global_perms as $k => $v) {
 				$thisperm = get_abconfig(local_channel(),$contact['abook_xchan'],'my_perms',$k);
-				
+
 				$checkinherited = \Zotlabs\Access\PermissionLimits::Get(local_channel(),$k);
 
 				$inherited = (($checkinherited & PERMS_SPECIFIC) ? false : true);
@@ -241,7 +238,7 @@ class Defperms extends Controller {
 					$hidden_perms[] = [ 'perms_' . $k, intval($thisperm) ];
 				}
 			}
-	
+
 			$pcat = new \Zotlabs\Lib\Permcat(local_channel());
 			$pcatlist = $pcat->listing();
 			$permcats = [];
@@ -272,13 +269,13 @@ class Defperms extends Controller {
 				'$contact_id'     => $contact['abook_id'],
 				'$name'           => $contact['xchan_name'],
 			]);
-	
+
 			$arr = array('contact' => $contact,'output' => $o);
-	
+
 			call_hooks('contact_edit', $arr);
-	
+
 			return $arr['output'];
-	
-		}	
+
+		}
 	}
 }

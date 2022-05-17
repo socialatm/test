@@ -1,11 +1,11 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<div class="dropdown float-right" id="profile-edit-links">
-			<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<div class="dropdown float-end" id="profile-edit-links">
+			<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-cog"></i>&nbsp;{{$tools_label}}
 			</button>
-			<div class="dropdown-menu dropdown-menu-right">
-				<a class="dropdown-item" href="profile_photo" id="profile-photo_upload-link" title="{{$profpic}}"><i class="fa fa-fw fa-user"></i>&nbsp;{{$profpic}}</a>
+			<div class="dropdown-menu dropdown-menu-end">
+				<a class="dropdown-item" href="profile_photo/{{$profile_id}}" id="profile-photo_upload-link" title="{{$profpic}}"><i class="fa fa-fw fa-user"></i>&nbsp;{{$profpic}}</a>
 				{{if $is_default}}
 				<a class="dropdown-item" href="cover_photo" id="cover-photo_upload-link" title="{{$coverpic}}"><i class="fa fa-fw fa-picture-o"></i>&nbsp;{{$coverpic}}</a>
 				{{/if}}
@@ -30,7 +30,7 @@
 				{{/if}}
 			</div>
 		</div>
-		<h2>{{$banner}}</h2>
+		<h2>{{$banner}}{{if $multi_profiles}}: {{$profile_name.2}}{{/if}}</h2>
 		<div class="clear"></div>
 	</div>
 	<div class="section-content-tools-wrapper" id="profile-upload-form">
@@ -49,12 +49,12 @@
 				<div class="panel">
 					<div class="section-subtitle-wrapper" role="tab" id="personal">
 						<h3>
-							<a data-toggle="collapse" data-target="#personal-collapse" href="#" aria-expanded="true" aria-controls="personal-collapse">
-								{{$personal}}
+							<a data-bs-toggle="collapse" data-bs-target="#personal-collapse" href="#" aria-expanded="true" aria-controls="personal-collapse">
+								{{$basic}}
 							</a>
 						</h3>
 					</div>
-					<div id="personal-collapse" class="panel-collapse collapse show" data-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="personal">
+					<div id="personal-collapse" class="panel-collapse collapse show" data-bs-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="personal">
 						<div class="section-content-tools-wrapper">
 							{{if $multi_profiles}}
 							{{include file="field_input.tpl" field=$profile_name}}
@@ -69,7 +69,7 @@
 							{{/if}}
 
 							{{if $fields.gender}}
-							<div id="profile-edit-gender-wrapper" class="form-group field select" >
+							<div id="profile-edit-gender-wrapper" class="mb-3 field select" >
 							<label id="profile-edit-gender-label" for="gender-select" >{{$lbl_gender}}</label>
 							{{if $advanced}}
 							{{$gender}}
@@ -84,9 +84,19 @@
 							{{$dob}}
 							{{/if}}
 
-							{{include file="field_checkbox.tpl" field=$hide_friends}}
+							{{$profile_in_dir}}
 
-							<div class="form-group" >
+							{{$suggestme}}
+
+							{{if $show_presence}}
+							{{include file="field_checkbox.tpl" field=$show_presence}}
+							{{/if}}
+
+							{{if $hide_friends}}
+							{{include file="field_checkbox.tpl" field=$hide_friends}}
+							{{/if}}
+
+							<div class="mb-3" >
 							<button type="submit" name="submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
 							</div>
 							<div class="clear"></div>
@@ -94,9 +104,9 @@
 					</div>
 				</div>
 
-				{{if $fields.comms }}
+				{{if $fields.comms && $vcard}}
 
-				<div id="template-form-vcard-tel" class="form-group form-vcard-tel">
+				<div id="template-form-vcard-tel" class="mb-3 form-vcard-tel">
 					<select name="tel_type[]">
 						<option value="CELL">{{$mobile}}</option>
 						<option value="HOME">{{$home}}</option>
@@ -107,7 +117,7 @@
 					<i data-remove="vcard-tel" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 				</div>
 
-				<div id="template-form-vcard-email" class="form-group form-vcard-email">
+				<div id="template-form-vcard-email" class="mb-3 form-vcard-email">
 					<select name="email_type[]">
 						<option value="HOME">{{$home}}</option>
 						<option value="WORK">{{$work}}</option>
@@ -117,7 +127,7 @@
 					<i data-remove="vcard-email" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 				</div>
 
-				<div id="template-form-vcard-impp" class="form-group form-vcard-impp">
+				<div id="template-form-vcard-impp" class="mb-3 form-vcard-impp">
 					<select name="impp_type[]">
 						<option value="HOME">{{$home}}</option>
 						<option value="WORK">{{$work}}</option>
@@ -129,8 +139,8 @@
 
 				<div class="section-content-wrapper-np">
 					<div id="vcard-cancel-{{$vcard.id}}" class="vcard-cancel vcard-cancel-btn" data-id="{{$vcard.id}}" data-action="cancel"><i class="fa fa-close"></i></div>
-					<div id="vcard-add-field-{{$vcard.id}}" class="dropdown pull-right vcard-add-field">
-						<button data-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
+					<div id="vcard-add-field-{{$vcard.id}}" class="dropdown float-end vcard-add-field">
+						<button data-bs-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
 						<ul class="dropdown-menu">
 							<li class="add-vcard-tel"><a href="#" data-add="vcard-tel" data-id="{{$vcard.id}}" class="add-field" onclick="return false;">{{$tel_label}}</a></li>
 							<li class="add-vcard-email"><a href="#" data-add="vcard-email" data-id="{{$vcard.id}}" class="add-field" onclick="return false;">{{$email_label}}</a></li>
@@ -149,11 +159,11 @@
 				</div>
 				<div id="vcard-info-{{$vcard.id}}" class="vcard-info section-content-wrapper">
 
-					<div class="vcard-tel form-group">
+					<div class="vcard-tel mb-3">
 						<div class="form-vcard-tel-wrapper">
 							{{if $vcard.tels}}
 							{{foreach $vcard.tels as $tel}}
-							<div class="form-group form-vcard-tel">
+							<div class="mb-3 form-vcard-tel">
 								<select name="tel_type[]">
 									<option value=""{{if $tel.type.0 != 'CELL' && $tel.type.0 != 'HOME' && $tel.type.0 != 'WORK' && $tel.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$tel.type.1}}</option>
 									<option value="CELL"{{if $tel.type.0 == 'CELL'}} selected="selected"{{/if}}>{{$mobile}}</option>
@@ -170,11 +180,11 @@
 					</div>
 
 
-					<div class="vcard-email form-group">
+					<div class="vcard-email mb-3">
 						<div class="form-vcard-email-wrapper">
 							{{if $vcard.emails}}
 							{{foreach $vcard.emails as $email}}
-							<div class="form-group form-vcard-email">
+							<div class="mb-3 form-vcard-email">
 								<select name="email_type[]">
 									<option value=""{{if $email.type.0 != 'HOME' && $email.type.0 != 'WORK' && $email.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$email.type.1}}</option>
 									<option value="HOME"{{if $email.type.0 == 'HOME'}} selected="selected"{{/if}}>{{$home}}</option>
@@ -189,11 +199,11 @@
 						</div>
 					</div>
 
-					<div class="vcard-impp form-group">
+					<div class="vcard-impp mb-3">
 						<div class="form-vcard-impp-wrapper">
 							{{if $vcard.impps}}
 							{{foreach $vcard.impps as $impp}}
-							<div class="form-group form-vcard-impp">
+							<div class="mb-3 form-vcard-impp">
 								<select name="impp_type[]">
 									<option value=""{{if $impp.type.0 != 'HOME' && $impp.type.0 != 'WORK' && $impp.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$impp.type.1}}</option>
 									<option value="HOME"{{if $impp.type.0 == 'HOME'}} selected="selected"{{/if}}>{{$home}}</option>
@@ -219,12 +229,12 @@
 				<div class="panel">
 					<div class="section-subtitle-wrapper" role="tab" id="location">
 						<h3>
-							<a data-toggle="collapse" data-target="#location-collapse" href="#" aria-expanded="true" aria-controls="location-collapse">
+							<a data-bs-toggle="collapse" data-bs-target="#location-collapse" href="#" aria-expanded="true" aria-controls="location-collapse">
 								{{$location}}
 							</a>
 						</h3>
 					</div>
-					<div id="location-collapse" class="panel-collapse collapse" data-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="location">
+					<div id="location-collapse" class="panel-collapse collapse" data-bs-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="location">
 						<div class="section-content-tools-wrapper">
 							{{if $fields.address}}
 							{{include file="field_input.tpl" field=$address}}
@@ -250,7 +260,7 @@
 							{{include file="field_input.tpl" field=$hometown}}
 							{{/if}}
 
-							<div class="form-group" >
+							<div class="mb-3" >
 							<button type="submit" name="submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
 							</div>
 							<div class="clear"></div>
@@ -264,15 +274,15 @@
 				<div class="panel">
 					<div class="section-subtitle-wrapper" role="tab" id="relation">
 						<h3>
-							<a data-toggle="collapse" data-target="#relation-collapse" href="#" aria-expanded="true" aria-controls="relation-collapse">
+							<a data-bs-toggle="collapse" data-bs-target="#relation-collapse" href="#" aria-expanded="true" aria-controls="relation-collapse">
 								{{$relation}}
 							</a>
 						</h3>
 					</div>
-					<div id="relation-collapse" class="panel-collapse collapse" data-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="relation">
+					<div id="relation-collapse" class="panel-collapse collapse" data-bs-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="relation">
 						<div class="section-content-tools-wrapper">
 							{{if $fields.marital }}
-							<div id="profile-edit-marital-wrapper" class="form-group field" >
+							<div id="profile-edit-marital-wrapper" class="mb-3 field" >
 							<label id="profile-edit-marital-label" for="profile-edit-marital" ><span class="heart"><i class="fa fa-heart"></i>&nbsp;</span>{{$lbl_marital}}</label>
 							{{if $advanced}}
 							{{$marital}}
@@ -292,7 +302,7 @@
 							{{/if}}
 
 							{{if $fields.sexual}}
-							<div id="profile-edit-sexual-wrapper" class="form-group field" >
+							<div id="profile-edit-sexual-wrapper" class="mb-3 field" >
 							<label id="profile-edit-sexual-label" for="sexual-select" >{{$lbl_sexual}}</label>
 							{{if $advanced}}
 							{{$sexual}}
@@ -303,7 +313,7 @@
 							<div class="clear"></div>
 							{{/if}}
 
-							<div class="form-group" >
+							<div class="mb-3" >
 							<button type="submit" name="submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
 							</div>
 							<div class="clear"></div>
@@ -315,12 +325,12 @@
 				<div class="panel">
 					<div class="section-subtitle-wrapper" role="tab" id="miscellaneous">
 						<h3>
-							<a data-toggle="collapse" data-target="#miscellaneous-collapse" href="#" aria-expanded="true" aria-controls="miscellaneous-collapse">
+							<a data-bs-toggle="collapse" data-bs-target="#miscellaneous-collapse" href="#" aria-expanded="true" aria-controls="miscellaneous-collapse">
 								{{$miscellaneous}}
 							</a>
 						</h3>
 					</div>
-					<div id="miscellaneous-collapse" class="panel-collapse collapse" data-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="miscellaneous">
+					<div id="miscellaneous-collapse" class="panel-collapse collapse" data-bs-parent="#profile-edit-wrapper" role="tabpanel" aria-labelledby="miscellaneous">
 						<div class="section-content-tools-wrapper">
 							{{if $fields.homepage}}
 							{{include file="field_input.tpl" field=$homepage}}
@@ -395,7 +405,7 @@
 							{{include file="field_input.tpl" field=$field}}
 							{{/foreach}}
 							{{/if}}
-							<div class="form-group" >
+							<div class="mb-3" >
 							<button type="submit" name="submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
 							</div>
 							<div class="clear"></div>

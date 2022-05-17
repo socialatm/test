@@ -78,10 +78,10 @@ function quotelevel($message, $wraplength = 75)
 
 
 function collecturls($message) {
-	
+
 	$pattern = '/<a.*?href="(.*?)".*?>(.*?)<\/a>/is';
 	preg_match_all($pattern, $message, $result, PREG_SET_ORDER);
-	
+
 	$urls = [];
 	if ($result) {
 		$ignore = false;
@@ -104,15 +104,15 @@ function collecturls($message) {
 			foreach ($list as $listitem)
 				if (strpos($treffer[1], $listitem) !== false)
 					$ignore = true;
-						
+
 			if ((strpos($treffer[1], "//plus.google.com/") !== false) and (strpos($treffer[1], "/posts") !== false))
 				$ignore = false;
-					
+
 			if (! $ignore)
 				$urls[$treffer[1]] = $treffer[1];
 		}
 	}
-	
+
 	return($urls);
 }
 

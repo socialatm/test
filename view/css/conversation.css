@@ -34,6 +34,8 @@
 #jot-pagetitle-wrap input,
 #jot-customjotheaders-wrap {
 	padding: 0.5rem;
+	outline: none;
+
 }
 
 #jot-text-wrap {
@@ -55,6 +57,7 @@
 	padding: 0.5rem;
 	width: 100%;
 	display: inherit;
+	outline: none;
 }
 
 #profile-jot-text.jot-expanded {
@@ -110,6 +113,14 @@
 
 .wall-item-photo-wrapper {
 	position: relative;
+}
+
+.wall-item-photo-group-actor {
+	position: absolute;
+	right: 3px;
+	top: 0px;
+	color: #fff;
+	text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
 }
 
 .wall-item-photo-caret {
@@ -225,12 +236,14 @@ a.wall-item-name-link {
 	line-height: 1;
 	height: 2rem;
 	resize: none;
+	overflow: hidden;
 }
 
 .comment-edit-text.expanded {
 	line-height: 1.25;
 	height: 7rem;
 	resize: vertical;
+	overflow: auto;
 }
 
 .comment-tools,
@@ -310,7 +323,7 @@ code {
 }
 
 code.inline-code {
-	padding: 0px 4px;
+	padding: 0.2em;
 	display: inline;
 }
 
@@ -344,4 +357,14 @@ img.smiley.emoji:hover {
 
 #filer_save {
 	margin-left: 15px;
+}
+
+.spinner-wrapper.contact-edit-rotator {
+	position: absolute;
+	left: .65rem;
+	top: .65rem;
+}
+
+.contact-edit-rotator .spinner.s {
+	border-top: .2rem solid rgba(254, 254, 254, .9);
 }

@@ -1,3 +1,13 @@
+<?php
+/**
+ *   * Name: full
+ *   * Description: A single column full width layout without a navbar
+ *   * Version: 1
+ *   * Author: None
+ *   * Maintainer: None
+ *   * ContentRegion: content, region_1
+ */
+?>
 <!DOCTYPE html >
 <html prefix="og: http://ogp.me/ns#">
 <head>
@@ -6,7 +16,8 @@
   <?php if(x($page,'htmlhead')) echo $page['htmlhead'] ?>
 </head>
 <body>
-	<section style="margin:0px!important; padding:0px!important; float:none!important;display:block!important;"><?php if(x($page,'content')) echo $page['content']; ?>
+	<section id="region_1">
+		<?php if(x($page,'content')) echo $page['content']; ?>
 		<div id="page-footer"></div>
 	</section>
 </body>

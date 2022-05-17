@@ -171,6 +171,7 @@ class Photos extends \Zotlabs\Web\Controller {
 			}
 
 			goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
+
 		}
 
 		if((argc() > 2) && (x($_REQUEST,'delete')) && ($_REQUEST['delete'] === t('Delete Photo'))) {
@@ -501,6 +502,9 @@ class Photos extends \Zotlabs\Web\Controller {
 			goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
 		}
 
+		if(is_ajax())
+			killme();
+
 		goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/album/' . $r['data']['folder']);
 
 	}
@@ -709,12 +713,14 @@ class Photos extends \Zotlabs\Web\Controller {
 			]);
 
 			if($x = photos_album_exists($owner_uid, get_observer_hash(), $datum)) {
-				\App::set_pager_itemspage(30);
 				$album = $x['display_path'];
 			}
 			else {
-				goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
+				$album = '/';
+				//goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
 			}
+
+			\App::set_pager_itemspage(30);
 
 			if($_GET['order'] === 'posted')
 				$order = 'ASC';
@@ -1178,10 +1184,8 @@ class Photos extends \Zotlabs\Web\Controller {
 						if($observer['xchan_hash'] === $item['author_xchan'] || $observer['xchan_hash'] === $item['owner_xchan'])
 							$drop = replace_macros(get_markup_template('photo_drop.tpl'), array('$id' => $item['id'], '$delete' => t('Delete')));
 
-
 						$name_e = $profile_name;
 						$title_e = $item['title'];
-						unobscure($item);
 						$body_e = prepare_text($item['body'],$item['mimetype']);
 
 						$comments .= replace_macros($template,array(

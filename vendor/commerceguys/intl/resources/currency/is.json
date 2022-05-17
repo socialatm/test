@@ -235,7 +235,7 @@
 		"name": "laoskt kip"
 	},
 	"LSL": {
-		"name": "Lesotho Loti"
+		"name": "lesótóskur lóti"
 	},
 	"LBP": {
 		"name": "líbanskt pund"
@@ -302,7 +302,7 @@
 		"name": "nígerísk næra"
 	},
 	"NIO": {
-		"name": "níkaraögsk kordóva"
+		"name": "níkarögsk kordóva"
 	},
 	"KPW": {
 		"name": "norðurkóreskt vonn"
@@ -473,7 +473,7 @@
 	},
 	"XOF": {
 		"name": "vesturafrískur franki",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"VND": {
 		"name": "víetnamskt dong"

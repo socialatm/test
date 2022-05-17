@@ -7,7 +7,6 @@ use Zotlabs\Lib\Crypto;
 use Zotlabs\Lib\Libzot;
 use Zotlabs\Web\HTTPSig;
 
-
 class Receiver {
 
 	protected $data;
@@ -174,21 +173,20 @@ class Receiver {
 	function Dispatch() {
 
 		switch ($this->messagetype) {
-
-			case 'request':
-				$this->response = $this->handler->Request($this->data,$this->hub);
-				break;
-
 			case 'purge':
-				$this->response = $this->handler->Purge($this->sender,$this->recipients,$this->hub);
+				$this->response = $this->handler->Purge($this->sender, $this->recipients, $this->hub);
 				break;
 
 			case 'refresh':
-				$this->response = $this->handler->Refresh($this->sender,$this->recipients,$this->hub);
+				$this->response = $this->handler->Refresh($this->sender, $this->recipients, $this->hub, false);
+				break;
+
+			case 'force_refresh':
+				$this->response = $this->handler->Refresh($this->sender, $this->recipients, $this->hub, true);
 				break;
 
 			case 'rekey':
-				$this->response = $this->handler->Rekey($this->sender, $this->data,$this->hub);
+				$this->response = $this->handler->Rekey($this->sender, $this->data, $this->hub);
 				break;
 
 			case 'activity':
@@ -196,7 +194,7 @@ class Receiver {
 			case 'sync':
 			default:
 				if ($this->sender) {
-					$this->response = $this->handler->Notify($this->data,$this->hub);
+					$this->response = $this->handler->Notify($this->data, $this->hub);
 				}
 				break;
 

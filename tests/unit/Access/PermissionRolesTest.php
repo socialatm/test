@@ -40,7 +40,7 @@ class PermissionRolesTest extends UnitTestCase {
 	use PHPMock;
 
 	public function testVersion() {
-		$expectedVersion = 2;
+		$expectedVersion = 3;
 
 		$this->assertEquals($expectedVersion, PermissionRoles::version());
 
@@ -58,23 +58,12 @@ class PermissionRolesTest extends UnitTestCase {
 				}
 		);
 
-		$roles = PermissionRoles::roles();
+		$roles = PermissionRoles::channel_roles();
 		$r = new PermissionRoles();
-		$this->assertEquals($roles, $r->roles());
+		$this->assertEquals($roles, $r->channel_roles());
 
-		$socialNetworking = [
-				'social_federation' => 'Social - Federation',
-				'social' => 'Social - Mostly Public',
-				'social_restricted' => 'Social - Restricted',
-				'social_private' => 'Social - Private'
-		];
+		$this->assertCount(4, $roles, 'There should be 4 channel roles.');
 
-		Assert::assertArraySubset(['Social Networking' => $socialNetworking], $roles);
-		$this->assertEquals($socialNetworking, $roles['Social Networking']);
-
-		$this->assertCount(5, $roles, 'There should be 5 permission groups.');
-
-		$this->assertCount(1, $roles['Other'], "In the 'Other' group should be just one permission role");
 	}
 
 
@@ -88,12 +77,9 @@ class PermissionRolesTest extends UnitTestCase {
 		$t = $this->getFunctionMock('Zotlabs\Access', 't');
 		$t = $this->getFunctionMock('Zotlabs\Access', 'get_config');
 
-		$rp_social = PermissionRoles::role_perms('social');
-		$this->assertEquals('social', $rp_social['role']);
+		$rp_social = PermissionRoles::role_perms('personal');
+		$this->assertEquals('personal', $rp_social['role']);
 
-
-		$rp_custom = PermissionRoles::role_perms('custom');
-		$this->assertEquals(['role' => 'custom'], $rp_custom);
 
 		$rp_nonexistent = PermissionRoles::role_perms('nonexistent');
 		$this->assertEquals(['role' => 'nonexistent'], $rp_nonexistent);

@@ -3,9 +3,9 @@
 namespace Zotlabs\Module;
 
 use Zotlabs\Lib\Libzotdir;
+use Zotlabs\Lib\AccessList;
 
 require_once 'include/acl_selectors.php';
-require_once 'include/group.php';
 
 /**
  * @brief ACL selector json backend.
@@ -123,7 +123,7 @@ class Acl extends \Zotlabs\Web\Controller {
 						"name"  => t('Profile','acl') . ' ' . $rv['profile_name'],
 						"id"	=> 'vp' . $rv['id'],
 						"xid"   => 'vp.' . $rv['profile_guid'],
-						"uids"  => group_get_profile_members_xchan(local_channel(), $rv['id']),
+						"uids"  => AccessList::profile_members_xchan(local_channel(), $rv['id']),
 						"link"  => ''
 					);
 				}
@@ -146,14 +146,14 @@ class Acl extends \Zotlabs\Web\Controller {
 
 			if($r) {
 				foreach($r as $g){
-		//		logger('acl: group: ' . $g['gname'] . ' members: ' . group_get_members_xchan($g['id']));
+		//		logger('acl: group: ' . $g['gname'] . ' members: ' . AccessList::members_xchan(local_channel(), $g['id']));
 					$groups[] = array(
 						"type"  => "g",
 						"photo" => "images/twopeople.png",
 						"name"  => $g['gname'],
 						"id"	=> $g['id'],
 						"xid"   => $g['hash'],
-						"uids"  => group_get_members_xchan($g['id']),
+						"uids"  => AccessList::members_xchan(local_channel(), $g['id']),
 						"link"  => ''
 					);
 				}
@@ -222,6 +222,7 @@ class Acl extends \Zotlabs\Web\Controller {
 					WHERE (abook_channel = %d $extra_channels_sql) AND abook_blocked = 0 and abook_pending = 0 and xchan_deleted = 0 $sql_extra2 order by $order_extra2 xchan_name asc" ,
 					intval(local_channel())
 				);
+
 				if($r2)
 					$r = array_merge($r2,$r);
 
@@ -282,13 +283,12 @@ class Acl extends \Zotlabs\Web\Controller {
 			}
 		}
 		elseif($type == 'm') {
-
 			$r = array();
 			$z = q("SELECT xchan_hash as hash, xchan_name as name, xchan_network as net, xchan_addr as nick, xchan_photo_s as micro, xchan_url as url
 				FROM abook left join xchan on abook_xchan = xchan_hash
 				WHERE abook_channel = %d
 				and xchan_deleted = 0
-				and xchan_network IN ('zot', 'diaspora', 'friendica-over-diaspora')
+				and not xchan_network IN ('rss', 'anon', 'unknown')
 				$sql_extra3
 				ORDER BY xchan_name ASC ",
 				intval(local_channel())
@@ -371,7 +371,7 @@ class Acl extends \Zotlabs\Web\Controller {
 					);
 				}
 				if($type !== 'f') {
-					if (! array_key_exists($x[$lkey], $contacts) || ($contacts[$x[$lkey]]['net'] !== 'zot6' && ($g['net'] == 'zot6' || $g['net'] == 'zot'))) {
+					if (! array_key_exists($x[$lkey], $contacts) || ($contacts[$x[$lkey]]['net'] !== 'zot6' && $g['net'] == 'zot6')) {
 						$contacts[$x[$lkey]] = array(
 							"type"     => "c",
 							"photo"    => $g['micro'],
@@ -438,7 +438,6 @@ class Acl extends \Zotlabs\Web\Controller {
 		}
 
 		if(! $url) {
-			require_once("include/dir_fns.php");
 			$directory = Libzotdir::find_upstream_directory($dirmode);
 			$url = $directory['url'] . '/dirsearch';
 		}

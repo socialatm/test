@@ -77,8 +77,11 @@ class Oep extends \Zotlabs\Web\Controller {
 			$res = $matches[2];
 		}
 
-		if(strpos($res,'b64.') === 0) {
-			$res = base64url_decode(substr($res,4));
+		$res = unpack_link_id($res);
+
+		if ($res === false) {
+			notice(t('Malformed message id.') . EOL);
+			return;
 		}
 
 		$item_normal = item_normal();
@@ -122,12 +125,12 @@ class Oep extends \Zotlabs\Web\Controller {
 
 
 		$o = "[share author='".urlencode($p[0]['author']['xchan_name']).
-            "' profile='".$p[0]['author']['xchan_url'] .
-            "' avatar='".$p[0]['author']['xchan_photo_s'].
-            "' link='".$p[0]['plink'].
-		"' auth='".((in_array($p[0]['author']['xchan_network'], ['zot6','zot'])) ? 'true' : 'false') .
-            "' posted='".$p[0]['created'].
-            "' message_id='".$p[0]['mid']."']";
+			"' profile='".$p[0]['author']['xchan_url'] .
+			"' avatar='".$p[0]['author']['xchan_photo_s'].
+			"' link='".$p[0]['plink'].
+			"' auth='".(($p[0]['author']['xchan_network'] === 'zot6') ? 'true' : 'false') .
+			"' posted='".$p[0]['created'].
+			"' message_id='".$p[0]['mid']."']";
 	    if($p[0]['title'])
             $o .= '[b]'.$p[0]['title'].'[/b]'."\r\n";
 
@@ -210,13 +213,13 @@ class Oep extends \Zotlabs\Web\Controller {
 
 
 		$o = "[share author='".urlencode($p[0]['author']['xchan_name']).
-            "' profile='".$p[0]['author']['xchan_url'] .
-            "' avatar='".$p[0]['author']['xchan_photo_s'].
-            "' link='".$p[0]['plink'].
-			"' auth='".((in_array($p[0]['author']['xchan_network'], ['zot6','zot'])) ? 'true' : 'false') .
-            "' posted='".$p[0]['created'].
-            "' message_id='".$p[0]['mid']."']";
-	    if($p[0]['title'])
+			"' profile='".$p[0]['author']['xchan_url'] .
+			"' avatar='".$p[0]['author']['xchan_photo_s'].
+			"' link='".$p[0]['plink'].
+			"' auth='".(($p[0]['author']['xchan_network'] === 'zot6') ? 'true' : 'false') .
+			"' posted='".$p[0]['created'].
+			"' message_id='".$p[0]['mid']."']";
+		if($p[0]['title'])
             $o .= '[b]'.$p[0]['title'].'[/b]'."\r\n";
 
 		$o .= $x;
@@ -296,14 +299,14 @@ class Oep extends \Zotlabs\Web\Controller {
 
 
 		$o = "[share author='".urlencode($p[0]['author']['xchan_name']).
-            "' profile='".$p[0]['author']['xchan_url'] .
-            "' avatar='".$p[0]['author']['xchan_photo_s'].
-            "' link='".$p[0]['plink'].
-			"' auth='".((in_array($p[0]['author']['xchan_network'], ['zot6','zot'])) ? 'true' : 'false') .
-            "' posted='".$p[0]['created'].
-            "' message_id='".$p[0]['mid']."']";
-	    if($p[0]['title'])
-            $o .= '[b]'.$p[0]['title'].'[/b]'."\r\n";
+			"' profile='".$p[0]['author']['xchan_url'] .
+			"' avatar='".$p[0]['author']['xchan_photo_s'].
+			"' link='".$p[0]['plink'].
+			"' auth='".(($p[0]['author']['xchan_network'] === 'zot6') ? 'true' : 'false') .
+			"' posted='".$p[0]['created'].
+			"' message_id='".$p[0]['mid']."']";
+		if($p[0]['title'])
+			$o .= '[b]'.$p[0]['title'].'[/b]'."\r\n";
 
 		$o .= $x;
 		$o .= "[/share]";
@@ -374,7 +377,7 @@ class Oep extends \Zotlabs\Web\Controller {
 			"' profile='".$p[0]['author']['xchan_url'] .
 			"' avatar='".$p[0]['author']['xchan_photo_s'].
 			"' link='".$p[0]['plink'].
-			"' auth='".((in_array($p[0]['author']['xchan_network'], ['zot6','zot'])) ? 'true' : 'false') .
+			"' auth='".(($p[0]['author']['xchan_network'] === 'zot6') ? 'true' : 'false') .
 			"' posted='".$p[0]['created'].
 			"' message_id='".$p[0]['mid']."']";
 		if($p[0]['title'])

@@ -11,6 +11,8 @@ use Ramsey\Uuid\Exception\UnableToBuildUuidException;
 
 use Zotlabs\Lib\Crypto;
 use Zotlabs\Lib\SvgSanitizer;
+use Zotlabs\Lib\Libzot;
+use Zotlabs\Lib\AccessList;
 
 require_once("include/bbcode.php");
 
@@ -106,9 +108,24 @@ function notags($string) {
  * @return string
  */
 function escape_tags($string) {
-	return(htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false));
+	if (!$string) {
+		return EMPTY_STR;
+	}
+	return (htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false));
 }
 
+/**
+ * Escape URL's so they're safe for use in HTML and in HTML element attributes.
+ */
+function escape_url($input) {
+  if (empty($input)) {
+    return EMPTY_STR;
+  }
+
+  // This is a bit crude but seems to do the trick for now. It makes no
+  // guarantees that the URL is valid for use after escaping.
+  return htmlspecialchars($input, ENT_HTML5 | ENT_QUOTES);
+}
 
 function z_input_filter($s,$type = 'text/bbcode',$allow_code = false) {
 
@@ -415,6 +432,9 @@ function xmlify($str) {
 
 	//$buffer = '';
 
+	if (!$str)
+		return EMPTY_STR;
+
 	if(is_array($str)) {
 
 		// allow to fall through so we ge a PHP error, as the log statement will
@@ -479,6 +499,9 @@ function unxmlify($s) {
 
 	return $ret;
 */
+
+	if (!$s)
+		return EMPTY_STR;
 
 	if(is_array($s)) {
 
@@ -576,11 +599,7 @@ function alt_pager($i, $more = '', $less = '') {
 	if(! $less)
 		$less = t('newer');
 
-	$stripped = preg_replace('/(&page=[0-9]*)/','',App::$query_string);
-	$stripped = str_replace('q=','',$stripped);
-	$stripped = trim($stripped,'/');
-	//$pagenum = App::$pager['page'];
-	$url = z_root() . '/' . $stripped;
+	$url = z_root() . '/' . drop_query_params(App::$query_string, ['page', 'q']);
 
 	return replace_macros(get_markup_template('alt_pager.tpl'), array(
 		'$has_less' => ((App::$pager['page'] > 1) ? true : false),
@@ -588,6 +607,7 @@ function alt_pager($i, $more = '', $less = '') {
 		'$less' => $less,
 		'$more' => $more,
 		'$url' => $url,
+		'$url_appendix' => ((strpos($url, '?')) ? '&' : '?'),
 		'$prevpage' => App::$pager['page'] - 1,
 		'$nextpage' => App::$pager['page'] + 1,
 	));
@@ -841,7 +861,7 @@ function activity_match($haystack,$needle) {
 
 	if($needle) {
 		foreach($needle as $n) {
-			if(($haystack === $n) || (strtolower(basename($n)) === strtolower(basename($haystack)))) {
+			if(($haystack === $n) || (strtolower(basename((string)$n)) === strtolower(basename((string)$haystack)))) {
 				return true;
 			}
 		}
@@ -867,6 +887,7 @@ function get_tags($s) {
 	// ignore anything in a code or svg block
 	$s = preg_replace('/\[code(.*?)\](.*?)\[\/code\]/sm','',$s);
 	$s = preg_replace('/\[svg(.*?)\](.*?)\[\/svg\]/sm','',$s);
+	$s = preg_replace('/\[toc(.*?)\]/sm','',$s);
 
 	// ignore anything in [style= ]
 	$s = preg_replace('/\[style=(.*?)\]/sm','',$s);
@@ -990,14 +1011,14 @@ function contact_block() {
 	$shown = get_pconfig(App::$profile['uid'],'system','display_friend_count');
 
 	if($shown === false)
-		$shown = 25;
+		$shown = 36;
 	if($shown == 0)
 		return;
 
 	$is_owner = ((local_channel() && local_channel() == App::$profile['uid']) ? true : false);
 	$sql_extra = '';
 
-	$abook_flags = " and abook_pending = 0 and abook_self = 0 ";
+	$abook_flags = " and abook_pending = 0 and abook_self = 0 and abook_blocked = 0 and abook_ignored = 0 ";
 
 	if(! $is_owner) {
 		$abook_flags .= " and abook_hidden = 0 ";
@@ -1011,56 +1032,58 @@ function contact_block() {
 		$abook_flags and xchan_orphan = 0 and xchan_deleted = 0 $sql_extra",
 		intval(App::$profile['uid'])
 	);
+
 	if(count($r)) {
 		$total = intval($r[0]['total']);
 	}
+
 	if(! $total) {
-		$contacts = t('No connections');
-		$micropro = null;
-	} else {
+		return $o;
+	}
 
-		$randfunc = db_getfunc('RAND');
+	$randfunc = db_getfunc('RAND');
 
-		$r = q("SELECT abook.*, xchan.* FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash WHERE abook_channel = %d $abook_flags and abook_archived = 0 and xchan_orphan = 0 and xchan_deleted = 0 $sql_extra ORDER BY $randfunc LIMIT %d",
-			intval(App::$profile['uid']),
-			intval($shown)
-		);
+	$r = q("SELECT abook.*, xchan.* FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash WHERE abook_channel = %d $abook_flags and abook_archived = 0 and xchan_orphan = 0 and xchan_deleted = 0 $sql_extra ORDER BY $randfunc LIMIT %d",
+		intval(App::$profile['uid']),
+		intval($shown)
+	);
 
-		if(count($r)) {
-			$contacts = t('Connections');
-			$micropro = [];
-			foreach($r as $rr) {
+	if(! $r) {
+		return $o;
+	}
 
-				// There is no setting to discover if you are bi-directionally connected
-				// Use the ability to post comments as an indication that this relationship is more
-				// than wishful thinking; even though soapbox channels and feeds will disable it.
-				$rr['perminfo']['connpermcount']=0;
-				$rr['perminfo']['connperms']=t('Accepts').': ';
-				if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','post_comments'))) {
-					$rr['perminfo']['connpermcount']++;
-					$rr['perminfo']['connperms'] .= t('Comments');
-				}
-				if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','send_stream'))) {
-					$rr['perminfo']['connpermcount']++;
-					$rr['perminfo']['connperms'] = ($rr['perminfo']['connperms']) ? $rr['perminfo']['connperms'] . ', ' : $rr['perminfo']['connperms'] ;
-					$rr['perminfo']['connperms'] .= t('Stream items');
-				}
-				if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','post_wall'))) {
-					$rr['perminfo']['connpermcount']++;
-					$rr['perminfo']['connperms'] = ($rr['perminfo']['connperms']) ? $rr['perminfo']['connperms'] . ', ' : $rr['perminfo']['connperms'] ;
-					$rr['perminfo']['connperms'] .= t('Wall posts');
-				}
+	$contacts = t('Connections');
+	$micropro = [];
+	foreach($r as $rr) {
 
-				if ($rr['perminfo']['connpermcount'] == 0) {
-					$rr['perminfo']['connperms'] .= t('Nothing');
-				}
-
-				if(!$is_owner && $rr['perminfo']['connpermcount'] !== 0)
-					unset($rr['perminfo']);
-
-				$micropro[] = micropro($rr,true,'mpfriend');
-			}
+		// There is no setting to discover if you are bi-directionally connected
+		// Use the ability to post comments as an indication that this relationship is more
+		// than wishful thinking; even though soapbox channels and feeds will disable it.
+		$rr['perminfo']['connpermcount']=0;
+		$rr['perminfo']['connperms']=t('Accepts').': ';
+		if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','post_comments'))) {
+			$rr['perminfo']['connpermcount']++;
+			$rr['perminfo']['connperms'] .= t('Comments');
 		}
+		if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','send_stream'))) {
+			$rr['perminfo']['connpermcount']++;
+			$rr['perminfo']['connperms'] = ($rr['perminfo']['connperms']) ? $rr['perminfo']['connperms'] . ', ' : $rr['perminfo']['connperms'] ;
+			$rr['perminfo']['connperms'] .= t('Stream items');
+		}
+		if(intval(get_abconfig(App::$profile['uid'],$rr['xchan_hash'],'their_perms','post_wall'))) {
+			$rr['perminfo']['connpermcount']++;
+			$rr['perminfo']['connperms'] = ($rr['perminfo']['connperms']) ? $rr['perminfo']['connperms'] . ', ' : $rr['perminfo']['connperms'] ;
+			$rr['perminfo']['connperms'] .= t('Wall posts');
+		}
+
+		if ($rr['perminfo']['connpermcount'] == 0) {
+			$rr['perminfo']['connperms'] .= t('Nothing');
+		}
+
+		if(!$is_owner && $rr['perminfo']['connpermcount'] !== 0)
+			unset($rr['perminfo']);
+
+		$micropro[] = micropro($rr,true,'mpfriend');
 	}
 
 	$tpl = get_markup_template('contact_block.tpl');
@@ -1490,6 +1513,10 @@ function day_translate($s) {
  * @return string
  */
 function normalise_link($url) {
+	if (!$url) {
+		return EMPTY_STR;
+	}
+
 	$ret = str_replace(array('https:', '//www.'), array('http:', '//'), $url);
 
 	return(rtrim($ret, '/'));
@@ -1514,24 +1541,6 @@ function link_compare($a, $b) {
 
 	return false;
 }
-
-// Given an item array, convert the body element from bbcode to html and add smilie icons.
-// If attach is true, also add icons for item attachments
-
-
-function unobscure(&$item) {
-	return;
-}
-
-function unobscure_mail(&$item) {
-	if(array_key_exists('mail_obscured',$item) && intval($item['mail_obscured'])) {
-		if($item['title'])
-			$item['title'] = base64url_decode(str_rot47($item['title']));
-		if($item['body'])
-			$item['body'] = base64url_decode(str_rot47($item['body']));
-	}
-}
-
 
 function theme_attachments(&$item) {
 
@@ -1627,7 +1636,7 @@ function format_hashtags(&$item) {
 			if($s)
 				$s .= ' ';
 
-			$s .= '<span class="badge badge-pill badge-info"><i class="fa fa-hashtag"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
+			$s .= '<span class="badge rounded-pill bg-info"><i class="fa fa-hashtag"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
 		}
 	}
 
@@ -1650,7 +1659,7 @@ function format_mentions(&$item) {
 				continue;
 			if($s)
 				$s .= ' ';
-			$s .= '<span class="badge badge-pill badge-success"><i class="fa fa-at"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
+			$s .= '<span class="badge rounded-pill bg-success"><i class="fa fa-at"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
 		}
 	}
 
@@ -1732,19 +1741,33 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 	$photo = '';
 	$is_photo = ((($item['verb'] === ACTIVITY_POST) && ($item['obj_type'] === ACTIVITY_OBJ_PHOTO)) ? true : false);
 
-	if($is_photo) {
-
+	if ($is_photo) {
 		$object = json_decode($item['obj'],true);
+		$ptr = null;
+		if (is_array($object) && array_key_exists('url',$object) && is_array($object['url'])) {
+			if (array_key_exists(0,$object['url'])) {
+				foreach ($object['url'] as $link) {
+					if(array_key_exists('width',$link) && $link['width'] >= 640 && $link['width'] <= 1024) {
+						$ptr = $link;
+					}
+				}
+				if (! $ptr) {
+					$ptr = $object['url'][0];
+				}
+			}
+			else {
+				$ptr = $object['url'];
+			}
 
-		// if original photo width is <= 640px prepend it to item body
-		if($object['link'][0]['width'] && $object['link'][0]['width'] <= 640) {
-			$s .= '<div class="inline-photo-item-wrapper"><a href="' . zid(rawurldecode($object['id'])) . '" target="_blank" rel="nofollow noopener" ><img class="inline-photo-item" style="max-width:' . $object['link'][0]['width'] . 'px; width:100%; height:auto;" src="' . zid(rawurldecode($object['link'][0]['href'])) . '"></a></div>' . $s;
-		}
-
-		// if original photo width is > 640px make it a cover photo
-		if($object['link'][0]['width'] && $object['link'][0]['width'] > 640) {
-			$scale = ((($object['link'][1]['width'] == 1024) || ($object['link'][1]['height'] == 1024)) ? 1 : 0);
-			$photo = '<a href="' . zid(rawurldecode($object['id'])) . '" target="_blank" rel="nofollow noopener"><img style="max-width:' . $object['link'][$scale]['width'] . 'px; width:100%; height:auto;" src="' . zid(rawurldecode($object['link'][$scale]['href'])) . '"></a>';
+			// if original photo width is > 640px make it a cover photo
+			if ($ptr) {
+				if (array_key_exists('width',$ptr) && $ptr['width'] > 640) {
+				$photo = '<a href="' . zid(rawurldecode($object['id'])) . '" target="_blank" rel="nofollow noopener"><img style="max-width:' . $ptr['width'] . 'px; width:100%; height:auto;" src="' . zid(rawurldecode($ptr['href'])) . '"></a>';
+				}
+				else {
+					$item['body'] = '[zmg]' . $ptr['href'] . '[/zmg]' . "\n\n" . $item['body'];
+				}
+			}
 		}
 	}
 
@@ -1759,6 +1782,7 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 			$s .= prepare_text($item['body'],$item['mimetype'], $opts);
 		}
 	}
+
 
 	$poll = (($item['obj_type'] === 'Question' && in_array($item['verb'],[ ACTIVITY_POST, ACTIVITY_UPDATE, ACTIVITY_SHARE ])) ? format_poll($item, $s, $opts) : false);
 	if ($poll) {
@@ -1861,17 +1885,29 @@ function format_poll($item,$s,$opts) {
 		return EMPTY_STR;
 	}
 
-	$commentable = can_comment_on_post(((local_channel()) ? get_observer_hash() : EMPTY_STR),$item);
+	$commentable = can_comment_on_post(((local_channel()) ? get_observer_hash() : EMPTY_STR), $item);
 
-	//logger('format_poll: ' . print_r($item,true));
-	$activated = ((local_channel() && local_channel() == $item['uid']) ? true : false);
-	$output = $s . EOL. EOL;
+	$activated = ((local_channel() && local_channel() == $item['uid'] && get_observer_hash() !== $item['owner_xchan']) ? true : false);
+	$output = $s;
+
+	if (strpos($item['body'], '[/share]') !== false) {
+		$output = substr($output, 0, -12);
+	}
+
+	$output .= EOL . EOL;
 
 	if ($act['type'] === 'Question') {
 		if ($activated and $commentable) {
 			$output .= '<form id="question-form-' . $item['id'] . '" >';
 		}
 		if (array_key_exists('anyOf',$act) && is_array($act['anyOf'])) {
+			$totalResponses = 0;
+			foreach ($act['anyOf'] as $poll) {
+				if (array_path_exists('replies/totalItems',$poll)) {
+					$totalResponses += intval($poll['replies']['totalItems']);
+				}
+			}
+
 			foreach ($act['anyOf'] as $poll) {
 				if (array_key_exists('name',$poll) && $poll['name']) {
 					$text = html2plain(purify_html($poll['name']),256);
@@ -1882,15 +1918,34 @@ function format_poll($item,$s,$opts) {
 						$total = 0;
 					}
 					if ($activated && $commentable) {
-						$output .= '<input type="checkbox" name="answer[]" value="' . htmlspecialchars($text) . '"> ' . $text . '</input>' . ' (' . $total . ')' . EOL;
+						//$output .= '<input type="checkbox" name="answer[]" value="' . htmlspecialchars($text) . '"> ' . $text . '</input>' . ' (' . $total . ')' . EOL;
+
+						$output .= '<input type="checkbox" name="answer[]" value="' . htmlspecialchars($text) . '">&nbsp;&nbsp;<strong>' . $text . '</strong>' . EOL;
+						$output .= '<div class="progress bg-secondary bg-opacity-25" style="height: 3px;">';
+						$output .= '<div class="progress-bar bg-info" role="progressbar" style="width: ' . (($totalResponses) ?  intval($total / $totalResponses * 100) : 0). '%;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>';
+						$output .= '</div>';
+						$output .= '<div class="text-muted"><small>' . sprintf(tt('%d Vote', '%d Votes', $total, 'noun'), $total) . '&nbsp;|&nbsp;' . (($totalResponses) ? intval($total / $totalResponses * 100) . '%' : '0%') . '</small></div>';
+						$output .= EOL;
 					}
 					else {
-						$output .= '[ ] ' . $text . ' (' . $total . ')' . EOL;
+						//$output .= '[ ] ' . $text . ' (' . $total . ')' . EOL;
+						$output .= '<input type="checkbox" name="answer[]" value="' . htmlspecialchars($text) . '" disabled="disabled">&nbsp;&nbsp;<strong>' . $text . '</strong>' . EOL;
+						$output .= '<div class="progress bg-secondary bg-opacity-25" style="height: 3px;">';
+						$output .= '<div class="progress-bar bg-info" role="progressbar" style="width: ' . (($totalResponses) ?  intval($total / $totalResponses * 100) : 0) . '%;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>';
+						$output .= '</div>';
+						$output .= '<div class="text-muted"><small>' . sprintf(tt('%d Vote', '%d Votes', $total, 'noun'), $total) . '&nbsp;|&nbsp;' . (($totalResponses) ? intval($total / $totalResponses * 100) . '%' : '0%') . '</small></div>';
+						$output .= EOL;
 					}
 				}
 			}
 		}
 		if (array_key_exists('oneOf',$act) && is_array($act['oneOf'])) {
+			$totalResponses = 0;
+			foreach ($act['oneOf'] as $poll) {
+				if (array_path_exists('replies/totalItems',$poll)) {
+					$totalResponses += intval($poll['replies']['totalItems']);
+				}
+			}
 			foreach ($act['oneOf'] as $poll) {
 				if (array_key_exists('name',$poll) && $poll['name']) {
 					$text = html2plain(purify_html($poll['name']),256);
@@ -1901,29 +1956,48 @@ function format_poll($item,$s,$opts) {
 						$total = 0;
 					}
 					if ($activated && $commentable) {
-						$output .= '<input type="radio" name="answer" value="' . htmlspecialchars($text) . '"> ' . $text . '</input>' . ' (' . $total . ')' . EOL;
+						$output .= '<input type="radio" name="answer" value="' . htmlspecialchars($text) . '">&nbsp;&nbsp;<strong>' . $text . '</strong>' . EOL;
+						$output .= '<div class="progress bg-secondary bg-opacity-25" style="height: 3px;">';
+						$output .= '<div class="progress-bar bg-info" role="progressbar" style="width: ' . (($totalResponses) ?  intval($total / $totalResponses * 100) : 0). '%;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>';
+						$output .= '</div>';
+						$output .= '<div class="text-muted"><small>' . sprintf(tt('%d Vote', '%d Votes', $total, 'noun'), $total) . '&nbsp;|&nbsp;' . (($totalResponses) ? intval($total / $totalResponses * 100) . '%' : '0%') . '</small></div>';
+						$output .= EOL;
 					}
+
 					else {
-						$output .= '( ) ' . $text . ' (' . $total . ')' . EOL;
+						$output .= '<input type="radio" name="answer" value="' . htmlspecialchars($text) . '" disabled="disabled">&nbsp;&nbsp;<strong>' . $text . '</strong>' . EOL;
+						$output .= '<div class="progress bg-secondary bg-opacity-25" style="height: 3px;">';
+						$output .= '<div class="progress-bar bg-info" role="progressbar" style="width: ' . (($totalResponses) ?  intval($total / $totalResponses * 100) : 0) . '%;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>';
+						$output .= '</div>';
+						$output .= '<div class="text-muted"><small>' . sprintf(tt('%d Vote', '%d Votes', $total, 'noun'), $total) . '&nbsp;|&nbsp;' . (($totalResponses) ? intval($total / $totalResponses * 100) . '%' : '0%') . '</small></div>';
+						$output .= EOL;
 					}
 				}
 			}
 		}
+
+		$message = (($totalResponses) ? sprintf(tt('%d Vote in total', '%d Votes in total', $totalResponses, 'noun'), $totalResponses) . EOL : '');
+
 		if ($item['comments_closed'] > NULL_DATE) {
 			$t = datetime_convert('UTC',date_default_timezone_get(), $item['comments_closed'], 'Y-m-d H:i');
 			$closed = ((datetime_convert() > $item['comments_closed']) ? true : false);
 			if ($closed) {
-				$message = t('Poll has ended.');
+				$message .= t('Poll has ended');
 			}
 			else {
-				$message = sprintf(t('Poll ends: %s'),$t);
+				$message .= sprintf(t('Poll ends in %s'), '<span class="autotime" title="' . $t . '"></span>');
 			}
-			$output .= EOL . '<div>' . $message . '</div>';
-		}
-		if ($activated and $commentable) {
-			$output .= EOL . '<input type="button" class="btn btn-std btn-success" name="vote" value="' . t("Vote") . '" onclick="submitPoll(' . $item['id'] . '); return false;">'. '</form>';
 		}
 
+		$output .= '<div class="mb-3">' . $message . '</div>';
+
+		if ($activated && $commentable && !$closed) {
+			$output .= '<input type="button" class="btn btn-std btn-success" name="vote" value="' . t("Vote") . '" onclick="submitPoll(' . $item['id'] . '); return false;">'. '</form>';
+		}
+
+		if (strpos($item['body'], '[/share]') !== false) {
+			$output .= '</div></div>';
+		}
 	}
 	return $output;
 }
@@ -2067,7 +2141,7 @@ function get_plink($item,$conversation_mode = true) {
 
 	$zidify = true;
 
-	if(array_key_exists('author',$item) && in_array($item['author']['xchan_network'], ['zot6', 'zot']) === false)
+	if(array_key_exists('author',$item) && $item['author']['xchan_network'] !== 'zot6')
 		$zidify = false;
 
 	if(x($item,$key)) {
@@ -2159,12 +2233,12 @@ function base64url_encode($s, $strip_padding = true) {
 	return $s;
 }
 
-function base64url_decode($s) {
+function base64url_decode($s, $strict = false) {
 	if(is_array($s)) {
 		logger('base64url_decode: illegal input: ' . print_r(debug_backtrace(), true));
 		return $s;
 	}
-	return base64_decode(strtr($s,'-_','+/'));
+	return base64_decode(strtr($s,'-_','+/'), $strict);
 }
 
 
@@ -2178,12 +2252,12 @@ function base64special_encode($s, $strip_padding = true) {
 	return $s;
 }
 
-function base64special_decode($s) {
+function base64special_decode($s, $strict = false) {
 	if(is_array($s)) {
 		logger('base64url_decode: illegal input: ' . print_r(debug_backtrace(), true));
 		return $s;
 	}
-	return base64_decode(strtr($s,',.','+/'));
+	return base64_decode(strtr($s,',.','+/'), $strict);
 }
 
 /**
@@ -2541,7 +2615,7 @@ function xchan_query(&$items, $abook = true, $effective_uid = 0) {
 			$chans = q("select xchan.*,hubloc.* from xchan left join hubloc on hubloc_hash = xchan_hash
 				where xchan_hash in (" . protect_sprintf(implode(',', $arr)) . ") and hubloc_primary = 1");
 		}
-		$xchans = q("select * from xchan where xchan_hash in (" . protect_sprintf(implode(',',$arr)) . ") and xchan_network in ('rss','unknown', 'anon')");
+		$xchans = q("select * from xchan where xchan_hash in (" . protect_sprintf(implode(',',$arr)) . ") and xchan_network in ('rss','unknown', 'anon', 'token')");
 		if(! $chans)
 			$chans = $xchans;
 		else
@@ -2554,27 +2628,6 @@ function xchan_query(&$items, $abook = true, $effective_uid = 0) {
 		}
 	}
 }
-
-function xchan_mail_query(&$item) {
-	$arr = array();
-	$chans = null;
-	if($item) {
-		if($item['from_xchan'] && (! in_array("'" . dbesc($item['from_xchan']) . "'",$arr)))
-			$arr[] = "'" . dbesc($item['from_xchan']) . "'";
-		if($item['to_xchan'] && (! in_array("'" . dbesc($item['to_xchan']) . "'",$arr)))
-			$arr[] = "'" . dbesc($item['to_xchan']) . "'";
-	}
-
-	if(count($arr)) {
-		$chans = q("select xchan.*,hubloc.* from xchan left join hubloc on hubloc_hash = xchan_hash
-			where xchan_hash in (" . protect_sprintf(implode(',', $arr)) . ") and hubloc_primary = 1");
-	}
-	if($chans) {
-		$item['from'] = find_xchan_in_array($item['from_xchan'],$chans);
-		$item['to']  = find_xchan_in_array($item['to_xchan'],$chans);
-	}
-}
-
 
 function find_xchan_in_array($xchan,$arr) {
 	if(count($arr)) {
@@ -2876,7 +2929,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 
 	// BEGIN mentions
 
-	if ( in_array($termtype, [ TERM_MENTION, TERM_FORUM ] )) {
+	if ($termtype === TERM_MENTION) {
 
 		// The @! tag will alter permissions
 
@@ -2903,14 +2956,13 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 			$newname = substr($name,1);
 			$newname = substr($newname,0,-1);
 
-			$r = q("select * from xchan where xchan_addr = '%s' or xchan_url = '%s'",
+			$r = q("SELECT * FROM xchan WHERE ( xchan_addr = '%s' OR xchan_url = '%s' ) AND xchan_deleted = 0",
 				dbesc($newname),
 				dbesc($newname)
 			);
 		}
 
 		if(! $r) {
-
 			// look for matching names in the address book
 
 			// Double quote the entire mentioned term to include special characters
@@ -2929,18 +2981,18 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 
 			// select someone from this user's contacts by name
 
-			$r = q("SELECT * FROM abook left join xchan on abook_xchan = xchan_hash
-				WHERE xchan_name = '%s' AND abook_channel = %d ",
-					dbesc($newname),
-					intval($profile_uid)
+			$r = q("SELECT * FROM abook LEFT JOIN xchan ON abook_xchan = xchan_hash
+				WHERE xchan_name = '%s' AND abook_channel = %d AND xchan_deleted = 0",
+				dbesc($newname),
+				intval($profile_uid)
 			);
 
 			// select anybody by full hubloc_addr
 
 			if((! $r) && strpos($newname,'@')) {
-				$r = q("SELECT * FROM xchan left join hubloc on xchan_hash = hubloc_hash
-					WHERE hubloc_addr = '%s' ",
-						dbesc($newname)
+				$r = q("SELECT * FROM xchan LEFT JOIN hubloc ON xchan_hash = hubloc_hash
+					WHERE hubloc_addr = '%s' AND xchan_deleted = 0 ",
+					dbesc($newname)
 				);
 			}
 
@@ -2950,10 +3002,10 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 				// strip user-supplied wildcards before running a wildcard search
 				$newname = str_replace('%','',$newname);
 
-				$r = q("SELECT * FROM abook left join xchan on abook_xchan = xchan_hash
-					WHERE xchan_addr like ('%s') AND abook_channel = %d ",
-						dbesc(((strpos($newname,'@')) ? $newname : $newname . '@%')),
-						intval($profile_uid)
+				$r = q("SELECT * FROM abook LEFT JOIN xchan ON abook_xchan = xchan_hash
+					WHERE xchan_addr LIKE ('%s') AND abook_channel = %d AND xchan_deleted = 0",
+					dbesc(((strpos($newname,'@')) ? $newname : $newname . '@%')),
+					intval($profile_uid)
 				);
 			}
 
@@ -2965,7 +3017,10 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 		// $r is set if we found something
 
 		if($r) {
-			foreach($r as $xc) {
+
+			$xchan[0] = Libzot::zot_record_preferred($r, 'xchan_network');
+
+			foreach($xchan as $xc) {
 				$profile = $xc['xchan_url'];
 				$newname = $xc['xchan_name'];
 				// add the channel's xchan_hash to $access_tag if exclusive
@@ -2980,16 +3035,9 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 					//create profile link
 					$profile = str_replace(',','%2c',$profile);
 					$url = $profile;
-/*
-					if($termtype === TERM_FORUM) {
-						$newtag = '!' . (($exclusive) ? '!' : '') . '[zrl=' . $profile . ']' . $newname	. '[/zrl]';
-						$body = str_replace('!' . (($exclusive) ? '!' : '') . $name, $newtag, $body);
-					}
-*/
-					if ($termtype === TERM_MENTION) {
-						$newtag = '@' . (($exclusive) ? '!' : '') . '[zrl=' . $profile . ']' . $newname	. '[/zrl]';
-						$body = str_replace('@' . (($exclusive) ? '!' : '') . $name, $newtag, $body);
-					}
+
+					$newtag = '@' . (($exclusive) ? '!' : '') . '[zrl=' . $profile . ']' . $newname	. '[/zrl]';
+					$body = str_replace('@' . (($exclusive) ? '!' : '') . $name, $newtag, $body);
 
 					// append tag to str_tags
 					if(! stristr($str_tags,$newtag)) {
@@ -3022,7 +3070,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 			// weird - as all the other tags are linked to something.
 
 			if(local_channel() && local_channel() == $profile_uid) {
-				$grp = group_byname($profile_uid,$name);
+				$grp = AccessList::by_name($profile_uid,$name);
 
 				if($grp) {
 					$g = q("select hash from pgrp where id = %d and visible = 1 limit 1",
@@ -3245,38 +3293,46 @@ function item_url_replace($channel,&$item,$old,$new,$oldnick = '') {
 
 	if($item['attach']) {
 		json_url_replace($old,$new,$item['attach']);
-		if($oldnick)
+		if($oldnick && ($oldnick !== $channel['channel_address']))
 			json_url_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['attach']);
 	}
 	if($item['object']) {
 		json_url_replace($old,$new,$item['object']);
-		if($oldnick)
+		if($oldnick && ($oldnick !== $channel['channel_address']))
 			json_url_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['object']);
 	}
 	if($item['target']) {
 		json_url_replace($old,$new,$item['target']);
-		if($oldnick)
+		if($oldnick && ($oldnick !== $channel['channel_address']))
 			json_url_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['target']);
 	}
 
-	$item['body'] = preg_replace("/(\[zrl=".preg_quote($old,'/')."\/(photo|photos|gallery)\/".$channel['channel_address'].".+\]\[zmg=\d+x\d+\])".preg_quote($old,'/')."\/(.+\[\/zmg\])/", '${1}'.$new.'/${3}', $item['body']);
-	$item['body'] = preg_replace("/".preg_quote($old,'/')."\/(search|\w+\/".$channel['channel_address'].")/", $new.'/${1}', $item['body']);
+	$root_replaced = null;
+	$nick_replaced = null;
 
-	$item['sig'] = base64url_encode(Crypto::sign($item['body'],$channel['channel_prvkey']));
-	$item['item_verified']  = 1;
+	$item['body'] = str_replace($old, $new, $item['body'], $root_replaced);
+
+	if($oldnick && ($oldnick !== $channel['channel_address'])) {
+		$item['body'] = str_replace('/' . $oldnick . '/', '/' . $channel['channel_address'] . '/', $item['body'], $nick_replaced);
+	}
+
+	if ($root_replaced || $nick_replaced) {
+		$item['sig'] = Libzot::sign($item['body'], $channel['channel_prvkey']);
+		$item['item_verified']  = 1;
+	}
 
 	$item['plink'] = str_replace($old,$new,$item['plink']);
-	if($oldnick)
+	if($oldnick && ($oldnick !== $channel['channel_address']))
 		$item['plink'] = str_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['plink']);
 
 	$item['llink'] = str_replace($old,$new,$item['llink']);
-	if($oldnick)
+	if($oldnick && ($oldnick !== $channel['channel_address']))
 		$item['llink'] = str_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['llink']);
 
 	if($item['term']) {
 		for($x = 0; $x < count($item['term']); $x ++) {
 			$item['term'][$x]['url'] =  str_replace($old,$new,$item['term'][$x]['url']);
-			if ($oldnick) {
+			if ($oldnick && ($oldnick !== $channel['channel_address'])) {
 				$item['term'][$x]['url'] = str_replace('/' . $oldnick . '/' ,'/' . $channel['channel_address'] . '/' ,$item['term'][$x]['url']);
 			}
 		}
@@ -3490,7 +3546,7 @@ function text_highlight($s, $lang) {
 // echo (($xml->asXML('data.xml')) ? 'Your XML file has been generated successfully!' : 'Error generating XML file!');
 
 function arrtoxml($root_elem,$arr) {
-	$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><' . $root_elem . '></' . $root_elem . '>', null, false);
+	$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><' . $root_elem . '></' . $root_elem . '>', 0, false);
 	array2XML($xml,$arr);
 
 	return $xml->asXML();
@@ -3557,6 +3613,45 @@ function create_table_from_array($table, $arr, $binary_fields = []) {
 	return $r;
 }
 
+
+function update_table_from_array($table, $arr, $where, $binary_fields = []) {
+
+	if (! ($arr && $table)) {
+		return false;
+	}
+
+	$columns = db_columns($table);
+
+	$clean = [];
+	foreach ($arr as $k => $v) {
+		if (! in_array($k, $columns)) {
+			continue;
+		}
+
+		$matches = false;
+		if (preg_match('/([^a-zA-Z0-9\-\_\.])/', $k, $matches)) {
+			return false;
+		}
+		if (in_array($k, $binary_fields)) {
+			$clean[$k] = dbescbin($v);
+		} else {
+			$clean[$k] = dbesc($v);
+		}
+	}
+
+	$sql = "UPDATE " . TQUOT . $table . TQUOT . " SET ";
+
+	foreach ($clean as $k => $v) {
+		$sql .= TQUOT . $k . TQUOT . ' = "' . $v . '",';
+	}
+
+	$sql = rtrim($sql,',');
+
+	$r = dbq($sql . " WHERE " . $where);
+
+    return $r;
+}
+
 function share_shield($m) {
 	return str_replace($m[1],'!=+=+=!' . base64url_encode($m[1]) . '=+!=+!=',$m[0]);
 }
@@ -3576,6 +3671,7 @@ function cleanup_bbcode($body) {
 	 */
 
 	$body = preg_replace_callback('/\[code(.*?)\[\/(code)\]/ism','\red_escape_codeblock',$body);
+	$body = preg_replace_callback('/\[summary(.*?)\[\/(summary)\]/ism','\red_escape_codeblock',$body);
 	$body = preg_replace_callback('/\[url(.*?)\[\/(url)\]/ism','\red_escape_codeblock',$body);
 	$body = preg_replace_callback('/\[zrl(.*?)\[\/(zrl)\]/ism','\red_escape_codeblock',$body);
 	$body = preg_replace_callback('/\[svg(.*?)\[\/(svg)\]/ism','\red_escape_codeblock',$body);
@@ -3589,9 +3685,10 @@ function cleanup_bbcode($body) {
 +\,\(\)]+)/ismu", '\red_zrl_callback', $body);
 
 
-	$body = preg_replace_callback('/\[\$b64zrl(.*?)\[\/(zrl)\]/ism','\red_unescape_codeblock',$body);
-	$body = preg_replace_callback('/\[\$b64url(.*?)\[\/(url)\]/ism','\red_unescape_codeblock',$body);
 	$body = preg_replace_callback('/\[\$b64code(.*?)\[\/(code)\]/ism','\red_unescape_codeblock',$body);
+	$body = preg_replace_callback('/\[\$b64summary(.*?)\[\/(summary)\]/ism','\red_unescape_codeblock',$body);
+	$body = preg_replace_callback('/\[\$b64url(.*?)\[\/(url)\]/ism','\red_unescape_codeblock',$body);
+	$body = preg_replace_callback('/\[\$b64zrl(.*?)\[\/(zrl)\]/ism','\red_unescape_codeblock',$body);
 	$body = preg_replace_callback('/\[\$b64svg(.*?)\[\/(svg)\]/ism','\red_unescape_codeblock',$body);
 	$body = preg_replace_callback('/\[\$b64img(.*?)\[\/(img)\]/ism','\red_unescape_codeblock',$body);
 	$body = preg_replace_callback('/\[\$b64zmg(.*?)\[\/(zmg)\]/ism','\red_unescape_codeblock',$body);
@@ -3618,6 +3715,21 @@ function gen_link_id($mid) {
 	return $mid;
 }
 
+/**
+ * @brief check if the provided string starts with 'b64.' and try to decode it if so.
+ * If it could be decoded return the decoded string or false if decoding failed.
+ * If the string does not start with 'b64.', return the string as is.
+ *
+ * @param string $mid
+ * @return string|boolean false
+ */
+function unpack_link_id($mid) {
+	if (is_string($mid) && strpos($mid, 'b64.') === 0) {
+		$mid = @base64url_decode(substr($mid, 4), true);
+		return $mid;
+	}
+	return $mid;
+}
 
 // callback for array_walk
 
@@ -3700,6 +3812,13 @@ function get_forum_channels($uid) {
 	if(! $uid)
 		return;
 
+	$r = q("select abook_id, xchan_pubforum, xchan_hash, xchan_network, xchan_name, xchan_url, xchan_photo_s from abook left join xchan on abook_xchan = xchan_hash where xchan_deleted = 0 and abook_channel = %d and abook_pending = 0 and abook_ignored = 0 and abook_blocked = 0 and abook_archived = 0 and abook_self = 0 and xchan_pubforum = 1 order by xchan_name",
+		intval($uid)
+	);
+
+
+/*
+
 	if(isset(App::$data['forum_channels']))
 		return App::$data['forum_channels'];
 
@@ -3771,6 +3890,7 @@ function get_forum_channels($uid) {
 	}
 
 	App::$data['forum_channels'] = $r;
+*/
 
 	return $r;
 
@@ -3833,6 +3953,26 @@ function array_path_exists($str,$arr) {
 
 	return false;
 
+}
+
+
+/**
+ * @brief provide psuedo random token (string) consisting entirely of US-ASCII letters/numbers
+ * and with possibly variable length
+ *
+ * @return string
+ */
+function new_token($minlen = 36, $maxlen = 48) {
+    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $str   = EMPTY_STR;
+
+    $len   = (($minlen === $maxlen) ? $minlen : mt_rand($minlen, $maxlen));
+
+    for ($a = 0; $a < $len; $a++) {
+        $str .= $chars[mt_rand(0, 62)];
+    }
+
+    return $str;
 }
 
 
@@ -3919,3 +4059,31 @@ function sanitize_text_field($str) {
 	return preg_replace('/\s+/S', ' ', $str);
 }
 
+/**
+ * @brief shortens a string to $max_length without cutting off words
+ * @param string $str
+ * @param intval $max_length
+ * @param string $suffix (optional)
+
+ * @return string
+ */
+function substr_words($str, $max_length, $suffix = '...') {
+
+	$ret = '';
+
+	if (strlen($str) > $max_length) {
+		$words = preg_split('/\s/', $str);
+		$i = 0;
+		while (true) {
+			$length = (strlen($ret) + strlen($words[$i]));
+			if ($length > $max_length) {
+				break;
+			}
+			$ret .= " " . $words[$i];
+			++$i;
+		}
+		$ret .= $suffix;
+	}
+
+	return (($ret) ? $ret : $str);
+}

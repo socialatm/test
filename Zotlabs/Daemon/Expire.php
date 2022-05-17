@@ -2,6 +2,7 @@
 
 namespace Zotlabs\Daemon;
 
+require_once('include/items.php');
 
 class Expire {
 

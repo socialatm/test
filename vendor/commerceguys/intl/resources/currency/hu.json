@@ -71,12 +71,9 @@
 	"BIF": {
 		"name": "burundi frank"
 	},
-	"CVE": {
-		"name": "Cape Verde-i escudo"
-	},
 	"XOF": {
 		"name": "CFA frank BCEAO",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XAF": {
 		"name": "CFA frank BEAC",
@@ -259,7 +256,7 @@
 		"name": "lengyel zloty"
 	},
 	"LSL": {
-		"name": "Lesothoi loti"
+		"name": "lesothoi loti"
 	},
 	"LBP": {
 		"name": "libanoni font"
@@ -477,5 +474,8 @@
 	},
 	"ZWL": {
 		"name": "Zimbabwei dollár (2009)"
+	},
+	"CVE": {
+		"name": "Zöld-foki escudo"
 	}
 }

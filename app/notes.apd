@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/notes
 requires: local_channel
 name: Notes
 photo: icon:sticky-note-o
 categories: Personal, Productivity
+desc: A simple notes app. It provides a dedicated notes app and a widget which can be added to other pages.

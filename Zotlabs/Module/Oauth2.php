@@ -16,11 +16,11 @@ class Oauth2 extends Controller {
 
 		if(! Apps::system_app_installed(local_channel(), 'OAuth2 Apps Manager'))
 			return;
-	
+
 		if(x($_POST,'remove')){
 			check_form_security_token_redirectOnErr('oauth2', 'oauth2');
 			$name   	= ((x($_POST,'name')) ? escape_tags(trim($_POST['name'])) : '');
-		logger("REMOVE! ".$name." uid: ".local_channel());	
+		logger("REMOVE! ".$name." uid: ".local_channel());
 			$key = $_POST['remove'];
 			q("DELETE FROM oauth_authorization_codes WHERE client_id='%s' AND user_id=%d",
 				dbesc($name),
@@ -35,13 +35,13 @@ class Oauth2 extends Controller {
 				intval(local_channel())
 			);
 			goaway(z_root()."/oauth2");
-			return;			
+			return;
 		}
-	
+
 		if((argc() > 1) && (argv(1) === 'edit' || argv(1) === 'add') && x($_POST,'submit')) {
-			
+
 			check_form_security_token_redirectOnErr('oauth2', 'oauth2');
-			
+
 			$name   	= ((x($_POST,'name')) ? escape_tags(trim($_POST['name'])) : '');
 			$secret		= ((x($_POST,'secret')) ? escape_tags(trim($_POST['secret'])) : '');
 			$redirect	= ((x($_POST,'redirect')) ? escape_tags(trim($_POST['redirect'])) : '');
@@ -53,7 +53,7 @@ class Oauth2 extends Controller {
 				$ok = false;
 				notice( t('Name and Secret are required') . EOL);
 			}
-		
+
 			if($ok) {
 				if ($_POST['submit']==t("Update")){
 					$r = q("UPDATE oauth_clients SET
@@ -61,7 +61,7 @@ class Oauth2 extends Controller {
 								client_secret = '%s',
 								redirect_uri = '%s',
 								grant_types = '%s',
-								scope = '%s', 
+								scope = '%s',
 								user_id = %d
 							WHERE client_id='%s' and user_id = %s",
 							dbesc($name),
@@ -102,12 +102,10 @@ class Oauth2 extends Controller {
 		if(! Apps::system_app_installed(local_channel(), 'OAuth2 Apps Manager')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('OAuth2 Apps Manager App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('OAuth2 authenticatication tokens for mobile and remote apps');
-			return $o;
+			$papp = Apps::get_papp('OAuth2 Apps Manager');
+			return Apps::app_render($papp, 'module');
 		}
-			
+
 		if((argc() > 1) && (argv(1) === 'add')) {
 			$tpl = get_markup_template("oauth2_edit.tpl");
 			$o .= replace_macros($tpl, array(
@@ -123,20 +121,20 @@ class Oauth2 extends Controller {
 			));
 			return $o;
 		}
-			
+
 		if((argc() > 2) && (argv(1) === 'edit')) {
 			$r = q("SELECT * FROM oauth_clients WHERE client_id='%s' AND user_id= %d",
 					dbesc(argv(2)),
 					intval(local_channel())
 			);
-			
+
 			if (! $r){
 				notice(t('OAuth2 Application not found.'));
 				return;
 			}
 
 			$app = $r[0];
-				
+
 			$tpl = get_markup_template("oauth2_edit.tpl");
 			$o .= replace_macros($tpl, array(
 				'$form_security_token' => get_form_security_token("oauth2"),
@@ -151,10 +149,10 @@ class Oauth2 extends Controller {
 			));
 			return $o;
 		}
-			
+
 		if((argc() > 2) && (argv(1) === 'delete')) {
 			check_form_security_token_redirectOnErr('oauth2', 'oauth2', 't');
-			
+
 			$r = q("DELETE FROM oauth_clients WHERE client_id = '%s' AND user_id = %d",
 					dbesc(argv(2)),
 					intval(local_channel())
@@ -172,11 +170,11 @@ class Oauth2 extends Controller {
 					intval(local_channel())
 			);
 			goaway(z_root()."/oauth2");
-			return;			
+			return;
 		}
-			
 
-		$r = q("SELECT oauth_clients.*, oauth_access_tokens.access_token as oauth_token, (oauth_clients.user_id = %d) AS my 
+
+		$r = q("SELECT oauth_clients.*, oauth_access_tokens.access_token as oauth_token, (oauth_clients.user_id = %d) AS my
 				FROM oauth_clients
 				LEFT JOIN oauth_access_tokens ON oauth_clients.client_id=oauth_access_tokens.client_id AND
                                                                  oauth_clients.user_id=oauth_access_tokens.user_id
@@ -184,7 +182,7 @@ class Oauth2 extends Controller {
 				intval(local_channel()),
 				intval(local_channel())
 		);
-			
+
 		$tpl = get_markup_template("oauth2.tpl");
 		$o .= replace_macros($tpl, array(
 			'$form_security_token' => get_form_security_token("oauth2"),
@@ -199,7 +197,7 @@ class Oauth2 extends Controller {
 			'$apps'		=> $r,
 		));
 		return $o;
-			
+
 	}
 
 }

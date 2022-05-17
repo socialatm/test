@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/webpages/$nick
 requires: local_channel
 name: Webpages
 photo: icon:newspaper-o
 categories: nav_featured_app, Productivity
+desc: Create and manage web pages for your channel.

@@ -1,4 +1,4 @@
-	<div id="id_{{$field.0}}_wrapper" class="form-group">
+	<div id="id_{{$field.0}}_wrapper" class="mb-3">
 		<label for="id_{{$field.0}}">{{$field.1}}{{if $field.5}}<sup class="required zuiqmid"> {{$field.5}}</sup>{{/if}}</label>
 		<select class="form-control" name="{{$field.0}}" id="id_{{$field.0}}">
 			{{foreach $field.4 as $opt=>$val}}<option value="{{$opt}}" {{if $opt==$field.2}}selected="selected"{{/if}}>{{$val}}</option>{{/foreach}}
@@ -17,6 +17,6 @@
 		.5	label text addition, used for qmc
 	css classes used:
 		.required, .code
-		.form-group, .form-control, .form-text, .text-muted
+		.mb-3, .form-control, .form-text, .text-muted
 *}}
 

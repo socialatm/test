@@ -8,22 +8,10 @@ $(document).ready(function() {
 		UploadInit();
 	}
 
-	$("#photo-edit-newtag").contact_autocomplete(baseurl + '/acl', 'a', false, function(data) {
-		$("#photo-edit-newtag").val('@' + data.name);
-	});
-	
 	$(".comment-edit-form  textarea").editor_autocomplete(baseurl+"/acl?f=&n=1");
+	$('textarea').editor_autocomplete(baseurl+"/acl");
 	$('textarea').bbco_autocomplete('bbcode');
-	showHideBodyTextarea();
-
 });
-
-function showHideBodyTextarea() {
-	if( $('#id_visible').is(':checked'))
-		$('#body-textarea').slideDown();
-	else
-		$('#body-textarea').slideUp();
-}
 
 // initialize
 function UploadInit() {
@@ -32,151 +20,101 @@ function UploadInit() {
 	var fileselect = $("#photos-upload-choose");
 	var filedrag = $("#photos-upload-form");
 	var submit = $("#dbtn-submit");
-	var count = 1;
-
-   $('#invisible-photos-file-upload').fileupload({
-            url: 'photos/' + nickname,
-            dataType: 'json',
-            dropZone: filedrag,
-            maxChunkSize: 4 * 1024 * 1024,
-
-            add: function(e,data) {
-                $(data.files).each( function() { this.count = ++ count; prepareHtml(this); });
-
-                var allow_cid = ($('#photos-upload-form').data('allow_cid') || []);
-                var allow_gid = ($('#photos-upload-form').data('allow_gid') || []);
-                var deny_cid  = ($('#photos-upload-form').data('deny_cid') || []);
-                var deny_gid  = ($('#photos-upload-form').data('deny_gid') || []);
-
-                $('.acl-field').remove();
-
-                $(allow_gid).each(function(i,v) {
-                    $('#photos-upload-form').append("<input class='acl-field' type='hidden' name='group_allow[]' value='"+v+"'>");
-                });
-                $(allow_cid).each(function(i,v) {
-                    $('#photos-upload-form').append("<input class='acl-field' type='hidden' name='contact_allow[]' value='"+v+"'>");
-                });
-                $(deny_gid).each(function(i,v) {
-                    $('#photos-upload-form').append("<input class='acl-field' type='hidden' name='group_deny[]' value='"+v+"'>");
-                });
-                $(deny_cid).each(function(i,v) {
-                    $('#photos-upload-form').append("<input class='acl-field' type='hidden' name='contact_deny[]' value='"+v+"'>");
-                });
-
-                data.formData = $('#photos-upload-form').serializeArray();
-
-                data.submit();
-            },
-
-           progress: function(e,data) {
-
-                // there will only be one file, the one we are looking for                                                                                                                       
-
-                $(data.files).each( function() {
-                    var idx = this.count;
-
-                    // Dynamically update the percentage complete displayed in the file upload list                                                                                              
-                    $('#upload-progress-' + idx).html(Math.round(data.loaded / data.total * 100) + '%');
-                    $('#upload-progress-bar-' + idx).css('background-size', Math.round(data.loaded / data.total * 100) + '%');
-
-                });
+	var idx = 0;
+	var reload = false;
 
 
-            },
+	$('#invisible-photos-file-upload').fileupload({
+		url: 'photos/' + nickname,
+		dataType: 'json',
+		dropZone: filedrag,
+		maxChunkSize: 4 * 1024 * 1024,
 
+		add: function(e,data) {
 
-            stop: function(e,data) {
-                window.location.href = window.location.href;
-            }
+			idx++;
+			data.files[0].idx = idx;
+			prepareHtml(data.files[0]);
 
-        });
+			var allow_cid = ($('#photos-upload-form').data('allow_cid') || []);
+			var allow_gid = ($('#photos-upload-form').data('allow_gid') || []);
+			var deny_cid  = ($('#photos-upload-form').data('deny_cid') || []);
+			var deny_gid  = ($('#photos-upload-form').data('deny_gid') || []);
 
-        $('#dbtn-submit').click(function(event) { event.preventDefault(); $('#invisible-photos-file-upload').trigger('click'); return false;});
+			$('.acl-field').remove();
 
+			$(allow_gid).each(function(i,v) {
+				$('#photos-upload-form').append("<input class='acl-field' type='hidden' name='group_allow[]' value='"+v+"'>");
+			});
+			$(allow_cid).each(function(i,v) {
+				$('#photos-upload-form').append("<input class='acl-field' type='hidden' name='contact_allow[]' value='"+v+"'>");
+			});
+			$(deny_gid).each(function(i,v) {
+				$('#photos-upload-form').append("<input class='acl-field' type='hidden' name='group_deny[]' value='"+v+"'>");
+			});
+			$(deny_cid).each(function(i,v) {
+				$('#photos-upload-form').append("<input class='acl-field' type='hidden' name='contact_deny[]' value='"+v+"'>");
+			});
 
+			data.formData = $('#photos-upload-form').serializeArray();
 
+			// trick it into not uploadiong all files at once
+			$('#new-upload-' + data.files[0].idx).one('fileupload_trigger', function () {
+				data.submit();
+			});
 
-	// is XHR2 available?
-//	var xhr = new XMLHttpRequest();
-//	if (xhr.upload) {
+			$('#new-upload-1').trigger('fileupload_trigger');
+		},
 
-		// file select
-//		fileselect.attr("multiple", 'multiple');
-//		fileselect.on("change", UploadFileSelectHandler);
+		progress: function(e,data) {
 
-		// file submit
-//		submit.on("click", fileselect, UploadFileSelectHandler);
+			var id = data.files[0].idx;
+			if(data.loaded == data.total) {
+				if(id == data.originalFiles.length) {
+					reload = true;
+				}
+				else {
+					// trigger uploading the next file
+					var next_id = id + 1;
+					setTimeout(function(){ $('#new-upload-' + next_id).trigger('fileupload_trigger'); }, 1000);
+				}
+			}
 
-		// file drop
-//		filedrag.on("dragover", DragDropUploadFileHover);
-//		filedrag.on("dragleave", DragDropUploadFileHover);
-//		filedrag.on("drop", DragDropUploadFileSelectHandler);
-//	}
+			// Dynamically update the percentage complete displayed in the file upload list
+			$('#upload-progress-' + id).html(Math.round(data.loaded / data.total * 100) + '%');
+			$('#upload-progress-bar-' + id).css('width', Math.round(data.loaded / data.total * 100) + '%');
+		},
 
-//	window.filesToUpload = 0;
-//	window.fileUploadsCompleted = 0;
-}
-
-// file drag hover
-function DragDropUploadFileHover(e) {
-	e.stopPropagation();
-	e.preventDefault();
-	e.currentTarget.className = (e.type == "dragover" ? "hover" : "");
-}
-
-// file selection via drag/drop
-function DragDropUploadFileSelectHandler(e) {
-	// cancel event and hover styling
-	DragDropUploadFileHover(e);
-
-	// fetch FileList object
-	var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-	$('.new-upload').remove();
-
-	// process all File objects
-	for (var i = 0, f; f = files[i]; i++) {
-		prepareHtml(f, i);
-		UploadFile(f, i);
-	}
-}
-
-// file selection via input
-function UploadFileSelectHandler(e) {
-	// fetch FileList object
-	if(e.target.id === 'dbtn-submit') {
-		e.preventDefault();
-		var files = e.data[0].files;
-	}
-	if(e.target.id === 'photos-upload-choose') {
-		$('.new-upload').remove();
-		var files = e.target.files;
-	}
-
-	// process all File objects
-	for (var i = 0, f; f = files[i]; i++) {
-		if(e.target.id === 'photos-upload-choose')
-			prepareHtml(f, i);
-		if(e.target.id === 'dbtn-submit') {
-			UploadFile(f, i);
+		stop: function(e,data) {
+			if(reload) {
+				console.log('Upload completed');
+				window.location.href = window.location.href;
+			}
 		}
-	}
+	});
+
+	$('#dbtn-submit').click(function(event) { event.preventDefault(); $('#invisible-photos-file-upload').trigger('click'); return false;});
+
 }
+
 
 function prepareHtml(f) {
-
-	var num = f.count - 1;
-	var i = f.count;
-
+	var num = f.idx - 1;
+	var i = f.idx;
 	$('#upload-index #new-upload-progress-bar-' + num.toString()).after(
 		'<tr id="new-upload-' + i + '" class="new-upload">' +
-		'<td width="1%"><i class="fa ' + getIconFromType(f.type) + '" title="' + f.type + '"></i></td>' +
-		'<td width="96%">' + f.name + '</td>' +
-		'<td id="upload-progress-' + i + '" width="1%"></td>' +
-		'<td class="d-none d-md-table-cell" width="1%">' + formatSizeUnits(f.size) + '</td>' +
+		'<td></td>' +
+		'<td><i class="fa fa-fw ' + getIconFromType(f.type) + '" title="' + f.type + '"></i></td>' +
+		'<td>' + f.name + '</td>' +
+		'<td id="upload-progress-' + i + '"></td><td></td><td></td>' +
+		'<td class="d-none d-md-table-cell">' + formatSizeUnits(f.size) + '</td><td class="d-none d-md-table-cell"></td>' +
 		'</tr>' +
 		'<tr id="new-upload-progress-bar-' + i + '" class="new-upload">' +
-		'<td id="upload-progress-bar-' + i + '" colspan="4" class="upload-progress-bar"></td>' +
+		'<td colspan="8" class="upload-progress-bar">' +
+		'<div class="progress" style="height: 1px;">' +
+		'<div id="upload-progress-bar-' + i + '" class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>' +
+		'</div>' +
+		'</td>' +
 		'</tr>'
 	);
 }
@@ -235,64 +173,4 @@ function getIconFromType(type) {
 	}
 
 	return iconFromType;
-}
-
-// upload  files
-function UploadFile(file, idx) {
-
-	window.filesToUpload = window.filesToUpload + 1;
-
-	var xhr = new XMLHttpRequest();
-
-	xhr.withCredentials = true;   // Include the SESSION cookie info for authentication
-
-	(xhr.upload || xhr).addEventListener('progress', function (e) {
-
-		var done = e.position || e.loaded;
-		var total = e.totalSize || e.total;
-		// Dynamically update the percentage complete displayed in the file upload list
-		$('#upload-progress-' + idx).html(Math.round(done / total * 100) + '%');
-		$('#upload-progress-bar-' + idx).css('background-size', Math.round(done / total * 100) + '%');
-
-		if(done == total) {
-			$('#upload-progress-' + idx).html('Processing...');
-		}
-
-	});
-
-
-	xhr.addEventListener('load', function (e) {
-		//we could possibly turn the filenames to real links here and add the delete and edit buttons to avoid page reload...
-		$('#upload-progress-' + idx).html('Ready!');
-
-		//console.log('xhr upload complete', e);
-		window.fileUploadsCompleted = window.fileUploadsCompleted + 1;
-
-		// When all the uploads have completed, refresh the page
-		if (window.filesToUpload > 0 && window.fileUploadsCompleted === window.filesToUpload) {
-
-			window.fileUploadsCompleted = window.filesToUpload = 0;
-
-			// After uploads complete, refresh browser window to display new files
-			window.location.href = window.location.href;
-		}
-	});
-
-
-	xhr.addEventListener('error', function (e) {
-		$('#upload-progress-' + idx).html('<span style="color: red;">ERROR</span>');
-	});
-
-	// POST to the entire cloud path 
-	xhr.open('post', $('#photos-upload-form').attr( 'action' ), true);
-
-	var formfields = $("#photos-upload-form").serializeArray();
-
-	var data = new FormData();
-	$.each(formfields, function(i, field) {
-		data.append(field.name, field.value);
-	});
-	data.append('userfile', file);
-
-	xhr.send(data);
 }

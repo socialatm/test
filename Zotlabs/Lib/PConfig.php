@@ -2,6 +2,8 @@
 
 namespace Zotlabs\Lib;
 
+use App;
+
 /**
  * @brief Class for handling channel specific configurations.
  *
@@ -32,15 +34,15 @@ class PConfig {
 		if(is_null($uid) || $uid === false)
 			return false;
 
-		if(! is_array(\App::$config)) {
+		if(! is_array(App::$config)) {
 			btlogger('App::$config not an array');
 		}
 
-		if(! array_key_exists($uid, \App::$config)) {
-			\App::$config[$uid] = array();
+		if(! array_key_exists($uid, App::$config)) {
+			App::$config[$uid] = array();
 		}
 
-		if(! is_array(\App::$config[$uid])) {
+		if(! is_array(App::$config[$uid])) {
 			btlogger('App::$config[$uid] not an array: ' . $uid);
 		}
 
@@ -52,12 +54,12 @@ class PConfig {
 			foreach($r as $rr) {
 				$k = $rr['k'];
 				$c = $rr['cat'];
-				if(! array_key_exists($c, \App::$config[$uid])) {
-					\App::$config[$uid][$c] = array();
-					\App::$config[$uid][$c]['config_loaded'] = true;
+				if(! array_key_exists($c, App::$config[$uid])) {
+					App::$config[$uid][$c] = array();
+					App::$config[$uid][$c]['config_loaded'] = true;
 				}
-				\App::$config[$uid][$c][$k] = $rr['v'];
-				\App::$config[$uid][$c]['pcfgud:'.$k] = $rr['updated'];
+				App::$config[$uid][$c][$k] = $rr['v'];
+				App::$config[$uid][$c]['pcfgud:'.$k] = $rr['updated'];
 			}
 		}
 	}
@@ -86,15 +88,15 @@ class PConfig {
 		if(is_null($uid) || $uid === false)
 			return $default;
 
-		if(! array_key_exists($uid, \App::$config))
+		if(! array_key_exists($uid, App::$config))
 			self::Load($uid);
 
-		if((! array_key_exists($family, \App::$config[$uid])) || (! array_key_exists($key, \App::$config[$uid][$family])))
+		if((! array_key_exists($family, App::$config[$uid])) || (! array_key_exists($key, App::$config[$uid][$family])))
 			return $default;
 
-		return ((! is_array(\App::$config[$uid][$family][$key])) && (preg_match('|^a:[0-9]+:{.*}$|s', \App::$config[$uid][$family][$key]))
-			? unserialize(\App::$config[$uid][$family][$key])
-			: \App::$config[$uid][$family][$key]
+		return ((! is_array(App::$config[$uid][$family][$key])) && (preg_match('|^a:[0-9]+:{.*}$|s', App::$config[$uid][$family][$key]))
+			? unserialize(App::$config[$uid][$family][$key])
+			: App::$config[$uid][$family][$key]
 		);
 	}
 
@@ -133,6 +135,7 @@ class PConfig {
 		$dbvalue = ((is_array($value))  ? serialize($value) : $value);
 		$dbvalue = ((is_bool($dbvalue)) ? intval($dbvalue)  : $dbvalue);
 		$new = false;
+		$update = false;
 
 		$now = datetime_convert();
 		if (! $updated) {
@@ -143,23 +146,22 @@ class PConfig {
 			$updated = datetime_convert('UTC','UTC','-2 seconds');
 		}
 
-		$hash = hash('sha256',$family.':'.$key);
+		$hash = gen_link_id($family.':'.$key);
 
 		if (self::Get($uid, 'hz_delpconfig', $hash) !== false) {
 			if (self::Get($uid, 'hz_delpconfig', $hash) > $now) {
 				logger('Refusing to update pconfig with outdated info (Item deleted more recently).', LOGGER_NORMAL, LOG_ERR);
 				return self::Get($uid,$family,$key);
 			} else {
-				self::Delete($uid,'hz_delpconfig',$hash);
+				self::Delete($uid, 'hz_delpconfig', $hash);
 			}
 		}
 
 		if(self::Get($uid, $family, $key) === false) {
-			if(! array_key_exists($uid, \App::$config))
-				\App::$config[$uid] = array();
-			if(! array_key_exists($family, \App::$config[$uid]))
-				\App::$config[$uid][$family] = array();
-
+			if(! array_key_exists($uid, App::$config))
+				App::$config[$uid] = array();
+			if(! array_key_exists($family, App::$config[$uid]))
+				App::$config[$uid][$family] = array();
 
 			$ret = q("INSERT INTO pconfig ( uid, cat, k, v, updated ) VALUES ( %d, '%s', '%s', '%s', '%s' ) ",
 				intval($uid),
@@ -177,13 +179,14 @@ class PConfig {
 				logger("Error: Insert to pconfig failed.",LOGGER_NORMAL, LOG_ERR);
 			}
 
-			\App::$config[$uid][$family]['pcfgud:'.$key] = $updated;
+			$new = true;
+			App::$config[$uid][$family]['pcfgud:'.$key] = $updated;
 
 		}
 		else {
-			$new = (\App::$config[$uid][$family]['pcfgud:'.$key] < $now);
+			$update = (App::$config[$uid][$family]['pcfgud:'.$key] < $now);
 
-			if ($new) {
+			if ($update) {
 
 				// @NOTE There is still a possible race condition under limited circumstances
 				// where a value will be updated by another thread with more current data than
@@ -198,7 +201,7 @@ class PConfig {
 					dbesc($key)
 				);
 
-				\App::$config[$uid][$family]['pcfgud:'.$key] = $updated;
+				App::$config[$uid][$family]['pcfgud:'.$key] = $updated;
 
 			} else {
 				logger('Refusing to update pconfig with outdated info.', LOGGER_NORMAL, LOG_ERR);
@@ -211,16 +214,16 @@ class PConfig {
 		// set in the life of this page. We need this to
 		// synchronise channel clones.
 
-		if(! array_key_exists('transient', \App::$config[$uid]))
-			\App::$config[$uid]['transient'] = array();
-		if(! array_key_exists($family, \App::$config[$uid]['transient']))
-			\App::$config[$uid]['transient'][$family] = array();
+		if(! array_key_exists('transient', App::$config[$uid]))
+			App::$config[$uid]['transient'] = array();
+		if(! array_key_exists($family, App::$config[$uid]['transient']))
+			App::$config[$uid]['transient'][$family] = array();
 
-		\App::$config[$uid][$family][$key] = $value;
+		App::$config[$uid][$family][$key] = $value;
 
-		if ($new) {
-			\App::$config[$uid]['transient'][$family][$key] = $value;
-			\App::$config[$uid]['transient'][$family]['pcfgud:'.$key] = $updated;
+		if ($new || $update) {
+			App::$config[$uid]['transient'][$family][$key] = $value;
+			App::$config[$uid]['transient'][$family]['pcfgud:'.$key] = $updated;
 		}
 
 		if($ret)
@@ -253,7 +256,7 @@ class PConfig {
 
 		$updated = ($updated) ? $updated : datetime_convert('UTC','UTC','-2 seconds');
 		$now = datetime_convert();
-		$newer = (\App::$config[$uid][$family]['pcfgud:'.$key] < $now);
+		$newer = (App::$config[$uid][$family]['pcfgud:'.$key] < $now);
 
 		if (! $newer) {
 			logger('Refusing to delete pconfig with outdated delete request.', LOGGER_NORMAL, LOG_ERR);
@@ -262,12 +265,12 @@ class PConfig {
 
 		$ret = false;
 
-		if (isset(\App::$config[$uid][$family][$key])) {
-			unset(\App::$config[$uid][$family][$key]);
+		if (isset(App::$config[$uid][$family][$key])) {
+			unset(App::$config[$uid][$family][$key]);
 		}
 
-		if (isset(\App::$config[$uid][$family]['pcfgud:'.$key])) {
-			unset(\App::$config[$uid][$family]['pcfgud:'.$key]);
+		if (isset(App::$config[$uid][$family]['pcfgud:'.$key])) {
+			unset(App::$config[$uid][$family]['pcfgud:'.$key]);
 		}
 
 		$ret = q("DELETE FROM pconfig WHERE uid = %d AND cat = '%s' AND k = '%s'",
@@ -278,9 +281,9 @@ class PConfig {
 
 		// Synchronize delete with clones.
 
-		if ($family != 'hz_delpconfig') {
-			$hash = hash('sha256',$family.':'.$key);
-			set_pconfig($uid,'hz_delpconfig',$hash,$updated);
+		if ($family !== 'hz_delpconfig') {
+			$hash = gen_link_id($family.':'.$key);
+			set_pconfig($uid, 'hz_delpconfig', $hash, $updated);
 		}
 
 		return $ret;

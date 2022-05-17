@@ -1,13 +1,17 @@
 <?php
 
+/**
+ *   * Name: Suggested chats
+ *   * Description: A menu with chatroom suggestions
+ *   * Requires: disabled_due_to_reasons
+ */
+
+
 namespace Zotlabs\Widget;
 
 class Suggestedchats {
 
 	function widget($arr) {
-
-		if(! feature_enabled(\App::$profile['profile_uid'],'ajaxchat'))
-			return '';
 
 		// There are reports that this tool does not ever remove chatrooms on dead sites,
 		// and also will happily link to private chats which you cannot enter.

@@ -297,7 +297,7 @@
 	},
 	"XOF": {
 		"name": "ਪੱਛਮੀ ਅਫ਼ਰੀਕੀ (CFA) ਫ੍ਰੈਂਕ",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"PAB": {
 		"name": "ਪਨਾਮੇਨੀਅਨ ਬਾਲਬੋਆ"
@@ -469,6 +469,9 @@
 	"LYD": {
 		"name": "ਲੀਬੀਆਈ ਦਿਨਾਰ"
 	},
+	"LSL": {
+		"name": "ਲੇਸੋਥੋ ਲੋਟੀ"
+	},
 	"LBP": {
 		"name": "ਲੈਬਨਾਨੀ ਪੌਂਡ"
 	},
@@ -481,9 +484,6 @@
 	},
 	"VES": {
 		"name": "ਵੇਨੇਜ਼ੂਏਲਨ ਬੋਲੀਵਰ"
-	},
-	"LSL": {
-		"name": "Lesotho Loti"
 	},
 	"SVC": {
 		"name": "Salvadoran Colón"

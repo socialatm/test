@@ -1,6 +1,6 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<div class="pull-right">
+		<div class="float-end">
 			{{if $is_owner}}
 			<form id="chat-destroy" method="post" action="chat">
 				<input type="hidden" name="room_name" value="{{$room_name}}" />
@@ -25,14 +25,14 @@
 		<div id="chatBottomBar" >
 			<form id="chat-form" method="post" action="#">
 				<input type="hidden" name="room_id" value="{{$room_id}}" />
-				<div class="form-group">
+				<div class="mb-3">
 					<textarea id="chatText" name="chat_text" class="form-control"></textarea>
 				</div>
 				<div id="chat-submit-wrapper" class="clearfix">
-					<div id="chat-submit" class="dropup pull-right">
-						<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+					<div id="chat-submit" class="dropup float-end">
+						<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fa fa-cog"></i></button>
 						<button class="btn btn-primary btn-sm" type="submit" id="chat-submit" name="submit" value="{{$submit}}">{{$submit}}</button>
-						<div class="dropdown-menu dropdown-menu-right">
+						<div class="dropdown-menu dropdown-menu-end">
 							<a class="dropdown-item" href="{{$baseurl}}/chatsvc?f=&room_id={{$room_id}}&status=online"><i class="fa fa-circle online"></i>&nbsp;{{$online}}</a>
 							<a class="dropdown-item" href="{{$baseurl}}/chatsvc?f=&room_id={{$room_id}}&status=away"><i class="fa fa-circle away"></i>&nbsp;{{$away}}</a>
 							<a class="dropdown-item" href="{{$baseurl}}/chat/{{$nickname}}/{{$room_id}}/leave"><i class="fa fa-circle leave"></i>&nbsp;{{$leave}}</a>
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 					<div id="chat-tools" class="btn-toolbar">
-						<div class="btn-group mr-2">
+						<div class="btn-group me-2">
 							<button id="main-editor-bold" class="btn btn-outline-secondary btn-sm" title="{{$bold}}" onclick="inserteditortag('b', 'chatText'); return false;">
 								<i class="fa fa-bold jot-icons"></i>
 							</button>
@@ -63,20 +63,20 @@
 								<i class="fa fa-terminal jot-icons"></i>
 							</button>
 						</div>
-						<div class="btn-group mr-2 d-none d-md-flex">
+						<div class="btn-group me-2 d-none d-md-flex">
 							<button id="chat-link-wrapper" class="btn btn-outline-secondary btn-sm" onclick="chatJotGetLink(); return false;" >
 								<i id="chat-link" class="fa fa-link jot-icons" title="{{$insert}}" ></i>
 							</button>
 						</div>
 						{{if $feature_encrypt}}
-						<div class="btn-group mr-2 d-none d-md-flex">
+						<div class="btn-group me-2 d-none d-md-flex">
 							<button id="chat-encrypt-wrapper" class="btn btn-outline-secondary btn-sm" onclick="hz_encrypt('{{$cipher}}', '#chatText'); return false;">
 								<i id="chat-encrypt" class="fa fa-key jot-icons" title="{{$encrypt}}" ></i>
 							</button>
 						</div>
 						{{/if}}
 						<div class="btn-group dropup d-md-none">
-							<button type="button" id="more-tools" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<button type="button" id="more-tools" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 								<i id="more-tools-icon" class="fa fa-cog jot-icons"></i>
 							</button>
 							<div class="dropdown-menu">
@@ -110,7 +110,9 @@ $(document).ready(function() {
 	$('#chatroom_bookmarks, #vcard').hide();
 	$('#chatroom_list, #chatroom_members').show();
 	adjustInlineTopBarHeight();
-    chatNotificationInit();
+	$('#toggle-notifications').one('click', function() {
+		chatNotificationInit();
+	});
 });
 
 $(window).resize(function () {
@@ -141,7 +143,7 @@ function load_chats() {
 			$('#chat-top-spinner').hide();
 		}
 	});
-	
+
 	chat_timer = setTimeout(load_chats,10000);
 
 }
@@ -218,7 +220,7 @@ var chat_notify_audio = {};
 // Request notification access from the user
 // TODO: Check Hubzilla member config setting before requesting permission
 function chatNotificationInit() {
-  
+
     if (!("Notification" in window)) {
         window.console.log("This browser does not support system notifications");
     }
@@ -258,8 +260,8 @@ var chat_issue_notification = function (theBody,theTitle) {
     }
     var n = new Notification(theTitle,options);
     n.onclick = function (event) {
-        setTimeout(n.close.bind(n), 300); 
-    } 
+        setTimeout(n.close.bind(n), 300);
+    }
     if(chat_notify_audio_enabled) {
       chat_notify_audio.play();
     }

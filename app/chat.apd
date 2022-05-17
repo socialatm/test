@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/chat/$nick
 requires: local_channel
 name: Chatrooms
 photo: icon:comments-o
 categories: Productivity
+desc: Access controlled personal chatrooms.

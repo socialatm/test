@@ -1,5 +1,6 @@
-version: 2
+version: 3
 url: https://framagit.org/hubzilla/core/issues
 name: Report Bug
 photo: icon:bug
 categories: System
+desc: Provides a link to the Hubzilla bug tracker.

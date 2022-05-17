@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Admin menu
+ *   * Requires: admin
+ */
+
 namespace Zotlabs\Widget;
 
 class Admin {

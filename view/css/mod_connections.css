@@ -1,15 +1,6 @@
+#contacts-follow-form,
 #contacts-search-form {
 	display: none;
-}
-
-.section-subtitle-wrapper .btn-xs {
-	margin-top: -2px;
-}
-
-.contact-search {
-	height: 22px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
 }
 
 .directory-photo-img.archived {
@@ -39,7 +30,8 @@
 }
 
 .contact-photo-wrapper .oneway-overlay {
-	margin-top: -25px;
-	margin-left: 53px;
-	font-size: 20px;
+	margin-top: -18px;
+	margin-left: 62px;
+	font-size: 1.2rem;
+	display: inherit; /* this is required for chromium */
 }

@@ -134,6 +134,7 @@ function oembed_fetch_url($embedurl){
 	}
 
 	$txt = null;
+	$j = null;
 
 	// we should try to cache this and avoid a lookup on each render
 	$is_matrix = is_matrix_url($embedurl);
@@ -160,7 +161,7 @@ function oembed_fetch_url($embedurl){
 
 	if(is_null($txt)) {
 
-		$txt = "";
+		$txt = EMPTY_STR;
 
 		if ($action !== 'block') {
 			// try oembed autodiscovery
@@ -168,7 +169,7 @@ function oembed_fetch_url($embedurl){
 			$result = z_fetch_url($furl, false, $redirects,
 				[
 					'timeout'        => 30,
-					'accept_content' => "text/*",
+					'accept_content' => 'text/*',
 					'novalidate'     => true,
 					'session'        => ((local_channel() && $zrl) ? true : false)
 				]
@@ -227,9 +228,10 @@ function oembed_fetch_url($embedurl){
 				$txt = $x['embed'];
 		}
 
-		$txt=trim($txt);
+		$txt = trim($txt);
 
-		if ($txt[0]!="{") $txt='{"type":"error"}';
+		if (substr($txt, 0, 1) !== '{')
+			$txt = '{"type":"error"}';
 
 		// save in cache
 
@@ -247,7 +249,7 @@ function oembed_fetch_url($embedurl){
 	}
 
 	if($action === 'filter') {
-		if($j['html']) {
+		if(isset($j['html']) && $j['html']) {
 			$orig = $j['html'];
 			$allow_position = (($is_matrix) ? true : false);
 

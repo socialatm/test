@@ -21,7 +21,7 @@ require_once('include/security.php');
  * @param bool $default_ignored (default true)
  *          if false, lie and pretend the ignored person has permissions you are ignoring (used in channel discovery)
  *
- * @returns array of all permissions, key is permission name, value is true or false
+ * @returns array of all permissions, key is permission name, value is 1 or 0
  */
 function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_ignored = true) {
 
@@ -61,7 +61,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		// The uid provided doesn't exist. This would be a big fail.
 
 		if(! $r) {
-			$ret[$perm_name] = false;
+			$ret[$perm_name] = 0;
 			continue;
 		}
 
@@ -70,7 +70,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 
 		if($observer_xchan) {
 			if($channel_perm & PERMS_AUTHED) {
-				$ret[$perm_name] = true;
+				$ret[$perm_name] = 1;
 				continue;
 			}
 
@@ -80,23 +80,6 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 					intval($uid),
 					dbesc($observer_xchan)
 				);
-				if(! $x) {
-					// see if they've got a guest access token; these are treated as connections
-					$y = atoken_abook($uid,$observer_xchan);
-					if($y)
-						$x = array($y);
-
-					if(! $x) {
-						// not in address book and no guest token, see if they've got an xchan
-						// these *may* have individual (PERMS_SPECIFIC) permissions, but are not connections
-						$y = q("select xchan_network from xchan where xchan_hash = '%s' limit 1",
-							dbesc($observer_xchan)
-						);
-						if($y) {
-							$x = array(pseudo_abook($y[0]));
-						}
-					}
-				}
 
 				$abook_checked = true;
 			}
@@ -104,7 +87,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 			// If they're blocked - they can't read or write
 
 			if(($x) && intval($x[0]['abook_blocked'])) {
-				$ret[$perm_name] = false;
+				$ret[$perm_name] = 0;
 				continue;
 			}
 
@@ -115,7 +98,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 
 
 			if(($x) && ($default_ignored) && in_array($perm_name,$blocked_anon_perms) && intval($x[0]['abook_ignored'])) {
-				$ret[$perm_name] = false;
+				$ret[$perm_name] = 0;
 				continue;
 			}
 		}
@@ -123,7 +106,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		// system is blocked to anybody who is not authenticated
 
 		if(($check_siteblock) && (! $observer_xchan) && intval(get_config('system', 'block_public'))) {
-			$ret[$perm_name] = false;
+			$ret[$perm_name] = 0;
 			continue;
 		}
 
@@ -133,16 +116,16 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 
 		if(($observer_xchan) && ($r[0]['channel_hash'] === $observer_xchan)) {
 			if($r[0]['channel_moved'] && (in_array($perm_name,$blocked_anon_perms)))
-				$ret[$perm_name] = false;
+				$ret[$perm_name] = 0;
 			else
-				$ret[$perm_name] = true;
+				$ret[$perm_name] = 1;
 			continue;
 		}
 
 		// Anybody at all (that wasn't blocked or ignored). They have permission.
 
 		if($channel_perm & PERMS_PUBLIC) {
-			$ret[$perm_name] = true;
+			$ret[$perm_name] = 1;
 			continue;
 		}
 
@@ -150,15 +133,15 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		// out, permission is denied.
 
 		if(! $observer_xchan) {
-			$ret[$perm_name] = false;
+			$ret[$perm_name] = 0;
 			continue;
 		}
 
 		// If we're still here, we have an observer, check the network.
 
 		if($channel_perm & PERMS_NETWORK) {
-			if($x && in_array($x[0]['xchan_network'],[ 'zot','zot6'])) {
-				$ret[$perm_name] = true;
+			if($x && $x[0]['xchan_network'] === 'zot6') {
+				$ret[$perm_name] = 1;
 				continue;
 			}
 		}
@@ -175,9 +158,9 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 			}
 
 			if($c)
-				$ret[$perm_name] = true;
+				$ret[$perm_name] = 1;
 			else
-				$ret[$perm_name] = false;
+				$ret[$perm_name] = 0;
 
 			continue;
 		}
@@ -186,19 +169,19 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		// handle whether we're allowing any, approved or specific ones
 
 		if(! $x) {
-			$ret[$perm_name] = false;
+			$ret[$perm_name] = 0;
 			continue;
 		}
 
 		// They are in your address book, but haven't been approved
 
 		if($channel_perm & PERMS_PENDING && (! intval($x[0]['abook_pseudo']))) {
-			$ret[$perm_name] = true;
+			$ret[$perm_name] = 1;
 			continue;
 		}
 
 		if(intval($x[0]['abook_pending'])) {
-			$ret[$perm_name] = false;
+			$ret[$perm_name] = 0;
 			continue;
 		}
 
@@ -207,11 +190,11 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		if($channel_perm & PERMS_CONTACTS) {
 			// it was a fake abook entry, not really a connection
 			if(array_key_exists('abook_pseudo',$x[0]) && intval($x[0]['abook_pseudo'])) {
-				$ret[$perm_name] = false;
+				$ret[$perm_name] = 0;
 				continue;
 			}
 
-			$ret[$perm_name] = true;
+			$ret[$perm_name] = 1;
 			continue;
 		}
 
@@ -221,7 +204,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 			if($abperms) {
 				foreach($abperms as $ab) {
 					if(($ab['cat'] == 'my_perms') && ($ab['k'] == $perm_name)) {
-						$ret[$perm_name] = (intval($ab['v']) ? true : false);
+						$ret[$perm_name] = (intval($ab['v']) ? 1 : 0);
 						break;
 					}
 				}
@@ -231,7 +214,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 
 		// No permissions allowed.
 
-		$ret[$perm_name] = false;
+		$ret[$perm_name] = 0;
 		continue;
 	}
 
@@ -241,6 +224,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 		'permissions'   => $ret);
 
 	call_hooks('get_all_perms',$arr);
+
 
 	return $arr['permissions'];
 }
@@ -308,32 +292,6 @@ function perm_is_allowed($uid, $observer_xchan, $permission, $check_siteblock = 
 		if(($x) && in_array($permission,$blocked_anon_perms) && intval($x[0]['abook_ignored']))
 			return false;
 
-		if(! $x) {
-			// see if they've got a guest access token
-			$y = atoken_abook($uid,$observer_xchan);
-			if($y)
-				$x = array($y);
-
-			if(! $x) {
-				// not in address book and no guest token, see if they've got an xchan
-
-				$y = q("select xchan_network from xchan where xchan_hash = '%s' limit 1",
-					dbesc($observer_xchan)
-				);
-				if($y) {
-
-					// This requires an explanation and the effects are subtle.
-					// The following line creates a fake connection, and this allows
-					// access tokens to have specific permissions even though they are
-					// not actual connections.
-					// The existence of this fake entry must be checked when dealing
-					// with connection related permissions.
-
-					$x = array(pseudo_abook($y[0]));
-				}
-			}
-
-		}
 		$abperms = load_abconfig($uid,$observer_xchan,'my_perms');
 	}
 
@@ -366,7 +324,7 @@ function perm_is_allowed($uid, $observer_xchan, $permission, $check_siteblock = 
 	// If we're still here, we have an observer, check the network.
 
 	if($channel_perm & PERMS_NETWORK) {
-		if ($x && in_array($x[0]['xchan_network'], ['zot','zot6']))
+		if ($x && $x[0]['xchan_network'] === 'zot6')
 			return true;
 	}
 

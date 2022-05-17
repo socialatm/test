@@ -27,7 +27,7 @@
 				<div id="wiki_page_options" style="display: none">
 					{{$mimetype}}
 				</div>
-				<div class="float-right fakelink" onClick="openClose('wiki_page_options')">
+				<div class="float-end fakelink" onClick="openClose('wiki_page_options')">
 					{{$options}}
 				</div>
 				{{/if}}

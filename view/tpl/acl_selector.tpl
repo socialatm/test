@@ -9,14 +9,14 @@
 					<a target="hubzilla-help" href="{{$helpUrl}}" class="contextual-help-tool" title="Help and documentation"><i class="fa fa-fw fa-question"></i></a>
 					{{/if}}
 				</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="section-content-wrapper">
 				{{if $aclModalDesc}}
 				<div id="acl-dialog-description" class="section-content-info-wrapper">{{$aclModalDesc}}</div>
 				{{/if}}
 				<label for="acl-select">{{if $aclModalDesc}}<i class="fa fa-send-o"></i> {{/if}}{{$select_label}}</label>
-				<select id="acl-select" name="optionsRadios" class="form-control form-group">
+				<select id="acl-select" name="optionsRadios" class="form-control mb-3">
 					<option id="acl-showall" value="public" {{$public_selected}}>{{$showall}}</option>
 					<option id="acl-onlyme" value="onlyme" {{$justme_selected}}>{{$onlyme}}</option>
 					{{$groups}}
@@ -26,7 +26,7 @@
 				</select>
 
 				{{if $showallOrigin}}
-				<div id="acl-info" class="form-group">
+				<div id="acl-info" class="mb-3">
 					<i class="fa fa-info-circle"></i>&nbsp;{{$showallOrigin}}
 				</div>
 				{{/if}}
@@ -50,7 +50,7 @@
 				</div>
 			</div>
 			<div class="modal-footer clear">
-				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{$aclModalDismiss}}</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{$aclModalDismiss}}</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -58,7 +58,7 @@
 </form>
 <script>
 	// compatibility issue with bootstrap v4
-	//$('[data-toggle="popover"]').popover(); // Init the popover, if present
+	//$('[data-bs-toggle="popover"]').popover(); // Init the popover, if present
 
 	if(typeof acl=="undefined"){
 		acl = new ACL(

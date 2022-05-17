@@ -1,8 +1,8 @@
 [region=aside]
 [widget=vcard][/widget]
-[widget=collections][var=mode]abook[/var][/widget]
-[widget=suggestions][/widget]
-[widget=findpeople][/widget]
+[/region]
+[region=content]
+$content
 [/region]
 [region=right_aside]
 [widget=notifications][/widget]

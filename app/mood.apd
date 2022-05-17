@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/mood
 requires: local_channel
 name: Mood
 photo: icon:smile-o
 categories: Social
+desc: Set your current mood and tell your friends.

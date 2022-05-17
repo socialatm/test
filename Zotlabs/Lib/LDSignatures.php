@@ -75,22 +75,23 @@ class LDSignatures {
 	}
 
 	static function hash($obj) {
-
-		return hash('sha256',self::normalise($obj));
+		return hash('sha256', self::normalise($obj));
 	}
 
 	static function normalise($data) {
+		$ret = '';
+
 		if(is_string($data)) {
 			$data = json_decode($data);
 		}
 
 		if(! is_object($data))
-			return '';
+			return $ret;
 
 		jsonld_set_document_loader('jsonld_document_loader');
 
 		try {
-			$d = jsonld_normalize($data,[ 'algorithm' => 'URDNA2015', 'format' => 'application/nquads' ]);
+			$ret = jsonld_normalize($data,[ 'algorithm' => 'URDNA2015', 'format' => 'application/nquads' ]);
 		}
 		catch (\Exception $e) {
 			// Don't log the exception - this can exhaust memory
@@ -98,7 +99,7 @@ class LDSignatures {
 			logger('normalise error: ' . print_r($data,true));
 		}
 
-		return $d;
+		return $ret;
 	}
 
 	static function salmon_sign($data,$channel) {

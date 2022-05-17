@@ -1,11 +1,11 @@
 [size=large][b]Konta, profile i kanały[/b][/size]
 
-Po zarejestrowaniu [i]konta[/i], trzeba również utworzyć [i]profil[/i] i [i]kanał[/i]. 
+Po zarejestrowaniu [i]konta[/i], trzeba również utworzyć [i]profil[/i] i [i]kanał[/i]. Na wielu portalach $Projectname Twój kanał jest zakładany automatycznie, ale to i tak wymaga Twojej interwencji. Profil będzie wymagał uzupełnienia lub poprawienia danych, podobnie jak automatycznie założony kanał.     
 
 [b]Konto[/b]
-W serwisie &Projectname masz [i]jedno[/i] konto. Składa się z Twojego konta e-mail i hasła. Za pomocą swojego konta uzyskujesz dostęp do swojego profilu i kanału.
+Na portalu $Projectname masz [i]jedno[/i] konto. Składa się z Twojego adresu e-mail i hasła. Za pomocą swojego konta uzyskujesz dostęp do swojego profilu i kanału.
 
-[i]Pomyśl o swoim koncie jak o sposobie uwierzytelniania na jakimś portalu $Projectname. Pozwala ono na takie rzeczy, jak tworzenie profili i kanałów, za pomocą których możesz łączyć się z innymi osobami.[/i]
+[i]Pomyśl o swoim koncie jak o sposobie uwierzytelniania na którymkolwiek portalu $Projectname. Pozwala ono na takie rzeczy, jak tworzenie profili i kanałów, za pomocą których możesz łączyć się z innymi osobami.[/i]
 
 [b]Profil[/b]
 Z pewnością masz już doświadczenie w rejestrowaniu się w jakichś usługach internetowych, takich jak fora lub społeczności internetowe. We wszystkich przypadkach trzeba było podać pewne informacje o sobie, takie jak data urodzenia, kraj, wiek i upodobania. [observer=1]Jeśli chcesz, możesz zobaczyć swój profil tutaj: [baseurl]/profile/[observer.webname] i edytować go, klikając ikonę ołówka obok swojego awatara.[/observer]

@@ -1,4 +1,4 @@
-version: 1
+version: 2
 url: $baseurl/affinity
 requires: local_channel
 name: Affinity Tool

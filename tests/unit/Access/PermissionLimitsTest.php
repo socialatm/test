@@ -45,8 +45,8 @@ class PermissionLimitsTest extends UnitTestCase {
 	 * @uses ::call_hooks
 	 */
 	public function testStd_Limits() {
-		// There are 18 default perms
-		$permsCount = 18;
+		// There are 17 default perms
+		$permsCount = 17;
 
 		// Create a stub for global function t() with expectation
 		$t = $this->getFunctionMock('Zotlabs\Access', 't');
@@ -69,7 +69,6 @@ class PermissionLimitsTest extends UnitTestCase {
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['post_comments']);
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['post_mail']);
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['post_like']);
-		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['tag_deliver']);
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['chat']);
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['republish']);
 		$this->assertEquals(PERMS_SPECIFIC, $stdlimits['delegate']);

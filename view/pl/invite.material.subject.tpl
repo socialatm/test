@@ -1,0 +1,1 @@
+Zaproszenie {{$invite_loc}}

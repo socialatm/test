@@ -91,6 +91,12 @@ class Like extends Controller {
 			'id'      => $arr['item']['id'],
 			'html'    => conversation($items, $conv_mode, true, $page_mode),
 		];
+
+		// mod photos
+		if (isset($_REQUEST['reload']) && $_REQUEST['reload']) {
+			$ret['reload'] = 1;
+		}
+
 		return $ret;
 
 	}

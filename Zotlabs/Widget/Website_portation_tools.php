@@ -1,7 +1,12 @@
 <?php
 
-namespace Zotlabs\Widget;
+/**
+ *   * Name: Website import/export
+ *   * Description: Tools to import and export websites
+ *   * Requires: website
+ */
 
+namespace Zotlabs\Widget;
 
 class Website_portation_tools {
 

@@ -1,6 +1,10 @@
 <?php
 namespace Zotlabs\Module;
 
+use App;
+use Zotlabs\Widget\Messages;
+
+
 require_once("include/bbcode.php");
 require_once('include/security.php');
 require_once('include/conversation.php');
@@ -14,60 +18,50 @@ class Hq extends \Zotlabs\Web\Controller {
 		if(! local_channel())
 			return;
 
-		\App::$profile_uid = local_channel();
-	}
-
-	function post() {
-
-		if(!local_channel())
-			return;
-
-		if($_REQUEST['notify_id']) {
-			q("update notify set seen = 1 where id = %d and uid = %d",
-				intval($_REQUEST['notify_id']),
-				intval(local_channel())
-			);
-		}
-
-		killme();
-
+		App::$profile_uid = local_channel();
 	}
 
 	function get($update = 0, $load = false) {
 
-		if(!local_channel())
+		if(!local_channel()) {
 			return;
-
-		if(argc() > 1 && argv(1) !== 'load') {
-			$item_hash = argv(1);
 		}
 
-		if($_REQUEST['mid'])
-			$item_hash = $_REQUEST['mid'];
+		$item_hash = '';
+
+		if(argc() > 1 && argv(1) !== 'load') {
+			$item_hash = unpack_link_id(argv(1));
+		}
+
+		if(isset($_REQUEST['mid'])) {
+			$item_hash = unpack_link_id($_REQUEST['mid']);
+		}
+
+		if($item_hash === false) {
+			notice(t('Malformed message id.') . EOL);
+			return;
+		}
 
 		$item_normal = item_normal();
 		$item_normal_update = item_normal_update();
+		$sys = get_sys_channel();
+		$sys_item = false;
+		$sql_extra = '';
 
 		if(! $item_hash) {
 			$r = q("SELECT mid FROM item
 				WHERE uid = %d $item_normal
 				AND mid = parent_mid
+				AND item_private IN (0, 1)
 				ORDER BY created DESC LIMIT 1",
 				intval(local_channel())
 			);
-
 			if($r[0]['mid']) {
-				$item_hash = 'b64.' . base64url_encode($r[0]['mid']);
+				$item_hash = $r[0]['mid'];
 			}
 		}
 
 		if($item_hash) {
-
-			if(strpos($item_hash,'b64.') === 0)
-				$decoded = @base64url_decode(substr($item_hash,4));
-
-			if($decoded)
-				$item_hash = $decoded;
 
 			$target_item = null;
 
@@ -88,15 +82,10 @@ class Hq extends \Zotlabs\Web\Controller {
 			if($update && $_SESSION['loadtime'])
 				$simple_update = " AND (( item_unseen = 1 AND item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' )  OR item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' ) ";
 
-			$sys = get_sys_channel();
-			$sql_extra = item_permissions_sql($sys['channel_id']);
-
-			$sys_item = false;
-
 		}
 
 		if(! $update) {
-			$channel = \App::get_channel();
+			$channel = App::get_channel();
 
 			$channel_acl = [
 				'allow_cid' => $channel['channel_allow_cid'],
@@ -110,7 +99,7 @@ class Hq extends \Zotlabs\Web\Controller {
 				'allow_location'      => ((intval(get_pconfig($channel['channel_id'],'system','use_browser_location'))) ? '1' : ''),
 				'default_location'    => $channel['channel_location'],
 				'nickname'            => $channel['channel_address'],
-				'lockstate'           => (($group || $cid || $channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
+				'lockstate'           => (($channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
 				'acl'                 => populate_acl($channel_acl,true, \Zotlabs\Lib\PermissionDescription::fromGlobalPermission('view_stream'), get_post_aclDialogDescription(), 'acl_dialog_post'),
 				'permissions'         => $channel_acl,
 				'bang'                => '',
@@ -125,13 +114,8 @@ class Hq extends \Zotlabs\Web\Controller {
 				'reset'               => t('Reset form')
 			];
 
-			$o = replace_macros(get_markup_template("hq.tpl"),
-				[
-					'$no_messages' => (($target_item) ? false : true),
-					'$no_messages_label' => [ t('Welcome to Hubzilla!'), t('You have got no unseen posts...') ],
-					'$editor' => status_editor($a,$x,false,'Hq')
-				]
-			);
+			$a = '';
+			$o = status_editor($a, $x, true);
 
 		}
 
@@ -142,10 +126,9 @@ class Hq extends \Zotlabs\Web\Controller {
 			if($target_item) {
 				// if the target item is not a post (eg a like) we want to address its thread parent
 				//$mid = ((($target_item['verb'] == ACTIVITY_LIKE) || ($target_item['verb'] == ACTIVITY_DISLIKE)) ? $target_item['thr_parent'] : $target_item['mid']);
-				$mid = $target_item['mid'];
+
 				// if we got a decoded hash we must encode it again before handing to javascript
-				if($decoded)
-					$mid = 'b64.' . base64url_encode($mid);
+				$mid = gen_link_id($target_item['mid']);
 			}
 			else {
 				$mid = '';
@@ -153,9 +136,9 @@ class Hq extends \Zotlabs\Web\Controller {
 
 			$o .= '<div id="live-hq"></div>' . "\r\n";
 			$o .= "<script> var profile_uid = " . local_channel()
-				. "; var netargs = '?f='; var profile_page = " . \App::$pager['page'] . ";</script>\r\n";
+				. "; var netargs = '?f='; var profile_page = " . App::$pager['page'] . ";</script>\r\n";
 
-			\App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"),[
+			App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"),[
 				'$baseurl' => z_root(),
 				'$pgtype'  => 'hq',
 				'$uid'     => local_channel(),
@@ -201,6 +184,7 @@ class Hq extends \Zotlabs\Web\Controller {
 
 			if(!$r) {
 				$sys_item = true;
+				$sql_extra = item_permissions_sql($sys['channel_id']);
 
 				$r = q("SELECT item.id AS item_id FROM item
 					LEFT JOIN abook ON item.author_xchan = abook.abook_xchan
@@ -227,6 +211,7 @@ class Hq extends \Zotlabs\Web\Controller {
 
 			if(!$r) {
 				$sys_item = true;
+				$sql_extra = item_permissions_sql($sys['channel_id']);
 
 				$r = q("SELECT item.parent AS item_id FROM item
 					LEFT JOIN abook ON item.author_xchan = abook.abook_xchan
@@ -245,7 +230,7 @@ class Hq extends \Zotlabs\Web\Controller {
 		if($r) {
 			$items = q("SELECT item.*, item.id AS item_id
 				FROM item
-				WHERE parent = '%s' $item_normal ",
+				WHERE parent = '%s' $item_normal $sql_extra",
 				dbesc($r[0]['item_id'])
 			);
 
@@ -265,6 +250,18 @@ class Hq extends \Zotlabs\Web\Controller {
 
 		return $o;
 
+	}
+
+	function post() {
+		if (!local_channel())
+			return;
+
+		$options['offset'] = $_REQUEST['offset'];
+		$options['type'] = $_REQUEST['type'];
+
+		$ret = Messages::get_messages_page($options);
+
+		json_return_and_die($ret);
 	}
 
 }

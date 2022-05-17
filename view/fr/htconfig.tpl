@@ -1,9 +1,8 @@
 <?php
 
-// Set the following for your MySQL installation
+// Définissez les éléments suivants pour votre installation MySQL
 // Utilisez ces informations pour configurer votre instance de BD (MySQL)
-// Copy or rename this file to .htconfig.php
-// Copier ou renomer ce fichier .htconfig.php et placer le � la racine de l'installation de la Matrice Rouge.
+// Copier ou renomer ce fichier .htconfig.php et placer le à la racine de l'installation.
 
 $db_host = '{{$dbhost}}';
 $db_port = '{{$dbport}}';
@@ -13,52 +12,74 @@ $db_data = '{{$dbdata}}';
 $db_type = '{{$dbtype}}'; // an integer. 0 or unset for mysql, 1 for postgres
 
 /*
- * Note: Plusieurs de ces r�glages seront disponibles via le panneau d'administration
- * apr�s l'installation. Lorsque des modifications sont apport�s � travers le panneau d'administration
- * elle sont automatiquement enregistr�es dans la base de donn�es.
- * Les configurations inscrites dans la BD pr�valent sur celles de ce fichier de configuration.
+ * Note: Plusieurs de ces réglages seront disponibles via le panneau d'administration
+ * après l'installation. Lorsque des modifications sont apportés à travers le panneau d'administration
+ * elle sont automatiquement enregistrées dans la base de données.
+ * Les configurations inscrites dans la BD prévalent sur celles de ce fichier de configuration.
  *
- * En cas de difficult�s d'acc�s au panneau d'administration, nous mettons � votre disposition,
+ * En cas de difficultés d'accès au panneau d'administration, nous mettons à votre disposition,
  * un outil en ligne de commande est disponible [util/config] pour rechercher et apporter des modifications
- * sur les entr�es dans la BD.
+ * sur les entrées dans la BD.
  *
- */ 
+ */
 
-// Choisissez votre emplacement g�ographique. Si vous n'�tes pas certain, utilisez "America/Los_Angeles".
-// Vous pourrez le changer plus tard et ce r�glage n'affecte que les visiteurs anonymes.
+// Choisissez votre emplacement géographique. Si vous n'êtes pas certain, utilisez "America/Los_Angeles".
+// Vous pourrez le changer plus tard et ce réglage n'affecte que les visiteurs anonymes.
 
 App::$config['system']['timezone'] = '{{$timezone}}';
 
-// Quel sera le nom de votre site?
+// Quels Sont l'url et le nom de votre site ? Ne pas mettre le slash à la fin
 
 App::$config['system']['baseurl'] = '{{$siteurl}}';
 App::$config['system']['sitename'] = "Hubzilla";
 App::$config['system']['location_hash'] = '{{$site_id}}';
 
-// These lines set additional security headers to be sent with all responses
-// You may wish to set transport_security_header to 0 if your server already sends
-// this header. content_security_policy may need to be disabled if you wish to
-// run the piwik analytics plugin or include other offsite resources on a page
+// Ces lignes définissent des en-têtes de sécurité supplémentaires à envoyer avec toutes les réponses.
+// Vous pouvez définir transport_security_header à 0 si votre serveur envoie déjà cet en-tête.
+// Content_security_policy peut être désactivé si vous souhaitez utiliser le plugin d'analyse Piwik ou inclure d'autres sites web.
+// Utiliser le plugin piwik analytics ou ajouter d'autres ressources hors site sur une page.
 
 App::$config['system']['transport_security_header'] = 1;
 App::$config['system']['content_security_policy'] = 1;
+App::$config['system']['ssl_cookie_protection'] = 1;
 
 // Vos choix sont REGISTER_OPEN, REGISTER_APPROVE, ou REGISTER_CLOSED.
-// Soyez certains de cr�er votre compte personnel avant de d�clarer
-// votre site REGISTER_CLOSED. 'register_text' (si vous d�cider de l'utiliser) 
-// renvois son contenu syst�matiquement sur la page d'enregistrement des nouveaux membres.
+// Soyez certains de créer votre compte personnel avant de déclarer
+// votre site REGISTER_CLOSED. 'register_text' (si vous décider de l'utiliser)
+// renvois son contenu systématiquement sur la page d'enregistrement des nouveaux membres.
 // REGISTER_APPROVE requiert la configuration de 'admin_email' avec l'adresse de courriel
-// d'un membre d�j� inscrit qui pourra autoriser et/ou approuver/supprimer la demande.
+// d'un membre déjà inscrit qui pourra autoriser et/ou approuver/supprimer la demande.
 
 App::$config['system']['register_policy'] = REGISTER_OPEN;
 App::$config['system']['register_text'] = '';
 App::$config['system']['admin_email'] = '{{$adminmail}}';
 
-// taille maximale pour l'importation d'un message, 0 est illimit�
+// Il est recommandé de laisser cette valeur à 1. La valeur 0 permet aux personnes de s'inscrire sans avoir à prouver qu'elles possèdent une adresse électronique.
+// vérifier que cette adresse électronique leur appartient.
+
+App::$config['system']['verify_email'] = 1;
+
+// Restrictions d'accès au site. Par défaut, nous allons créer des sites privés.
+// Vous avez le choix entre ACCESS_PRIVATE, ACCESS_PAID, ACCESS_TIERED et ACCESS_FREE.
+// Si vous laissez REGISTER_OPEN ci-dessus, n'importe qui peut s'inscrire sur votre site.
+// Cependant, votre site ne sera pas répertorié comme un hub ouvert aux inscriptions.
+// Nous utiliserons la politique d'accès au système (ci-dessous)
+// pour déterminer s'il faut ou non inscrire votre site dans l'annuaire
+// comme un hub ouvert où tout le monde peut créer des comptes. Vous avez le choix entre :
+// inscription payante, à plusieurs niveaux ou gratuite : détermine la façon dont ces inscriptions seront présentées.
+
+ App::$config['system']['access_policy'] = ACCESS_PRIVATE;
+
+ // Si vous gérez un site public, vous souhaitez peut-être que les visiteurs soient dirigés // vers une "page d'accueil" où vous pouvez décrire en détail les caractéristiques, les politiques ou les services proposés.
+ // Il doit s'agir d'une URL absolue commençant par http:// ou https:// .
+
+ App::$config['system']['sellpage'] = '';
+
+// taille maximale pour l'importation d'un message, 0 est illimité
 
 App::$config['system']['max_import_size'] = 200000;
 
-// taille maximale pour le t�l�versement de photos
+// taille maximale pour le téléversement de photos
 
 App::$config['system']['maximagesize'] = 8000000;
 
@@ -66,15 +87,25 @@ App::$config['system']['maximagesize'] = 8000000;
 
 App::$config['system']['php_path'] = '{{$phpath}}';
 
-// configurez la fa�on dont votre site communique avec les autres serveurs. [R�pertoire des membres inscrits � la Matrice]
-// DIRECTORY_MODE_NORMAL     = client du r�pertoire de membres, nous vous trouverons un r�pertoire accessible autre serveur.
-// DIRECTORY_MODE_SECONDARY  = copie mirroir du r�pertoire des membres.
-// DIRECTORY_MODE_PRIMARY    = r�pertoire des membres principal.
-// DIRECTORY_MODE_STANDALONE = "autonome/d�connect�" ou r�pertoire de membres priv�s
+// configurez la façon dont votre site communique avec les autres serveurs. [Répertoire des membres inscrits à la Matrice]
+// DIRECTORY_MODE_NORMAL     = client du répertoire de membres, nous vous trouverons un répertoire accessible autre serveur.
+// DIRECTORY_MODE_SECONDARY  = copie mirroir du répertoire des membres.
+// DIRECTORY_MODE_PRIMARY    = répertoire des membres principal.
+// DIRECTORY_MODE_STANDALONE = "autonome/déconnecté" ou répertoire de membres privés
 
 App::$config['system']['directory_mode']  = DIRECTORY_MODE_NORMAL;
 
-// Th�me par d�faut
+// Thème par défaut
 
 App::$config['system']['theme'] = 'redbasic';
 
+// Configuration de l'enregistrement des erreurs PHP
+// Avant de faire cela, assurez-vous que le serveur web a la permission de créer et d'écrire dans le fichier php.out dans le répertoire web correspondant.
+// de créer et d'écrire dans le fichier php.out dans le répertoire web correspondant,
+// ou changez le nom (ci-dessous) pour un fichier/chemin où cela est autorisé.
+// Décommentez les 4 lignes suivantes pour activer la journalisation des erreurs PHP.
+
+//error_reporting(E_ERROR | E_WARNING | E_PARSE ) ;
+//ini_set('error_log', 'php.out') ;
+//ini_set('log_errors', '1') ;
+//ini_set('display_errors', '0') ;

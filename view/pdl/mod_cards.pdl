@@ -1,7 +1,11 @@
 [region=aside]
+[widget=profile][/widget]
 [widget=categories][var=cards]1[/var][/widget]
 [widget=tasklist][/widget]
 [widget=notes][/widget]
+[/region]
+[region=content]
+$content
 [/region]
 [region=right_aside]
 [widget=notifications][/widget]

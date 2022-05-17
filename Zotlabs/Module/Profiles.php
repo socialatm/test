@@ -163,35 +163,6 @@ class Profiles extends \Zotlabs\Web\Controller {
 			killme();
 		}
 
-
-
-
-		// Run profile_load() here to make sure the theme is set before
-		// we start loading content
-		if(((argc() > 1) && (intval(argv(1)))) || !feature_enabled(local_channel(),'multi_profiles')) {
-			if(feature_enabled(local_channel(),'multi_profiles'))
-				$id = \App::$argv[1];
-			else {
-				$x = q("select id from profile where uid = %d and is_default = 1",
-					intval(local_channel())
-				);
-				if($x)
-					$id = $x[0]['id'];
-			}
-			$r = q("SELECT * FROM profile WHERE id = %d AND uid = %d LIMIT 1",
-				intval($id),
-				intval(local_channel())
-			);
-			if(! count($r)) {
-				notice( t('Profile not found.') . EOL);
-				\App::$error = 404;
-				return;
-			}
-
-			$chan = \App::get_channel();
-
-			profile_load($chan['channel_address'],$r[0]['id']);
-		}
 	}
 
 	function post() {
@@ -316,8 +287,6 @@ class Profiles extends \Zotlabs\Web\Controller {
 			$romance      = fix_mce_lf(escape_tags(trim($_POST['romance'])));
 			$work         = fix_mce_lf(escape_tags(trim($_POST['work'])));
 			$education    = fix_mce_lf(escape_tags(trim($_POST['education'])));
-
-			$hide_friends = ((intval($_POST['hide_friends'])) ? 1: 0);
 
 // start fresh and create a new vcard. TODO: preserve the original guid or whatever else needs saving
 //			$orig_vcard = (($orig[0]['profile_vcard']) ? \Sabre\VObject\Reader::read($orig[0]['profile_vcard']) : null);
@@ -514,6 +483,16 @@ class Profiles extends \Zotlabs\Web\Controller {
 					$value = $locality . $comma1 . $region . $comma2 . $country_name;
 				}
 
+				$hide_friends = ((intval($_POST['hide_friends'])) ? 1: 0);
+
+				$suggestme = ((x($_POST, 'suggestme')) ? intval($_POST['suggestme']) : 0);
+				set_pconfig(local_channel(), 'system', 'suggestme', $suggestme);
+
+				$show_presence = (((x($_POST, 'show_presence')) && (intval($_POST['show_presence']) == 1)) ? 1 : 0);
+				set_pconfig(local_channel(), 'system', 'show_online_status', $show_presence);
+
+				$publish = ((x($_POST, 'profile_in_directory') && (intval($_POST['profile_in_directory']) == 1)) ? 1 : 0);
+
 				profile_activity($changes,$value);
 
 			}
@@ -552,7 +531,8 @@ class Profiles extends \Zotlabs\Web\Controller {
 				employment = '%s',
 				education = '%s',
 				hide_friends = %d,
-				profile_vcard = '%s'
+				profile_vcard = '%s',
+				publish = %d
 				WHERE id = %d AND uid = %d",
 				dbesc($profile_name),
 				dbesc($name),
@@ -588,6 +568,7 @@ class Profiles extends \Zotlabs\Web\Controller {
 				dbesc($education),
 				intval($hide_friends),
 				dbesc($profile_vcard),
+				intval($publish),
 				intval(argv(1)),
 				intval(local_channel())
 			);
@@ -595,32 +576,31 @@ class Profiles extends \Zotlabs\Web\Controller {
 			if($r)
 				info( t('Profile updated.') . EOL);
 
-			$r = q("select * from profile where id = %d and uid = %d limit 1",
-				intval(argv(1)),
-				intval(local_channel())
-			);
-			if($r) {
-				require_once('include/zot.php');
-				Libsync::build_sync_packet(local_channel(),array('profile' => $r));
-			}
-
 			$channel = \App::get_channel();
 
 			if($namechanged && $is_default) {
-				$r = q("UPDATE xchan SET xchan_name = '%s', xchan_name_date = '%s' WHERE xchan_url = '%s'",
+				// change name on all associated xchans by matching the url
+				q("UPDATE xchan SET xchan_name = '%s', xchan_name_date = '%s' WHERE xchan_url = '%s'",
 					dbesc($name),
 					dbesc(datetime_convert()),
 					dbesc(z_root() . '/channel/' . $channel['channel_address'])
 				);
-				$r = q("UPDATE channel SET channel_name = '%s' WHERE channel_hash = '%s'",
+				q("UPDATE channel SET channel_name = '%s' WHERE channel_hash = '%s'",
 					dbesc($name),
 					dbesc($channel['xchan_hash'])
 				);
 			}
 
+			$r = q("select * from profile where id = %d and uid = %d limit 1",
+				intval(argv(1)),
+				intval(local_channel())
+			);
+
+			if($r) {
+				Libsync::build_sync_packet(local_channel(), ['profile' => $r]);
+			}
+
 			if($is_default) {
-				// reload the info for the sidebar widget - why does this not work?
-				profile_load($channel['channel_address']);
 				\Zotlabs\Daemon\Master::Summon(array('Directory',local_channel()));
 			}
 		}
@@ -631,12 +611,12 @@ class Profiles extends \Zotlabs\Web\Controller {
 
 		$o = '';
 
-		$channel = \App::get_channel();
-
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
+
+		$channel = \App::get_channel();
 
 		require_once('include/channel.php');
 
@@ -653,14 +633,19 @@ class Profiles extends \Zotlabs\Web\Controller {
 				if($x)
 					$id = $x[0]['id'];
 			}
+
 			$r = q("SELECT * FROM profile WHERE id = %d AND uid = %d LIMIT 1",
 				intval($id),
 				intval(local_channel())
 			);
+
 			if(! $r) {
 				notice( t('Profile not found.') . EOL);
 				return;
 			}
+
+			// make sure we got uptodate data
+			profile_load($channel['channel_address'], $id);
 
 			$editselect = 'none';
 
@@ -675,13 +660,43 @@ class Profiles extends \Zotlabs\Web\Controller {
 			else
 				$fields = $profile_fields_basic;
 
-			$hide_friends = array(
-				'hide_friends',
-				t('Hide your connections list from viewers of this profile'),
-				$r[0]['hide_friends'],
-				'',
-				array(t('No'),t('Yes'))
-			);
+			$show_presence = [];
+			$profile_in_dir = '';
+			$suggestme = '';
+			$hide_friends = [];
+			$is_default = (($r[0]['is_default']) ? 1 : 0);
+
+			if ($is_default) {
+
+				$hide_friends = array(
+					'hide_friends',
+					t('Hide my connections from viewers of this profile'),
+					$r[0]['hide_friends'],
+					'',
+					[t('No'), t('Yes')]
+				);
+
+
+				$opt_tpl = get_markup_template("field_checkbox.tpl");
+				if (get_config('system', 'publish_all')) {
+					$profile_in_dir = '<input type="hidden" name="profile_in_directory" value="1" />';
+				}
+				else {
+					$profile_in_dir = replace_macros($opt_tpl, [
+						'$field' => ['profile_in_directory', t('Publish my default profile in the network directory'), $r[0]['publish'], '', [t('No'), t('Yes')]],
+					]);
+				}
+
+				$suggestme     = get_pconfig(local_channel(), 'system', 'suggestme');
+				$suggestme     = (($suggestme === false) ? '0' : $suggestme); // default if not set: 0
+
+				$suggestme = replace_macros($opt_tpl, [
+					'$field' => ['suggestme', t('Suggest me as a potential contact to new members'), $suggestme, '', [t('No'), t('Yes')]],
+				]);
+
+				$show_presence_val = intval(get_pconfig(local_channel(), 'system', 'show_online_status'));
+				$show_presence = ['show_presence', t('Reveal my online status'), $show_presence_val, '', [t('No'), t('Yes')]];
+			}
 
 			$q = q("select * from profdef where true");
 			if($q) {
@@ -702,15 +717,15 @@ class Profiles extends \Zotlabs\Web\Controller {
 
 	//logger('extra_fields: ' . print_r($extra_fields,true));
 
-			$vc = $r[0]['profile_vcard'];
-			$vctmp = (($vc) ? \Sabre\VObject\Reader::read($vc) : null);
-			$vcard = (($vctmp) ? get_vcard_array($vctmp,$r[0]['id']) : [] );
+			//$vc = $r[0]['profile_vcard'];
+			//$vctmp = (($vc) ? \Sabre\VObject\Reader::read($vc) : null);
+			//$vcard = (($vctmp) ? get_vcard_array($vctmp,$r[0]['id']) : [] );
 
 			$f = get_config('system','birthday_input_format');
 			if(! $f)
 				$f = 'ymd';
 
-			$is_default = (($r[0]['is_default']) ? 1 : 0);
+
 
 			$tpl = get_markup_template("profile_edit.tpl");
 			$o .= replace_macros($tpl,array(
@@ -719,12 +734,12 @@ class Profiles extends \Zotlabs\Web\Controller {
 				'$profile_clone_link'  => 'profiles/clone/' . $r[0]['id'] . '?t=' . get_form_security_token("profile_clone"),
 				'$profile_drop_link'   => 'profiles/drop/' . $r[0]['id'] . '?t=' . get_form_security_token("profile_drop"),
 				'$fields'       => $fields,
-				'$vcard'        => $vcard,
+				//'$vcard'     => $vcard,
 				'$guid'         => $r[0]['profile_guid'],
 				'$banner'       => t('Edit Profile Details'),
 				'$submit'       => t('Submit'),
 				'$viewprof'     => t('View this profile'),
-				'$editvis' 	=> t('Edit visibility'),
+				'$editvis'      => t('Edit visibility'),
 				'$tools_label'  => t('Profile Tools'),
 				'$coverpic'     => t('Change cover photo'),
 				'$profpic'      => t('Change profile photo'),
@@ -732,7 +747,7 @@ class Profiles extends \Zotlabs\Web\Controller {
 				'$cl_prof'      => t('Clone this profile'),
 				'$del_prof'     => t('Delete this profile'),
 				'$addthing'     => t('Add profile things'),
-				'$personal'     => t('Personal'),
+				'$basic'        => t('Basic'),
 				'$location'     => t('Location'),
 				'$relation'     => t('Relationship'),
 				'$miscellaneous'=> t('Miscellaneous'),
@@ -784,23 +799,28 @@ class Profiles extends \Zotlabs\Web\Controller {
 				'$contact'      => array('contact', t('Contact information and social networks'), $r[0]['contact']),
 				'$channels'     => array('channels', t('My other channels'), $r[0]['channels']),
 				'$extra_fields' => $extra_fields,
-				'$comms'          => t('Communications'),
-				'$tel_label'      => t('Phone'),
-				'$email_label'    => t('Email'),
-				'$impp_label'     => t('Instant messenger'),
-				'$url_label'      => t('Website'),
-				'$adr_label'      => t('Address'),
-				'$note_label'     => t('Note'),
-				'$mobile'         => t('Mobile'),
-				'$home'           => t('Home'),
-				'$work'           => t('Work'),
-				'$other'          => t('Other'),
-				'$add_card'       => t('Add Contact'),
-				'$add_field'      => t('Add Field'),
-				'$create'         => t('Create'),
-				'$update'         => t('Update'),
-				'$delete'         => t('Delete'),
-				'$cancel'         => t('Cancel'),
+				//'$comms'          => t('Communications'),
+				//'$tel_label'      => t('Phone'),
+				//'$email_label'    => t('Email'),
+				//'$impp_label'     => t('Instant messenger'),
+				//'$url_label'      => t('Website'),
+				//'$adr_label'      => t('Address'),
+				//'$note_label'     => t('Note'),
+				//'$mobile'         => t('Mobile'),
+				//'$home'           => t('Home'),
+				//'$work'           => t('Work'),
+				//'$other'          => t('Other'),
+				//'$add_card'       => t('Add Contact'),
+				//'$add_field'      => t('Add Field'),
+				//'$create'         => t('Create'),
+				//'$update'         => t('Update'),
+				//'$delete'         => t('Delete'),
+				//'$cancel'         => t('Cancel'),
+
+				'$show_presence'             => $show_presence,
+				'$suggestme'                 => $suggestme,
+				'$profile_in_dir'            => $profile_in_dir,
+
 			));
 
 			$arr = array('profile' => $r[0], 'entry' => $o);

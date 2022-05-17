@@ -28,9 +28,8 @@ class Locs extends Controller {
 					return;
 				}
 
-				q("UPDATE hubloc SET hubloc_primary = 0 WHERE hubloc_primary = 1 AND (hubloc_hash = '%s' OR hubloc_hash = '%s')",
-					dbesc($channel['channel_hash']),
-					dbesc($channel['channel_portable_id'])
+				q("UPDATE hubloc SET hubloc_primary = 0 WHERE hubloc_primary = 1 AND hubloc_hash = '%s'",
+					dbesc($channel['channel_hash'])
 				);
 
 				q("UPDATE hubloc SET hubloc_primary = 1 WHERE hubloc_id = %d AND hubloc_hash = '%s'",
@@ -81,10 +80,9 @@ class Locs extends Controller {
 					}
 				}
 
-				q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_id_url = '%s' AND (hubloc_hash = '%s' OR hubloc_hash = '%s')",
+				q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_id_url = '%s' AND hubloc_hash = '%s'",
 					dbesc($r[0]['hubloc_id_url']),
-					dbesc($channel['channel_hash']),
-					dbesc($channel['channel_portable_id'])
+					dbesc($channel['channel_hash'])
 				);
 				Master::Summon( [ 'Notifier', 'refresh_all', $channel['channel_id'] ] );
 				return;
@@ -118,11 +116,6 @@ class Locs extends Controller {
 			return;
 		}
 
-		for($x = 0; $x < count($r); $x ++) {
-			$r[$x]['primary'] = (intval($r[$x]['hubloc_primary']) ? true : false);
-			$r[$x]['deleted'] = (intval($r[$x]['hubloc_deleted']) ? true : false);
-		}
-
 		$o = replace_macros(get_markup_template('locmanage.tpl'), array(
 			'$header' => t('Manage Channel Locations'),
 			'$loc' => t('Location'),
@@ -134,7 +127,8 @@ class Locs extends Controller {
 			'$sync_text' => t('Please wait several minutes between consecutive operations.'),
 			'$drop_text' => t('When possible, drop a location by logging into that website/hub and removing your channel.'),
 			'$last_resort' => t('Use this form to drop the location if the hub is no longer operating.'),
-			'$hubs' => $r
+			'$hubs' => $r,
+			'$base_url' => z_root()
 		));
 
 		return $o;

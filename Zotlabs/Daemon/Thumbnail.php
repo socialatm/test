@@ -45,7 +45,6 @@ class Thumbnail {
 			return;
 		}
 
-
 		$default_controller = null;
 
 		$files = glob('Zotlabs/Thumbs/*.php');

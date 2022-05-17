@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Chatroom list
+ *   * Description: A menu with links to your chatrooms
+ *   * Requires: chat, channel, articles, cards, wiki
+ */
+
 namespace Zotlabs\Widget;
 
 class Chatroom_list {

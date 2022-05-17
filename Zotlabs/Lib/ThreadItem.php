@@ -2,7 +2,9 @@
 
 namespace Zotlabs\Lib;
 
+use App;
 use Zotlabs\Lib\Apps;
+use Zotlabs\Access\AccessList;
 
 require_once('include/text.php');
 
@@ -58,6 +60,9 @@ class ThreadItem {
 				$child = new ThreadItem($item);
 				$this->add_child($child);
 			}
+
+			// performance: we have already added the children
+			unset($this->data['children']);
 		}
 
 		// allow a site to configure the order and content of the reaction emoji list
@@ -98,17 +103,41 @@ class ThreadItem {
  		$conv = $this->get_conversation();
 		$observer = $conv->get_observer();
 
-		$lock = (((intval($item['item_private'])) || (($item['uid'] == local_channel()) && (strlen($item['allow_cid']) || strlen($item['allow_gid'])
-			|| strlen($item['deny_cid']) || strlen($item['deny_gid']))))
-			? t('Private Message')
+		$acl = new AccessList(false);
+		$acl->set($item);
+
+		$lock = ((intval($item['item_private']) || ($item['uid'] == local_channel() && $acl->is_private()))
+			? t('Restricted message')
 			: false);
-		$locktype = $item['item_private'];
+
+		// 1 = restricted message, 2 = direct message
+		$locktype = intval($item['item_private']);
+
+		if ($locktype === 2) {
+			$lock = t('Direct message');
+		}
+
+		// 0 = limited based on public policy
+		if ($item['uid'] == local_channel() && intval($item['item_private']) && !$acl->is_private() && strlen($item['public_policy'])) {
+			$lock = t('Public Policy');
+			$locktype = 0;
+		}
 
 		$shareable = ((($conv->get_profile_owner() == local_channel() && local_channel()) && ($item['item_private'] != 1)) ? true : false);
 
 		// allow an exemption for sharing stuff from your private feeds
 		if($item['author']['xchan_network'] === 'rss')
 			$shareable = true;
+
+		// @fixme
+		// Have recently added code to properly handle polls in group reshares by redirecting all of the poll responses to the group.
+		// Sharing a poll using a regular embedded share is harder because the poll will need to fork. This is due to comment permissions.
+		// The original poll author may not accept responses from strangers. Forking the poll will receive responses from the sharer's
+		// followers, but there's no elegant way to merge these two sets of results together. For now, we'll disable sharing polls.
+
+		if ($item['obj_type'] === 'Question') {
+			$shareable = false;
+		}
 
 		$privacy_warning = false;
 		if(intval($item['item_private']) && ($item['owner']['xchan_network'] === 'activitypub')) {
@@ -299,7 +328,7 @@ class ThreadItem {
 			);
 			*/
 
-			$settings = t('Conversation Tools');
+			$settings = t('Conversation Features');
 		}
 
 		$has_bookmarks = false;
@@ -367,7 +396,7 @@ class ThreadItem {
                 call_hooks('dropdown_extras',$dropdown_extras_arr);
                 $dropdown_extras = $dropdown_extras_arr['dropdown_extras'];
 
-		$midb64 = 'b64.' . base64url_encode($item['mid']);
+		$midb64 = gen_link_id($item['mid']);
 		$mids = [ $midb64 ];
 		$response_mids = [];
 		foreach($response_verbs as $v) {
@@ -383,6 +412,12 @@ class ThreadItem {
 		$allowed_type = (in_array($item['item_type'], get_config('system', 'pin_types', [ ITEM_TYPE_POST ])) ? true : false);
 		$pinned_items = ($allowed_type ? get_pconfig($item['uid'], 'pinned', $item['item_type'], []) : []);
 		$pinned = ((!empty($pinned_items) && in_array($midb64, $pinned_items)) ? true : false);
+
+		$contact = [];
+
+		if(App::$contacts && array_key_exists($item['author_xchan'], App::$contacts)) {
+			$contact = App::$contacts[$item['author_xchan']];
+		}
 
 		$tmp_item = array(
 			'template' => $this->get_template(),
@@ -401,6 +436,7 @@ class ThreadItem {
 			'mids' => $json_mids,
 			'parent' => $item['parent'],
 			'author_id' => (($item['author']['xchan_addr']) ? $item['author']['xchan_addr'] : $item['author']['xchan_url']),
+			'author_is_group_actor' => (($item['author']['xchan_pubforum']) ? t('Forum') : ''),
 			'isevent' => $isevent,
 			'attend' => $attend,
 			'consensus' => $consensus,
@@ -503,7 +539,9 @@ class ThreadItem {
 			'wait' => t('Please wait'),
 			'thread_level' => $thread_level,
 			'settings' => $settings,
-			'thr_parent' => (($item['parent_mid'] != $item['thr_parent']) ? 'b64.' . base64url_encode($item['thr_parent']) : '')
+			'thr_parent' => (($item['parent_mid'] != $item['thr_parent']) ? gen_link_id($item['thr_parent']) : ''),
+			'contact_id' => (($contact) ? $contact['abook_id'] : '')
+
 		);
 
 		$arr = array('item' => $item, 'output' => $tmp_item);
@@ -842,7 +880,7 @@ class ThreadItem {
 			'$cipher' => $conv->get_cipher(),
 			'$sourceapp' => \App::$sourcename,
 			'$observer' => get_observer_hash(),
-			'$anoncomments' => ((($conv->get_mode() === 'channel' || $conv->get_mode() === 'display') && perm_is_allowed($conv->get_profile_owner(),'','post_comments')) ? true : false),
+			'$anoncomments' => ((in_array($conv->get_mode(), ['channel', 'display', 'cards', 'articles']) && perm_is_allowed($conv->get_profile_owner(),'','post_comments')) ? true : false),
 			'$anonname' => [ 'anonname', t('Your full name (required)') ],
 			'$anonmail' => [ 'anonmail', t('Your email address (required)') ],
 			'$anonurl'  => [ 'anonurl',  t('Your website URL (optional)') ]

@@ -87,6 +87,10 @@ class Crypto {
 			return false;
 		}
 
+		if (!$alg) {
+			$alg = 'sha256';
+		}
+
 		try {
 			$verify = openssl_verify($data, $sig, $key, $alg);
 		} catch (Exception $e) {

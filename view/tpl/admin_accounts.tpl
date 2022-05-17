@@ -36,7 +36,7 @@
 			{{/foreach}}
 			</tbody>
 		</table>
-		<div class="float-right">
+		<div class="float-end">
 			<a id="zar2sat" class="btn btn-sm btn-primary" href="javascript:;">{{$sel_tall}}</a>
 			<a id="zar2aas" class="zar2xas btn btn-sm btn-success" href="javascript:;"><i class="fa fa-check"></i> {{$sel_aprv}}</a>
 			<a id="zar2das" class="zar2xas btn btn-sm btn-danger" href="javascript:;"><i class="fa fa-close"></i> {{$sel_deny}}</a>
@@ -46,7 +46,7 @@
 		{{$no_pending}}
 		</div>
 		{{/if}}
-		<div class="float-left">
+		<div class="float-start">
 			<a class="btn btn-sm btn-link" href="{{$get_all_link}}">{{$get_all}}</a>
 		</div>
 		<div class="clearfix"></div>

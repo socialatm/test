@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Public stream tags
+ *   * Description: Display public stream tags in a cloud
+ */
+
 namespace Zotlabs\Widget;
 
 class Pubtagcloud {

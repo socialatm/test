@@ -15,12 +15,13 @@ use Zotlabs\Render\Comanche;
 use Zotlabs\Lib\Libzot;
 use Zotlabs\Lib\Connect;
 use Zotlabs\Lib\Libsync;
+use Zotlabs\Lib\AccessList;
 
-require_once('include/zot.php');
 require_once('include/crypto.php');
 require_once('include/menu.php');
 require_once('include/perm_upgrade.php');
 require_once('include/photo/photo_driver.php');
+require_once('include/security.php');
 
 /**
  * @brief Called when creating a new channel.
@@ -235,17 +236,13 @@ function create_identity($arr) {
 	$guid = Libzot::new_uid($nick);
 	$key = Crypto::new_keypair(4096);
 
-	// legacy zot
-	$zsig = base64url_encode(Crypto::sign($guid,$key['prvkey']));
-	$zhash = make_xchan_hash($guid,$zsig);
-
 	// zot6
 	$sig = Libzot::sign($guid,$key['prvkey']);
 	$hash = Libzot::make_xchan_hash($guid,$key['pubkey']);
 
 	// Force a few things on the short term until we can provide a theme or app with choice
 
-	$publish = 1;
+	$publish = 0;
 
 	if(array_key_exists('publish', $arr))
 		$publish = intval($arr['publish']);
@@ -275,7 +272,7 @@ function create_identity($arr) {
 			'channel_guid'        => $guid,
 			'channel_guid_sig'    => $sig,
 			'channel_hash'        => $hash,
-			'channel_portable_id' => $zhash,
+			'channel_portable_id' => '',
 			'channel_prvkey'      => $key['prvkey'],
 			'channel_pubkey'      => $key['pubkey'],
 			'channel_pageflags'   => intval($pageflags),
@@ -330,32 +327,18 @@ function create_identity($arr) {
 	if($role_permissions && array_key_exists('perms_auto',$role_permissions))
 		set_pconfig($r[0]['channel_id'],'system','autoperms',intval($role_permissions['perms_auto']));
 
+	$group_actor = false;
+	if($role_permissions && array_key_exists('channel_type', $role_permissions) && $role_permissions['channel_type'] === 'group') {
+		set_pconfig($r[0]['channel_id'], 'system', 'group_actor', 1);
+		$group_actor = true;
+	}
+
 	$ret['channel'] = $r[0];
 
 	if(intval($arr['account_id']))
 		set_default_login_identity($arr['account_id'],$ret['channel']['channel_id'],false);
 
 	// Create a verified hub location pointing to this site.
-
-	$r = hubloc_store_lowlevel(
-		[
-			'hubloc_guid'     => $guid,
-			'hubloc_guid_sig' => $zsig,
-			'hubloc_hash'     => $zhash,
-			'hubloc_id_url'   => channel_url($ret['channel']),
-			'hubloc_addr'     => channel_reddress($ret['channel']),
-			'hubloc_primary'  => intval($primary),
-			'hubloc_url'      => z_root(),
-			'hubloc_url_sig'  => base64url_encode(Crypto::sign(z_root(),$ret['channel']['channel_prvkey'])),
-			'hubloc_host'     => App::get_hostname(),
-			'hubloc_callback' => z_root() . '/post',
-			'hubloc_sitekey'  => get_config('system','pubkey'),
-			'hubloc_network'  => 'zot',
-			'hubloc_updated'  => datetime_convert()
-		]
-	);
-	if(! $r)
-		logger('Unable to store hub location (zot)');
 
 	$r = hubloc_store_lowlevel(
 		[
@@ -383,30 +366,6 @@ function create_identity($arr) {
 
 	$r = xchan_store_lowlevel(
 		[
-			'xchan_hash'        => $zhash,
-			'xchan_guid'        => $guid,
-			'xchan_guid_sig'    => $zsig,
-			'xchan_pubkey'      => $key['pubkey'],
-			'xchan_photo_mimetype' => (($photo_type) ? $photo_type : 'image/png'),
-			'xchan_photo_l'     => z_root() . "/photo/profile/l/{$newuid}",
-			'xchan_photo_m'     => z_root() . "/photo/profile/m/{$newuid}",
-			'xchan_photo_s'     => z_root() . "/photo/profile/s/{$newuid}",
-			'xchan_addr'        => channel_reddress($ret['channel']),
-			'xchan_url'         => z_root() . '/channel/' . $ret['channel']['channel_address'],
-			'xchan_follow'      => z_root() . '/follow?f=&url=%s',
-			'xchan_connurl'     => z_root() . '/poco/' . $ret['channel']['channel_address'],
-			'xchan_name'        => $ret['channel']['channel_name'],
-			'xchan_network'     => 'zot',
-			'xchan_photo_date'  => datetime_convert(),
-			'xchan_name_date'   => datetime_convert(),
-			'xchan_system'      => $system
-		]
-	);
-	if(! $r)
-		logger('Unable to store xchan (zot)');
-
-	$r = xchan_store_lowlevel(
-		[
 			'xchan_hash'        => $hash,
 			'xchan_guid'        => $guid,
 			'xchan_guid_sig'    => $sig,
@@ -423,7 +382,8 @@ function create_identity($arr) {
 			'xchan_network'     => 'zot6',
 			'xchan_photo_date'  => datetime_convert(),
 			'xchan_name_date'   => datetime_convert(),
-			'xchan_system'      => $system
+			'xchan_system'      => $system,
+			'xchan_pubforum'    => $group_actor
 		]
 	);
 	if(! $r)
@@ -448,14 +408,6 @@ function create_identity($arr) {
 		]
 	);
 
-	if($role_permissions) {
-		$myperms = ((array_key_exists('perms_connect',$role_permissions)) ? $role_permissions['perms_connect'] : array());
-	}
-	else {
-		$x = PermissionRoles::role_perms('social');
-		$myperms = $x['perms_connect'];
-	}
-
 	$r = abook_store_lowlevel(
 		[
 			'abook_account'   => intval($ret['channel']['channel_account_id']),
@@ -468,19 +420,18 @@ function create_identity($arr) {
 		]
 	);
 
-	$x = Permissions::FilledPerms($myperms);
-	foreach($x as $k => $v) {
-		set_abconfig($newuid,$hash,'my_perms',$k,$v);
-	}
-
 	if(intval($ret['channel']['channel_account_id'])) {
 
-		// Save our permissions role so we can perhaps call it up and modify it later.
+
+		// Set the default permcat
+		set_pconfig($newuid,'system','default_permcat','default');
 
 		if($role_permissions) {
+			// Save our permissions role so we can perhaps call it up and modify it later.
 			set_pconfig($newuid,'system','permissions_role',$arr['permissions_role']);
+
 			if(array_key_exists('online',$role_permissions))
-				set_pconfig($newuid,'system','hide_presence',1-intval($role_permissions['online']));
+				set_pconfig($newuid,'system','show_online_status', intval($role_permissions['online']));
 			if(array_key_exists('perms_auto',$role_permissions)) {
 				$autoperms = intval($role_permissions['perms_auto']);
 				set_pconfig($newuid,'system','autoperms',$autoperms);
@@ -502,11 +453,10 @@ function create_identity($arr) {
 		// Create a group with yourself as a member. This allows somebody to use it
 		// right away as a default group for new contacts.
 
-		require_once('include/group.php');
-		$group_hash = group_add($newuid, t('Friends'));
+		$group_hash = AccessList::add($newuid, t('Friends'));
 
 		if($group_hash) {
-			group_add_member($newuid,t('Friends'),$ret['channel']['channel_hash']);
+			AccessList::member_add($newuid,t('Friends'),$ret['channel']['channel_hash']);
 
 			$default_collection_str = '';
 			// if our role_permissions indicate that we're using a default collection ACL, add it.
@@ -519,6 +469,10 @@ function create_identity($arr) {
 				dbesc($default_collection_str),
 				intval($newuid)
 			);
+
+			// also update the current channel array, otherwise the auto-follow contacts will not be added to the default group
+			$ret['channel']['channel_default_group'] = dbesc($group_hash);
+			$ret['channel']['channel_allow_gid'] = dbesc($default_collection_str);
 		}
 
 		if(! $system) {
@@ -541,8 +495,7 @@ function create_identity($arr) {
 				if($acct) {
 					$f = connect_and_sync($ret['channel'], $acct);
 					if($f['success']) {
-						$can_view_stream = their_perms_contains($ret['channel']['channel_id'],$f['abook']['abook_xchan'],'view_stream');
-
+						$can_view_stream = intval(get_abconfig($ret['channel']['channel_id'], $f['abook']['abook_xchan'], 'their_perms', 'view_stream'));
 						// If we can view their stream, pull in some posts
 						if(($can_view_stream) || ($f['abook']['xchan_network'] === 'rss')) {
 							Master::Summon([ 'Onepoll',$f['abook']['abook_id'] ]);
@@ -816,11 +769,10 @@ function get_default_export_sections() {
 			'connections',
 			'config',
 			'apps',
-			'chatrooms',
-			'events',
-			'webpages',
-			'mail',
-			'wikis'
+//			'chatrooms',
+//			'events',
+//			'webpages',
+//			'wikis'
 	];
 
 	$cb = [ 'sections' => $sections ];
@@ -852,7 +804,6 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 	/*
 	 * basic channel export
 	 */
-
 	if(! $sections) {
 		$sections = get_default_export_sections();
 	}
@@ -928,6 +879,14 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 	}
 
 	if(in_array('connections',$sections)) {
+		$r = q("select * from atoken where atoken_uid = %d",
+			intval($channel_id)
+		);
+
+		if ($r) {
+			$ret['atoken'] = $r;
+		}
+
 		$xchans = array();
 		$r = q("select * from abook where abook_channel = %d ",
 			intval($channel_id)
@@ -979,12 +938,6 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 
 				translate_abook_perms_outbound($ret['abook'][$x]);
 
-			}
-
-			// pick up the zot xchan and hublocs also
-
-			if($ret['channel']['channel_portable_id'] && ! $zot_compat) {
-				$xchans[] = $ret['channel']['channel_portable_id'];
 			}
 
 			stringify_array_elms($xchans);
@@ -1146,30 +1099,6 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 		}
 	}
 
-	if(in_array('mail',$sections)) {
-		$r = q("select * from conv where uid = %d",
-			intval($channel_id)
-		);
-		if($r) {
-			for($x = 0; $x < count($r); $x ++) {
-				$r[$x]['subject'] = base64url_decode(str_rot47($r[$x]['subject']));
-			}
-			$ret['conv'] = $r;
-		}
-
-		$r = q("select * from mail where channel_id = %d",
-			intval($channel_id)
-		);
-		if($r) {
-			$m = array();
-			foreach($r as $rr) {
-				xchan_mail_query($rr);
-				$m[] = encode_mail($rr,true);
-			}
-			$ret['mail'] = $m;
-		}
-	}
-
 	if(in_array('wikis',$sections)) {
 		$r = q("select * from item where resource_type like 'nwiki%%' and uid = %d order by created",
 			intval($channel_id)
@@ -1197,7 +1126,7 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 			and created > %s - INTERVAL %s and resource_type = '' order by created",
 			intval($channel_id),
 			db_utcnow(),
-			db_quoteinterval('3 MONTH')
+			db_quoteinterval('1 MONTH')
 		);
 		if($r) {
 			$ret['item'] = array();
@@ -1228,7 +1157,7 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
 
 
 /**
- * @brief Export items for a year, or a month of a year.
+ * @brief Export conv items for a year, or a month of a year.
  *
  * @param int $channel_id The channel ID
  * @param number $year YYYY
@@ -1237,7 +1166,7 @@ function identity_basic_export($channel_id, $sections = null, $zap_compat = fals
  *   * \e array \b relocate - (optional)
  *   * \e array \b item - array with items encoded_item()
  */
-function identity_export_year($channel_id, $year, $month = 0, $zap_compat = false) {
+function conv_item_export_year($channel_id, $year, $month = 0, $zap_compat = false) {
 
 	if(! $year)
 		return array();
@@ -1255,12 +1184,15 @@ function identity_export_year($channel_id, $year, $month = 0, $zap_compat = fals
 	else
 		$maxdate = datetime_convert('UTC', 'UTC', $year+1 . '-01-01 00:00:00');
 
-	return channel_export_items_date($channel_id,$mindate,$maxdate, $zap_compat);
+	return channel_export_conv_items_date($channel_id,$mindate,$maxdate, $zap_compat);
 
 }
 
 /**
- * @brief Export items within an arbitrary date range.
+ * @brief Export conv items within an arbitrary date range.
+ *
+ * In opposit to channel_export_items_page() which is used for bulk export via network,
+ * this function will only select conversational items (channel, cards, articles, direct messages).
  *
  * Date/time is in UTC.
  *
@@ -1270,7 +1202,7 @@ function identity_export_year($channel_id, $year, $month = 0, $zap_compat = fals
  * @return array
  */
 
-function channel_export_items_date($channel_id, $start, $finish, $zap_compat = false) {
+function channel_export_conv_items_date($channel_id, $start, $finish, $zap_compat = false) {
 
 	if(! $start)
 		return array();
@@ -1293,19 +1225,39 @@ function channel_export_items_date($channel_id, $start, $finish, $zap_compat = f
 	}
 
 
-	$r = q("select * from item where ( item_wall = 1 or item_type != %d ) and item_deleted = 0 and uid = %d and created >= '%s' and created <= '%s'  and resource_type != 'photo' order by created",
-		intval(ITEM_TYPE_POST),
+	// Fetch parent items for the timeframe
+	$r = q("SELECT parent AS item_id FROM item
+		WHERE uid = %d AND (item_wall = 1 OR item_private = 2) AND item_thread_top = 1
+		AND resource_type IN ('group_item', '') AND item_deleted = 0
+		AND created >= '%s' AND created <= '%s'
+		ORDER BY created",
 		intval($channel_id),
 		dbesc($start),
 		dbesc($finish)
 	);
 
-	if($r) {
-		$ret['item'] = array();
-		xchan_query($r);
-		$r = fetch_post_tags($r, true);
-		foreach($r as $rr)
-			$ret['item'][] = encode_item($rr, true, $zap_compat);
+	$parents_str = ids_to_querystr($r, 'item_id');
+
+	$items = q("SELECT * FROM item
+		WHERE uid = %d
+		AND parent IN ( $parents_str )
+		ORDER BY created",
+		intval($channel_id)
+	);
+
+	//$items = q("select * from item where (item_wall = 1 or item_type != %d ) and resource_type = '' and item_deleted = 0 and uid = %d and created >= '%s' and created <= '%s' order by created",
+		//intval(ITEM_TYPE_POST),
+		//intval($channel_id),
+		//dbesc($start),
+		//dbesc($finish)
+	//);
+
+	if($items) {
+		$ret['item'] = [];
+		xchan_query($items);
+		$r = fetch_post_tags($items, true);
+		foreach ($items as $item)
+			$ret['item'][] = encode_item($item, true, $zap_compat);
 	}
 
 	return $ret;
@@ -1319,11 +1271,11 @@ function channel_export_items_date($channel_id, $start, $finish, $zap_compat = f
  *
  * @param int $channel_id The channel ID
  * @param int $page
- * @param int $limit (default 50)
+ * @param int $limit (default 10)
  * @return array
  */
 
-function channel_export_items_page($channel_id, $start, $finish, $page = 0, $limit = 50, $zap_compat = false) {
+function channel_export_items_page($channel_id, $start, $finish, $page = 0, $limit = 10, $zap_compat = false) {
 
 	if(intval($page) < 1) {
 		$page = 0;
@@ -1333,8 +1285,8 @@ function channel_export_items_page($channel_id, $start, $finish, $page = 0, $lim
 		$limit = 1;
 	}
 
-	if(intval($limit) > 5000) {
-		$limit = 5000;
+	if(intval($limit) > 1000) {
+		$limit = 1000;
 	}
 
 	if(! $start)
@@ -1359,6 +1311,17 @@ function channel_export_items_page($channel_id, $start, $finish, $page = 0, $lim
 		$ret['compatibility']['codebase'] = 'zap';
 	}
 
+	$r = q("select count(id) as total from item where ( item_wall = 1 or item_type != %d ) and item_deleted = 0 and uid = %d and resource_type != 'photo' and created >= '%s' and created <= '%s'",
+		intval(ITEM_TYPE_POST),
+		intval($channel_id),
+		dbesc($start),
+		dbesc($finish)
+	);
+
+	if ($r) {
+		$ret['items_total']= $r[0]['total'];
+		$ret['items_page']= $limit;
+	}
 
 	$r = q("select * from item where ( item_wall = 1 or item_type != %d ) and item_deleted = 0 and uid = %d and resource_type != 'photo' and created >= '%s' and created <= '%s' order by created limit %d offset %d",
 		intval(ITEM_TYPE_POST),
@@ -1407,7 +1370,7 @@ function profile_load($nickname, $profile = '') {
 
 	if(! $user) {
 		logger('profile error: ' . App::$query_string, LOGGER_DEBUG);
-		notice( t('Requested channel is not available.') . EOL );
+		notice( t('Requested channel is not available') . EOL );
 		App::$error = 404;
 		return;
 	}
@@ -1531,6 +1494,7 @@ function profile_load($nickname, $profile = '') {
 
 	if($can_view_profile) {
 		$online = get_online_status($nickname);
+
 		App::$profile['online_status'] = $online['result'];
 	}
 
@@ -1609,7 +1573,7 @@ function profile_edit_menu($uid) {
  * @return string (HTML) suitable for sidebar inclusion
  * Exceptions: Returns empty string if passed $profile is wrong type or not populated
  */
-function profile_sidebar($profile, $block = 0, $show_connect = true, $zcard = false) {
+function profile_sidebar($profile, $block = 0, $show_connect = true, $details = false) {
 
 	$observer = App::get_observer();
 
@@ -1665,6 +1629,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $zcard = fa
 	$gender   = ((x($profile,'gender')   == 1) ? t('Gender:')   : False);
 	$marital  = ((x($profile,'marital')  == 1) ? t('Status:')   : False);
 	$homepage = ((x($profile,'homepage') == 1) ? t('Homepage:') : False);
+	$hometown = ((x($profile,'hometown') == 1) ? t('Hometown:') : False);
 	$profile['online']   = (($profile['online_status'] === 'online') ? t('Online Now') : False);
 
 //	logger('online: ' . $profile['online']);
@@ -1705,18 +1670,18 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $zcard = fa
 		$tpl = get_markup_template('profile_vcard.tpl');
 
 	$o .= replace_macros($tpl, array(
-		'$zcard'         => $zcard,
+		'$details'       => $details,
 		'$profile'       => $profile,
 		'$connect'       => $connect,
 		'$connect_url'   => $connect_url,
 		'$location'      => $location,
+		'$hometown'      => $hometown,
 		'$gender'        => $gender,
 		'$pdesc'         => $pdesc,
 		'$marital'       => $marital,
 		'$homepage'      => $homepage,
 		'$chanmenu'      => $channel_menu,
 		'$reddress'      => $reddress,
-		'$rating'        => '',
 		'$contact_block' => $contact_block,
 		'$change_photo'  => t('Change your profile photo'),
 		'$editmenu'      => profile_edit_menu($profile['uid'])
@@ -2007,11 +1972,24 @@ function zat_init() {
 	);
 	if($r) {
 		$xchan = atoken_xchan($r[0]);
-		atoken_create_xchan($xchan);
+		//atoken_create_xchan($xchan);
 		atoken_login($xchan);
 	}
 }
 
+function atoken_delete_and_sync($channel_id, $atoken_guid) {
+	$r = q("select * from atoken where atoken_guid = '%s' and atoken_uid = %d",
+		dbesc($atoken_guid),
+		intval($channel_id)
+	);
+
+	if ($r) {
+		$atok = $r[0];
+		$atok['deleted'] = true;
+		atoken_delete($atok['atoken_id']);
+		Libsync::build_sync_packet($channel_id, ['atoken' => [ $atok ]]);
+	}
+}
 
 /**
  * @brief Used from within PCSS themes to set theme parameters.
@@ -2102,11 +2080,12 @@ function get_online_status($nick) {
 		return $ret;
 
 	$r = q("select channel_id, channel_hash from channel where channel_address = '%s' limit 1",
-		dbesc(argv(1))
+		dbesc($nick)
 	);
+
 	if($r) {
-		$hide = get_pconfig($r[0]['channel_id'],'system','hide_online_status');
-		if($hide)
+		$show = get_pconfig($r[0]['channel_id'],'system','show_online_status');
+		if(!$show)
 			return $ret;
 
 		$x = q("select cp_status from chatpresence where cp_xchan = '%s' and cp_room = 0 limit 1",
@@ -2322,7 +2301,7 @@ function auto_channel_create($account_id) {
 		}
 	}
 	if(! $arr['permissions_role'])
-		$arr['permissions_role'] = 'social';
+		$arr['permissions_role'] = 'personal';
 
 	if(validate_channelname($arr['name']))
 		return false;
@@ -2525,23 +2504,23 @@ function get_zcard_embed($channel, $observer_hash = '', $args = array()) {
  *   - array with channel entry
  *   - false if no channel with $nick was found
  */
-function channelx_by_nick($nick) {
+function channelx_by_nick($nick, $removed = false) {
 
 	// If we are provided a Unicode nickname convert to IDN
 
 	$nick = punify($nick);
 
-	// return a cached copy if there is a cached copy and it's a match
+	$sql_extra = ' AND channel_removed = 0 ';
 
-	if (App::$channel && is_array(App::$channel) && array_key_exists('channel_address',App::$channel) && App::$channel['channel_address'] === $nick) {
-		return App::$channel;
+	if ($removed) {
+		$sql_extra = '';
 	}
 
-	$r = q("SELECT * FROM channel left join xchan on channel_hash = xchan_hash WHERE channel_address = '%s'  and channel_removed = 0 LIMIT 1",
+	$r = q("SELECT * FROM channel left join xchan on channel_hash = xchan_hash WHERE channel_address = '%s' $sql_extra LIMIT 1",
 		dbesc($nick)
 	);
 
-	return(($r) ? $r[0] : false);
+	return (($r) ? $r[0] : false);
 }
 
 /**
@@ -2550,17 +2529,19 @@ function channelx_by_nick($nick) {
  * @param string $hash
  * @return array|boolean false if channel ID not found, otherwise the channel array
  */
-function channelx_by_hash($hash) {
+function channelx_by_hash($hash, $removed = false) {
 
-	if (App::$channel && is_array(App::$channel) && array_key_exists('channel_hash',App::$channel) && App::$channel['channel_hash'] === $hash) {
-		return App::$channel;
+	$sql_extra = ' AND channel_removed = 0 ';
+
+	if ($removed) {
+		$sql_extra = '';
 	}
 
-	$r = q("SELECT * FROM channel left join xchan on channel_hash = xchan_hash WHERE channel_hash = '%s' and channel_removed = 0 LIMIT 1",
+	$r = q("SELECT * FROM channel left join xchan on channel_hash = xchan_hash WHERE channel_hash = '%s' $sql_extra LIMIT 1",
 		dbesc($hash)
 	);
 
-	return(($r) ? $r[0] : false);
+	return (($r) ? $r[0] : false);
 }
 
 
@@ -2570,17 +2551,19 @@ function channelx_by_hash($hash) {
  * @param string $hash
  * @return array|boolean false if channel ID not found, otherwise the channel array
  */
-function channelx_by_portid($hash) {
+function channelx_by_portid($hash, $removed = false) {
 
-	if (App::$channel && is_array(App::$channel) && array_key_exists('channel_portable_id',App::$channel) && intval(App::$channel['channel_portable_id']) === intval($hash)) {
-		return App::$channel;
+	$sql_extra = ' AND channel_removed = 0 ';
+
+	if ($removed) {
+		$sql_extra = '';
 	}
 
-	$r = q("SELECT * FROM channel left join xchan on channel_portable_id = xchan_hash WHERE channel_portable_id = '%s' and channel_removed = 0 LIMIT 1",
+	$r = q("SELECT * FROM channel left join xchan on channel_portable_id = xchan_hash WHERE channel_portable_id = '%s' $sql_extra LIMIT 1",
 		dbesc($hash)
 	);
 
-	return(($r) ? $r[0] : false);
+	return (($r) ? $r[0] : false);
 }
 
 /**
@@ -2589,17 +2572,19 @@ function channelx_by_portid($hash) {
  * @param int $id A channel ID
  * @return array|boolean false if channel ID not found, otherwise the channel array
  */
-function channelx_by_n($id) {
+function channelx_by_n($id, $removed = false) {
 
-	if (App::$channel && is_array(App::$channel) && array_key_exists('channel_id',App::$channel) && intval(App::$channel['channel_id']) === intval($id)) {
-		return App::$channel;
+	$sql_extra = ' AND channel_removed = 0 ';
+
+	if ($removed) {
+		$sql_extra = '';
 	}
 
-	$r = q("SELECT * FROM channel LEFT JOIN xchan ON channel_hash = xchan_hash WHERE channel_id = %d AND channel_removed = 0 LIMIT 1",
+	$r = q("SELECT * FROM channel LEFT JOIN xchan ON channel_hash = xchan_hash WHERE channel_id = %d $sql_extra LIMIT 1",
 		intval($id)
 	);
 
-	return(($r) ? $r[0] : false);
+	return (($r) ? $r[0] : false);
 }
 
 /**
@@ -2844,15 +2829,12 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 
 		logger('deleting hublocs',LOGGER_DEBUG);
 
-		$r = q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_hash = '%s' OR hubloc_hash = '%s'",
-			dbesc($channel['channel_hash']),
-			dbesc($channel['channel_portable_id'])
-
+		$r = q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_hash = '%s'",
+			dbesc($channel['channel_hash'])
 		);
 
-		$r = q("UPDATE xchan SET xchan_deleted = 1 WHERE xchan_hash = '%s' OR xchan_hash = '%s'",
-			dbesc($channel['channel_hash']),
-			dbesc($channel['channel_portable_id'])
+		$r = q("UPDATE xchan SET xchan_deleted = 1 WHERE xchan_hash = '%s'",
+			dbesc($channel['channel_hash'])
 		);
 
 		Master::Summon(array('Notifier','purge_all',$channel_id));
@@ -2879,7 +2861,6 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 	q("DELETE FROM pgrp WHERE uid = %d", intval($channel_id));
 	q("DELETE FROM pgrp_member WHERE uid = %d", intval($channel_id));
 	q("DELETE FROM event WHERE uid = %d", intval($channel_id));
-	q("DELETE FROM mail WHERE channel_id = %d", intval($channel_id));
 	q("DELETE FROM menu WHERE menu_channel_id = %d", intval($channel_id));
 	q("DELETE FROM menu_item WHERE mitem_channel_id = %d", intval($channel_id));
 
@@ -2899,13 +2880,6 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 		}
 	}
 
-	$r = q("select id from item where uid = %d", intval($channel_id));
-	if($r) {
-		foreach($r as $rv) {
-			drop_item($rv['id'],false);
-		}
-	}
-
 	q("delete from abook where abook_xchan = '%s' and abook_self = 1 ",
 		dbesc($channel['channel_hash'])
 	);
@@ -2914,6 +2888,9 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 		dbesc(datetime_convert()),
 		intval($channel_id)
 	);
+
+	// remove items
+	Master::Summon([ 'Channel_purge', $channel_id ]);
 
 	// if this was the default channel, set another one as default
 	if(App::$account['account_default_channel'] == $channel_id) {
@@ -2936,9 +2913,8 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 
 	logger('deleting hublocs',LOGGER_DEBUG);
 
-	$r = q("UPDATE hubloc SET hubloc_deleted = 1 WHERE (hubloc_hash = '%s' OR hubloc_hash = '%s') AND hubloc_url = '%s' ",
+	$r = q("UPDATE hubloc SET hubloc_deleted = 1 WHERE hubloc_hash = '%s' AND hubloc_url = '%s' ",
 		dbesc($channel['channel_hash']),
-		dbesc($channel['channel_portable_id']),
 		dbesc(z_root())
 	);
 
@@ -2953,10 +2929,11 @@ function channel_remove($channel_id, $local = true, $unset_session = false) {
 		$hublocs = count($r);
 
 	if(! $hublocs) {
-		$r = q("UPDATE xchan SET xchan_deleted = 1 WHERE xchan_hash = '%s' OR xchan_hash = '%s'",
-			dbesc($channel['channel_hash']),
-			dbesc($channel['channel_portable_id'])
+		$r = q("UPDATE xchan SET xchan_deleted = 1 WHERE xchan_hash = '%s'",
+			dbesc($channel['channel_hash'])
 		);
+		// send a cleanup message to other servers
+		Master::Summon([ 'Notifier', 'purge_all', $channel_id ]);
 	}
 
 	//remove from file system
@@ -3041,7 +3018,7 @@ function anon_identity_init($reqvars) {
 	}
 
 	if(! validate_email($anon_email)) {
-		logger('enonymous email not valid');
+		logger('anonymous email not valid');
 		return false;
 	}
 

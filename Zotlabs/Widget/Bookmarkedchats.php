@@ -1,14 +1,15 @@
 <?php
 
+/**
+ *   * Name: Bookmarked chats
+ *   * Description: A menu with bookmarked chats
+ */
+
 namespace Zotlabs\Widget;
 
 class Bookmarkedchats {
 
 	function widget($arr) {
-
-		if(! feature_enabled(\App::$profile['profile_uid'],'ajaxchat'))
-			return '';
-
 		$h = get_observer_hash();
 		if(! $h)
 			return;

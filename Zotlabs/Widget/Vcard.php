@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Vcard
+ *   * Description: Your default profile card
+ */
+
 namespace Zotlabs\Widget;
 
 class Vcard {

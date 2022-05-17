@@ -15,7 +15,7 @@ class Randprof extends \Zotlabs\Web\Controller {
 		$x = random_profile();
 		if($x)
 			goaway(chanlink_hash($x));
-	
+
 		/** FIXME this doesn't work at the moment as a fallback */
 		goaway(z_root() . '/profile');
 	}
@@ -25,13 +25,11 @@ class Randprof extends \Zotlabs\Web\Controller {
 			if(! Apps::system_app_installed(local_channel(), 'Random Channel')) {
 				//Do not display any associated widgets at this point
 				App::$pdl = '';
-
-				$o = '<b>' . t('Random Channel App') . ' (' . t('Not Installed') . '):</b><br>';
-				$o .= t('Visit a random channel in the $Projectname network');
-				return $o;
+				$papp = Apps::get_papp('Random Channel');
+				return Apps::app_render($papp, 'module');
 			}
 		}
 
 	}
-	
+
 }

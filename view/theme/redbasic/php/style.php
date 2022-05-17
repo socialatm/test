@@ -36,9 +36,8 @@ if(! App::$install) {
 // not --- like the mobile theme does instead.
 
 // Allow layouts to over-ride the schema
-
-if($_REQUEST['schema']) {
-	$schema = $_REQUEST['schema'];
+if (isset($_REQUEST['schema']) && preg_match('/^[\w_-]+$/i', $_REQUEST['schema'])) {
+  $schema = $_REQUEST['schema'];
 }
 
 if (($schema) && ($schema != '---')) {
@@ -69,17 +68,17 @@ if ((!$schema) || ($schema == '---')) {
 	}
 
 }
-		
+
 //Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
 //individually.  If we don't, we'll have problems if a user has set one, but not all options.
 if (! $nav_bg)
 	$nav_bg = '#343a40';
 if (! $nav_icon_colour)
-	$nav_icon_colour = 'rgba(255, 255, 255, 0.5)';
+	$nav_icon_colour = 'rgba(255, 255, 255, 0.55)';
 if (! $nav_active_icon_colour)
 	$nav_active_icon_colour = 'rgba(255, 255, 255, 0.75)';
 if (! $link_colour)
-	$link_colour = '#007bff';
+	$link_colour = '#0d6efd';
 if (! $banner_colour)
 	$banner_colour = '#fff';
 if (! $bgcolour)
@@ -101,7 +100,7 @@ if (! $radius)
 if (! $shadow)
 	$shadow = '0';
 if (! $converse_width)
-	$converse_width = '790';
+	$converse_width = '52'; //unit: rem
 if(! $top_photo)
 	$top_photo = '2.3rem';
 if(! $reply_photo)
@@ -112,6 +111,10 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	$x = file_get_contents('view/theme/redbasic/css/style.css');
 
+  if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
+    $x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
+  }
+
 	if($narrow_navbar && file_exists('view/theme/redbasic/css/narrow_navbar.css')) {
 		$x .= file_get_contents('view/theme/redbasic/css/narrow_navbar.css');
 	}
@@ -120,13 +123,13 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		$x .= $schemecss;
 	}
 
-	$left_aside_width = 288;
-	$right_aside_width = 288;
+	$left_aside_width = 21; //unit: rem
+	$right_aside_width = 21; //unit: rem
 
 	$main_width = $left_aside_width + $right_aside_width + intval($converse_width);
 
 	// prevent main_width smaller than 768px
-	$main_width = (($main_width < 768) ? 768 : $main_width);
+	$main_width = (($main_width < 30) ? 30 : $main_width);
 
 	$options = array (
 		'$nav_bg' => $nav_bg,
@@ -158,7 +161,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 }
 
-// Set the schema to the default schema in derived themes. See the documentation for creating derived themes how to override this. 
+// Set the schema to the default schema in derived themes. See the documentation for creating derived themes how to override this.
 
 if(local_channel() && App::$channel && App::$channel['channel_theme'] != 'redbasic')
 	set_pconfig(local_channel(), 'redbasic', 'schema', '---');

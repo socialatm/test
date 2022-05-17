@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Random block
+ *   * Description: Display a random block item
+ */
+
 namespace Zotlabs\Widget;
 
 class Random_block {

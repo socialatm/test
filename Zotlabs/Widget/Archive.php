@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Archive
+ *   * Description: A menu with links to content sorted by years and months
+ *   * Requires: channel, articles, cards
+ */
+
 namespace Zotlabs\Widget;
 
 

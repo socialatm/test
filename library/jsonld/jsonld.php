@@ -449,7 +449,7 @@ function jsonld_default_secure_document_loader($url) {
   $result = @file_get_contents($url, false, $context);
   if($result === false) {
     throw new JsonLdException(
-      'Could not retrieve a JSON-LD document from the URL: ' + $url,
+      'Could not retrieve a JSON-LD document from the URL: ' . $url,
       'jsonld.LoadDocumentError', 'loading document failed');
   }
   $link_header = array();

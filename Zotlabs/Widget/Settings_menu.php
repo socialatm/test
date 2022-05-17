@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Settings menu
+ *   * Description: Display the channel settings menu
+ */
+
 namespace Zotlabs\Widget;
 
 class Settings_menu {
@@ -40,6 +45,11 @@ class Settings_menu {
 				'selected'	=> ((argv(1) === 'channel') ? 'active' : ''),
 			),
 
+			array(
+				'label'	=> t('Privacy settings'),
+				'url' 	=> z_root().'/settings/privacy',
+				'selected'	=> ((argv(1) === 'privacy') ? 'active' : '')
+			)
 		);
 
 		$tabs[] =	array(

@@ -14,7 +14,7 @@ class Apschema extends \Zotlabs\Web\Controller {
 				'zot'              => z_root() . '/apschema#',
 				'id'               => '@id',
 				'type'             => '@type',
-				'commentPolicy'    => 'as:commentPolicy',
+				'commentPolicy'    => 'zot:commentPolicy',
 				'meData'           => 'zot:meData',
 				'meDataType'       => 'zot:meDataType',
 				'meEncoding'       => 'zot:meEncoding',
@@ -33,6 +33,9 @@ class Apschema extends \Zotlabs\Web\Controller {
 				'PropertyValue'    => 'schema:PropertyValue',
 				'value'            => 'schema:value',
 
+				'manuallyApprovesFollowers' => 'as:manuallyApprovesFollowers',
+
+
 				'magicEnv' => [
 					'@id'   => 'zot:magicEnv',
 					'@type' => '@id'
@@ -50,7 +53,7 @@ class Apschema extends \Zotlabs\Web\Controller {
 				'guid'         => 'diaspora:guid',
 
 				'Hashtag'      => 'as:Hashtag'
-				
+
 			]
 		];
 

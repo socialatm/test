@@ -1,7 +1,7 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper clearfix">
 		{{if $owner}}
-		<button type="button" class="btn btn-success btn-sm pull-right acl-form-trigger" onclick="openClose('new-wiki-form-wrapper');" data-form_id="new-wiki-form"><i class="fa fa-plus-circle"></i>&nbsp;{{$create}}</button>
+		<button type="button" class="btn btn-success btn-sm float-end acl-form-trigger" onclick="openClose('new-wiki-form-wrapper');" data-form_id="new-wiki-form"><i class="fa fa-plus-circle"></i>&nbsp;{{$create}}</button>
 		{{/if}}
 		<h2>{{$header}}</h2>
 	</div>
@@ -13,8 +13,8 @@
 			{{include file="field_checkbox.tpl" field=$typelock}}
 			{{include file="field_checkbox.tpl" field=$notify}}
 			<div>
-				<div class="btn-group pull-right">
-					<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" title="Permission settings" onclick="return false;">
+				<div class="btn-group float-end">
+					<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" title="Permission settings" onclick="return false;">
 						<i id="jot-perms-icon" class="fa fa-{{$lockstate}} jot-icons"></i>
 					</button>
 					<button id="new-wiki-submit" class="btn btn-primary btn-sm" type="submit" name="submit" >{{$submit}}</button>
@@ -47,8 +47,8 @@
 				{{/if}}
 				<td class="dropdown">
 					{{if $wiki.lockstate == 'lock'}}
-					<i class="fa fa-lock lockview" data-toggle="dropdown" onclick="lockview('item',{{$wiki.id}});"></i>
-					<ul id="panel-{{$wiki.id}}" class="lockview-panel dropdown-menu dropdown-menu-right"></ul>
+					<i class="fa fa-lock lockview" data-bs-toggle="dropdown" onclick="lockview('item',{{$wiki.id}});"></i>
+					<ul id="panel-{{$wiki.id}}" class="lockview-panel dropdown-menu dropdown-menu-end"></ul>
 					{{/if}}
 				</td>
 				<td><i class="fa fa-download" onclick="wiki_download_wiki('{{$wiki.resource_id}}'); return false;"></i></td>
@@ -62,8 +62,8 @@
 					<form id="edit-wiki-form-{{$wiki.id}}" method="post" action="wiki/{{$channel}}/update/wiki" class="acl-form" data-form_id="edit-wiki-form-{{$wiki.id}}" data-allow_cid='{{$wiki.json_allow_cid}}' data-allow_gid='{{$wiki.json_allow_gid}}' data-deny_cid='{{$wiki.json_deny_cid}}' data-deny_gid='{{$wiki.json_deny_gid}}'>
 						<input type="hidden" name="origRawName" value="{{$wiki.title}}">
 						{{include file="field_input.tpl" field=['updateRawName', $edit_wiki_name, $wiki.title]}}
-						<div class="btn-group float-right">
-							<button class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" type="button">
+						<div class="btn-group float-end">
+							<button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" type="button">
 								<i class="jot-perms-icon fa fa-{{$wiki.lockstate}}"></i>
 							</button>
 							<button class="btn btn-primary btn-sm" type="submit" value="edit">Submit</button>

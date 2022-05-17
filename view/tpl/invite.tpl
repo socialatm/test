@@ -16,7 +16,7 @@
         <pre id="zai-remsg"></pre>
       </div>
 
-      <div id="invite-recipient-textarea" class="form-group field custom">
+      <div id="invite-recipient-textarea" class="mb-3 field custom">
 
         <label for="zaito">{{$m11}}<sup class="zai_qmc">({{$n11}})</sup></label>
         <textarea id="zai-to" name="zaito" rows="6" class="form-control"></textarea>
@@ -35,7 +35,7 @@
           <span id="zai-subject">{{$subject}}</span>
         </div>
 
-        <div id="invite-message-textarea" class="form-group field custom">
+        <div id="invite-message-textarea" class="mb-3 field custom">
           <label for="zaitxt">{{$m12}}<sup class="zai_qmc">({{$n12}})</sup></label>
           <textarea id="zai-txt" name="zaitxt" rows="6" class="form-control">{{$personal_message}}</textarea>
         </div>
@@ -49,7 +49,7 @@
       {{$due}}
       </pre>
 
-      <div id="invite-submit-wrapper" class="form-group">
+      <div id="invite-submit-wrapper" class="mb-3">
         <button class="btn btn-primary btn-sm" type="submit" id="invite-submit" name="submit" value="{{$submit}}">{{$submit}}</button>
       </div>
       <input type='hidden' id="zai-reon" name='zaireon' value=''>

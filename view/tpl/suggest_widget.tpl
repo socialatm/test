@@ -6,5 +6,5 @@
 {{/foreach}}
 {{/if}}
 <div class="clear"></div>
-<div class="suggest-widget-more"><a href="suggest">{{$more}}</a></div>
+<div class="suggest-widget-more"><a href="directory?f=&suggest=1">{{$more}}</a></div>
 </div>

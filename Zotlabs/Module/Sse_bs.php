@@ -37,7 +37,7 @@ class Sse_bs extends Controller {
 
 		self::$vnotify = get_pconfig(self::$uid, 'system', 'vnotify', -1);
 		self::$evdays = intval(get_pconfig(self::$uid, 'system', 'evdays'));
-		self::$limit = 50;
+		self::$limit = 30;
 		self::$offset = 0;
 		self::$xchans = '';
 
@@ -55,10 +55,13 @@ class Sse_bs extends Controller {
 			self::$xchans = ids_to_querystr($x, 'xchan_hash', true);
 		}
 
-		if(intval(argv(2)) > 0)
+		if(intval(argv(2)) > 0) {
 			self::$offset = argv(2);
-		else
+		}
+		else {
 			$_SESSION['sse_loadtime'] = datetime_convert();
+		}
+
 
 		$network = false;
 		$dm = false;
@@ -100,7 +103,6 @@ class Sse_bs extends Controller {
 			self::bs_forums(),
 			self::bs_pubs($pubs),
 			self::bs_files(),
-			self::bs_mail(),
 			self::bs_all_events(),
 			self::bs_register(),
 			self::bs_info_notice()
@@ -122,7 +124,7 @@ class Sse_bs extends Controller {
 		$str = '';
 
 		foreach($arr as $a) {
-			$mids[] = '\'' . dbesc(@base64url_decode(substr($a,4))) . '\'';
+			$mids[] = '\'' . dbesc(unpack_link_id($a)) . '\'';
 		}
 
 		$str = implode(',', $mids);
@@ -371,7 +373,7 @@ class Sse_bs extends Controller {
 		$result['pubs']['notifications'] = [];
 		$result['pubs']['count'] = 0;
 
-		if(! (self::$vnotify & VNOTIFY_PUBS)) {
+		if(! (self::$vnotify & VNOTIFY_PUBS) || !Apps::system_app_installed(self::$uid, 'Public Stream')) {
 			$result['pubs']['offset'] = -1;
 			return $result;
 		}
@@ -558,7 +560,7 @@ class Sse_bs extends Controller {
 					$b64mids = [];
 
 					foreach($mids as $mid)
-						$b64mids[] =  'b64.' . base64url_encode($mid);
+						$b64mids[] =  gen_link_id($mid);
 
 					$forums[$x]['notify_link'] = z_root() . '/network/?f=&pf=1&unseen=1&cid=' . $forums[$x]['abook_id'];
 					$forums[$x]['name'] = $forums[$x]['xchan_name'];
@@ -628,36 +630,6 @@ class Sse_bs extends Controller {
 					}
 			}
 			$result['files']['count'] = count($r);
-		}
-
-		return $result;
-
-	}
-
-	function bs_mail() {
-
-		$result['mail']['notifications'] = [];
-		$result['mail']['count'] = 0;
-		$result['mail']['offset'] = -1;
-
-		if(! self::$uid)
-			return $result;
-
-		if(! (self::$vnotify & VNOTIFY_MAIL))
-			return $result;
-
-		$r = q("select mail.*, xchan.* from mail left join xchan on xchan_hash = from_xchan
-			where channel_id = %d and mail_seen = 0 and mail_deleted = 0
-			and from_xchan != '%s' order by created desc",
-			intval(self::$uid),
-			dbesc(self::$ob_hash)
-		);
-
-		if($r) {
-			foreach($r as $rr) {
-				$result['mail']['notifications'][] = Enotify::format_mail($rr);
-			}
-			$result['mail']['count'] = count($r);
 		}
 
 		return $result;

@@ -3,9 +3,11 @@
 namespace Zotlabs\Module;
 
 use App;
+use Zotlabs\Lib\Libzot;
 use Zotlabs\Lib\Activity;
 use Zotlabs\Lib\ActivityStreams;
 use Zotlabs\Web\Controller;
+use Zotlabs\Lib\Zotfinger;
 
 class Search extends Controller {
 
@@ -25,10 +27,11 @@ class Search extends Controller {
 
 		nav_set_selected('Search');
 
-		require_once("include/bbcode.php");
-		require_once('include/security.php');
+		require_once('include/bbcode.php');
 		require_once('include/conversation.php');
 		require_once('include/items.php');
+		require_once('include/security.php');
+
 
 		$format = (($_REQUEST['format']) ? $_REQUEST['format'] : '');
 		if ($format !== '') {
@@ -38,11 +41,9 @@ class Search extends Controller {
 		$observer      = App::get_observer();
 		$observer_hash = (($observer) ? $observer['xchan_hash'] : '');
 
-		$o = '<div id="live-search"></div>' . "\r\n";
+		$o = '<div class="generic-content-wrapper-styled">' . "\r\n";
 
-		$o .= '<div class="generic-content-wrapper-styled">' . "\r\n";
-
-		$o .= '<h3>' . t('Search') . '</h3>';
+		$o .= '<h2>' . t('Search') . '</h2>';
 
 		if (x(App::$data, 'search'))
 			$search = trim(App::$data['search']);
@@ -58,26 +59,31 @@ class Search extends Controller {
 		$o .= search($search, 'search-box', '/search', ((local_channel()) ? true : false));
 
 		if (local_channel() && strpos($search, 'https://') === 0 && !$update && !$load) {
-			$j = Activity::fetch(punify($search), App::get_channel());
-			if ($j) {
-				$AS = new ActivityStreams($j);
-				if ($AS->is_valid()) {
-					// check if is_an_actor, otherwise import activity
-					if (is_array($AS->obj) && !ActivityStreams::is_an_actor($AS->obj)) {
-						$item = Activity::decode_note($AS);
-						if ($item) {
-							logger('parsed_item: ' . print_r($item, true), LOGGER_DATA);
-							Activity::store(App::get_channel(), $observer_hash, $AS, $item, true, true);
-							goaway(z_root() . '/display/' . gen_link_id($item['mid']));
-						}
+			if (strpos($search, 'b64.') !== false) {
+				if (strpos($search, '?') !== false) {
+					$search = strtok($search, '?');
+				}
+
+				$search = unpack_link_id(basename($search));
+			}
+
+			$f = Libzot::fetch_conversation(App::get_channel(), punify($search), true);
+
+			if ($f) {
+				$mid = $f[0]['message_id'];
+				foreach ($f as $m) {
+					if (strpos($search, $m['message_id']) === 0) {
+						$mid = $m['message_id'];
+						break;
 					}
 				}
+
+				goaway(z_root() . '/hq/' . gen_link_id($mid));
 			}
 			else {
-				// try other fetch providers (e.g. diaspora)
+				// try other fetch providers (e.g. diaspora, pubcrawl)
 				$hookdata = [
-					'channel' => App::get_channel(),
-					'data' => $search
+					'url' => punify($search)
 				];
 				call_hooks('fetch_provider', $hookdata);
 			}
@@ -87,21 +93,21 @@ class Search extends Controller {
 			$tag    = true;
 			$search = substr($search, 1);
 		}
-		if (strpos($search, '@') === 0) {
+		elseif(strpos($search, '@') === 0) {
 			$search = substr($search, 1);
 			goaway(z_root() . '/directory' . '?f=1&navsearch=1&search=' . $search);
 		}
-		if (strpos($search, '!') === 0) {
+		elseif(strpos($search, '!') === 0) {
 			$search = substr($search, 1);
 			goaway(z_root() . '/directory' . '?f=1&navsearch=1&search=' . $search);
 		}
-		if (strpos($search, '?') === 0) {
+		elseif(strpos($search, '?') === 0) {
 			$search = substr($search, 1);
 			goaway(z_root() . '/help' . '?f=1&navsearch=1&search=' . $search);
 		}
 
 		// look for a naked webbie
-		if (strpos($search,'@') !== false && strpos($search,'http') !== 0) {
+		if (strpos($search, '@') !== false && strpos($search, 'http') !== 0) {
 			goaway(z_root() . '/directory' . '?f=1&navsearch=1&search=' . $search);
 		}
 
@@ -216,7 +222,7 @@ class Search extends Controller {
 				}
 				if ($r) {
 					$str = ids_to_querystr($r, 'item_id');
-					$r   = q("select *, id as item_id from item where id in ( " . $str . ") order by created desc ");
+					$r   = dbq("select *, id as item_id from item where id in ( " . $str . ") order by created desc");
 				}
 			}
 			else {
@@ -234,7 +240,7 @@ class Search extends Controller {
 			$items = [];
 		}
 
-		if ($format == 'json') {
+		if ($format === 'json') {
 			$result = [];
 			require_once('include/conversation.php');
 			foreach ($items as $item) {

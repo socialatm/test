@@ -10,15 +10,23 @@ Log in met het wachtwoord die je tijdens het registreren hebt gekozen.
 
 Wij dienen jouw e-mailadres te verifiëren om je volledig toegang te kunnen geven.
 
-Wanneer jij dit account hebt aangemaakt, bezoek dan de volgende link: 
+Jouw verificatie token is
 
-{{$siteurl}}/regver/allow/{{$hash}} 
+{{$hash}}
+
+{{if $timeframe}}
+Dit token is geldig van {{$timeframe.0}} UTC tot {{$timeframe.1}} UTC
+
+{{/if}}
+
+Wanneer jij dit account hebt aangemaakt, vul dan de verificatie token in wanneer daarom wordt gevraagd of ga naar de volgende link:
+
+{{$siteurl}}/regate/{{$mail}}
 
 
 Om de registratie van dit account te annuleren en deze te verwijderen bezoek je:
 
-
-{{$siteurl}}/regver/deny/{{$hash}}
+{{$siteurl}}/regate/{{$mail}}{{if $ko}}/{{$ko}}{{/if}}
 
 
 Bedankt

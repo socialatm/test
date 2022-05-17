@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/photos/$nick, $baseurl/settings/photos
 requires: local_channel
 name: Photos
 photo: icon:photo
 categories: nav_featured_app, Multimedia
+desc: A simple tool to view and manage your photos.

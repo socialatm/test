@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/suggest
 requires: local_channel
 name: Suggest Channels
 photo: icon:lightbulb-o
 categories: Networking
+desc: Suggestions for channels in the network you might be interested in.

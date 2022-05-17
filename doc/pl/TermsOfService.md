@@ -6,4 +6,4 @@ Regulamin serwisu
 Polityka prywatności
 ====================
 
-#include doc/pl/gdpr1.md;
+#include doc/pl/gdpr.md;

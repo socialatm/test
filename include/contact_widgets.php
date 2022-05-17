@@ -100,6 +100,10 @@ function categories_widget($baseurl,$selected = '') {
 		\Zotlabs\Daemon\Master::Summon([ 'Cache_query', $key, base64_encode(json_encode($arr)) ]);
 	}
 
+	if (!$content) {
+		return EMPTY_STR;
+	}
+
 	$r = unserialize($content);
 
 	$terms = [];
@@ -246,7 +250,7 @@ function filecategories_widget($baseurl,$selected = '') {
 }
 
 
-function common_friends_visitor_widget($profile_uid,$cnt = 25) {
+function common_friends_visitor_widget($profile_uid,$cnt = 36) {
 
 	if(local_channel() == $profile_uid)
 		return;

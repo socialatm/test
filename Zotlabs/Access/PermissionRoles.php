@@ -17,7 +17,7 @@ class PermissionRoles {
 	 * @return number
 	 */
 	static public function version() {
-		return 2;
+		return 3;
 	}
 
 	static function role_perms($role) {
@@ -27,6 +27,54 @@ class PermissionRoles {
 		$ret['role'] = $role;
 
 		switch($role) {
+
+			case 'public':
+				$ret['default_collection'] = false;
+				$ret['perms_connect'] = [
+					'view_stream', 'view_profile', 'view_contacts', 'view_storage', 'view_pages', 'view_wiki',
+					'send_stream', 'post_comments', 'post_mail', 'post_wall', 'chat', 'post_like', 'republish'
+				];
+				$ret['limits'] = PermissionLimits::Std_Limits();
+				$ret['limits']['post_comments'] = PERMS_AUTHED;
+				$ret['limits']['post_mail'] = PERMS_AUTHED;
+				$ret['limits']['post_like'] = PERMS_AUTHED;
+				$ret['limits']['chat'] = PERMS_AUTHED;
+				break;
+
+			// Hubzilla default role
+			case 'personal':
+				$ret['default_collection'] = true;
+				$ret['perms_connect'] = [
+					'view_stream', 'view_profile', 'view_contacts', 'view_storage', 'view_pages', 'view_wiki',
+					'send_stream', 'post_comments', 'post_mail', 'chat', 'post_like'
+				];
+				$ret['limits'] = PermissionLimits::Std_Limits();
+				$ret['limits']['view_contacts'] = PERMS_SPECIFIC;
+				break;
+
+			case 'group':
+				$ret['default_collection'] = false;
+				$ret['perms_connect'] = [
+					'view_stream', 'view_profile', 'view_contacts', 'view_storage',
+					'view_pages', 'view_wiki', 'post_wall', 'post_comments',
+					'post_mail', 'post_like', 'chat'
+				];
+				$ret['limits'] = PermissionLimits::Std_Limits();
+				$ret['channel_type'] = 'group';
+				break;
+
+			// Provide some defaults for the custom role so that we do not start
+			// with no permissions at all if we create a new channel with this role
+			case 'custom':
+				$ret['default_collection'] = true;
+				$ret['perms_connect'] = [
+					'view_stream', 'view_profile', 'view_contacts', 'view_storage', 'view_pages', 'view_wiki',
+					'send_stream', 'post_comments', 'post_mail', 'chat', 'post_like'
+				];
+				$ret['limits'] = PermissionLimits::Std_Limits();
+				break;
+
+/*
 			case 'social':
 				$ret['perms_auto'] = false;
 				$ret['default_collection'] = false;
@@ -193,13 +241,14 @@ class PermissionRoles {
 				$ret['channel_type'] = 'group';
 
 				break;
+*/
 
-			case 'custom':
 			default:
 				break;
 		}
 
 		$x = get_config('system','role_perms');
+
 		// let system settings over-ride any or all
 		if($x && is_array($x) && array_key_exists($role,$x))
 			$ret = array_merge($ret,$x[$role]);
@@ -284,6 +333,7 @@ class PermissionRoles {
 	 */
 	static public function roles() {
 		$roles = [
+
 			t('Social Networking') => [
 				'social_federation' => t('Social - Federation'),
 				'social' => t('Social - Mostly Public'),
@@ -315,6 +365,31 @@ class PermissionRoles {
 		call_hooks('list_permission_roles',$roles);
 
 		return $roles;
+	}
+
+	/**
+	 * @brief Array with translated role names and grouping.
+	 *
+	 * Return an associative array with role names that can be used
+	 * to create select groups like in \e field_select_grouped.tpl.
+	 *
+	 * @return array
+	 */
+	static public function channel_roles() {
+		$channel_roles = [
+			//'public' => [t('Public'), t('A very permissive role suited for participation in the fediverse')],
+			//'personal' => [t('Personal'), t('The $Projectname default role suited for a personal channel')],
+			//'forum' => [t('Community forum'), t('This role configures your channel to act as an community forum')],
+			//'custom' => [t('Custom'), t('This role comes with the presets of the personal role but allows you to configure it to your needs')]
+			'public' => t('Public'),
+			'personal' => t('Personal'),
+			'group' => t('Community forum'),
+			'custom' => t('Custom')
+		];
+
+		call_hooks('list_channel_roles', $channel_roles);
+
+		return $channel_roles;
 	}
 
 }

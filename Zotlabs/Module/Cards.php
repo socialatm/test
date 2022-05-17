@@ -47,10 +47,8 @@ class Cards extends Controller {
 		if(! Apps::system_app_installed(App::$profile_uid, 'Cards')) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('Cards App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('Create personal planning cards');
-			return $o;
+			$papp = Apps::get_papp('Cards');
+			return Apps::app_render($papp, 'module');
 		}
 
 		nav_set_selected('Cards');

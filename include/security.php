@@ -89,8 +89,20 @@ function authenticate_success($user_record, $channel = null, $login_initial = fa
 }
 
 function atoken_login($atoken) {
-	if (!$atoken)
+	if (! $atoken) {
 		return false;
+	}
+
+	if (App::$cmd === 'channel' && argv(1)) {
+		$channel = channelx_by_nick(argv(1));
+		if (perm_is_allowed($channel['channel_id'],$atoken['xchan_hash'],'delegate')) {
+			$_SESSION['delegate_channel'] = $channel['channel_id'];
+			$_SESSION['delegate'] = $atoken['xchan_hash'];
+			$_SESSION['account_id'] = intval($channel['channel_account_id']);
+			change_channel($channel['channel_id']);
+			return;
+		}
+	}
 
 	$_SESSION['authenticated'] = 1;
 	$_SESSION['visitor_id'] = $atoken['xchan_hash'];
@@ -113,11 +125,11 @@ function atoken_xchan($atoken) {
 	if ($c) {
 		return [
 			'atoken_id' => $atoken['atoken_id'],
-			'xchan_hash' => substr($c['channel_hash'], 0, 16) . '.' . $atoken['atoken_name'],
+			'xchan_hash' => substr($c['channel_hash'], 0, 16) . '.' . $atoken['atoken_guid'],
 			'xchan_name' => $atoken['atoken_name'],
 			'xchan_addr' => 'guest:' . $atoken['atoken_name'] . '@' . App::get_hostname(),
-			'xchan_network' => 'unknown',
-			'xchan_url' => z_root() . '/guest/' . substr($c['channel_hash'], 0, 16) . '.' . $atoken['atoken_name'],
+			'xchan_network' => 'token',
+			'xchan_url' => z_root() . '/guest/' . substr($c['channel_hash'], 0, 16) . '.' . $atoken['atoken_guid'],
 			'xchan_hidden' => 1,
 			'xchan_photo_mimetype' => 'image/png',
 			'xchan_photo_l' => z_root() . '/' . get_default_profile_photo(300),
@@ -143,13 +155,23 @@ function atoken_delete($atoken_id) {
 	if (!$c)
 		return;
 
-	$atoken_xchan = substr($c[0]['channel_hash'], 0, 16) . '.' . $r[0]['atoken_name'];
+	$atoken_xchan = substr($c[0]['channel_hash'], 0, 16) . '.' . $r[0]['atoken_guid'];
 
 	q("delete from atoken where atoken_id = %d",
 		intval($atoken_id)
 	);
+
+	q("delete from abook where abook_channel = %d and abook_xchan = '%s'",
+		intval($c[0]['channel_id']),
+		dbesc($atoken_xchan)
+	);
+
 	q("delete from abconfig where chan = %d and xchan = '%s'",
 		intval($c[0]['channel_id']),
+		dbesc($atoken_xchan)
+	);
+
+	q("update xchan set xchan_deleted = 1 where xchan_hash = '%s'",
 		dbesc($atoken_xchan)
 	);
 }
@@ -198,7 +220,7 @@ function atoken_abook($uid, $xchan_hash) {
 	if (!$r)
 		return false;
 
-	$x = q("select * from atoken where atoken_uid = %d and atoken_name = '%s'",
+	$x = q("select * from atoken where atoken_uid = %d and atoken_guid = '%s'",
 		intval($uid),
 		dbesc(substr($xchan_hash, 17))
 	);
@@ -681,12 +703,11 @@ function get_security_ids($channel_id, $ob_hash) {
 	];
 
 	if ($channel_id) {
-		$ch = q("select channel_hash, channel_portable_id from channel where channel_id = %d",
+		$ch = q("select channel_hash from channel where channel_id = %d",
 			intval($channel_id)
 		);
 		if ($ch) {
 			$ret['channel_id'][] = $ch[0]['channel_hash'];
-			$ret['channel_id'][] = $ch[0]['channel_portable_id'];
 		}
 	}
 

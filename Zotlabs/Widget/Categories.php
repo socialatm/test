@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Categories
+ *   * Description: Display a menu with links to categories
+ *   * Requires: channel, articles, cards, cloud
+ */
+
 namespace Zotlabs\Widget;
 
 use App;

@@ -1,0 +1,3 @@
+<a href="{{$hosturl}}appman/{{$app.guid}}/moveup{{if $mode == 'nav-order-pinned'}}/nav_pinned_app{{else}}/nav_featured_app{{/if}}" class="btn btn-outline-secondary btn-sm" style="margin-bottom: 5px;"><i class="generic-icons-nav fa fa-fw fa-arrow-up"></i></a>
+<a href="{{$hosturl}}appman/{{$app.guid}}/movedown{{if $mode == 'nav-order-pinned'}}/nav_pinned_app{{else}}/nav_featured_app{{/if}}" class="btn btn-outline-secondary btn-sm" style="margin-bottom: 5px;"><i class="generic-icons-nav fa fa-fw fa-arrow-down"></i></a>
+{{if $icon}}<i class="generic-icons-nav fa fa-fw fa-{{$icon}}"></i>{{else}}<img src="{{$app.photo}}" width="16" height="16" style="margin-right:9px;"/>{{/if}}{{$app.name}}<br>

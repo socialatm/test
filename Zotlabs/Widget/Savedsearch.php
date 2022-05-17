@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Saved searches
+ *   * Description: A search form which also displays saved searches if the feature is enabled
+ *   * Requires: network
+ */
+
 namespace Zotlabs\Widget;
 
 class Savedsearch {

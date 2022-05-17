@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/bookmarks
 requires: local_channel
 name: Bookmarks
 photo: icon:bookmark
 categories: Productivity
+desc: This app enables you to bookmark links from posts or comments and provides a simple management interface

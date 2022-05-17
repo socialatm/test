@@ -85,13 +85,6 @@ function xchan_store($arr) {
 			}
 		}
 
-		if($arr['network'] === 'zot') {
-			if((! $arr['key']) || (! Crypto::verify($arr['guid'],base64url_decode($arr['guid_sig']),$arr['key']))) {
-				logger('Unable to verify signature for ' . $arr['hash']);
-				return false;
-			}
-		}
-
 		$columns = db_columns('xchan');
 
 		$x = [];

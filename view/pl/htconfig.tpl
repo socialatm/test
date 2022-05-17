@@ -12,7 +12,7 @@ $db_type = '{{$dbtype}}'; // liczba całkowita. 0 lub nieustawienie dla mysql, 1
 
 /*
  * Uwaga: wiele z poniższych ustawień będzie dostępnych w panelu administracyjnym
- * po pomyślnej instalacji serwisu. Po ustawieniu w panelu administracyjnym, opcje
+ * po pomyślnej instalacji portalu. Po ustawieniu w panelu administracyjnym, opcje
  * te są przechowywane w DB - a ustawienie DB zastępują  wszelkie odpowiadające
  * in ustawienie w tym pliku
  *
@@ -28,7 +28,7 @@ $db_type = '{{$dbtype}}'; // liczba całkowita. 0 lub nieustawienie dla mysql, 1
 
 App::$config['system']['timezone'] = '{{$timezone}}';
 
-// Jaki jest adres URL Twojego serwisu? NIE DODAWAJ KOŃCOWEGO UKOŚNIKA!
+// Jaki jest adres URL Twojego portalu? NIE DODAWAJ KOŃCOWEGO UKOŚNIKA!
 
 App::$config['system']['baseurl'] = '{{$siteurl}}';
 App::$config['system']['sitename'] = "Hubzilla";
@@ -37,7 +37,7 @@ App::$config['system']['location_hash'] = '{{$site_id}}';
 // Te wiersze ustawiają dodatkowe nagłówki bezpieczeństwa, które mają być
 // wysyłane ze wszystkimi odpowiedziami. Możesz ustawić transport_security_header
 // na 0, jeśli twój serwer już wysyła ten nagłówek. Może okazać się konieczne
-// wyłączenie content_security_policy, jeśłi chcesz uruchamiać wtyczkę Piwik
+// wyłączenie content_security_policy, jeśli chcesz uruchamiać wtyczkę Piwik
 // umieszczać  na stronach inne zasoby zewnętrzne.
 
 App::$config['system']['transport_security_header'] = 1;
@@ -61,25 +61,25 @@ App::$config['system']['admin_email'] = '{{$adminmail}}';
 
 App::$config['system']['verify_email'] = 1;
 
-// Ograniczenia dostępu do serwisu. Domyślnie będziemy tworzyć witryny prywatne.
+// Ograniczenia dostępu do portalu. Domyślnie tworzone są  portale prywatne.
 // Masz do wyboru ACCESS_PRIVATE, ACCESS_PAID, ACCESS_TIERED i ACCESS_FREE.
-// Jeśli opuścisz ustawienie REGISTER_OPEN powyżej, każdy bedzie się mógł
-// zarejestrować na Twoim serwisiewitryna, jednak serwis ten nie będzie nigdzie
-// wyświetlany jako portal z otwartą resjestracją.
-// Używamy polityki dostępu do systemu (poniżej) aby określić, czy serwis ma być
+// Jeśli pozostawisz ustawienie REGISTER_OPEN powyżej, każdy bedzie się mógł
+// zarejestrować na Twoim portalu, jednak portal ten nie będzie nigdzie
+// wyświetlany jako witryna z otwartą resjestracją.
+// Używamy polityki dostępu do systemu (poniżej) aby określić, czy portal ma być
 // umieszczony w katalogu jako portal otwarty, w którym każdy może tworzyć konta.
-// Twój wybór, to: paid, tiered lub free.  
+// Twój inny wybór to: paid, tiered lub free.  
 
 App::$config['system']['access_policy'] = ACCESS_PRIVATE;
 
-// Jeśli prowadzisz witrynę publiczną, możesz zezwolić, aby ludzie byli kierowani
+// Jeśli prowadzisz portal publiczny, możesz zezwolić, aby osoby były kierowane
 // do "strony sprzedaży", na której można szczegółowo opisać funkcje, zasady lub
 // plany usług. To musi być bezwzględny adres URL zaczynający się od http:// lub
 // https: //.
 
 App::$config['system']['sellpage'] = '';
 
-// Maksymalny rozmiar importowanej wiadomości, 0 jest nieograniczony
+// Maksymalny rozmiar importowanej wiadomości, 0 to brak ograniczeń
 
 App::$config['system']['max_import_size'] = 200000;
 
@@ -95,7 +95,7 @@ App::$config['system']['php_path'] = '{{$phpath}}';
 
 App::$config['system']['directory_mode']  = DIRECTORY_MODE_NORMAL;
 
-// domyślny moty systemowy
+// domyślny motyw systemowy
 
 App::$config['system']['theme'] = 'redbasic';
 

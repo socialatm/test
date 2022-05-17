@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Find channels
+ *   * Description: A simple form to search for channels in the directory
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/contact_widgets.php');

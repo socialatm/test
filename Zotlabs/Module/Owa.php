@@ -32,14 +32,14 @@ class Owa extends Controller {
 				$keyId = $sigblock['keyId'];
 				if ($keyId) {
 					$r = q("SELECT * FROM hubloc LEFT JOIN xchan ON hubloc_hash = xchan_hash
-						WHERE hubloc_id_url = '%s'",
+						WHERE hubloc_id_url = '%s' AND xchan_pubkey != '' ",
 						dbesc($keyId)
 					);
 					if (! $r) {
 						$found = discover_by_webbie(str_replace('acct:','',$keyId));
 						if ($found) {
 							$r = q("SELECT * FROM hubloc LEFT JOIN xchan ON hubloc_hash = xchan_hash
-								WHERE hubloc_id_url = '%s'",
+								WHERE hubloc_id_url = '%s' AND xchan_pubkey != '' ",
 								dbesc($keyId)
 							);
 						}

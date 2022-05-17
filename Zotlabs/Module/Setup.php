@@ -69,9 +69,14 @@ class Setup extends \Zotlabs\Web\Controller {
 				$dbpass = ((isset($_POST['dbpass'])) ? trim($_POST['dbpass']) : '');
 				$dbdata = ((isset($_POST['dbdata'])) ? trim($_POST['dbdata']) : '');
 				$dbtype = ((isset($_POST['dbtype'])) ? intval(trim($_POST['dbtype'])) : 0);
+
 				$phpath = ((isset($_POST['phpath'])) ? trim($_POST['phpath']) : '');
 				$adminmail = ((isset($_POST['adminmail'])) ? trim($_POST['adminmail']) : '');
 				$siteurl = ((isset($_POST['siteurl'])) ? trim($_POST['siteurl']) : '');
+
+				if (empty($db_charset)) {
+					$db_charset = ((intval($dbtype) === 0) ? 'utf8mb4' : 'UTF8');
+				}
 
 				// $siteurl should not have a trailing slash
 
@@ -79,7 +84,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 				require_once('include/dba/dba_driver.php');
 
-				$db = \DBA::dba_factory($dbhost, $dbport, $dbuser, $dbpass, $dbdata, $dbtype, true);
+				$db = \DBA::dba_factory($dbhost, $dbport, $dbuser, $dbpass, $dbdata, $dbtype, $db_charset, true);
 
 				if(! \DBA::$dba->connected) {
 					echo 'Database Connect failed: ' . \DBA::$dba->error;
@@ -94,10 +99,15 @@ class Setup extends \Zotlabs\Web\Controller {
 				$dbpass = ((isset($_POST['dbpass'])) ? trim($_POST['dbpass']) : '');
 				$dbdata = ((isset($_POST['dbdata'])) ? trim($_POST['dbdata']) : '');
 				$dbtype = ((isset($_POST['dbtype'])) ? intval(trim($_POST['dbtype'])) : 0);
+
 				$phpath = ((isset($_POST['phpath'])) ? trim($_POST['phpath']) : '');
 				$timezone = ((isset($_POST['timezone'])) ? trim($_POST['timezone']) : '');
 				$adminmail = ((isset($_POST['adminmail'])) ? trim($_POST['adminmail']) : '');
 				$siteurl = ((isset($_POST['siteurl'])) ? trim($_POST['siteurl']) : '');
+
+				if (empty($db_charset)) {
+					$db_charset = ((intval($dbtype) === 0) ? 'utf8mb4' : 'UTF8');
+				}
 
 				if($siteurl != z_root()) {
 					$test = z_fetch_url($siteurl."/setup/testrewrite");
@@ -112,7 +122,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 				if(! isset(\DBA::$dba->connected)) {
 					// connect to db
-					$db = \DBA::dba_factory($dbhost, $dbport, $dbuser, $dbpass, $dbdata, $dbtype, true);
+					$db = \DBA::dba_factory($dbhost, $dbport, $dbuser, $dbpass, $dbdata, $dbtype, $db_charset, true);
 				}
 
 				if(! isset(\DBA::$dba->connected)) {

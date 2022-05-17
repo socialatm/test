@@ -20,8 +20,8 @@
 				{{/if}}
 				<textarea id="comment-edit-text-{{$id}}" class="comment-edit-text" placeholder="{{$comment}}" name="body" ondragenter="linkdropper(event);" ondragleave="linkdropexit(event);" ondragover="linkdropper(event);" ondrop="linkdrop(event);" ></textarea>
 				<div id="comment-tools-{{$id}}" class="pt-2 comment-tools">
-					<div id="comment-edit-bb-{{$id}}" class="btn-toolbar pull-left">
-						<div class="btn-group mr-2">
+					<div id="comment-edit-bb-{{$id}}" class="btn-toolbar float-start">
+						<div class="btn-group me-2">
 							<button class="btn btn-outline-secondary btn-sm" title="{{$edbold}}" onclick="insertbbcomment('{{$comment}}','b', {{$id}}); return false;">
 								<i class="fa fa-bold comment-icon"></i>
 							</button>
@@ -38,7 +38,7 @@
 								<i class="fa fa-terminal comment-icon"></i>
 							</button>
 						</div>
-						<div class="btn-group mr-2">
+						<div class="btn-group me-2">
 							{{if $can_upload}}
 							<button class="btn btn-outline-secondary btn-sm" title="{{$edatt}}" onclick="insertCommentAttach('{{$comment}}',{{$id}}); return false;">
 								<i class="fa fa-paperclip comment-icon"></i>
@@ -49,7 +49,7 @@
 							</button>
 						</div>
 						{{if $feature_encrypt}}
-						<div class="btn-group mr-2">
+						<div class="btn-group me-2">
 							<button class="btn btn-outline-secondary btn-sm" title="{{$encrypt}}" onclick="hz_encrypt('{{$cipher}}','#comment-edit-text-' + '{{$id}}'); return false;">
 								<i class="fa fa-key comment-icon"></i>
 							</button>
@@ -57,7 +57,7 @@
 						{{/if}}
 						{{$comment_buttons}}
 					</div>
-					<div class="btn-group float-right" id="comment-edit-submit-wrapper-{{$id}}">
+					<div class="btn-group float-end" id="comment-edit-submit-wrapper-{{$id}}">
 						{{if $preview}}
 						<button id="comment-edit-presubmit-{{$id}}" class="btn btn-outline-secondary btn-sm" onclick="preview_comment({{$id}}); return false;" title="{{$preview}}">
 							<i class="fa fa-eye comment-icon" ></i>

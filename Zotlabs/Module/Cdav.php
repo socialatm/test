@@ -873,10 +873,8 @@ class Cdav extends Controller {
 		if((argv(1) === 'addressbook') && (! Apps::system_app_installed(local_channel(), 'CardDAV'))) {
 			//Do not display any associated widgets at this point
 			App::$pdl = '';
-
-			$o = '<b>' . t('CardDAV App') . ' (' . t('Not Installed') . '):</b><br>';
-			$o .= t('CalDAV capable addressbook');
-			return $o;
+			$papp = Apps::get_papp('CardDAV');
+			return Apps::app_render($papp, 'module');
 		}
 
 		App::$profile_uid = local_channel();
@@ -1059,6 +1057,7 @@ class Cdav extends Controller {
 				'$cancel' => t('Cancel'),
 				'$create' => t('Create'),
 				'$recurrence_warning' => t('Sorry! Editing of recurrent events is not yet implemented.'),
+				'$disabled_warning' => t('Could not fetch calendar resource. The selected calendar might be disabled.'),
 
 				'$channel_hash' => $channel['channel_hash'],
 				'$acl' => $acl,

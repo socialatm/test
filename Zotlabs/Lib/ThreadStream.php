@@ -77,7 +77,7 @@ class ThreadStream {
 				$this->reload = $_SESSION['return_url'];
 				break;
 			case 'display':
-				// in this mode we set profile_owner after initialisation (from conversation()) and then 
+				// in this mode we set profile_owner after initialisation (from conversation()) and then
 				// pull some trickery which allows us to re-invoke this function afterward
 				// it's an ugly hack so @FIXME
 				$this->writable = perm_is_allowed($this->profile_owner,$ob_hash,'post_comments');
@@ -170,14 +170,14 @@ class ThreadStream {
 		 * Only add things that will be displayed
 		 */
 
-		
+
 		if(($item->get_data_value('id') != $item->get_data_value('parent')) && (activity_match($item->get_data_value('verb'),ACTIVITY_LIKE) || activity_match($item->get_data_value('verb'),ACTIVITY_DISLIKE))) {
 			return false;
 		}
 
 		$item->set_commentable(false);
 		$ob_hash = (($this->observer) ? $this->observer['xchan_hash'] : '');
-		
+
 		if(! comments_are_now_closed($item->get_data())) {
 			if(($item->get_data_value('author_xchan') === $ob_hash) || ($item->get_data_value('owner_xchan') === $ob_hash))
 				$item->set_commentable(true);
@@ -194,7 +194,7 @@ class ThreadStream {
 		}
 		if($this->mode === 'pubstream' && (! local_channel())) {
 			$item->set_commentable(false);
-		} 
+		}
 
 
 		$item->set_conversation($this);

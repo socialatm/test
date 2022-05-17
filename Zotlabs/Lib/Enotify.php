@@ -69,24 +69,24 @@ class Enotify {
 		$sender_name = $product;
 		$hostname = \App::get_hostname();
 		if(strpos($hostname,':'))
-			$hostname = substr($hostname,0,strpos($hostname,':'));
+			$hostname = substr($hostname, 0, strpos($hostname,':'));
 
 		// Do not translate 'noreply' as it must be a legal 7-bit email address
 
-		$reply_email = get_config('system','reply_address');
+		$reply_email = get_config('system', 'reply_address');
 		if(! $reply_email)
 			$reply_email = 'noreply' . '@' . $hostname;
 
-		$sender_email = get_config('system','from_email');
+		$sender_email = get_config('system', 'from_email');
 		if(! $sender_email)
 			$sender_email = 'Administrator' . '@' . $hostname;
 
-		$sender_name = get_config('system','from_email_name');
+		$sender_name = get_config('system', 'from_email_name');
 		if(! $sender_name)
 			$sender_name = \Zotlabs\Lib\System::get_site_name();
 
 
-		$additional_mail_header = "";
+		$additional_mail_header = '';
 
 		if(array_key_exists('item', $params)) {
 			require_once('include/conversation.php');
@@ -114,27 +114,28 @@ class Enotify {
 		}
 
 
-	$always_show_in_notices = get_pconfig($recip['channel_id'],'system','always_show_in_notices');
-	$vnotify = get_pconfig($recip['channel_id'],'system','vnotify');
+	$always_show_in_notices = get_pconfig($recip['channel_id'], 'system', 'always_show_in_notices');
+	$vnotify = get_pconfig($recip['channel_id'], 'system', 'vnotify');
 
 	$salutation = $recip['channel_name'];
 
 	// e.g. "your post", "David's photo", etc.
 	$possess_desc = t('%s <!item_type!>');
 
+// @@TODO: consider using switch instead of those elseif
 	if ($params['type'] == NOTIFY_MAIL) {
 		logger('notification: mail');
-		$subject = 	sprintf( t('[$Projectname:Notify] New mail received at %s'),$sitename);
+		$subject = 	sprintf( t('[$Projectname:Notify] New direct message received at %s'), $sitename);
 
-		$preamble = sprintf( t('%1$s sent you a new private message at %2$s.'), $sender['xchan_name'],$sitename);
-		$epreamble = sprintf( t('%1$s sent you %2$s.'),'[zrl=' . $sender['xchan_url'] . ']' . $sender['xchan_name'] . '[/zrl]', '[zrl=$itemlink]' . t('a private message') . '[/zrl]');
-		$sitelink = t('Please visit %s to view and/or reply to your private messages.');
-		$tsitelink = sprintf( $sitelink, $siteurl . '/mail/' . $params['item']['id'] );
-		$hsitelink = sprintf( $sitelink, '<a href="' . $siteurl . '/mail/' . $params['item']['id'] . '">' . $sitename . '</a>');
-		$itemlink = $siteurl . '/mail/' . $params['item']['id'];
+		$preamble = sprintf( t('%1$s sent you a new direct message at %2$s'), $sender['xchan_name'], $sitename);
+		$epreamble = sprintf( t('%1$s sent you %2$s.'), '[zrl=' . $sender['xchan_url'] . ']' . $sender['xchan_name'] . '[/zrl]', '[zrl=$itemlink]' . t('a direct message') . '[/zrl]');
+		$sitelink = t('Please visit %s to view and/or reply to your direct messages.');
+		$tsitelink = sprintf( $sitelink, $siteurl . '/hq/' . gen_link_id($params['item']['mid']));
+		$hsitelink = sprintf( $sitelink, '<a href="' . $siteurl . '/hq/' . gen_link_id($params['item']['mid']) . '">' . $sitename . '</a>');
+		$itemlink = $siteurl . '/hq/' . gen_link_id($params['item']['mid']);
 	}
 
-	if ($params['type'] == NOTIFY_COMMENT) {
+	elseif ($params['type'] === NOTIFY_COMMENT) {
 		//logger("notification: params = " . print_r($params, true), LOGGER_DEBUG);
 
 		$moderated = (($params['item']['item_blocked'] == ITEM_MODERATED) ? true : false);
@@ -171,7 +172,6 @@ class Enotify {
 		// Check to see if there was already a notify for this post.
 		// If so don't create a second notification
 
-		$p = null;
 		$p = q("select id from notify where link = '%s' and uid = %d limit 1",
 			dbesc($params['link']),
 			intval($recip['channel_id'])
@@ -196,6 +196,7 @@ class Enotify {
 
 		xchan_query($p);
 
+//@@FIXME $p can be null (line 188)
 		$item_post_type = item_post_type($p[0]);
 //		$private = $p[0]['item_private'];
 		$parent_id = $p[0]['id'];
@@ -237,7 +238,7 @@ class Enotify {
 			$subject = sprintf( t('[$Projectname:Notify] Moderated Comment to conversation #%1$d by %2$s'), $parent_id, $sender['xchan_name']);
 		else
 			$subject = sprintf( t('[$Projectname:Notify] Comment to conversation #%1$d by %2$s'), $parent_id, $sender['xchan_name']);
-		$preamble = sprintf( t('%1$s commented on an item/conversation you have been following.'), $sender['xchan_name']);
+		$preamble = sprintf( t('%1$s commented on an item/conversation you have been following'), $sender['xchan_name']);
 		$epreamble = $dest_str;
 
 		$sitelink = t('Please visit %s to view and/or reply to the conversation.');
@@ -250,12 +251,12 @@ class Enotify {
 
 	}
 
-	if ($params['type'] == NOTIFY_LIKE) {
+	elseif ($params['type'] === NOTIFY_LIKE) {
 //		logger("notification: params = " . print_r($params, true), LOGGER_DEBUG);
 
 		$itemlink =  $params['link'];
 
-		if (array_key_exists('item',$params) && (! activity_match($params['item']['verb'],ACTIVITY_LIKE))) {
+		if (array_key_exists('item',$params) && activity_match($params['item']['verb'],ACTIVITY_LIKE)) {
 			if(! $always_show_in_notices  || !($vnotify & VNOTIFY_LIKE)) {
 				logger('notification: not a visible activity. Ignoring.');
 				pop_lang();
@@ -268,7 +269,6 @@ class Enotify {
 		// Check to see if there was already a notify for this post.
 		// If so don't create a second notification
 
-		$p = null;
 		$p = q("select id from notify where link = '%s' and uid = %d limit 1",
 			dbesc($params['link']),
 			intval($recip['channel_id'])
@@ -293,7 +293,7 @@ class Enotify {
 
 		xchan_query($p);
 
-
+//@@FIXME $p can be null (line 285)
 		$item_post_type = item_post_type($p[0]);
 //		$private = $p[0]['item_private'];
 		$parent_id = $p[0]['id'];
@@ -302,7 +302,7 @@ class Enotify {
 
 
 		// "your post"
-		if($p[0]['owner']['xchan_name'] == $p[0]['author']['xchan_name'] && intval($p[0]['item_wall']))
+		if($p[0]['owner']['xchan_name'] === $p[0]['author']['xchan_name'] && intval($p[0]['item_wall']))
 			$dest_str = sprintf(t('%1$s liked [zrl=%2$s]your %3$s[/zrl]'),
 				'[zrl=' . $sender['xchan_url'] . ']' . $sender['xchan_name'] . '[/zrl]',
 				$itemlink,
@@ -318,7 +318,7 @@ class Enotify {
 		// differents subjects for messages on the same thread.
 
 		$subject = sprintf( t('[$Projectname:Notify] Like received to conversation #%1$d by %2$s'), $parent_id, $sender['xchan_name']);
-		$preamble = sprintf( t('%1$s liked an item/conversation you created.'), $sender['xchan_name']);
+		$preamble = sprintf( t('%1$s liked an item/conversation you created'), $sender['xchan_name']);
 		$epreamble = $dest_str;
 
 		$sitelink = t('Please visit %s to view and/or reply to the conversation.');
@@ -328,7 +328,7 @@ class Enotify {
 
 
 
-	if($params['type'] == NOTIFY_WALL) {
+	elseif($params['type'] === NOTIFY_WALL) {
 		$subject = sprintf( t('[$Projectname:Notify] %s posted to your profile wall') , $sender['xchan_name']);
 
 		$preamble = sprintf( t('%1$s posted to your profile wall at %2$s') , $sender['xchan_name'], $sitename);
@@ -343,9 +343,8 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_TAGSELF) {
+	elseif ($params['type'] === NOTIFY_TAGSELF) {
 
-		$p = null;
 		$p = q("select id from notify where link = '%s' and uid = %d limit 1",
 			dbesc($params['link']),
 			intval($recip['channel_id'])
@@ -368,7 +367,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_POKE) {
+	elseif ($params['type'] === NOTIFY_POKE) {
 		$subject =	sprintf( t('[$Projectname:Notify] %1$s poked you') , $sender['xchan_name']);
 		$preamble = sprintf( t('%1$s poked you at %2$s') , $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('%1$s [zrl=%2$s]poked you[/zrl].') ,
@@ -385,7 +384,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_TAGSHARE) {
+	elseif ($params['type'] === NOTIFY_TAGSHARE) {
 		$subject =	sprintf( t('[$Projectname:Notify] %s tagged your post') , $sender['xchan_name']);
 		$preamble = sprintf( t('%1$s tagged your post at %2$s'),$sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('%1$s tagged [zrl=%2$s]your post[/zrl]') ,
@@ -398,7 +397,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_INTRO) {
+	elseif ($params['type'] === NOTIFY_INTRO) {
 		$subject = sprintf( t('[$Projectname:Notify] Introduction received'));
 		$preamble = sprintf( t('You\'ve received an new connection request from \'%1$s\' at %2$s'), $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('You\'ve received [zrl=%1$s]a new connection request[/zrl] from %2$s.'),
@@ -412,7 +411,7 @@ class Enotify {
 		$itemlink = $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_SUGGEST) {
+	elseif ($params['type'] === NOTIFY_SUGGEST) {
 		$subject = sprintf( t('[$Projectname:Notify] Friend suggestion received'));
 		$preamble = sprintf( t('You\'ve received a friend suggestion from \'%1$s\' at %2$s'), $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('You\'ve received [zrl=%1$s]a friend suggestion[/zrl] for %2$s from %3$s.'),
@@ -430,11 +429,11 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	if ($params['type'] == NOTIFY_CONFIRM) {
+	elseif ($params['type'] === NOTIFY_CONFIRM) {
 		// ?
 	}
 
-	if ($params['type'] == NOTIFY_SYSTEM) {
+	elseif ($params['type'] === NOTIFY_SYSTEM) {
 		// ?
 	}
 
@@ -477,7 +476,7 @@ class Enotify {
 	} while ($dups === true);
 
 
-	$datarray = array();
+	$datarray = [];
 	$datarray['hash']   = $hash;
 	$datarray['sender_hash'] = $sender['xchan_hash'];
 	$datarray['xname']   = $sender['xchan_name'];
@@ -514,7 +513,7 @@ class Enotify {
 	// (probably would be better that way)
 
 	if (!$always_show_in_notices) {
-		if (($params['type'] == NOTIFY_WALL) || ($params['type'] == NOTIFY_MAIL) || ($params['type'] == NOTIFY_INTRO)) {
+		if (($params['type'] === NOTIFY_WALL) || ($params['type'] === NOTIFY_MAIL) || ($params['type'] === NOTIFY_INTRO)) {
 			$seen = 1;
 		}
 	}
@@ -550,12 +549,12 @@ class Enotify {
 	}
 
 	$itemlink = z_root() . '/notify/view/' . $notify_id;
-	$msg = str_replace('$itemlink',$itemlink,$epreamble);
+	$msg = str_replace('$itemlink', $itemlink, $epreamble);
 
 	// wretched hack, but we don't want to duplicate all the preamble variations and we also don't want to screw up a translation
 
 	if ((\App::$language === 'en' || (! \App::$language)) && strpos($msg,', '))
-		$msg = substr($msg,strpos($msg,', ')+1);
+		$msg = substr($msg, strpos($msg,', ')+1);
 
 	$datarray['id'] = $notify_id;
 	$datarray['msg'] = $msg;
@@ -575,7 +574,7 @@ class Enotify {
 
 		logger('notification: sending notification email');
 
-		$hn = get_pconfig($recip['channel_id'],'system','email_notify_host');
+		$hn = get_pconfig($recip['channel_id'], 'system', 'email_notify_host');
 		if($hn && (! stristr(\App::get_hostname(),$hn))) {
 			// this isn't the email notification host
 			pop_lang();
@@ -584,7 +583,7 @@ class Enotify {
 
 		$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(array("\\r", "\\n"), array( "", "\n"), $body))),ENT_QUOTES,'UTF-8'));
 
-		$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array("","<br />\n"),$body)));
+		$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array('',"<br />\n"),$body)));
 
 
 		// use $_SESSION['zid_override'] to force zid() to use
@@ -601,7 +600,7 @@ class Enotify {
 		unset($_SESSION['zid_override']);
 		unset($_SESSION['zrl_override']);
 
-		$datarray = array();
+		$datarray = [];
 		$datarray['banner']       = $banner;
 		$datarray['product']      = $product;
 		$datarray['preamble']     = $preamble;
@@ -758,9 +757,9 @@ class Enotify {
 		$messageSubject = email_header_encode(html_entity_decode($params['messageSubject'],ENT_QUOTES,'UTF-8'),'UTF-8');
 
 		// generate a mime boundary
-		$mimeBoundary = rand(0, 9) . "-"
-				.rand(100000000, 999999999) . "-"
-				.rand(100000000, 999999999) . "=:"
+		$mimeBoundary = rand(0, 9) . '-'
+				.rand(100000000, 999999999) . '-'
+				.rand(100000000, 999999999) . '=:'
 				.rand(10000, 99999);
 
 		// generate a multipart/alternative message header
@@ -768,7 +767,7 @@ class Enotify {
 			$params['additionalMailHeader'] .
 			"From: $fromName <{$params['fromEmail']}>" . PHP_EOL .
 			"Reply-To: $fromName <{$params['replyTo']}>" . PHP_EOL .
-			"MIME-Version: 1.0" . PHP_EOL .
+			'MIME-Version: 1.0' . PHP_EOL .
 			"Content-Type: multipart/alternative; boundary=\"{$mimeBoundary}\"";
 
 		// assemble the final multipart message body with the text and html types included
@@ -776,15 +775,15 @@ class Enotify {
 		$htmlBody = chunk_split(base64_encode($params['htmlVersion']));
 
 		$multipartMessageBody =
-			"--" . $mimeBoundary . PHP_EOL .					// plain text section
-			"Content-Type: text/plain; charset=UTF-8" . PHP_EOL .
-			"Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL .
+			'--' . $mimeBoundary . PHP_EOL .					// plain text section
+			'Content-Type: text/plain; charset=UTF-8' . PHP_EOL .
+			'Content-Transfer-Encoding: base64' . PHP_EOL . PHP_EOL .
 			$textBody . PHP_EOL .
-			"--" . $mimeBoundary . PHP_EOL .					// text/html section
-			"Content-Type: text/html; charset=UTF-8" . PHP_EOL .
-			"Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL .
+			'--' . $mimeBoundary . PHP_EOL .					// text/html section
+			'Content-Type: text/html; charset=UTF-8' . PHP_EOL .
+			'Content-Transfer-Encoding: base64' . PHP_EOL . PHP_EOL .
 			$htmlBody . PHP_EOL .
-			"--" . $mimeBoundary . "--" . PHP_EOL;					// message ending
+			'--' . $mimeBoundary . '--' . PHP_EOL;					// message ending
 
 		// send the message
 		$res = mail(
@@ -793,7 +792,7 @@ class Enotify {
 			$multipartMessageBody,							// message body
 			$messageHeader									// message headers
 		);
-		logger("notification: enotify::send returns " . (($res) ? 'success' : 'failure'), LOGGER_DEBUG);
+		logger('notification: enotify::send returns ' . (($res) ? 'success' : 'failure'), LOGGER_DEBUG);
 		return $res;
 	}
 
@@ -833,13 +832,12 @@ class Enotify {
 		$edit = false;
 
 		if($item['edited'] > $item['created']) {
+			$edit = true;
 			if($item['item_thread_top']) {
 				$itemem_text = sprintf( t('edited a post dated %s'), relative_date($item['created']));
-				$edit = true;
 			}
 			else {
 				$itemem_text = sprintf( t('edited a comment dated %s'), relative_date($item['created']));
-				$edit = true;
 			}
 		}
 
@@ -847,6 +845,10 @@ class Enotify {
 		// convert this logic into a json array just like the system notifications
 
 		$who = (($item['verb'] === ACTIVITY_SHARE) ? 'owner' : 'author');
+		$body = html2plain(bbcode($item['body'], ['drop_media']), 75, true);
+		if ($body) {
+			$body = htmlentities($body, ENT_QUOTES, 'UTF-8', false);
+		}
 
 		$x = array(
 			'notify_link' => $item['llink'],
@@ -856,18 +858,18 @@ class Enotify {
 			'photo' => $item[$who]['xchan_photo_s'],
 			'when' => (($edit) ? datetime_convert('UTC', date_default_timezone_get(), $item['edited']) : datetime_convert('UTC', date_default_timezone_get(), $item['created'])),
 			'class' => (intval($item['item_unseen']) ? 'notify-unseen' : 'notify-seen'),
-			'b64mid' => (($item['mid']) ? 'b64.' . base64url_encode($item['mid']) : ''),
-			//'b64mid' => ((in_array($item['verb'], [ACTIVITY_LIKE, ACTIVITY_DISLIKE])) ? 'b64.' . base64url_encode($item['thr_parent']) : 'b64.' . base64url_encode($item['mid'])),
+			'b64mid' => (($item['mid']) ? gen_link_id($item['mid']) : ''),
+			//'b64mid' => ((in_array($item['verb'], [ACTIVITY_LIKE, ACTIVITY_DISLIKE])) ? gen_link_id($item['thr_parent']) : gen_link_id($item['mid'])),
 			'thread_top' => (($item['item_thread_top']) ? true : false),
 			'message' => bbcode(escape_tags($itemem_text)),
-			'body' =>  htmlentities(html2plain(bbcode($item['body']), 75, true), ENT_QUOTES, 'UTF-8', false),
+			'body' => $body,
 			// these are for the superblock addon
 			'hash' => $item[$who]['xchan_hash'],
 			'uid' => $item['uid'],
 			'display' => true
 		);
 
-		call_hooks('enotify_format',$x);
+		call_hooks('enotify_format', $x);
 		if(! $x['display']) {
 			return [];
 		}
@@ -884,9 +886,9 @@ class Enotify {
 
 		$mid = basename($tt['link']);
 
-		$b64mid = ((strpos($mid, 'b64.') === 0) ? $mid : 'b64.' . base64url_encode($mid));
+		$b64mid = gen_link_id($mid);
 		$x = [
-			'notify_link' => z_root() . '/notify/view/' . $tt['id'],
+			'notify_link' => (($tt['ntype'] === NOTIFY_MAIL) ? $tt['link'] : z_root() . '/notify/view/' . $tt['id']),
 			'name' => $tt['xname'],
 			'url' => $tt['url'],
 			'photo' => $tt['photo'],
@@ -903,8 +905,8 @@ class Enotify {
 
 	static public function format_intros($rr) {
 
-		$x = [
-			'notify_link' => z_root() . '/connections/ifpending',
+		return [
+			'notify_link' => z_root() . '/connections#' . $rr['abook_id'],
 			'name' => $rr['xchan_name'],
 			'addr' => $rr['xchan_addr'],
 			'url' => $rr['xchan_url'],
@@ -914,13 +916,11 @@ class Enotify {
 			'message' => t('added your channel')
 		];
 
-		return $x;
-
 	}
 
 	static public function format_files($rr) {
 
-		$x = [
+		return [
 			'notify_link' => z_root() . '/sharedwithme',
 			'name' => $rr['author']['xchan_name'],
 			'addr' => $rr['author']['xchan_addr'],
@@ -931,13 +931,11 @@ class Enotify {
 			'message' => t('shared a file with you')
 		];
 
-		return $x;
-
 	}
 
 	static public function format_mail($rr) {
 
-		$x = [
+		return [
 			'notify_link' => z_root() . '/mail/' . $rr['id'],
 			'name' => $rr['xchan_name'],
 			'addr' => $rr['xchan_addr'],
@@ -945,10 +943,8 @@ class Enotify {
 			'photo' => $rr['xchan_photo_s'],
 			'when' => datetime_convert('UTC', date_default_timezone_get(), $rr['created']),
 			'hclass' => (intval($rr['mail_seen']) ? 'notify-seen' : 'notify-unseen'),
-			'message' => t('sent you a private message'),
+			'message' => t('sent you a direct message'),
 		];
-
-		return $x;
 
 	}
 
@@ -959,7 +955,7 @@ class Enotify {
 		$today = ((substr($strt, 0, 10) === datetime_convert('UTC', date_default_timezone_get(), 'now', 'Y-m-d')) ? true : false);
 		$when = day_translate(datetime_convert('UTC', (($rr['adjust']) ? date_default_timezone_get() : 'UTC'), $rr['dtstart'], $bd_format)) . (($today) ?  ' ' . t('[today]') : '');
 
-		$x = [
+		return [
 			'notify_link' => z_root() . '/cdav/calendar/' . $rr['event_hash'],
 			'name'        => $rr['xchan_name'],
 			'addr'        => $rr['xchan_addr'],
@@ -970,13 +966,12 @@ class Enotify {
 			'message'     => t('created an event')
 		];
 
-		return $x;
 
 	}
 
 	static public function format_register($rr) {
 
-		$x = [
+		return [
 			'notify_link' => z_root() . '/admin/accounts',
 			'name' => $rr['reg_did2'],
 			//'addr' => '',
@@ -985,8 +980,6 @@ class Enotify {
 			'hclass' => ('notify-unseen'),
 			'message' => t('status verified')
 		];
-
-		return $x;
 
 	}
 }

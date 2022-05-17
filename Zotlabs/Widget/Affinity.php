@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Affinity Tool
+ *   * Description: Filter the network stream by affinity, requires the Affinity Tool App
+ *   * Requires: network
+ */
+
 namespace Zotlabs\Widget;
 
 use Zotlabs\Lib\Apps;
@@ -13,7 +19,7 @@ class Affinity {
 
 		if(! Apps::system_app_installed(local_channel(),'Affinity Tool'))
 			return;
-        
+
 		$default_cmin = ((Apps::system_app_installed(local_channel(),'Affinity Tool')) ? get_pconfig(local_channel(),'affinity','cmin',0) : 0);
 		$default_cmax = ((Apps::system_app_installed(local_channel(),'Affinity Tool')) ? get_pconfig(local_channel(),'affinity','cmax',99) : 99);
 
@@ -54,7 +60,7 @@ class Affinity {
 			'$refresh' => t('Refresh'),
 			'$labels' => $label_str,
 		));
-	
+
 		$arr = array('html' => $x);
 		call_hooks('main_slider',$arr);
 
@@ -63,4 +69,4 @@ class Affinity {
 
 	}
 }
- 
+

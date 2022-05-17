@@ -12,7 +12,7 @@
 		"name": "bat"
 	},
 	"ETB": {
-		"name": "bir"
+		"name": "birr"
 	},
 	"VES": {
 		"name": "bolívar venezolano"
@@ -66,7 +66,7 @@
 		"name": "dinar argelino"
 	},
 	"BHD": {
-		"name": "dinar bahreiní"
+		"name": "dinar bareiní"
 	},
 	"IQD": {
 		"name": "dinar iraquí"
@@ -96,7 +96,7 @@
 		"name": "dírham marroquí"
 	},
 	"STN": {
-		"name": "dobra santotomense"
+		"name": "dobra"
 	},
 	"AUD": {
 		"name": "dólar australiano"
@@ -269,7 +269,7 @@
 		"name": "leu rumano"
 	},
 	"BGN": {
-		"name": "lev búlgaro"
+		"name": "leva búlgara"
 	},
 	"SHP": {
 		"name": "libra de Santa Elena"
@@ -305,7 +305,7 @@
 		"name": "lira turca"
 	},
 	"LSL": {
-		"name": "loti lesothense"
+		"name": "loti lesotense"
 	},
 	"AZN": {
 		"name": "manat azerbaiyano"
@@ -434,7 +434,7 @@
 		"name": "sol peruano"
 	},
 	"KGS": {
-		"name": "som kirguís"
+		"name": "som"
 	},
 	"TJS": {
 		"name": "somoni tayiko"
@@ -449,7 +449,7 @@
 		"name": "tala"
 	},
 	"KZT": {
-		"name": "tenge kazako"
+		"name": "tenge kazajo"
 	},
 	"MNT": {
 		"name": "tugrik"

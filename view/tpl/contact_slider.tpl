@@ -1,4 +1,4 @@
-<div id="contact-slider" class="slider form-group"><input id="contact-range" type="text" name="fake-closeness" value="{{$val}}" /></div>
+<div id="contact-slider" class="slider mb-3"><input id="contact-range" type="text" name="fake-closeness" value="{{$val}}" /></div>
 <script>
 $(document).ready(function() {
 	// The slider does not render correct if width is given in % and

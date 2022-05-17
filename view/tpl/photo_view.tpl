@@ -1,13 +1,13 @@
 <div id="live-photos"></div>
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<div class="pull-right">
+		<div class="float-end">
 			{{if $tools || $map || $edit}}
 			<div class="btn-group">
-				<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+				<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
 					<i class="fa fa-cog"></i>&nbsp;{{$tools_label}}
 				</button>
-				<div class="dropdown-menu dropdown-menu-right flex-column">
+				<div class="dropdown-menu dropdown-menu-end flex-column">
 					{{if $tools}}
 					<a class="dropdown-item" href="{{$tools.profile.0}}"><i class="fa fa-user"></i>&nbsp;{{$tools.profile.1}}</a>
 					<a class="dropdown-item" href="{{$tools.cover.0}}"><i class="fa fa-picture-o"></i>&nbsp;{{$tools.cover.1}}</a>
@@ -23,8 +23,8 @@
 			{{/if}}
 			{{if $lock}}
 			<div class="btn-group">
-				<button id="lockview" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" title="{{$lock}}" onclick="lockview('photo',{{$id}});" ><i class="fa fa-lock"></i></button>
-				<ul id="panel-{{$id}}" class="lockview-panel dropdown-menu dropdown-menu-right"></ul>
+				<button id="lockview" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" title="{{$lock}}" onclick="lockview('photo',{{$id}});" ><i class="fa fa-lock"></i></button>
+				<ul id="panel-{{$id}}" class="lockview-panel dropdown-menu dropdown-menu-end"></ul>
 			</div>
 			{{/if}}
 			{{if $prevlink || $nextlink}}
@@ -48,7 +48,7 @@
 		<form action="photos/{{$edit.nickname}}/{{$edit.resource_id}}" method="post" id="photo_edit_form" class="acl-form" data-form_id="photo_edit_form" data-allow_cid='{{$edit.allow_cid}}' data-allow_gid='{{$edit.allow_gid}}' data-deny_cid='{{$edit.deny_cid}}' data-deny_gid='{{$edit.deny_gid}}'>
 			<input type="hidden" name="item_id" value="{{$edit.item_id}}" />
 			{{* album renaming is not supported atm.
-			<div class="form-group">
+			<div class="mb-3">
 				<label id="photo-edit-albumname-label" for="photo-edit-albumname">{{$edit.newalbum_label}}</label>
 				<input id="photo-edit-albumname" class="form-control" type="text" name="albname" value="{{$edit.album}}" placeholder="{{$edit.newalbum_placeholder}}" list="dl-albums" />
 				{{if $edit.albums}}
@@ -62,33 +62,35 @@
 				{{/if}}
 			</div>
 			*}}
-			<div class="form-group">
+			<div class="mb-3">
 				<label id="photo-edit-caption-label" for="photo-edit-caption">{{$edit.capt_label}}</label>
 				<input id="photo-edit-caption" class="form-control" type="text" name="desc" value="{{$edit.caption}}" />
 			</div>
+			{{*
 			<div class="form-group">
 				<label id="photo-edit-tags-label" for="photo-edit-newtag">{{$edit.tag_label}}</label>
 				<input name="newtag" id="photo-edit-newtag" class="form-control" title="{{$edit.help_tags}}" type="text" />
 			</div>
+			*}}
 			<div class="form-group">
 				{{include file="field_select.tpl" field=$edit.album_select}}
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label class="radio-inline" id="photo-edit-rotate-cw-label" for="photo-edit-rotate-cw"><input id="photo-edit-rotate-cw" type="radio" name="rotate" value="1" />{{$edit.rotatecw}}</label>
 				<label class="radio-inline" id="photo-edit-rotate-ccw-label" for="photo-edit-rotate-ccw"><input id="photo-edit-rotate-ccw" type="radio" name="rotate" value="2" />{{$edit.rotateccw}}</label>
 			</div>
 			{{if $edit.adult_enabled}}
-			<div class="form-group">
+			<div class="mb-3">
 			{{include file="field_checkbox.tpl" field=$edit.adult}}
 			</div>
 			{{/if}}
 
-			<div class="form-group pull-left">
+			<div class="mb-3 float-start">
 				<button class="btn btn-danger btn-sm" id="photo-edit-delete-button" type="submit" name="delete" value="{{$edit.delete}}" onclick="return confirmDelete();" />{{$edit.delete}}</button>
 			</div>
-			<div class="form-group btn-group pull-right">
+			<div class="mb-3 btn-group float-end">
 				{{if $edit.aclselect}}
-				<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" onclick="return false;">
+				<button id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" onclick="return false;">
 					<i id="jot-perms-icon" class="fa fa-{{$edit.lockstate}}"></i>
 				</button>
 				{{/if}}
@@ -111,12 +113,12 @@
 		{{/if}}
 		<div class="photo-item-tools">
 			{{if $responses.count }}
-			<div class="photo-item-tools-left pull-left">
+			<div class="photo-item-tools-left float-start">
 				<div class="{{if $responses.count > 1}}btn-group{{/if}}">
 				{{foreach $responses as $verb=>$response}}
 					{{if $response.count}}
 					<div class="btn-group">
-						<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-toggle="dropdown" id="wall-item-{{$verb}}-{{$id}}">{{$response.count}} {{$response.button}}</button>
+						<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-bs-toggle="dropdown" id="wall-item-{{$verb}}-{{$id}}">{{$response.count}} {{$response.button}}</button>
 						{{if $response.list_part}}
 						<ul class="dropdown-menu" role="menu" aria-labelledby="wall-item-{{$verb}}-{{$id}}">{{foreach $response.list_part as $liker}}<li role="presentation">{{$liker}}</li>{{/foreach}}</ul>
 						{{else}}
@@ -127,14 +129,14 @@
 							<div class="modal-dialog">
 								<div class="modal-content">
 									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 										<h4 class="modal-title">{{$response.title}}</h4>
 									</div>
 									<div class="modal-body">
 										<ul>{{foreach $response.list as $liker}}<li role="presentation">{{$liker}}</li>{{/foreach}}</ul>
 									</div>
 									<div class="modal-footer clear">
-										<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{$modal_dismiss}}</button>
+										<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{$modal_dismiss}}</button>
 									</div>
 								</div><!-- /.modal-content -->
 							</div><!-- /.modal-dialog -->
@@ -147,7 +149,7 @@
 			</div>
 			{{/if}}
 			{{if $likebuttons}}
-			<div class="photo-item-tools-right btn-group pull-right">
+			<div class="photo-item-tools-right btn-group float-end">
 				<button type="button" class="btn btn-outline-secondary btn-sm" onclick="dolike({{$likebuttons.id}},'like'); return false">
 					<i class="fa fa-thumbs-o-up" title="{{$likebuttons.likethis}}"></i>
 				</button>
@@ -155,7 +157,7 @@
 					<i class="fa fa-thumbs-o-down" title="{{$likebuttons.nolike}}"></i>
 				</button>
 			</div>
-			<div id="like-rotator-{{$likebuttons.id}}" class="photo-like-rotator pull-right"></div>
+			<div id="like-rotator-{{$likebuttons.id}}" class="photo-like-rotator float-end"></div>
 			{{/if}}
 			<div class="clear"></div>
 		</div>

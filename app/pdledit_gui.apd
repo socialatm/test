@@ -1,0 +1,7 @@
+version: 1
+url: $baseurl/pdledit_gui
+requires: local_channel
+name: PDL Editor
+photo: icon:object-group
+categories: Appearance
+desc: An editor for system page layouts.

@@ -49,8 +49,9 @@ class Directory {
 			);
 
 			// Now update all the connections
-			if ($pushall)
+			if ($pushall) {
 				Master::Summon(array('Notifier', 'refresh_all', $channel['channel_id']));
+			}
 
 			return;
 		}
@@ -74,7 +75,7 @@ class Directory {
 			 * the directory packet. That means we'll try again on the next poll run.
 			 */
 
-			$hash = random_string();
+			$hash = new_uuid();
 
 			Queue::insert(array(
 				'hash'       => $hash,
@@ -93,8 +94,8 @@ class Directory {
 		}
 
 		// Now update all the connections
-		if ($pushall)
+		if ($pushall) {
 			Master::Summon(array('Notifier', 'refresh_all', $channel['channel_id']));
-
+		}
 	}
 }

@@ -40,6 +40,9 @@
 	"BBD": {
 		"name": "Barbadaanse dollar"
 	},
+	"BYN": {
+		"name": "Belarussische roebel"
+	},
 	"BZD": {
 		"name": "Belizaanse dollar"
 	},
@@ -87,7 +90,7 @@
 	},
 	"XOF": {
 		"name": "CFA-franc BCEAO",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XAF": {
 		"name": "CFA-frank",
@@ -469,9 +472,6 @@
 	"VND": {
 		"name": "Vietnamese dong",
 		"symbol": "₫"
-	},
-	"BYN": {
-		"name": "Wit-Russische roebel"
 	},
 	"ZMW": {
 		"name": "Zambiaanse kwacha"

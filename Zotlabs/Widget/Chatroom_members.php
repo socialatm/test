@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Chatroom members
+ *   * Description: A widget that shows members of a chatroom
+ *   * Requires: chat
+ */
+
 namespace Zotlabs\Widget;
 
 class Chatroom_members {

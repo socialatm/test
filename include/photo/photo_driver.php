@@ -247,7 +247,6 @@ function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 			$result = z_fetch_url($photo, true, 0, [ 'headers' => $h ]);
 		}
 
-
 		if(isset($result)) {
 			$hdrs = [];
 			$h = explode("\n", $result['header']);

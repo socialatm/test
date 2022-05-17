@@ -2,9 +2,9 @@
 	<h3>{{$channel_calendars_label}}</h3>
 	{{foreach $channel_calendars as $channel_calendar}}
 	<div id="calendar-{{$channel_calendar.calendarid}}">
-		<div class="ml-3{{if !$channel_calendar@last}} form-group{{/if}}">
+		<div class="ml-3{{if !$channel_calendar@last}} mb-3{{/if}}">
 			<i id="calendar-btn-{{$channel_calendar.calendarid}}" class="fa {{if $channel_calendar.switch}}fa-calendar-check-o{{else}}fa-calendar-o{{/if}} generic-icons fakelink" onclick="add_remove_json_source('{{$channel_calendar.json_source}}', '{{$channel_calendar.color}}', {{$channel_calendar.editable}})" style="color: {{$channel_calendar.color}};"></i>{{$channel_calendar.displayname}}
-			<div class="float-right">
+			<div class="float-end">
 				<a href="#" onclick="exportDate(); return false;"><i id="download-icon" class="fa fa-cloud-download fakelink generic-icons-right"></i></a>
 			</div>
 		</div>
@@ -17,9 +17,9 @@
 	<h3>{{$my_calendars_label}}</h3>
 	{{foreach $my_calendars as $calendar}}
 	<div id="calendar-{{$calendar.calendarid}}">
-		<div class="ml-3{{if !$calendar@last}} form-group{{/if}}">
+		<div class="ml-3{{if !$calendar@last}} mb-3{{/if}}">
 			<i id="calendar-btn-{{$calendar.calendarid}}" class="fa {{if $calendar.switch}}fa-calendar-check-o{{else}}fa-calendar-o{{/if}} generic-icons fakelink" onclick="add_remove_json_source('{{$calendar.json_source}}', '{{$calendar.color}}', {{$calendar.editable}})" style="color: {{$calendar.color}};"></i>{{$calendar.displayname}}
-			<div class="float-right">
+			<div class="float-end">
 				<i id="edit-icon" class="fa fa-pencil fakelink generic-icons" onclick="openClose('edit-calendar-{{$calendar.calendarid}}')"></i>
 				<a href="/cdav/calendars/{{$calendar.ownernick}}/{{$calendar.uri}}/?export"><i id="download-icon" class="fa fa-cloud-download fakelink generic-icons"></i></a>
 				<i id="share-icon" class="fa fa-share-alt fakelink generic-icons" onclick="openClose('share-calendar-{{$calendar.calendarid}}')"></i>
@@ -28,9 +28,9 @@
 			<div id="share-calendar-{{$calendar.calendarid}}" class="sub-menu" style="display: none; border-color: {{$calendar.color}};">
 				{{if $calendar.sharees}}
 				{{foreach $calendar.sharees as $sharee}}
-				<div id="sharee-{{$calendar.calendarid}}-{{$sharee@iteration}}" class="form-group">
+				<div id="sharee-{{$calendar.calendarid}}-{{$sharee@iteration}}" class="mb-3">
 					<i class="fa fa-share generic-icons"></i>{{$sharee.name}}&nbsp;{{$sharee.access}}
-					<div class="pull-right">
+					<div class="float-end">
 						<a href="#" onclick="dropItem('/cdav/calendar/dropsharee/{{$calendar.calendarid}}/{{$calendar.instanceid}}/{{$sharee.hash}}', '#sharee-{{$calendar.calendarid}}-{{$sharee@iteration}}'); return false;"><i class="fa fa-trash-o drop-icons"></i></a>
 					</div>
 				</div>
@@ -40,17 +40,17 @@
 					<label for="share-{{$calendar.calendarid}}">{{$share_label}}</label>
 					<input name="calendarid" type="hidden" value="{{$calendar.calendarid}}">
 					<input name="instanceid" type="hidden" value="{{$calendar.instanceid}}">
-					<div class="form-group">
+					<div class="mb-3">
 						<select id="share-{{$calendar.calendarid}}" name="sharee" class="form-control">
 							{{$sharee_options}}
 						</select>
 					</div>
-					<div class="form-group">
+					<div class="mb-3">
 						<select name="access" class="form-control">
 							{{$access_options}}
 						</select>
 					</div>
-					<div class="form-group">
+					<div class="mb-3">
 						<button type="submit" name="share" value="share" class="btn btn-primary btn-sm">{{$share}}</button>
 					</div>
 				</form>
@@ -60,13 +60,11 @@
 					<input id="id-{{$calendar.calendarid}}" name="id" type="hidden" value="{{$calendar.calendarid}}:{{$calendar.instanceid}}">
 					<input id="color-{{$calendar.calendarid}}" name="color" type="hidden" value="{{$calendar.color}}" class="color-edit-input">
 					<label for="edit-form-{{$calendar.calendarid}}">{{$edit_label}}</label>
-					<div id="edit-form-{{$calendar.calendarid}}" class="input-group form-group">
+					<div id="edit-form-{{$calendar.calendarid}}" class="input-group mb-3">
 						<input id="create-{{$calendar.calendarid}}" name="{DAV:}displayname" type="text" value="{{$calendar.displayname}}" class="form-control">
-						<div class="input-group-append">
-							<div class="input-group-addon p-3"></div>
-						</div>
+						<div class="input-group-addon p-3"></div>
 					</div>
-					<div class="form-group">
+					<div class="mb-3">
 						<button type="submit" name="edit" value="edit" class="btn btn-primary btn-sm">{{$edit}}</button>
 					</div>
 				</form>
@@ -81,9 +79,9 @@
 <div class="widget">
 	<h3>{{$shared_calendars_label}}</h3>
 	{{foreach $shared_calendars as $calendar}}
-	<div id="shared-calendar-{{$calendar.calendarid}}" class="ml-3{{if !$calendar@last}} form-group{{/if}}">
+	<div id="shared-calendar-{{$calendar.calendarid}}" class="ml-3{{if !$calendar@last}} mb-3{{/if}}">
 		<i id="calendar-btn-{{$calendar.calendarid}}" class="fa {{if $calendar.switch}}{{if $calendar.access == 'read-write'}}fa-calendar-check-o{{else}}fa-calendar-times-o{{/if}}{{else}}fa-calendar-o{{/if}} generic-icons fakelink" onclick="add_remove_json_source('{{$calendar.json_source}}', '{{$calendar.color}}', {{$calendar.editable}}, {{if $calendar.access == 'read-write'}}'fa-calendar-check-o'{{else}}'fa-calendar-times-o'{{/if}})"  style="color: {{$calendar.color}};"></i>{{$calendar.displayname}} ({{$calendar.sharer}})
-		<div class="pull-right">
+		<div class="float-end">
 			<a href="/cdav/calendars/{{$calendar.ownernick}}/{{$calendar.uri}}/?export"><i id="download-icon" class="fa fa-cloud-download fakelink generic-icons"></i></a>
 			<a href="#" onclick="var drop = dropItem('/cdav/calendar/drop/{{$calendar.calendarid}}/{{$calendar.instanceid}}', '#shared-calendar-{{$calendar.calendarid}}'); if(drop) { add_remove_json_source('{{$calendar.json_source}}', '{{$calendar.color}}', {{$calendar.editable}}, 'drop'); } return false;"><i class="fa fa-trash-o drop-icons"></i></a>
 		</div>
@@ -102,13 +100,11 @@
 			<div class="sub-menu">
 				<form method="post" action="" class="colorpicker-component color-edit">
 					<input id="color" name="color" type="hidden" value="#ff8f00" class="color-edit-input">
-					<div id="create-form" class="input-group form-group">
+					<div id="create-form" class="input-group mb-3">
 						<input id="create" name="{DAV:}displayname" type="text" placeholder="{{$create_placeholder}}" class="form-control">
-						<div class="input-group-append">
-							<div class="input-group-addon p-3"></div>
-						</div>
+						<div class="input-group-addon p-3"></div>
 					</div>
-					<div class="form-group">
+					<div class="mb-3">
 						<button type="submit" name="create" value="create" class="btn btn-primary btn-sm">{{$create}}</button>
 					</div>
 				</form>
@@ -120,7 +116,7 @@
 		<div id="upload-form" class="sub-menu-wrapper">
 			<div class="sub-menu">
 				<form enctype="multipart/form-data" method="post" action="">
-					<div class="form-group">
+					<div class="mb-3">
 						<select id="import" name="target" class="form-control">
 							<option value="">{{$import_placeholder}}</option>
 							<optgroup label="{{$tools_options_label.0}}">
@@ -131,7 +127,7 @@
 							{{/foreach}}
 						</select>
 					</div>
-					<div class="form-group">
+					<div class="mb-3">
 						<input class="form-control-file w-100" id="event-upload-choose" type="file" name="userfile" />
 					</div>
 					<button class="btn btn-primary btn-sm" type="submit" name="c_upload" value="c_upload">{{$upload}}</button>

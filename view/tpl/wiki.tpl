@@ -1,19 +1,19 @@
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<div class="pull-right">
+		<div class="float-end">
 			<span class="text-muted wiki-typename">[{{$typename}}]&nbsp;</span>
 			{{if $showPageControls}}
 			<div id="page-tools" class="btn-group" style="display: none;">
-				<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+				<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
 					<i class="fa fa-cog"></i>&nbsp;{{$tools_label}}
 				</button>
-				<div class="dropdown-menu dropdown-menu-right">
+				<div class="dropdown-menu dropdown-menu-end">
 					{{if $renamePage}}
 					<a class="dropdown-item rename-page" href="#"><i class="fa fa-fw fa-edit"></i>&nbsp;{{$renamePage}}</a>
 					{{/if}}
 					<a id="embed-image" class="dropdown-item" href="#"><i class="fa fa-fw fa-picture-o"></i>&nbsp;Embed Image</a>
 				</div>
-			</div>	
+			</div>
 			{{/if}}
 			<button type="button" class="btn btn-outline-secondary btn-sm" title="{{$sharePage}}" onclick="window.location.href='rpost?f=&body={{$shareLink}}';"><i class="fa fa-fw fa-share"></i></button>
 			<button id="fullscreen-btn" type="button" class="btn btn-outline-secondary btn-sm" onclick="makeFullScreen(); adjustFullscreenEditorHeight();"><i class="fa fa-expand"></i></button>
@@ -28,8 +28,8 @@
 	<div id="rename-page-form-wrapper" class="section-content-tools-wrapper" style="display:none;">
 		<form id="rename-page-form" action="wiki/rename/page" method="post" >
 			{{include file="field_input.tpl" field=$pageRename}}
-			<div class="form-group">
-				<div class="pull-right">
+			<div class="mb-3">
+				<div class="float-end">
 					<button id="rename-page-submit" class="btn btn-primary" type="submit" name="submit">Submit</button>
 				</div>
 				<div>
@@ -41,9 +41,9 @@
 	</div>
 	<div id="wiki-content-container" class="section-content-wrapper">
 		<ul class="nav nav-tabs" id="wiki-nav-tabs">
-			<li class="nav-item" id="edit-pane-tab"><a class="nav-link" data-toggle="tab" href="#edit-pane">{{$editOrSourceLabel}}</a></li>
-			<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#preview-pane" id="wiki-get-preview">{{$view_lbl}}</a></li>
-			<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#page-history-pane" id="wiki-get-history">{{$history_lbl}}</a></li>
+			<li class="nav-item" id="edit-pane-tab"><a class="nav-link" data-bs-toggle="tab" href="#edit-pane">{{$editOrSourceLabel}}</a></li>
+			<li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#preview-pane" id="wiki-get-preview">{{$view_lbl}}</a></li>
+			<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#page-history-pane" id="wiki-get-history">{{$history_lbl}}</a></li>
 		</ul>
 		<div class="tab-content" id="wiki-page-tabs">
 			<div id="edit-pane" class="tab-pane">
@@ -67,9 +67,7 @@
 			<div id="id_{{$commitMsg.0}}_wrapper" class="field input" style="display: none">
 				<div class="input-group">
 					<input class="form-control" name="{{$commitMsg.0}}" id="id_{{$commitMsg.0}}" type="text" value="{{$commitMsg.2}}"{{if $commitMsg.5}} {{$commitMsg.5}}{{/if}}>
-					<div class="input-group-append">
-						<button id="save-page" type="button" class="btn btn-sm btn-primary disabled">Save</button>
-					</div>
+					<button id="save-page" type="button" class="btn btn-primary disabled">Save</button>
 				</div>
 			</div>
 			{{/if}}
@@ -84,7 +82,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="embedPhotoModalLabel">{{$embedPhotosModalTitle}}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="modal-body" id="embedPhotoModalBody" >
 				<div id="embedPhotoModalBodyAlbumListDialog" class="d-none">
@@ -114,10 +112,10 @@
 	$( "#rename-page-form" ).submit(function( event ) {
 		$.post("wiki/{{$channel_address}}/rename/page",
 		{
-			oldName: window.wiki_page_name, 
-			newName: $('#id_pageRename').val(), 
+			oldName: window.wiki_page_name,
+			newName: $('#id_pageRename').val(),
 			resource_id: window.wiki_resource_id
-		}, 
+		},
 		function (data) {
 			if (data.success) {
 				$('#rename-page-form-wrapper').hide();
@@ -128,7 +126,7 @@
 			} else {
 				window.console.log('Error renaming page.');
 			}
-		}, 'json');    
+		}, 'json');
 		event.preventDefault();
 	});
 
@@ -253,11 +251,11 @@
 			return false;
 		}
 		$.post("wiki/{{$channel_address}}/save/page", {
-			content: currentContent, 
+			content: currentContent,
 			commitMsg: $('#id_commitMsg').val(),
-			name: window.wiki_page_name, 
+			name: window.wiki_page_name,
 			resource_id: window.wiki_resource_id
-		}, 
+		},
 		function (data) {
 			if (data.success) {
 				window.saved = true;
@@ -273,7 +271,7 @@
 				window.editor.focus();  // Return focus to the editor for continued editing
 				// $('#wiki-get-history').click();
 			} else {
-				alert('Error saving page.'); // TODO: Replace alerts with auto-timeout popups 
+				alert('Error saving page.'); // TODO: Replace alerts with auto-timeout popups
 				window.console.log('Error saving page.');
 			}
 		}, 'json');
@@ -309,11 +307,11 @@
 			return false;
 		}
 		$.post("wiki/{{$channel_address}}/compare/page", {
-			compareCommit: compareCommit, 
-			currentCommit: window.wiki_page_commit, 
-			name: window.wiki_page_name, 
+			compareCommit: compareCommit,
+			currentCommit: window.wiki_page_commit,
+			name: window.wiki_page_name,
 			resource_id: window.wiki_resource_id
-		}, 
+		},
 		function (data) {
 			console.log(data);
 			if (data.success) {
@@ -325,7 +323,7 @@
 					wiki_revert_page(compareCommit);
 					$('#generic-modal-{{$wikiModalID}}').modal('hide');
 				});
-				$('#generic-modal-{{$wikiModalID}}').modal();
+				$('#generic-modal-{{$wikiModalID}}').modal('show');
 			} else {
 				window.console.log('Error comparing page.');
 			}
@@ -366,7 +364,7 @@
 		});
 		getPhotoAlbumList();
 		$('#embedPhotoModalBodyAlbumDialog').off('click');
-		$('#embedPhotoModal').modal();
+		$('#embedPhotoModal').modal('show');
 	};
 
 	var choosePhotoFromAlbum = function (album) {

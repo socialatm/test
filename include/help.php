@@ -2,6 +2,7 @@
 
 use \Michelf\MarkdownExtra;
 
+require_once('include/items.php');
 
 /**
  * @brief

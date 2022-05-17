@@ -69,21 +69,21 @@ $(document).ready(function() {
 
 });
 </script>
-<div id="template-form-vcard-org" class="form-group form-vcard-org">
-	<div class="form-group form-vcard-org">
+<div id="template-form-vcard-org" class="mb-3 form-vcard-org">
+	<div class="mb-3 form-vcard-org">
 		<input type="text" name="org" value="" placeholder="{{$org_label}}">
 		<i data-remove="vcard-org" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 	</div>
 </div>
 
-<div id="template-form-vcard-title" class="form-group form-vcard-title">
-	<div class="form-group form-vcard-title">
+<div id="template-form-vcard-title" class="mb-3 form-vcard-title">
+	<div class="mb-3 form-vcard-title">
 		<input type="text" name="title" value="" placeholder="{{$title_label}}">
 		<i data-remove="vcard-title" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 	</div>
 </div>
 
-<div id="template-form-vcard-tel" class="form-group form-vcard-tel">
+<div id="template-form-vcard-tel" class="mb-3 form-vcard-tel">
 	<select name="tel_type[]">
 		<option value="CELL">{{$mobile}}</option>
 		<option value="HOME">{{$home}}</option>
@@ -94,7 +94,7 @@ $(document).ready(function() {
 	<i data-remove="vcard-tel" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 </div>
 
-<div id="template-form-vcard-email" class="form-group form-vcard-email">
+<div id="template-form-vcard-email" class="mb-3 form-vcard-email">
 	<select name="email_type[]">
 		<option value="HOME">{{$home}}</option>
 		<option value="WORK">{{$work}}</option>
@@ -104,7 +104,7 @@ $(document).ready(function() {
 	<i data-remove="vcard-email" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 </div>
 
-<div id="template-form-vcard-impp" class="form-group form-vcard-impp">
+<div id="template-form-vcard-impp" class="mb-3 form-vcard-impp">
 	<select name="impp_type[]">
 		<option value="HOME">{{$home}}</option>
 		<option value="WORK">{{$work}}</option>
@@ -114,7 +114,7 @@ $(document).ready(function() {
 	<i data-remove="vcard-impp" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 </div>
 
-<div id="template-form-vcard-url" class="form-group form-vcard-url">
+<div id="template-form-vcard-url" class="mb-3 form-vcard-url">
 	<select name="url_type[]">
 		<option value="HOME">{{$home}}</option>
 		<option value="WORK">{{$work}}</option>
@@ -124,8 +124,8 @@ $(document).ready(function() {
 	<i data-remove="vcard-url" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 </div>
 
-<div id="template-form-vcard-adr" class="form-group form-vcard-adr">
-	<div class="form-group">
+<div id="template-form-vcard-adr" class="mb-3 form-vcard-adr">
+	<div class="mb-3">
 		<select name="adr_type[]">
 			<option value="HOME">{{$home}}</option>
 			<option value="WORK">{{$work}}</option>
@@ -134,30 +134,30 @@ $(document).ready(function() {
 		<label>{{$adr_label}}</label>
 		<i data-remove="vcard-adr" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$po_box}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$extra}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$street}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$locality}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$region}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$zip_code}}">
 	</div>
-	<div class="form-group">
+	<div class="mb-3">
 		<input type="text" name="" value="" placeholder="{{$country}}">
 	</div>
 </div>
 
-<div id="template-form-vcard-note" class="form-group form-vcard-note">
+<div id="template-form-vcard-note" class="mb-3 form-vcard-note">
 	<label>{{$note_label}}</label>
 	<i data-remove="vcard-note" data-id="" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 	<textarea name="note" class="form-control"></textarea>
@@ -165,15 +165,15 @@ $(document).ready(function() {
 
 <div class="generic-content-wrapper">
 	<div class="section-title-wrapper">
-		<button type="button" class="btn btn-success btn-sm float-right" onclick="openClose('create_form')"><i class="fa fa-plus-circle"></i> {{$add_card}}</button>
+		<button type="button" class="btn btn-success btn-sm float-end" onclick="openClose('create_form')"><i class="fa fa-plus-circle"></i> {{$add_card}}</button>
 		<h2>{{$displayname}}</h2>
 	</div>
 	<div id="create_form" class="section-content-tools-wrapper">
 		<form id="card_form_new" method="post" action="">
 			<input type="hidden" name="target" value="{{$id}}">
-			<div class="dropdown pull-right">
-				<button data-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
-				<div class="dropdown-menu dropdown-menu-right">
+			<div class="dropdown float-end">
+				<button data-bs-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
+				<div class="dropdown-menu dropdown-menu-end">
 					<a class="dropdown-item add-vcard-org add-field" style="display: none" href="#" data-add="vcard-org" data-id="new">{{$org_label}}</a>
 					<a class="dropdown-item add-vcard-title add-field" style="display: none" href="#" data-add="vcard-title" data-id="new">{{$title_label}}</a>
 					<a class="dropdown-item add-vcard-tel add-field" href="#" data-add="vcard-tel" data-id="new">{{$tel_label}}</a>
@@ -185,35 +185,35 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-fn-create form-group">
+			<div class="vcard-fn-create mb-3">
 				<div class="form-vcard-fn-wrapper">
-					<div class="form-group form-vcard-fn">
+					<div class="mb-3 form-vcard-fn">
 						<div class="vcard-nophoto"><i class="fa fa-user"></i></div><input type="text" name="fn" value="" placeholder="{{$name_label}}">
 					</div>
 				</div>
 			</div>
 
-			<div class="vcard-org form-group">
+			<div class="vcard-org mb-3">
 				<div class="form-vcard-org-wrapper">
-					<div class="form-group form-vcard-org">
+					<div class="mb-3 form-vcard-org">
 						<input type="text" name="org" value="" placeholder="{{$org_label}}">
 						<i data-remove="vcard-org" data-id="new" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 					</div>
 				</div>
 			</div>
 
-			<div class="vcard-title form-group">
+			<div class="vcard-title mb-3">
 				<div class="form-vcard-title-wrapper">
-					<div class="form-group form-vcard-title">
+					<div class="mb-3 form-vcard-title">
 						<input type="text" name="title" value="" placeholder="{{$title_label}}">
 						<i data-remove="vcard-title" data-id="new" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 					</div>
 				</div>
 			</div>
 
-			<div class="vcard-tel form-group">
+			<div class="vcard-tel mb-3">
 				<div class="form-vcard-tel-wrapper">
-					<div class="form-group form-vcard-tel">
+					<div class="mb-3 form-vcard-tel">
 						<select name="tel_type[]">
 							<option value="CELL">{{$mobile}}</option>
 							<option value="HOME">{{$home}}</option>
@@ -227,9 +227,9 @@ $(document).ready(function() {
 			</div>
 
 
-			<div class="vcard-email form-group">
+			<div class="vcard-email mb-3">
 				<div class="form-vcard-email-wrapper">
-					<div class="form-group form-vcard-email">
+					<div class="mb-3 form-vcard-email">
 						<select name="email_type[]">
 							<option value="HOME">{{$home}}</option>
 							<option value="WORK">{{$work}}</option>
@@ -241,27 +241,27 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-impp form-group">
+			<div class="vcard-impp mb-3">
 				<div class="form-vcard-impp-wrapper">
 				</div>
 			</div>
 
-			<div class="vcard-url form-group">
+			<div class="vcard-url mb-3">
 				<div class="form-vcard-url-wrapper">
 				</div>
 			</div>
 
-			<div class="vcard-adr form-group">
+			<div class="vcard-adr mb-3">
 				<div class="form-vcard-adr-wrapper">
 				</div>
 			</div>
 
-			<div class="vcard-note form-group">
+			<div class="vcard-note mb-3">
 				<div class="form-vcard-note-wrapper">
 				</div>
 			</div>
 
-			<button type="submit" name="create" value="create_card" class="btn btn-primary btn-sm pull-right">{{$create}}</button>
+			<button type="submit" name="create" value="create_card" class="btn btn-primary btn-sm float-end">{{$create}}</button>
 			<button type="button" class="btn btn-outline-secondary btn-sm" onclick="openClose('create_form')">{{$cancel}}</button>
 			<div class="clear"></div>
 		</form>
@@ -273,9 +273,9 @@ $(document).ready(function() {
 		<input type="hidden" name="uri" value="{{$card.uri}}">
 		<div class="section-content-wrapper-np">
 			<div id="vcard-cancel-{{$card.id}}" class="vcard-cancel vcard-cancel-btn" data-id="{{$card.id}}" data-action="cancel"><i class="fa fa-close"></i></div>
-			<div id="vcard-add-field-{{$card.id}}" class="dropdown pull-right vcard-add-field">
-				<button data-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
-				<div class="dropdown-menu dropdown-menu-right">
+			<div id="vcard-add-field-{{$card.id}}" class="dropdown float-end vcard-add-field">
+				<button data-bs-toggle="dropdown" type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="fa fa-plus"></i> {{$add_field}}</button>
+				<div class="dropdown-menu dropdown-menu-end">
 					<a class="dropdown-item add-vcard-org add-field"{{if $card.org}} style="display: none"{{/if}} href="#" data-add="vcard-org" data-id="{{$card.id}}">{{$org_label}}</a>
 					<a class="dropdown-item add-vcard-title add-field"{{if $card.title}} style="display: none"{{/if}} href="#" data-add="vcard-title" data-id="{{$card.id}}">{{$title_label}}</a>
 					<a class="dropdown-item add-vcard-tel add-field" href="#" data-add="vcard-tel" data-id="{{$card.id}}">{{$tel_label}}</a>
@@ -298,10 +298,10 @@ $(document).ready(function() {
 		</div>
 		<div id="vcard-info-{{$card.id}}" class="vcard-info section-content-wrapper">
 
-			<div class="vcard-org form-group">
+			<div class="vcard-org mb-3">
 				<div class="form-vcard-org-wrapper">
 					{{if $card.org}}
-					<div class="form-group form-vcard-org">
+					<div class="mb-3 form-vcard-org">
 						<input type="text" name="org" value="{{$card.org}}" size="{{$card.org|count_characters:true}}" placeholder="{{$org_label}}">
 						<i data-remove="vcard-org" data-id="{{$card.id}}" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 					</div>
@@ -309,10 +309,10 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-title form-group">
+			<div class="vcard-title mb-3">
 				<div class="form-vcard-title-wrapper">
 					{{if $card.title}}
-					<div class="form-group form-vcard-title">
+					<div class="mb-3 form-vcard-title">
 						<input type="text" name="title" value="{{$card.title}}" size="{{$card.title|count_characters:true}}" placeholder="{{$title_label}}">
 						<i data-remove="vcard-title" data-id="{{$card.id}}" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 					</div>
@@ -321,11 +321,11 @@ $(document).ready(function() {
 			</div>
 
 
-			<div class="vcard-tel form-group">
+			<div class="vcard-tel mb-3">
 				<div class="form-vcard-tel-wrapper">
 					{{if $card.tels}}
 					{{foreach $card.tels as $tel}}
-					<div class="form-group form-vcard-tel">
+					<div class="mb-3 form-vcard-tel">
 						<select name="tel_type[]">
 							<option value=""{{if $tel.type.0 != 'CELL' && $tel.type.0 != 'HOME' && $tel.type.0 != 'WORK' && $tel.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$tel.type.1}}</option>
 							<option value="CELL"{{if $tel.type.0 == 'CELL'}} selected="selected"{{/if}}>{{$mobile}}</option>
@@ -342,11 +342,11 @@ $(document).ready(function() {
 			</div>
 
 
-			<div class="vcard-email form-group">
+			<div class="vcard-email mb-3">
 				<div class="form-vcard-email-wrapper">
 					{{if $card.emails}}
 					{{foreach $card.emails as $email}}
-					<div class="form-group form-vcard-email">
+					<div class="mb-3 form-vcard-email">
 						<select name="email_type[]">
 							<option value=""{{if $email.type.0 != 'HOME' && $email.type.0 != 'WORK' && $email.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$email.type.1}}</option>
 							<option value="HOME"{{if $email.type.0 == 'HOME'}} selected="selected"{{/if}}>{{$home}}</option>
@@ -361,11 +361,11 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-impp form-group">
+			<div class="vcard-impp mb-3">
 				<div class="form-vcard-impp-wrapper">
 					{{if $card.impps}}
 					{{foreach $card.impps as $impp}}
-					<div class="form-group form-vcard-impp">
+					<div class="mb-3 form-vcard-impp">
 						<select name="impp_type[]">
 							<option value=""{{if $impp.type.0 != 'HOME' && $impp.type.0 != 'WORK' && $impp.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$impp.type.1}}</option>
 							<option value="HOME"{{if $impp.type.0 == 'HOME'}} selected="selected"{{/if}}>{{$home}}</option>
@@ -380,11 +380,11 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-url form-group">
+			<div class="vcard-url mb-3">
 				<div class="form-vcard-url-wrapper">
 					{{if $card.urls}}
 					{{foreach $card.urls as $url}}
-					<div class="form-group form-vcard-url">
+					<div class="mb-3 form-vcard-url">
 						<select name="url_type[]">
 							<option value=""{{if $url.type.0 != 'HOME' && $url.type.0 != 'WORK' && $url.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$url.type.1}}</option>
 							<option value="HOME"{{if $url.type.0 == 'HOME'}} selected="selected"{{/if}}>{{$home}}</option>
@@ -399,12 +399,12 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-adr form-group">
+			<div class="vcard-adr mb-3">
 				<div class="form-vcard-adr-wrapper">
 					{{if $card.adrs}}
 					{{foreach $card.adrs as $adr}}
-					<div class="form-group form-vcard-adr">
-						<div class="form-group">
+					<div class="mb-3 form-vcard-adr">
+						<div class="mb-3">
 							<label>{{$adr_label}}</label>
 							<select name="adr_type[]">
 								<option value=""{{if $adr.type.0 != 'HOME' && $adr.type.0 != 'WORK' && $adr.type.0 != 'OTHER'}} selected="selected"{{/if}}>{{$adr.type.1}}</option>
@@ -414,25 +414,25 @@ $(document).ready(function() {
 							</select>
 							<i data-remove="vcard-adr" data-id="{{$card.id}}" class="fa fa-trash-o remove-field drop-icons fakelink"></i>
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.0}}" size="{{$adr.address.0|count_characters:true}}" placeholder="{{$po_box}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.1}}" size="{{$adr.address.1|count_characters:true}}" placeholder="{{$extra}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.2}}" size="{{$adr.address.2|count_characters:true}}" placeholder="{{$street}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.3}}" size="{{$adr.address.3|count_characters:true}}" placeholder="{{$locality}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.4}}" size="{{$adr.address.4|count_characters:true}}" placeholder="{{$region}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.5}}" size="{{$adr.address.5|count_characters:true}}" placeholder="{{$zip_code}}">
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" name="adr[{{$adr@index}}][]" value="{{$adr.address.6}}" size="{{$adr.address.6|count_characters:true}}" placeholder="{{$country}}">
 						</div>
 					</div>
@@ -441,7 +441,7 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<div class="vcard-note form-group form-vcard-note">
+			<div class="vcard-note mb-3 form-vcard-note">
 				<div class="form-vcard-note-wrapper">
 					{{if $card.note}}
 					<label>{{$note_label}}</label>
@@ -452,7 +452,7 @@ $(document).ready(function() {
 			</div>
 
 
-			<button type="submit" name="update" value="update_card" class="btn btn-primary btn-sm pull-right">{{$update}}</button>
+			<button type="submit" name="update" value="update_card" class="btn btn-primary btn-sm float-end">{{$update}}</button>
 			<button type="submit" name="delete" value="delete_card" class="btn btn-danger btn-sm">{{$delete}}</button>
 			<button type="button" class="btn btn-outline-secondary btn-sm vcard-cancel-btn" data-id="{{$card.id}}" data-action="cancel">{{$cancel}}</button>
 			<div class="clear"></div>

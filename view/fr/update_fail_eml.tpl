@@ -1,16 +1,21 @@
 Bonjour, 
 Je suis le serveur web de {{$sitename}};
    
-Les développeurs de la Matrice Rouge ont lancé une mise à jour {{$update}} récemment, 
-toutefois, lorsque j'ai essayé de l'installer, quelques choses d'inattendu s'est produit. 
+Les développeurs du projet ont récemment publié la mise à jour {{$update}}, mais lors de la tentative d'installation, quelque chose s'est mal passé.  
 
-Nous devons corriger la situation et cela requiert votre intervention. 
+Ce problème doit être résolu rapidement et nécessite votre intervention. 
 
-Veuillez contacter un développeur de la Matrice Rouge si vous avez des difficultés à déterminer 
-la meilleure approche pour résoudre le problème. Ma base de donnée est peut-être corrompue. 
+Veuillez contacter un développeur du projet si vous ne parvenez pas à résoudre le problème par vous-même. La base de données de votre installation est peut-être corrompue.
 
-Le message d'erreur est '{{$error}}'.   
+Le message d'erreur est '{{$error}}'.
 
-Veuillez accepter mes plus humbles excuses pour les désagréments,
+Vous pouvez tenter de réappliquer cette mise à jour en vous rendant à l'adresse suivante (avec un compte administrateur) :
 
-	votre serveur web a {{$siteurl}}
+{{$baseurl}}/admin/dbsync 
+ 
+
+{{$source}} 
+
+Veuillez nous excuser pour ce désagrément, 	
+
+votre serveur Web à {{$siteurl}}}}

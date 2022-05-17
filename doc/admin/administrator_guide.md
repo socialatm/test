@@ -93,7 +93,7 @@ There are several ways to deploy a new hub.
   php.ini file * and with no hosting provider restrictions on the use of
   exec() and proc_open().
 
-* curl, gd (with at least jpeg and png support), mysqli, mbstring, mcrypt, zip,
+* curl, gd (with at least jpeg and png support), mysqli, mbstring, zip,
   and openssl extensions. The imagick extension is not required but desirable.
 
 * xml extension is required if you want webdav to work.

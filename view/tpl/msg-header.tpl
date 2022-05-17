@@ -1,3 +1,4 @@
+{{**
 <script src="vendor/blueimp/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
 <script src="vendor/blueimp/jquery-file-upload/js/jquery.iframe-transport.js"></script>
 <script src="vendor/blueimp/jquery-file-upload/js/jquery.fileupload.js"></script>
@@ -73,9 +74,9 @@
 	function addmailtext(data) {
 		var currentText = $("#prvmail-text").val();
 		$("#prvmail-text").val(currentText + data);
-	}	
+	}
 
 
 
 </script>
-
+**}}

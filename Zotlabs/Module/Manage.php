@@ -61,7 +61,7 @@ class Manage extends \Zotlabs\Web\Controller {
 				$channels[$x]['default'] = (($channels[$x]['channel_id'] == $account['account_default_channel']) ? "1" : '');
 				$channels[$x]['default_links'] = '1';
 
-
+				/* this is not currently implemented in the UI and probably should not (performance)
 				$c = q("SELECT id, item_wall FROM item
 					WHERE item_unseen = 1 and uid = %d " . item_normal(),
 					intval($channels[$x]['channel_id'])
@@ -75,7 +75,7 @@ class Manage extends \Zotlabs\Web\Controller {
 							$channels[$x]['network'] ++;
 					}
 				}
-
+				*/
 
 				$intr = q("SELECT COUNT(abook.abook_id) AS total FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash where abook_channel = %d and abook_pending = 1 and abook_self = 0 and abook_ignored = 0 and xchan_deleted = 0 and xchan_orphan = 0 ",
 					intval($channels[$x]['channel_id'])
@@ -84,16 +84,7 @@ class Manage extends \Zotlabs\Web\Controller {
 				if($intr)
 					$channels[$x]['intros'] = intval($intr[0]['total']);
 
-
-				$mails = q("SELECT count(id) as total from mail WHERE channel_id = %d AND mail_seen = 0 and from_xchan != '%s' ",
-					intval($channels[$x]['channel_id']),
-					dbesc($channels[$x]['channel_hash'])
-				);
-
-				if($mails)
-					$channels[$x]['mail'] = intval($mails[0]['total']);
-
-
+				/* this is not currently implemented in the UI and probably should not (performance)
 				$events = q("SELECT etype, dtstart, adjust FROM event
 					WHERE event.uid = %d AND dtstart < '%s' AND dtstart > '%s' and dismissed = 0
 					ORDER BY dtstart ASC ",
@@ -126,6 +117,7 @@ class Manage extends \Zotlabs\Web\Controller {
 						}
 					}
 				}
+				*/
 			}
 
 		}
@@ -167,7 +159,7 @@ class Manage extends \Zotlabs\Web\Controller {
 		}
 
 		$o = replace_macros(get_markup_template('channels.tpl'), array(
-			'$header'           => t('Channel Manager'),
+			'$header'           => t('Channels'),
 			'$msg_selected'     => t('Current Channel'),
 			'$selected'         => local_channel(),
 			'$desc'             => ((count($channels) > 1 || $delegates) ? t('Switch to one of your channels by selecting it.') : ''),
@@ -175,7 +167,6 @@ class Manage extends \Zotlabs\Web\Controller {
 			'$msg_make_default' => t('Make Default'),
 			'$create'           => $create,
 			'$all_channels'     => $channels,
-			'$mail_format'      => t('%d new messages'),
 			'$intros_format'    => t('%d new introductions'),
 			'$channel_usage_message' => $channel_usage_message,
 			'$delegated_desc'   => t('Delegated Channel'),

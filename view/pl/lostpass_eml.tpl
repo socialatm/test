@@ -1,11 +1,11 @@
 
 Drogi/Droga {{$username}},
-	Niedawno otrzymaliśmy prośbę o zresetowanie hasła do konta na {{$ sitename}}.
-Aby potwierdzić tę prośbę, wybierz link weryfikacyjny poniżej lub wklej go w pasku
-adresu przeglądarki internetowej. 
+	Niedawno otrzymaliśmy prośbę o zresetowanie hasła do konta na {{$sitename}}.
+Aby potwierdzić tę prośbę, wybierz link weryfikacyjny podany poniżej lub wklej go
+w pasku adresu przeglądarki internetowej (jeśli obawiasz się fałszerstwa). 
 
 Jeśli jest to pomyłka i nie chcesz zmieniać hasła, NIE klikaj podanego linku i
-zignoruj albo usuń tą wiadomość e-mail. 
+zignoruj albo usuń tą wiadomość. 
 
 Twoje hasło nie zostanie zmienione, chyba że potwierdzisz prawdziwość tego żądania.
 
@@ -29,5 +29,5 @@ Z poważaniem,
 
 --
 Warunki świadczenia usług:
-{{$siteurl}}/help/TermsOfService
+{{$siteurl}}/help/pl/TermsOfService
  

@@ -311,6 +311,11 @@ function string_plural_select_default($n) {
  * @return string Language code in 2-letter ISO 639-1 (en, de, fr) format
  */
 function detect_language($s) {
+
+	if (!$s) {
+		return EMPTY_STR;
+	}
+
 	$min_length = get_config('system', 'language_detect_min_length');
 	if ($min_length === false)
 		$min_length = LANGUAGE_DETECT_MIN_LENGTH;

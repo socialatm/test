@@ -33,8 +33,10 @@ apps/
 home.html
 # page header plugin
 pageheader.html
-# Ignore site TOS
+# Ignore site TOS & gddpr
 doc/SiteTOS.md
+doc/*/SiteTOS.md
+doc/*/gdpr.md
 # themes except for redbasic
 view/theme/*
 !view/theme/redbasic
@@ -55,6 +57,7 @@ tests/results/
 .buildpath
 .externalToolBuilders
 .settings/
+.pydevproject
 # NetBeans project folder
 nbproject/
 # Kdevelop project files
@@ -75,3 +78,5 @@ composer.phar
 vendor/**/tests/
 vendor/**/Test/
 vendor/sabre/*/examples/
+# /info is a directory containing site-specific HTML documents
+/info/

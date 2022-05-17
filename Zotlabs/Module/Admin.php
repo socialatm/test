@@ -8,7 +8,6 @@
 
 namespace Zotlabs\Module;
 
-require_once('include/queue_fn.php');
 require_once('include/account.php');
 
 /**

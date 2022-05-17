@@ -87,6 +87,7 @@ Options are:
   [*= system.proc_run_use_exec ] If 1, use the exec system call in proc_run to run background tasks. By default we use proc_open and proc_close. On some (currently rare) systems this does not work well.
   [*= system.projecthome ] Display the project page on your home page for logged out viewers.
   [*= system.projecthome ] Set the project homepage as the homepage of your hub. (Obsolete)
+  [*= system.pubstream_ordering ] Set pubstream ordering. Possible values 'commented' (default), 'created' and 'edited'.
   [*= system.register_link ] path to direct to from the "register" link on the login form. On closed sites this will direct to  'pubsites'. For open sites it will normally redirect to 'register' but you may change this to a  custom site page offering subscriptions or whatever. 
   [*= system.reserved_channels ] Don't allow members to register channels with this comma separated list of names (no spaces)
   [*= system.sellpage ] A URL shown in the public sites list to sell your hub - display service classes, etc.

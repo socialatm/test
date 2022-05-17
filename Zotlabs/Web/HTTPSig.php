@@ -2,10 +2,13 @@
 
 namespace Zotlabs\Web;
 
+use DateTime;
+use DateTimeZone;
 use Zotlabs\Lib\ActivityStreams;
 use Zotlabs\Lib\Crypto;
 use Zotlabs\Lib\Keyutils;
 use Zotlabs\Lib\Webfinger;
+use Zotlabs\Lib\Zotfinger;
 use Zotlabs\Lib\Libzot;
 
 /**
@@ -13,7 +16,6 @@ use Zotlabs\Lib\Libzot;
  *
  * @see https://tools.ietf.org/html/draft-cavage-http-signatures-10
  */
-
 class HTTPSig {
 
 	/**
@@ -26,10 +28,10 @@ class HTTPSig {
 	 * @return string The generated digest header string for $body
 	 */
 
-	static function generate_digest_header($body,$alg = 'sha256') {
+	static function generate_digest_header($body, $alg = 'sha256') {
 
 		$digest = base64_encode(hash($alg, $body, true));
-		switch($alg) {
+		switch ($alg) {
 			case 'sha512':
 				return 'SHA-512=' . $digest;
 			case 'sha256':
@@ -39,29 +41,29 @@ class HTTPSig {
 		}
 	}
 
-	static function find_headers($data,&$body) {
+	static function find_headers($data, &$body) {
 
 		// decide if $data arrived via controller submission or curl
 
-		if(is_array($data) && $data['header']) {
-			if(! $data['success'])
+		if (is_array($data) && $data['header']) {
+			if (!$data['success'])
 				return [];
 
-			$h = new HTTPHeaders($data['header']);
-			$headers = $h->fetcharr();
-			$body = $data['body'];
+			$h                           = new HTTPHeaders($data['header']);
+			$headers                     = $h->fetcharr();
+			$body                        = $data['body'];
 			$headers['(request-target)'] = $data['request_target'];
 		}
 
 		else {
-			$headers = [];
+			$headers                     = [];
 			$headers['(request-target)'] = strtolower($_SERVER['REQUEST_METHOD']) . ' ' . $_SERVER['REQUEST_URI'];
-			$headers['content-type'] = $_SERVER['CONTENT_TYPE'];
-			$headers['content-length'] = $_SERVER['CONTENT_LENGTH'];
+			$headers['content-type']     = $_SERVER['CONTENT_TYPE'];
+			$headers['content-length']   = $_SERVER['CONTENT_LENGTH'];
 
-			foreach($_SERVER as $k => $v) {
-				if(strpos($k,'HTTP_') === 0) {
-					$field = str_replace('_','-',strtolower(substr($k,5)));
+			foreach ($_SERVER as $k => $v) {
+				if (strpos($k, 'HTTP_') === 0) {
+					$field           = str_replace('_', '-', strtolower(substr($k, 5)));
 					$headers[$field] = $v;
 				}
 			}
@@ -77,10 +79,10 @@ class HTTPSig {
 
 	// See draft-cavage-http-signatures-10
 
-	static function verify($data,$key = '', $keytype = '') {
+	static function verify($data, $key = '', $keytype = '') {
 
-		$body      = $data;
-		$headers   = null;
+		$body    = $data;
+		$headers = null;
 
 		$result = [
 			'signer'         => '',
@@ -92,21 +94,21 @@ class HTTPSig {
 		];
 
 
-		$headers = self::find_headers($data,$body);
+		$headers = self::find_headers($data, $body);
 
-		if(! $headers)
+		if (!$headers)
 			return $result;
 
 		$sig_block = null;
 
-		if(array_key_exists('signature',$headers)) {
+		if (array_key_exists('signature', $headers)) {
 			$sig_block = self::parse_sigheader($headers['signature']);
 		}
-		elseif(array_key_exists('authorization',$headers)) {
+		elseif (array_key_exists('authorization', $headers)) {
 			$sig_block = self::parse_sigheader($headers['authorization']);
 		}
 
-		if(! $sig_block) {
+		if (!$sig_block) {
 			logger('no signature provided.', LOGGER_DEBUG);
 			return $result;
 		}
@@ -117,71 +119,87 @@ class HTTPSig {
 		$result['header_signed'] = true;
 
 		$signed_headers = $sig_block['headers'];
-		if(! $signed_headers)
-			$signed_headers = [ 'date' ];
+		if (!$signed_headers)
+			$signed_headers = ['date'];
 
 		$signed_data = '';
-		foreach($signed_headers as $h) {
-			if(array_key_exists($h,$headers)) {
+		foreach ($signed_headers as $h) {
+			if (array_key_exists($h, $headers)) {
 				$signed_data .= $h . ': ' . $headers[$h] . "\n";
 			}
-			if($h === 'date') {
-				$d = new \DateTime($headers[$h]);
-				$d->setTimeZone(new \DateTimeZone('UTC'));
-				$dplus = datetime_convert('UTC','UTC','now + 1 day');
-				$dminus = datetime_convert('UTC','UTC','now - 1 day');
-				$c = $d->format('Y-m-d H:i:s');
-				if($c > $dplus || $c < $dminus) {
+
+			if ($h === 'date') {
+				$d = new DateTime($headers[$h]);
+				$d->setTimeZone(new DateTimeZone('UTC'));
+				$dplus  = datetime_convert('UTC', 'UTC', 'now + 1 day');
+				$dminus = datetime_convert('UTC', 'UTC', 'now - 1 day');
+				$c      = $d->format('Y-m-d H:i:s');
+				if ($c > $dplus || $c < $dminus) {
 					logger('bad time: ' . $c);
 					return $result;
 				}
 			}
 		}
-		$signed_data = rtrim($signed_data,"\n");
+		$signed_data = rtrim($signed_data, "\n");
 
 		$algorithm = null;
-		if($sig_block['algorithm'] === 'rsa-sha256') {
+
+		if ($sig_block['algorithm'] === 'rsa-sha256') {
 			$algorithm = 'sha256';
 		}
-		if($sig_block['algorithm'] === 'rsa-sha512') {
+
+		if ($sig_block['algorithm'] === 'rsa-sha512') {
 			$algorithm = 'sha512';
 		}
 
-		if(! array_key_exists('keyId',$sig_block))
-			return $result;
-
-		$result['signer'] = $sig_block['keyId'];
-
-		$cached_key = self::get_key($key,$keytype,$result['signer']);
-
-		if(! ($cached_key && $cached_key['public_key'])) {
+		if (!array_key_exists('keyId', $sig_block)) {
 			return $result;
 		}
 
-		$x = Crypto::verify($signed_data,$sig_block['signature'],$cached_key['public_key'],$algorithm);
+		$result['signer'] = $sig_block['keyId'];
+
+		$cached_key = self::get_key($key, $keytype, $result['signer']);
+
+		if ($sig_block['algorithm'] === 'hs2019') {
+			if (isset($cached_key['algorithm'])) {
+				if (strpos($cached_key['algorithm'], 'rsa-sha256') !== false) {
+					$algorithm = 'sha256';
+				}
+
+				if (strpos($cached_key['algorithm'], 'rsa-sha512') !== false) {
+					$algorithm = 'sha512';
+				}
+			}
+		}
+
+		if (!($cached_key && $cached_key['public_key'])) {
+			return $result;
+		}
+
+		$x = Crypto::verify($signed_data, $sig_block['signature'], $cached_key['public_key'], $algorithm);
 
 		logger('verified: ' . $x, LOGGER_DEBUG);
 
 		$fetched_key = '';
 
-		if(! $x) {
+		if (!$x) {
 
 			// try again, ignoring the local actor (xchan) cache and refetching the key
 			// from its source
 
-			$fetched_key = self::get_key($key,$keytype,$result['signer'],true);
+			$fetched_key = self::get_key($key, $keytype, $result['signer'], true);
 
 			if ($fetched_key && $fetched_key['public_key']) {
-				$y = Crypto::verify($signed_data,$sig_block['signature'],$fetched_key['public_key'],$algorithm);
+				$y = Crypto::verify($signed_data, $sig_block['signature'], $fetched_key['public_key'], $algorithm);
 				logger('verified: (cache reload) ' . $x, LOGGER_DEBUG);
 			}
 
-			if (! $y) {
+			if (!$y) {
 				logger('verify failed for ' . $result['signer'] . ' alg=' . $algorithm . (($fetched_key['public_key']) ? '' : ' no key'));
 				$sig_block['signature'] = base64_encode($sig_block['signature']);
-				logger('affected sigblock: ' . print_r($sig_block,true));
-				logger('headers: ' . print_r($headers,true));
-				logger('server: ' . print_r($_SERVER,true));
+				logger('affected sigblock: ' . print_r($sig_block, true));
+				logger('headers: ' . print_r($headers, true));
+				logger('server: ' . print_r($_SERVER, true));
 				return $result;
 			}
 
@@ -189,58 +207,64 @@ class HTTPSig {
 
 		$key = (($fetched_key) ? $fetched_key : $cached_key);
 
-		$result['portable_id'] = $key['portable_id'];
+		$result['portable_id']  = $key['portable_id'];
 		$result['header_valid'] = true;
 
-		if(in_array('digest',$signed_headers)) {
+		if (in_array('digest', $signed_headers)) {
 			$result['content_signed'] = true;
-			$digest = explode('=', $headers['digest'], 2);
-			if($digest[0] === 'SHA-256')
+			$digest                   = explode('=', $headers['digest'], 2);
+			if ($digest[0] === 'SHA-256')
 				$hashalg = 'sha256';
-			if($digest[0] === 'SHA-512')
+			if ($digest[0] === 'SHA-512')
 				$hashalg = 'sha512';
 
-			if(base64_encode(hash($hashalg,$body,true)) === $digest[1]) {
+			if (base64_encode(hash($hashalg, $body, true)) === $digest[1]) {
 				$result['content_valid'] = true;
 			}
 
 			logger('Content_Valid: ' . (($result['content_valid']) ? 'true' : 'false'));
-			if (! $result['content_valid']) {
-				logger('invalid content signature: data ' . print_r($data,true));
-				logger('invalid content signature: headers ' . print_r($headers,true));
-				logger('invalid content signature: body ' . print_r($body,true));
+			if (!$result['content_valid']) {
+				logger('invalid content signature: data ' . print_r($data, true));
+				logger('invalid content signature: headers ' . print_r($headers, true));
+				logger('invalid content signature: body ' . print_r($body, true));
 			}
 		}
 
 		return $result;
 	}
 
-	static function get_key($key,$keytype,$id) {
+	static function get_key($key, $keytype, $id, $force = false) {
 
-		if(is_array($key))
-			btlogger('key is array: ' . print_r($key,true));
+		if (is_array($key))
+			btlogger('key is array: ' . print_r($key, true));
 
-		if($key) {
-			if(function_exists($key)) {
+		if ($key) {
+			if (function_exists($key)) {
 				return $key($id);
 			}
-			return [ 'public_key' => $key ];
+			return ['public_key' => $key];
 		}
 
-		if($keytype === 'zot6') {
-			$key = self::get_zotfinger_key($id);
-			if($key) {
+		if ($keytype === 'zot6') {
+			$key = self::get_zotfinger_key($id, $force);
+			if ($key) {
 				return $key;
 			}
 		}
 
-		if(strpos($id,'#') === false) {
-			$key = self::get_webfinger_key($id);
+		if (strpos($id, '#') === false) {
+			$key = self::get_webfinger_key($id, $force);
+			if ($key) {
+				return $key;
+			}
 		}
 
-		if(! $key) {
-			$key = self::get_activitystreams_key($id);
+		$delete = false;
+		if ($keytype === 'delete') {
+			$delete = true;
 		}
+
+		$key = self::get_activitystreams_key($id, $force, $delete);
 
 		return $key;
 
@@ -249,10 +273,10 @@ class HTTPSig {
 
 	static function convertKey($key) {
 
-		if(strstr($key,'RSA ')) {
+		if (strstr($key, 'RSA ')) {
 			return Keyutils::rsaToPem($key);
 		}
-		elseif(substr($key,0,5) === 'data:') {
+		elseif (substr($key, 0, 5) === 'data:') {
 			return Keyutils::convertSalmonKey($key);
 		}
 		else {
@@ -263,70 +287,120 @@ class HTTPSig {
 
 
 	/**
-	 * @brief
+	 * @brief get a cached key or fetch it with ActivityStreams
 	 *
 	 * @param string $id
-	 * @return boolean|string
-	 *   false if no pub key found, otherwise return the pub key
+	 * @param boolean $force (optional, default false)
+	 * @return boolean|array
+	 *   false if no pub key found, otherwise return an array with the pub key
 	 */
 
-	static function get_activitystreams_key($id) {
+	static function get_activitystreams_key($id, $force = false, $delete = false) {
 
-		// remove fragment
+		// Check the local cache first, but remove any fragments like #main-key since these won't be present in our cached data
+		$url = ((strpos($id, '#')) ? substr($id, 0, strpos($id, '#')) : $id);
 
-		$url = ((strpos($id,'#')) ? substr($id,0,strpos($id,'#')) : $id);
+		// $force is used to ignore the local cache and only use the remote data; for instance the cached key might be stale
+		if (!$force) {
+			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where (hubloc_id_url = '%s' or hubloc_hash = '%s') and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
+				dbesc($url),
+				dbesc($url)
+			);
 
-		$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_addr = '%s' or hubloc_id_url = '%s' and hubloc_network in ('zot6', 'activitypub')",
-			dbesc(str_replace('acct:','',$url)),
-			dbesc($url)
-		);
-
-		$x = Libzot::zot_record_preferred($x);
-
-		if($x && $x['xchan_pubkey']) {
-			return [ 'portable_id' => $x['xchan_hash'], 'public_key' => $x['xchan_pubkey'] , 'hubloc' => $x ];
+			if ($x) {
+				$best = Libzot::zot_record_preferred($x);
+			}
+			if ($best && $best['xchan_pubkey']) {
+				return ['portable_id' => $best['xchan_hash'], 'public_key' => $best['xchan_pubkey'], 'algorithm' => get_xconfig($best['xchan_hash'], 'system', 'signing_algorithm'), 'hubloc' => $best];
+			}
 		}
 
-		$r = ActivityStreams::fetch($id);
+		if ($delete) {
+			// If we received a delete and we do not have the record cached,
+			// we probably never saw this actor. Do not try to fetch it now.
+			return false;
+		}
 
-		if($r) {
-			if(array_key_exists('publicKey',$r) && array_key_exists('publicKeyPem',$r['publicKey']) && array_key_exists('id',$r['publicKey'])) {
-				if($r['publicKey']['id'] === $id || $r['id'] === $id) {
-					$portable_id = ((array_key_exists('owner',$r['publicKey'])) ? $r['publicKey']['owner'] : EMPTY_STR);
-					return [ 'public_key' => self::convertKey($r['publicKey']['publicKeyPem']), 'portable_id' => $portable_id, 'hubloc' => [] ];
+		// The record wasn't in cache. Fetch it now.
+		$r = ActivityStreams::fetch($id);
+		$signatureAlgorithm = EMPTY_STR;
+
+		if ($r) {
+			if (array_key_exists('publicKey', $r) && array_key_exists('publicKeyPem', $r['publicKey']) && array_key_exists('id', $r['publicKey'])) {
+				if ($r['publicKey']['id'] === $id || $r['id'] === $id) {
+					$portable_id = ((array_key_exists('owner', $r['publicKey'])) ? $r['publicKey']['owner'] : EMPTY_STR);
+
+					// the w3c sec context has conflicting names and no defined values for this property except
+					// "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+
+					// Since the names conflict, it could mess up LD-signatures but we will accept both, and at this
+					// time we will only look for the substrings 'rsa-sha256' and 'rsa-sha512' within those properties.
+					// We will also accept a toplevel 'sigAlgorithm' regardless of namespace with the same constraints.
+					// Default to rsa-sha256 if we can't figure out. If they're sending 'hs2019' we have to
+					// look for something.
+
+					if (isset($r['publicKey']['signingAlgorithm'])) {
+						$signatureAlgorithm = $r['publicKey']['signingAlgorithm'];
+						set_xconfig($portable_id, 'system', 'signing_algorithm', $signatureAlgorithm);
+					}
+
+					if (isset($r['publicKey']['signatureAlgorithm'])) {
+						$signatureAlgorithm = $r['publicKey']['signatureAlgorithm'];
+						set_xconfig($portable_id, 'system', 'signing_algorithm', $signatureAlgorithm);
+					}
+
+					if (isset($r['sigAlgorithm'])) {
+						$signatureAlgorithm = $r['sigAlgorithm'];
+						set_xconfig($portable_id, 'system', 'signing_algorithm', $signatureAlgorithm);
+					}
+
+					return ['public_key' => self::convertKey($r['publicKey']['publicKeyPem']), 'portable_id' => $portable_id, 'algorithm' => (($signatureAlgorithm) ? $signatureAlgorithm : 'rsa-sha256'), 'hubloc' => []];
 				}
 			}
 		}
+
+		// No key was found
 		return false;
 	}
 
+	/**
+	 * @brief get a cached key or fetch it with Webfinger
+	 *
+	 * @param string $id
+	 * @param boolean $force (optional, default false)
+	 * @return boolean|array
+	 *   false if no pub key found, otherwise return an array with the pub key
+	 */
 
-	static function get_webfinger_key($id) {
+	static function get_webfinger_key($id, $force = false) {
 
-		$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_addr = '%s' or hubloc_id_url = '%s'",
-			dbesc(str_replace('acct:','',$id)),
-			dbesc($id)
-		);
+		if (!$force) {
+			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
+				dbesc($id)
+			);
 
-		$x = Libzot::zot_record_preferred($x);
+			if ($x) {
+				$best = Libzot::zot_record_preferred($x);
+			}
 
-		if($x && $x['xchan_pubkey']) {
-			return [ 'portable_id' => $x['xchan_hash'], 'public_key' => $x['xchan_pubkey'] , 'hubloc' => $x ];
+			if ($best && $best['xchan_pubkey']) {
+				return ['portable_id' => $best['xchan_hash'], 'public_key' => $best['xchan_pubkey'], 'algorithm' => get_xconfig($best['xchan_hash'], 'system', 'signing_algorithm'), 'hubloc' => $best];
+			}
 		}
 
-		$wf = Webfinger::exec($id);
-		$key = [ 'portable_id' => '', 'public_key' => '', 'hubloc' => [] ];
+		$wf  = Webfinger::exec($id);
+		$key = ['portable_id' => '', 'public_key' => '', 'hubloc' => []];
 
-		if($wf) {
-		 	if(array_key_exists('properties',$wf) && array_key_exists('https://w3id.org/security/v1#publicKeyPem',$wf['properties'])) {
+		if ($wf) {
+			if (array_key_exists('properties', $wf) && array_key_exists('https://w3id.org/security/v1#publicKeyPem', $wf['properties'])) {
 				$key['public_key'] = self::convertKey($wf['properties']['https://w3id.org/security/v1#publicKeyPem']);
 			}
-			if(array_key_exists('links', $wf) && is_array($wf['links'])) {
-				foreach($wf['links'] as $l) {
-					if(! (is_array($l) && array_key_exists('rel',$l))) {
+			if (array_key_exists('links', $wf) && is_array($wf['links'])) {
+				foreach ($wf['links'] as $l) {
+					if (!(is_array($l) && array_key_exists('rel', $l))) {
 						continue;
 					}
-					if($l['rel'] === 'magic-public-key' && array_key_exists('href',$l) && $key['public_key'] === EMPTY_STR) {
+					if ($l['rel'] === 'magic-public-key' && array_key_exists('href', $l) && $key['public_key'] === EMPTY_STR) {
 						$key['public_key'] = self::convertKey($l['href']);
 					}
 				}
@@ -336,51 +410,64 @@ class HTTPSig {
 		return (($key['public_key']) ? $key : false);
 	}
 
-	static function get_zotfinger_key($id) {
+	/**
+	 * @brief get a cached key or fetch it with Zotfinger
+	 *
+	 * @param string $id
+	 * @param boolean $force (optional, default false)
+	 * @return boolean|array
+	 *   false if no pub key found, otherwise return an array with the public key
+	 */
 
-		$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_addr = '%s' or hubloc_id_url = '%s' and hubloc_network = 'zot6'",
-			dbesc(str_replace('acct:','',$id)),
-			dbesc($id)
-		);
+	static function get_zotfinger_key($id, $force = false) {
+		if (!$force) {
+			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc",
+				dbesc($id)
+			);
 
-		if($x && $x[0]['xchan_pubkey']) {
-			return [ 'portable_id' => $x[0]['xchan_hash'], 'public_key' => $x[0]['xchan_pubkey'] , 'hubloc' => $x[0] ];
+			if ($x) {
+				$best = Libzot::zot_record_preferred($x);
+			}
+
+			if ($best && $best['xchan_pubkey']) {
+				return ['portable_id' => $best['xchan_hash'], 'public_key' => $best['xchan_pubkey'], 'algorithm' => get_xconfig($best['xchan_hash'], 'system', 'signing_algorithm'), 'hubloc' => $best];
+			}
 		}
 
-		$wf = Webfinger::exec($id);
-		$key = [ 'portable_id' => '', 'public_key' => '', 'hubloc' => [] ];
+		$wf  = Webfinger::exec($id);
+		$key = ['portable_id' => '', 'public_key' => '', 'hubloc' => []];
 
-		if($wf) {
-		 	if(array_key_exists('properties',$wf) && array_key_exists('https://w3id.org/security/v1#publicKeyPem',$wf['properties'])) {
+		if ($wf) {
+			if (array_key_exists('properties', $wf) && array_key_exists('https://w3id.org/security/v1#publicKeyPem', $wf['properties'])) {
 				$key['public_key'] = self::convertKey($wf['properties']['https://w3id.org/security/v1#publicKeyPem']);
 			}
-			if(array_key_exists('links', $wf) && is_array($wf['links'])) {
-				foreach($wf['links'] as $l) {
-					if(! (is_array($l) && array_key_exists('rel',$l))) {
+			if (array_key_exists('links', $wf) && is_array($wf['links'])) {
+				foreach ($wf['links'] as $l) {
+					if (!(is_array($l) && array_key_exists('rel', $l))) {
 						continue;
 					}
-					if($l['rel'] === 'http://purl.org/zot/protocol/6.0' && array_key_exists('href',$l) && $l['href'] !== EMPTY_STR) {
+					if ($l['rel'] === 'http://purl.org/zot/protocol/6.0' && array_key_exists('href', $l) && $l['href'] !== EMPTY_STR) {
 
 						// The third argument to Zotfinger::exec() tells it not to verify signatures
 						// Since we're inside a function that is fetching keys with which to verify signatures,
 						// this is necessary to prevent infinite loops.
 
-						$z = \Zotlabs\Lib\Zotfinger::exec($l['href'],null,false);
-						if($z) {
+						$z = Zotfinger::exec($l['href'], null, false);
+						if ($z) {
 							$i = Libzot::import_xchan($z['data']);
-							if($i['success']) {
+							if ($i['success']) {
 								$key['portable_id'] = $i['hash'];
 
-								$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6'",
+								$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc",
 									dbesc($l['href'])
 								);
-								if($x) {
+								if ($x) {
 									$key['hubloc'] = $x[0];
 								}
 							}
 						}
 					}
-					if($l['rel'] === 'magic-public-key' && array_key_exists('href',$l) && $key['public_key'] === EMPTY_STR) {
+					if ($l['rel'] === 'magic-public-key' && array_key_exists('href', $l) && $key['public_key'] === EMPTY_STR) {
 						$key['public_key'] = self::convertKey($l['href']);
 					}
 				}
@@ -402,39 +489,42 @@ class HTTPSig {
 	 * @param array $encryption [ 'key', 'algorithm' ] or false
 	 * @return array
 	 */
-	static function create_sig($head, $prvkey, $keyid = EMPTY_STR, $auth = false, $alg = 'sha256', $encryption = false ) {
+	static function create_sig($head, $prvkey, $keyid = EMPTY_STR, $auth = false, $alg = 'sha256', $encryption = false) {
 
 		$return_headers = [];
 
-		if($alg === 'sha256') {
+		if ($alg === 'sha256') {
 			$algorithm = 'rsa-sha256';
 		}
-		if($alg === 'sha512') {
+		if ($alg === 'sha512') {
 			$algorithm = 'rsa-sha512';
 		}
 
-		$x = self::sign($head,$prvkey,$alg);
+		$x = self::sign($head, $prvkey, $alg);
+
+		// TODO: should we default to hs2019?
+		// $headerval = 'keyId="' . $keyid . '",algorithm="' . (($algorithm === 'rsa-sha256') ? 'hs2019' : $algorithm) . '",headers="' . $x['headers'] . '",signature="' . $x['signature'] . '"';
 
 		$headerval = 'keyId="' . $keyid . '",algorithm="' . $algorithm . '",headers="' . $x['headers'] . '",signature="' . $x['signature'] . '"';
 
-		if($encryption) {
-			$x = Crypto::encapsulate($headerval,$encryption['key'],$encryption['algorithm']);
-			if(is_array($x)) {
+		if ($encryption) {
+			$x = Crypto::encapsulate($headerval, $encryption['key'], $encryption['algorithm']);
+			if (is_array($x)) {
 				$headerval = 'iv="' . $x['iv'] . '",key="' . $x['key'] . '",alg="' . $x['alg'] . '",data="' . $x['data'] . '"';
 			}
 		}
 
-		if($auth) {
+		if ($auth) {
 			$sighead = 'Authorization: Signature ' . $headerval;
 		}
 		else {
 			$sighead = 'Signature: ' . $headerval;
 		}
 
-		if($head) {
-			foreach($head as $k => $v) {
+		if ($head) {
+			foreach ($head as $k => $v) {
 				// strip the request-target virtual header from the output headers
-				if($k === '(request-target)') {
+				if ($k === '(request-target)') {
 					continue;
 				}
 				$return_headers[] = $k . ': ' . $v;
@@ -454,8 +544,8 @@ class HTTPSig {
 
 
 	static function set_headers($headers) {
-		if($headers && is_array($headers)) {
-			foreach($headers as $h) {
+		if ($headers && is_array($headers)) {
+			foreach ($headers as $h) {
 				header($h);
 			}
 		}
@@ -465,7 +555,7 @@ class HTTPSig {
 	/**
 	 * @brief
 	 *
-	 * @param array  $head
+	 * @param array $head
 	 * @param string $prvkey
 	 * @param string $alg (optional) default 'sha256'
 	 * @return array
@@ -478,21 +568,24 @@ class HTTPSig {
 		$headers = '';
 		$fields  = '';
 
-		logger('signing: ' . print_r($head,true), LOGGER_DATA);
+		logger('signing: ' . print_r($head, true), LOGGER_DATA);
 
-		if($head) {
-			foreach($head as $k => $v) {
-				$headers .= strtolower($k) . ': ' . trim($v) . "\n";
-				if($fields)
+		if ($head) {
+			foreach ($head as $k => $v) {
+				$k = strtolower($k);
+				$v = (($v) ? trim($v) : '');
+
+				$headers .= $k . ': ' . $v . "\n";
+				if ($fields)
 					$fields .= ' ';
 
-				$fields .= strtolower($k);
+				$fields .= $k;
 			}
 			// strip the trailing linefeed
-			$headers = rtrim($headers,"\n");
+			$headers = rtrim($headers, "\n");
 		}
 
-		$sig = base64_encode(Crypto::sign($headers,$prvkey,$alg));
+		$sig = base64_encode(Crypto::sign($headers, $prvkey, $alg));
 
 		$ret['headers']   = $fields;
 		$ret['signature'] = $sig;
@@ -513,26 +606,26 @@ class HTTPSig {
 
 	static function parse_sigheader($header) {
 
-		$ret = [];
+		$ret     = [];
 		$matches = [];
 
 		// if the header is encrypted, decrypt with (default) site private key and continue
 
-		if(preg_match('/iv="(.*?)"/ism',$header,$matches))
+		if (preg_match('/iv="(.*?)"/ism', $header, $matches))
 			$header = self::decrypt_sigheader($header);
-		if(preg_match('/keyId="(.*?)"/ism',$header,$matches))
+		if (preg_match('/keyId="(.*?)"/ism', $header, $matches))
 			$ret['keyId'] = $matches[1];
-		if(preg_match('/algorithm="(.*?)"/ism',$header,$matches))
+		if (preg_match('/algorithm="(.*?)"/ism', $header, $matches))
 			$ret['algorithm'] = $matches[1];
-		if(preg_match('/headers="(.*?)"/ism',$header,$matches))
+		if (preg_match('/headers="(.*?)"/ism', $header, $matches))
 			$ret['headers'] = explode(' ', $matches[1]);
-		if(preg_match('/signature="(.*?)"/ism',$header,$matches))
-			$ret['signature'] = base64_decode(preg_replace('/\s+/','',$matches[1]));
+		if (preg_match('/signature="(.*?)"/ism', $header, $matches))
+			$ret['signature'] = base64_decode(preg_replace('/\s+/', '', $matches[1]));
 
-		if(($ret['signature']) && ($ret['algorithm']) && (! $ret['headers']))
-			$ret['headers'] = [ 'date' ];
+		if (($ret['signature']) && ($ret['algorithm']) && (!$ret['headers']))
+			$ret['headers'] = ['date'];
 
- 		return $ret;
+		return $ret;
 	}
 
 
@@ -552,23 +645,23 @@ class HTTPSig {
 
 		$iv = $key = $alg = $data = null;
 
-		if(! $prvkey) {
+		if (!$prvkey) {
 			$prvkey = get_config('system', 'prvkey');
 		}
 
 		$matches = [];
 
-		if(preg_match('/iv="(.*?)"/ism',$header,$matches))
+		if (preg_match('/iv="(.*?)"/ism', $header, $matches))
 			$iv = $matches[1];
-		if(preg_match('/key="(.*?)"/ism',$header,$matches))
+		if (preg_match('/key="(.*?)"/ism', $header, $matches))
 			$key = $matches[1];
-		if(preg_match('/alg="(.*?)"/ism',$header,$matches))
+		if (preg_match('/alg="(.*?)"/ism', $header, $matches))
 			$alg = $matches[1];
-		if(preg_match('/data="(.*?)"/ism',$header,$matches))
+		if (preg_match('/data="(.*?)"/ism', $header, $matches))
 			$data = $matches[1];
 
-		if($iv && $key && $alg && $data) {
-			return Crypto::unencapsulate([ 'encrypted' => true, 'iv' => $iv, 'key' => $key, 'alg' => $alg, 'data' => $data ] , $prvkey);
+		if ($iv && $key && $alg && $data) {
+			return Crypto::unencapsulate(['encrypted' => true, 'iv' => $iv, 'key' => $key, 'alg' => $alg, 'data' => $data], $prvkey);
 		}
 
 		return '';

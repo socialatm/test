@@ -572,7 +572,7 @@ class Comanche {
 				require_once('widget/' . trim($name) . '.php');
 			elseif(file_exists('widget/' . trim($name) . '/' . trim($name) . '.php'))
 				require_once('widget/' . trim($name) . '/' . trim($name) . '.php');
-		
+
 			if(! function_exists($func)) {
 				$theme_widget = $func . '.php';
 				if(theme_include($theme_widget)) {
@@ -640,7 +640,8 @@ class Comanche {
 		$cnt = preg_match_all("/\[widget=(.*?)\](.*?)\[\/widget\]/ism", $s, $matches, PREG_SET_ORDER);
 		if($cnt) {
 			foreach($matches as $mtch) {
-				$s = str_replace($mtch[0],$this->widget(trim($mtch[1]),$mtch[2]),$s);
+
+				$s = str_replace((string)$mtch[0], (string)$this->widget(trim((string)$mtch[1]), (string)$mtch[2]), $s);
 			}
 		}
 

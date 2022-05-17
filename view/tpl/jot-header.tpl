@@ -185,7 +185,7 @@ var activeCommentText = '';
 
 	function jotGetExpiry() {
 		//reply = prompt("{{$expirewhen}}", $('#jot-expire').val());
-		$('#expiryModal').modal();
+		$('#expiryModal').modal('show');
 		$('#expiry-modal-OKButton').on('click', function() {
 			reply=$('#expiration-date').val();
 			if(reply && reply.length) {
@@ -197,7 +197,7 @@ var activeCommentText = '';
 
 	function jotGetPubDate() {
 		//reply = prompt("{{$expirewhen}}", $('#jot-expire').val());
-		$('#createdModal').modal();
+		$('#createdModal').modal('show');
 		$('#created-modal-OKButton').on('click', function() {
 			reply=$('#created-date').val();
 			if(reply && reply.length) {
@@ -320,7 +320,9 @@ var activeCommentText = '';
 
 		postSaveChanges('clean');
 
-		{{if $reset}}
+		{{if $popup}}
+		$("#profile-jot-text").focus();
+		{{else if $reset}}
 		$(".jothidden").hide();
 		$("#profile-jot-text").removeClass('jot-expanded');
 		$("#profile-jot-tools").addClass('d-none');
@@ -532,7 +534,7 @@ var activeCommentText = '';
 	}
 
 	function jotAddOption() {
-		var option = '<div class="jot-poll-option form-group"><input class="w-100 border-0" name="poll_answers[]" type="text" value="" placeholder="Option"><div class="poll-option-close"><i class="fa fa-close"></i></div></div>';
+		var option = '<div class="jot-poll-option mb-3"><input class="w-100 border-0" name="poll_answers[]" type="text" value="" placeholder="Option"><div class="poll-option-close"><i class="fa fa-close"></i></div></div>';
 		$('#jot-poll-options').append(option);
 	}
 

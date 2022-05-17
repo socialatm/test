@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: App categories
+ *   * Description: Shows a menu with various app categories
+ *   * Requires: apps
+ */
+
 namespace Zotlabs\Widget;
 
 class Appcategories {
@@ -40,7 +46,7 @@ class Appcategories {
 				$terms[] = array('name' => $rr['term'], 'selected' => (($selected == $rr['term']) ? 'selected' : ''));
 
 			return replace_macros(get_markup_template('categories_widget.tpl'),array(
-				'$title' => t('Categories'),
+				'$title' => t('App Categories'),
 				'$desc' => '',
 				'$sel_all' => (($selected == '') ? 'selected' : ''),
 				'$all' => t('Everything'),

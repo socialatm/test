@@ -14,7 +14,7 @@ function is_matrix_url($url) {
 		if(array_key_exists($m['host'],$remembered))
 			return $remembered[$m['host']];
 
-		$r = q("select hubloc_url from hubloc where hubloc_host = '%s' and hubloc_network in ('zot', 'zot6') limit 1",
+		$r = q("select hubloc_url from hubloc where hubloc_host = '%s' and hubloc_network = 'zot6' limit 1",
 			dbesc($m['host'])
 		);
 		if($r) {
@@ -37,7 +37,7 @@ function is_matrix_url($url) {
  * @return string
  */
 function zid($s, $address = '') {
-	if (! strlen($s) || strpos($s,'zid='))
+	if (!$s || strpos($s,'zid='))
 		return $s;
 
 	$m = parse_url($s);
@@ -58,6 +58,8 @@ function zid($s, $address = '') {
 	$mine_parsed = parse_url($mine);
 	$s_parsed = parse_url($s);
 
+
+	$url_match = false;
 	if(isset($mine_parsed['host']) && isset($s_parsed['host']) && $mine_parsed['host'] === $s_parsed['host'])
 		$url_match = true;
 
@@ -142,9 +144,9 @@ function clean_query_string($s = '') {
 
 function drop_query_params($s, $p) {
 		$parsed = parse_url($s);
-
 		$query = '';
 		$query_args = null;
+
 		if(isset($parsed['query'])) {
 			parse_str($parsed['query'], $query_args);
 		}
@@ -157,8 +159,11 @@ function drop_query_params($s, $p) {
 			}
 		}
 
-		if($query)
+		unset($parsed['query']);
+
+		if($query) {
 			$parsed['query'] = $query;
+		}
 
 		return unparse_url($parsed);
 }

@@ -87,7 +87,7 @@ function deletenode(&$doc, $node)
 function html2bbcode($message)
 {
 
-	if(!$message)
+	if(!is_string($message) && !$message)
 		return;
 
 	$message = str_replace("\r", "", $message);

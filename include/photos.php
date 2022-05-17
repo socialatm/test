@@ -4,6 +4,9 @@
  * @brief Functions related to photo handling.
  */
 
+use Zotlabs\Access\PermissionLimits;
+use Zotlabs\Lib\Activity;
+
 require_once('include/permissions.php');
 require_once('include/items.php');
 require_once('include/photo/photo_driver.php');
@@ -19,11 +22,11 @@ require_once('include/text.php');
  */
 function photo_upload($channel, $observer, $args) {
 
-	$ret = array('success' => false);
+	$ret        = ['success' => false];
 	$channel_id = $channel['channel_id'];
 	$account_id = $channel['channel_account_id'];
 
-	if(! perm_is_allowed($channel_id, $observer['xchan_hash'], 'write_storage')) {
+	if (!perm_is_allowed($channel_id, $observer['xchan_hash'], 'write_storage')) {
 		$ret['message'] = t('Permission denied.');
 		return $ret;
 	}
@@ -32,15 +35,15 @@ function photo_upload($channel, $observer, $args) {
 	 * Determine the album to use
 	 */
 
-	$album    = $args['album'];
+	$album = $args['album'];
 
-	if(intval($args['visible']) || $args['visible'] === 'true')
+	if (intval($args['visible']) || $args['visible'] === 'true')
 		$visible = 1;
 	else
 		$visible = 0;
 
 	$deliver = true;
-	if(array_key_exists('deliver',$args))
+	if (array_key_exists('deliver', $args))
 		$deliver = intval($args['deliver']);
 
 	// Set to default channel permissions. If the parent directory (album) has permissions set,
@@ -49,14 +52,14 @@ function photo_upload($channel, $observer, $args) {
 	// ...messy... needs re-factoring once the photos/files integration stabilises
 
 	$acl = new Zotlabs\Access\AccessList($channel);
-	if(array_key_exists('directory',$args) && $args['directory'])
+	if (array_key_exists('directory', $args) && $args['directory'])
 		$acl->set($args['directory']);
-	if(array_key_exists('allow_cid',$args))
+	if (array_key_exists('allow_cid', $args))
 		$acl->set($args);
-	if( (array_key_exists('group_allow',$args))
-		|| (array_key_exists('contact_allow',$args))
-		|| (array_key_exists('group_deny',$args))
-		|| (array_key_exists('contact_deny',$args))) {
+	if ((array_key_exists('group_allow', $args))
+		|| (array_key_exists('contact_allow', $args))
+		|| (array_key_exists('group_deny', $args))
+		|| (array_key_exists('contact_deny', $args))) {
 		$acl->set_from_array($args);
 	}
 
@@ -64,54 +67,51 @@ function photo_upload($channel, $observer, $args) {
 
 	$width = $height = 0;
 
-	if($args['getimagesize']) {
-		$width = $args['getimagesize'][0];
+	if ($args['getimagesize']) {
+		$width  = $args['getimagesize'][0];
 		$height = $args['getimagesize'][1];
 	}
 
 
 	$os_storage = 0;
 
-	$max_thumb = get_config('system','max_thumbnail',1600);
+	$max_thumb = get_config('system', 'max_thumbnail', 1600);
 
-	if($args['os_syspath'] && $args['getimagesize']) {
-		if($args['getimagesize'][0] > $max_thumb || $args['getimagesize'][1] > $max_thumb) {
-			$imagick_path = get_config('system','imagick_convert_path');
-			if($imagick_path && @file_exists($imagick_path)) {
+	if ($args['os_syspath'] && $args['getimagesize']) {
+		if ($args['getimagesize'][0] > $max_thumb || $args['getimagesize'][1] > $max_thumb) {
+			$imagick_path = get_config('system', 'imagick_convert_path');
+			if ($imagick_path && @file_exists($imagick_path)) {
 				$tmp_name = $args['os_syspath'] . '-001';
-				$newsize = photo_calculate_scale(array_merge($args['getimagesize'],['max' => $max_thumb]));
-				$cmd = $imagick_path . ' ' . escapeshellarg(PROJECT_BASE . '/' . $args['os_syspath']) . ' -resize ' . $newsize . ' ' . escapeshellarg(PROJECT_BASE . '/' . $tmp_name);
-					logger('imagick thumbnail command: ' . $cmd);
-				for($x = 0; $x < 4; $x ++) {
+				$newsize  = photo_calculate_scale(array_merge($args['getimagesize'], ['max' => $max_thumb]));
+				$cmd      = $imagick_path . ' ' . escapeshellarg(PROJECT_BASE . '/' . $args['os_syspath']) . ' -resize ' . $newsize . ' ' . escapeshellarg(PROJECT_BASE . '/' . $tmp_name);
+				logger('imagick thumbnail command: ' . $cmd);
+				for ($x = 0; $x < 4; $x++) {
 					exec($cmd);
-					if(file_exists($tmp_name)) {
+					if (file_exists($tmp_name)) {
 						break;
 					}
 					logger('imagick scale failed. Retrying.');
 					continue;
 				}
-				if(! file_exists($tmp_name)) {
+				if (!file_exists($tmp_name)) {
 					logger('imagick scale failed. Abort.');
 					return $ret;
 				}
 
 				$imagedata = @file_get_contents($tmp_name);
-				$filesize = @filesize($args['os_syspath']);
 //				@unlink($tmp_name);
 			}
 			else {
 				$imagedata = @file_get_contents($args['os_syspath']);
-				$filesize = strlen($imagedata);
 			}
 		}
 		else {
 			$imagedata = @file_get_contents($args['os_syspath']);
-			$filesize = strlen($imagedata);
 		}
 		$filename = $args['filename'];
 		// this is going to be deleted if it exists
-		$src = '/tmp/deletemenow';
-		$type = $args['getimagesize']['mime'];
+		$src        = '/tmp/deletemenow';
+		$type       = $args['getimagesize']['mime'];
 		$os_storage = 1;
 	}
 	elseif ($args['data'] || $args['content']) {
@@ -120,35 +120,37 @@ function photo_upload($channel, $observer, $args) {
 		// This bypasses the upload step and max size limit checking
 
 		$imagedata = (($args['content']) ? $args['content'] : $args['data']);
-		$filename = $args['filename'];
-		$filesize = strlen($imagedata);
-		// this is going to be deleted if it exists
-		$src = '/tmp/deletemenow';
-		$type = (($args['mimetype']) ? $args['mimetype'] : $args['type']);
-	} else {
-		$f = array('src' => '', 'filename' => '', 'filesize' => 0, 'type' => '');
+		$filename  = $args['filename'];
 
-		if (x($f,'src') && x($f,'filesize')) {
+		// this is going to be deleted if it exists
+		$src  = '/tmp/deletemenow';
+		$type = (($args['mimetype']) ? $args['mimetype'] : $args['type']);
+	}
+	else {
+		$f = ['src' => '', 'filename' => '', 'filesize' => 0, 'type' => ''];
+
+		if (x($f, 'src') && x($f, 'filesize')) {
 			$src      = $f['src'];
 			$filename = $f['filename'];
 			$filesize = $f['filesize'];
 			$type     = $f['type'];
-		} else {
+		}
+		else {
 			$src      = $_FILES['userfile']['tmp_name'];
 			$filename = basename($_FILES['userfile']['name']);
 			$filesize = intval($_FILES['userfile']['size']);
 			$type     = $_FILES['userfile']['type'];
 		}
 
-		if (! $type)
-			$type=guess_image_type($filename);
+		if (!$type)
+			$type = guess_image_type($filename);
 
-		logger('Received file: ' . $filename . ' as ' . $src . ' ('. $type . ') ' . $filesize . ' bytes', LOGGER_DEBUG);
+		logger('Received file: ' . $filename . ' as ' . $src . ' (' . $type . ') ' . $filesize . ' bytes', LOGGER_DEBUG);
 
-		$maximagesize = get_config('system','maximagesize');
+		$maximagesize = get_config('system', 'maximagesize');
 
 		if (($maximagesize) && ($filesize > $maximagesize)) {
-			$ret['message'] =  sprintf ( t('Image exceeds website size limit of %lu bytes'), $maximagesize);
+			$ret['message'] = sprintf(t('Image exceeds website size limit of %lu bytes'), $maximagesize);
 			@unlink($src);
 			/**
 			 * @hooks photo_upload_end
@@ -158,7 +160,7 @@ function photo_upload($channel, $observer, $args) {
 			return $ret;
 		}
 
-		if (! $filesize) {
+		if (!$filesize) {
 			$ret['message'] = t('Image file is empty.');
 			@unlink($src);
 			/**
@@ -169,7 +171,7 @@ function photo_upload($channel, $observer, $args) {
 			return $ret;
 		}
 
-		logger('Loading the contents of ' . $src , LOGGER_DEBUG);
+		logger('Loading the contents of ' . $src, LOGGER_DEBUG);
 		$imagedata = @file_get_contents($src);
 	}
 
@@ -177,7 +179,7 @@ function photo_upload($channel, $observer, $args) {
 		intval($account_id)
 	);
 
-	$limit = engr_units_to_bytes(service_class_fetch($channel_id,'photo_upload_limit'));
+	$limit = engr_units_to_bytes(service_class_fetch($channel_id, 'photo_upload_limit'));
 
 	if (($r) && ($limit !== false) && (($r[0]['total'] + strlen($imagedata)) > $limit)) {
 		$ret['message'] = upgrade_message();
@@ -192,7 +194,7 @@ function photo_upload($channel, $observer, $args) {
 
 	$ph = photo_factory($imagedata, $type);
 
-	if (! $ph->is_valid()) {
+	if (!$ph->is_valid()) {
 		$ret['message'] = t('Unable to process image');
 		logger('unable to process image');
 		@unlink($src);
@@ -208,7 +210,7 @@ function photo_upload($channel, $observer, $args) {
 
 	$exif = $ph->exif(($args['os_syspath']) ? $args['os_syspath'] : $src);
 
-	if($exif) {
+	if ($exif) {
 		$ph->orient($exif);
 	}
 
@@ -218,18 +220,16 @@ function photo_upload($channel, $observer, $args) {
 
 	@unlink($src);
 
-	$max_length = get_config('system','max_image_length');
-	if (! $max_length)
+	$max_length = get_config('system', 'max_image_length');
+	if (!$max_length)
 		$max_length = MAX_IMAGE_LENGTH;
 	if ($max_length > 0)
 		$ph->scaleImage($max_length);
 
-	if(! $width)
-		$width  = $ph->getWidth();
-	if(! $height)
+	if (!$width)
+		$width = $ph->getWidth();
+	if (!$height)
 		$height = $ph->getHeight();
-
-	$smallest = 0;
 
 	$photo_hash = (($args['resource_id']) ? $args['resource_id'] : photo_new_resource());
 
@@ -239,34 +239,34 @@ function photo_upload($channel, $observer, $args) {
 
 	$errors = false;
 
-	$p = array('aid' => $account_id, 'uid' => $channel_id, 'xchan' => $visitor, 'resource_id' => $photo_hash,
-		'filename' => $filename, 'album' => $album, 'imgscale' => 0, 'photo_usage' => PHOTO_NORMAL,
-		'width' => $width, 'height' => $height,
-		'allow_cid' => $ac['allow_cid'], 'allow_gid' => $ac['allow_gid'],
-		'deny_cid' => $ac['deny_cid'], 'deny_gid' => $ac['deny_gid'],
-		'os_storage' => $os_storage, 'os_syspath' => $args['os_syspath'],
-		'os_path' => $args['os_path'], 'display_path' => $args['display_path']
-	);
-	if($args['created'])
+	$p = ['aid'        => $account_id, 'uid' => $channel_id, 'xchan' => $visitor, 'resource_id' => $photo_hash,
+		  'filename'   => $filename, 'album' => $album, 'imgscale' => 0, 'photo_usage' => PHOTO_NORMAL,
+		  'width'      => $width, 'height' => $height,
+		  'allow_cid'  => $ac['allow_cid'], 'allow_gid' => $ac['allow_gid'],
+		  'deny_cid'   => $ac['deny_cid'], 'deny_gid' => $ac['deny_gid'],
+		  'os_storage' => $os_storage, 'os_syspath' => $args['os_syspath'],
+		  'os_path'    => $args['os_path'], 'display_path' => $args['display_path']
+	];
+	if ($args['created'])
 		$p['created'] = $args['created'];
-	if($args['edited'])
+	if ($args['edited'])
 		$p['edited'] = $args['edited'];
-	if($args['title'])
+	if ($args['title'])
 		$p['title'] = $args['title'];
-	if($args['description'])
+	if ($args['description'])
 		$p['description'] = $args['description'];
 
-	$link   = array();
+	$url = [];
 
-	$r0 = $ph->save($p);
-	$link[0] = array(
-		'rel'  => 'alternate',
-		'type' => $type,
-		'href' => z_root() . '/photo/' . $photo_hash . '-0.' . $ph->getExt(),
-		'width' => $width,
-		'height' => $height
-	);
-	if(! $r0)
+	$r0     = $ph->save($p);
+	$url[0] = [
+		'type'      => 'Link',
+		'mediaType' => $type,
+		'href'      => z_root() . '/photo/' . $photo_hash . '-0.' . $ph->getExt(),
+		'width'     => $width,
+		'height'    => $height
+	];
+	if (!$r0)
 		$errors = true;
 
 	unset($p['os_storage']);
@@ -274,49 +274,49 @@ function photo_upload($channel, $observer, $args) {
 	unset($p['width']);
 	unset($p['height']);
 
-	if(($width > 1024 || $height > 1024) && (! $errors))
+	if (($width > 1024 || $height > 1024) && (!$errors))
 		$ph->scaleImage(1024);
 
-	$r1 = $ph->storeThumbnail($p, PHOTO_RES_1024);
-	$link[1] = array(
-		'rel'  => 'alternate',
-		'type' => $type,
-		'href' => z_root() . '/photo/' . $photo_hash . '-1.' . $ph->getExt(),
-		'width' => $ph->getWidth(),
-		'height' => $ph->getHeight()
-	);
-	if(! $r1)
+	$r1     = $ph->storeThumbnail($p, PHOTO_RES_1024);
+	$url[1] = [
+		'type'      => 'Link',
+		'mediaType' => $type,
+		'href'      => z_root() . '/photo/' . $photo_hash . '-1.' . $ph->getExt(),
+		'width'     => $ph->getWidth(),
+		'height'    => $ph->getHeight()
+	];
+	if (!$r1)
 		$errors = true;
 
-	if(($width > 640 || $height > 640) && (! $errors))
+	if (($width > 640 || $height > 640) && (!$errors))
 		$ph->scaleImage(640);
 
-	$r2 = $ph->storeThumbnail($p, PHOTO_RES_640);
-	$link[2] = array(
-		'rel'  => 'alternate',
-		'type' => $type,
-		'href' => z_root() . '/photo/' . $photo_hash . '-2.' . $ph->getExt(),
-		'width' => $ph->getWidth(),
-		'height' => $ph->getHeight()
-	);
-	if(! $r2)
+	$r2     = $ph->storeThumbnail($p, PHOTO_RES_640);
+	$url[2] = [
+		'type'      => 'Link',
+		'mediaType' => $type,
+		'href'      => z_root() . '/photo/' . $photo_hash . '-2.' . $ph->getExt(),
+		'width'     => $ph->getWidth(),
+		'height'    => $ph->getHeight()
+	];
+	if (!$r2)
 		$errors = true;
 
-	if(($width > 320 || $height > 320) && (! $errors))
+	if (($width > 320 || $height > 320) && (!$errors))
 		$ph->scaleImage(320);
 
-	$r3 = $ph->storeThumbnail($p, PHOTO_RES_320);
-	$link[3] = array(
-		'rel'  => 'alternate',
-		'type' => $type,
-		'href' => z_root() . '/photo/' . $photo_hash . '-3.' . $ph->getExt(),
-		'width' => $ph->getWidth(),
-		'height' => $ph->getHeight()
-	);
-	if(! $r3)
+	$r3     = $ph->storeThumbnail($p, PHOTO_RES_320);
+	$url[3] = [
+		'type'      => 'Link',
+		'mediaType' => $type,
+		'href'      => z_root() . '/photo/' . $photo_hash . '-3.' . $ph->getExt(),
+		'width'     => $ph->getWidth(),
+		'height'    => $ph->getHeight()
+	];
+	if (!$r3)
 		$errors = true;
 
-	if($errors) {
+	if ($errors) {
 		q("delete from photo where resource_id = '%s' and uid = %d",
 			dbesc($photo_hash),
 			intval($channel_id)
@@ -331,19 +331,19 @@ function photo_upload($channel, $observer, $args) {
 		return $ret;
 	}
 
-	$item_hidden = (($visible) ? 0 : 1 );
+	$item_hidden = (($visible) ? 0 : 1);
 
 	$lat = $lon = null;
 
-	if($exif && feature_enabled($channel_id,'photo_location')) {
+	if ($exif && feature_enabled($channel_id, 'photo_location')) {
 		$gps = null;
-		if(array_key_exists('GPS',$exif)) {
+		if (array_key_exists('GPS', $exif)) {
 			$gps = $exif['GPS'];
 		}
-		elseif(array_key_exists('GPSLatitude',$exif)) {
+		elseif (array_key_exists('GPSLatitude', $exif)) {
 			$gps = $exif;
 		}
-		if($gps) {
+		if ($gps) {
 			$lat = getGps($gps['GPSLatitude'], $gps['GPSLatitudeRef']);
 			$lon = getGps($gps['GPSLongitude'], $gps['GPSLongitudeRef']);
 		}
@@ -353,19 +353,19 @@ function photo_upload($channel, $observer, $args) {
 
 	$large_photos = feature_enabled($channel['channel_id'], 'large_photos');
 
-	linkify_tags($args['body'], $channel_id);
+	$found_tags = linkify_tags($args['body'], $channel_id);
 
-	if($large_photos) {
-		$scale = 1;
-		$width = $link[1]['width'];
-		$height = $link[1]['height'];
-		$tag = (($r1) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
+	if ($large_photos) {
+		$scale  = 1;
+		$width  = $url[1]['width'];
+		$height = $url[1]['height'];
+		$tag    = (($r1) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
 	}
 	else {
-		$scale = 2;
-		$width = $link[2]['width'];
-		$height = $link[2]['height'];
-		$tag = (($r2) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
+		$scale  = 2;
+		$width  = $url[2]['width'];
+		$height = $url[2]['height'];
+		$tag    = (($r2) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
 	}
 
 	$author_link = '[zrl=' . z_root() . '/channel/' . $channel['channel_address'] . ']' . $channel['channel_name'] . '[/zrl]';
@@ -374,77 +374,132 @@ function photo_upload($channel, $observer, $args) {
 
 	$album_link = '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/album/' . $args['directory']['hash'] . ']' . ((strlen($album)) ? $album : '/') . '[/zrl]';
 
-	$activity_format = sprintf(t('%1$s posted %2$s to %3$s','photo_upload'), $author_link, $photo_link, $album_link);
+	$activity_format = sprintf(t('%1$s posted %2$s to %3$s', 'photo_upload'), $author_link, $photo_link, $album_link);
 
 	$summary = (($args['body']) ? $args['body'] : '') . '[footer]' . $activity_format . '[/footer]';
 
-	$obj_body =  '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo_hash . ']'
+	$obj_body = '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo_hash . ']'
 		. $tag . z_root() . "/photo/{$photo_hash}-{$scale}." . $ph->getExt() . '[/zmg]'
 		. '[/zrl]';
 
-	// Create item object
-	$object = array(
-		'type'    => ACTIVITY_OBJ_PHOTO,
-		'title'   => $title,
-		'created' => $p['created'],
-		'edited'  => $p['edited'],
-		'id'      => z_root() . '/item/' . $photo_hash,
-		'link'    => $link,
-		'body'    => $summary
-	);
+	$url[] = [
+		'type'      => 'Link',
+		'mediaType' => 'text/html',
+		'href'      => z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo_hash
+	];
 
-	$target = array(
-		'type'    => ACTIVITY_OBJ_ALBUM,
-		'title'   => (($album) ? $album : '/'),
-		'id'      => z_root() . '/photos/' . $channel['channel_address'] . '/album/' . bin2hex($album)
-	);
+	$post_tags = [];
+
+	if ($found_tags) {
+		foreach ($found_tags as $result) {
+			$success = $result['success'];
+			if ($success['replaced']) {
+				$post_tags[] = [
+					'uid'   => $channel['channel_id'],
+					'ttype' => $success['termtype'],
+					'otype' => TERM_OBJ_POST,
+					'term'  => $success['term'],
+					'url'   => $success['url']
+				];
+			}
+		}
+	}
+
+	$attribution = (($visitor) ? $visitor['xchan_url'] : $channel['xchan_url']);
+
+	//// Create item object
+	$object = [
+		'type'          => 'Image',
+		'name'          => $title,
+		'published'     => datetime_convert('UTC', 'UTC', $p['created'], ATOM_TIME),
+		'updated'       => datetime_convert('UTC', 'UTC', $p['edited'], ATOM_TIME),
+		'attributedTo'  => $attribution,
+
+		// id and diaspora:guid are placeholders and will get over-ridden by the item mid.
+		// This is critical for sharing as a conversational item over activitypub.
+		'id'            => z_root() . '/photo/' . $photo_hash,
+		'diaspora:guid' => $photo_hash,
+
+		'url'     => $url,
+		'source'  => ['content' => $summary, 'mediaType' => 'text/bbcode'],
+		'content' => bbcode($summary)
+	];
+
+	if ($post_tags) {
+		$object['tag'] = Activity::encode_taxonomy(['term' => $post_tags]);
+	}
+
+	$public = (($ac['allow_cid'] || $ac['allow_gid'] || $ac['deny_cid'] || $ac['deny_gid']) ? false : true);
+
+	if ($public) {
+		$object['to'] = [ACTIVITY_PUBLIC_INBOX];
+		$object['cc'] = [z_root() . '/followers/' . $channel['channel_address']];
+	}
+	else {
+		$object['to'] = Activity::map_acl(array_merge($ac, ['item_private' => 1 - intval($public)]));
+	}
+
+	$target = [
+		'type' => 'orderedCollection',
+		'name' => ((strlen($album)) ? $album : '/'),
+		'id'   => z_root() . '/album/' . $channel['channel_address'] . ((isset($args['directory']['hash'])) ? '/' . $args['directory']['hash'] : EMPTY_STR)
+	];
 
 	// Create item container
-	if($args['item']) {
-		foreach($args['item'] as $i) {
+	if ($args['item']) {
+		foreach ($args['item'] as $i) {
 
-			$item = get_item_elements($i);
+			$item  = get_item_elements($i);
 			$force = false;
 
-			if($item['mid'] === $item['parent_mid']) {
+			if ($item['mid'] === $item['parent_mid']) {
 
-				$item['body'] = $summary;
+				$item['body']     = $summary;
 				$item['mimetype'] = 'text/bbcode';
 				$item['obj_type'] = ACTIVITY_OBJ_PHOTO;
-				$item['obj']	= json_encode($object);
 
-				$item['tgt_type'] = ACTIVITY_OBJ_ALBUM;
-				$item['target']	= json_encode($target);
+				$object['id']            = $item['mid'];
+				$object['diaspora:guid'] = $item['uuid'];
+				$item['obj']             = json_encode($object);
 
+				$item['tgt_type'] = 'orderedCollection';
+				$item['target']   = json_encode($target);
+				if ($post_tags) {
+					$arr['term'] = $post_tags;
+				}
 				$force = true;
 			}
 			$r = q("select id, edited from item where mid = '%s' and uid = %d limit 1",
 				dbesc($item['mid']),
 				intval($channel['channel_id'])
 			);
-			if($r) {
-				if(($item['edited'] > $r[0]['edited']) || $force) {
-					$item['id'] = $r[0]['id'];
+			if ($r) {
+				if (($item['edited'] > $r[0]['edited']) || $force) {
+					$item['id']  = $r[0]['id'];
 					$item['uid'] = $channel['channel_id'];
-					item_store_update($item,false,$deliver);
+					item_store_update($item, false, $deliver);
 					continue;
 				}
 			}
 			else {
 				$item['aid'] = $channel['channel_account_id'];
 				$item['uid'] = $channel['channel_id'];
-				$item_result = item_store($item,false,$deliver);
+				item_store($item, false, $deliver);
 			}
 		}
 	}
 	else {
-		// $uuid = item_message_id();
-		$mid = z_root() . '/item/' . $photo_hash;
+
+		$uuid = new_uuid();
+		$mid  = z_root() . '/item/' . $uuid;
+
+		$object['id']            = $mid;
+		$object['diaspora:guid'] = $uuid;
 
 		$arr = [
 			'aid'             => $account_id,
 			'uid'             => $channel_id,
-			'uuid'            => $photo_hash,
+			'uuid'            => $uuid,
 			'mid'             => $mid,
 			'parent_mid'      => $mid,
 			'item_hidden'     => $item_hidden,
@@ -460,19 +515,23 @@ function photo_upload($channel, $observer, $args) {
 			'verb'            => ACTIVITY_POST,
 			'obj_type'        => ACTIVITY_OBJ_PHOTO,
 			'obj'             => json_encode($object),
-			'tgt_type'        => ACTIVITY_OBJ_ALBUM,
-			'target'	      => json_encode($target),
+			'tgt_type'        => 'orderedCollection',
+			'target'          => json_encode($target),
 			'item_wall'       => $visible,
 			'item_origin'     => 1,
 			'item_thread_top' => 1,
 			'item_private'    => intval($acl->is_private()),
-			'body'            => $summary
+			'body'            => $summary,
+			'plink'           => $mid
 		];
 
-		$arr['plink'] = $mid;
+		if ($post_tags) {
+			$arr['term'] = $post_tags;
+		}
 
-		if($lat && $lon)
+		if ($lat && $lon) {
 			$arr['coord'] = $lat . ' ' . $lon;
+		}
 
 		// this one is tricky because the item and the photo have the same permissions, those of the photo.
 		// Use the channel read_stream permissions to get the correct public_policy for the item and recalculate the
@@ -481,22 +540,21 @@ function photo_upload($channel, $observer, $args) {
 		// in the photos pages - using the photos permissions instead. We need the public policy to keep the photo
 		// linked item from leaking into the feed when somebody has a channel with read_stream restrictions.
 
-		$arr['public_policy']   = map_scope(\Zotlabs\Access\PermissionLimits::Get($channel['channel_id'],'view_stream'),true);
-		if($arr['public_policy'])
+		$arr['public_policy'] = map_scope(PermissionLimits::Get($channel['channel_id'], 'view_stream'), true);
+		if ($arr['public_policy'])
 			$arr['item_private'] = 1;
 
-
-		$result = item_store($arr,false,$deliver);
+		$result  = item_store($arr, false, $deliver);
 		$item_id = $result['item_id'];
 
-		if($visible && $deliver)
-			Zotlabs\Daemon\Master::Summon(array('Notifier', 'wall-new', $item_id));
+		if ($visible && $deliver)
+			Zotlabs\Daemon\Master::Summon(['Notifier', 'wall-new', $item_id]);
 	}
 
-	$ret['success'] = true;
-	$ret['item'] = $arr;
-	$ret['body'] = $obj_body;
-	$ret['resource_id'] = $photo_hash;
+	$ret['success']      = true;
+	$ret['item']         = $arr;
+	$ret['body']         = $obj_body;
+	$ret['resource_id']  = $photo_hash;
 	$ret['photoitem_id'] = $item_id;
 
 	/**
@@ -511,57 +569,55 @@ function photo_upload($channel, $observer, $args) {
 
 function photo_calculate_scale($arr) {
 
-	$max = $arr['max'];
-	$width = $arr[0];
+	$max    = $arr['max'];
+	$width  = $arr[0];
 	$height = $arr[1];
 
-	$dest_width = $dest_height = 0;
-
-	if((! $width)|| (! $height))
+	if ((!$width) || (!$height))
 		return FALSE;
 
-	if($width > $max && $height > $max) {
+	if ($width > $max && $height > $max) {
 
 		// very tall image (greater than 16:9)
 		// constrain the width - let the height float.
 
-		if((($height * 9) / 16) > $width) {
-			$dest_width = $max;
- 			$dest_height = intval(( $height * $max ) / $width);
+		if ((($height * 9) / 16) > $width) {
+			$dest_width  = $max;
+			$dest_height = intval(($height * $max) / $width);
 		}
 
 		// else constrain both dimensions
 
-		elseif($width > $height) {
-			$dest_width = $max;
-			$dest_height = intval(( $height * $max ) / $width);
+		elseif ($width > $height) {
+			$dest_width  = $max;
+			$dest_height = intval(($height * $max) / $width);
 		}
 		else {
-			$dest_width = intval(( $width * $max ) / $height);
+			$dest_width  = intval(($width * $max) / $height);
 			$dest_height = $max;
 		}
 	}
 	else {
-		if( $width > $max ) {
-			$dest_width = $max;
-			$dest_height = intval(( $height * $max ) / $width);
+		if ($width > $max) {
+			$dest_width  = $max;
+			$dest_height = intval(($height * $max) / $width);
 		}
 		else {
-			if( $height > $max ) {
+			if ($height > $max) {
 				// very tall image (greater than 16:9)
 				// but width is OK - don't do anything
 
-				if((($height * 9) / 16) > $width) {
-					$dest_width = $width;
- 					$dest_height = $height;
+				if ((($height * 9) / 16) > $width) {
+					$dest_width  = $width;
+					$dest_height = $height;
 				}
 				else {
-					$dest_width = intval(( $width * $max ) / $height);
+					$dest_width  = intval(($width * $max) / $height);
 					$dest_height = $max;
 				}
 			}
 			else {
-				$dest_width = $width;
+				$dest_width  = $width;
 				$dest_height = $height;
 			}
 		}
@@ -589,34 +645,34 @@ function photos_albums_list($channel, $observer, $sort_key = 'display_path', $di
 	$channel_id     = $channel['channel_id'];
 	$observer_xchan = (($observer) ? $observer['xchan_hash'] : '');
 
-	if(! perm_is_allowed($channel_id, $observer_xchan, 'view_storage'))
+	if (!perm_is_allowed($channel_id, $observer_xchan, 'view_storage'))
 		return false;
 
-	$sql_extra = permissions_sql($channel_id,$observer_xchan);
+	$sql_extra = permissions_sql($channel_id, $observer_xchan);
 
-	$sort_key = dbesc($sort_key);
+	$sort_key  = dbesc($sort_key);
 	$direction = dbesc($direction);
 
 	$r = q("select display_path, hash from attach where is_dir = 1 and uid = %d $sql_extra order by $sort_key $direction",
 		intval($channel_id)
 	);
 
-	array_unshift($r,[ 'display_path' => '/', 'hash' => '' ]);
-	$str = ids_to_querystr($r,'hash',true);
+	array_unshift($r, ['display_path' => '/', 'hash' => '']);
+	$str = ids_to_querystr($r, 'hash', true);
 
 	$albums = [];
 
-	if($str) {
+	if ($str) {
 		$x = q("select count( distinct hash ) as total, folder from attach where is_photo = 1 and uid = %d and folder in ( $str ) $sql_extra group by folder ",
 			intval($channel_id)
 		);
-		if($x) {
+		if ($x) {
 			require_once('include/attach.php');
-			foreach($r as $rv) {
-				foreach($x as $xv) {
-					if($xv['folder'] === $rv['hash']) {
-						if($xv['total'] != 0 && attach_can_view_folder($channel_id,$observer_xchan,$xv['folder'])) {
-							$albums[] = [ 'album' => $rv['display_path'], 'folder' => $xv['folder'], 'total' => $xv['total'] ];
+			foreach ($r as $rv) {
+				foreach ($x as $xv) {
+					if ($xv['folder'] === $rv['hash']) {
+						if ($xv['total'] != 0 && attach_can_view_folder($channel_id, $observer_xchan, $xv['folder'])) {
+							$albums[] = ['album' => $rv['display_path'], 'folder' => $xv['folder'], 'total' => $xv['total']];
 						}
 						continue;
 					}
@@ -627,15 +683,15 @@ function photos_albums_list($channel, $observer, $sort_key = 'display_path', $di
 
 	// add various encodings to the array so we can just loop through and pick them out in a template
 
-	$ret = array('success' => false);
+	$ret = ['success' => false];
 
-	if($albums) {
+	if ($albums) {
 		$ret['success'] = true;
-		$ret['albums'] = array();
-		foreach($albums as $k => $album) {
-			$entry = [
+		$ret['albums']  = [];
+		foreach ($albums as $k => $album) {
+			$entry           = [
 				'text'      => (($album['album']) ? $album['album'] : '/'),
-				'shorttext' => (($album['album']) ? ellipsify($album['album'],28) : '/'),
+				'shorttext' => (($album['album']) ? ellipsify($album['album'], 28) : '/'),
 				'jstext'    => (($album['album']) ? addslashes($album['album']) : '/'),
 				'total'     => $album['total'],
 				'url'       => z_root() . '/photos/' . $channel['channel_address'] . '/album/' . $album['folder'],
@@ -651,25 +707,25 @@ function photos_albums_list($channel, $observer, $sort_key = 'display_path', $di
 	return $ret;
 }
 
-function photos_album_widget($channelx,$observer,$sortkey = 'display_path',$direction = 'asc') {
+function photos_album_widget($channelx, $observer, $sortkey = 'display_path', $direction = 'asc') {
 
 	$o = '';
 
-	if(array_key_exists('albums', App::$data))
+	if (array_key_exists('albums', App::$data))
 		$albums = App::$data['albums'];
 	else
-		$albums = photos_albums_list($channelx,$observer,$sortkey,$direction);
+		$albums = photos_albums_list($channelx, $observer, $sortkey, $direction);
 
-	if($albums['success']) {
-		$o = replace_macros(get_markup_template('photo_albums.tpl'),array(
+	if ($albums['success']) {
+		$o = replace_macros(get_markup_template('photo_albums.tpl'), [
 			'$nick'    => $channelx['channel_address'],
 			'$title'   => t('Photo Albums'),
 			'$recent'  => t('Recent Photos'),
 			'$albums'  => $albums['albums'],
 			'$baseurl' => z_root(),
-			'$upload'  => ((perm_is_allowed($channelx['channel_id'],(($observer) ? $observer['xchan_hash'] : ''),'write_storage'))
+			'$upload'  => ((perm_is_allowed($channelx['channel_id'], (($observer) ? $observer['xchan_hash'] : ''), 'write_storage'))
 				? t('Upload New Photos') : '')
-		));
+		]);
 	}
 
 	return $o;
@@ -688,15 +744,15 @@ function photos_list_photos($channel, $observer, $album = '') {
 	$channel_id     = $channel['channel_id'];
 	$observer_xchan = (($observer) ? $observer['xchan_hash'] : '');
 
-	if(! perm_is_allowed($channel_id,$observer_xchan,'view_storage'))
+	if (!perm_is_allowed($channel_id, $observer_xchan, 'view_storage'))
 		return false;
 
 	$sql_extra = permissions_sql($channel_id);
 
-	if($album)
+	if ($album)
 		$sql_extra .= " and album = '" . protect_sprintf(dbesc($album)) . "' ";
 
-	$ret = array('success' => false);
+	$ret = ['success' => false];
 
 	$r = q("select resource_id, created, edited, title, description, album, filename, mimetype, height, width, filesize, imgscale, photo_usage, allow_cid, allow_gid, deny_cid, deny_gid from photo where uid = %d and photo_usage in ( %d, %d ) $sql_extra ",
 		intval($channel_id),
@@ -704,12 +760,12 @@ function photos_list_photos($channel, $observer, $album = '') {
 		intval(PHOTO_PROFILE)
 	);
 
-	if($r) {
-		for($x = 0; $x < count($r); $x ++) {
+	if ($r) {
+		for ($x = 0; $x < count($r); $x++) {
 			$r[$x]['src'] = z_root() . '/photo/' . $r[$x]['resource_id'] . '-' . $r[$x]['imgscale'];
 		}
 		$ret['success'] = true;
-		$ret['photos'] = $r;
+		$ret['photos']  = $r;
 	}
 
 	return $ret;
@@ -734,7 +790,7 @@ function photos_album_exists($channel_id, $observer_hash, $album) {
 
 	// partial backward compatibility with Hubzilla < 2.4 when we used the filename only
 	// (ambiguous which would get chosen if you had two albums of the same name in different directories)
-	if(!$r && ctype_xdigit($album)) {
+	if (!$r && ctype_xdigit($album)) {
 		$r = q("SELECT folder, hash, is_dir, filename, os_path, display_path FROM attach WHERE filename = '%s' AND is_dir = 1 AND uid = %d $sql_extra limit 1",
 			dbesc(hex2bin($album)),
 			intval($channel_id)
@@ -747,12 +803,12 @@ function photos_album_exists($channel_id, $observer_hash, $album) {
 /**
  * @brief Renames a photo album in a channel.
  *
- * @todo Do we need to check if new album name already exists?
- *
  * @param int $channel_id id of the channel
  * @param string $oldname The name of the album to rename
  * @param string $newname The new name of the album
  * @return bool|array
+ * @todo Do we need to check if new album name already exists?
+ *
  */
 function photos_album_rename($channel_id, $oldname, $newname) {
 	return q("UPDATE photo SET album = '%s' WHERE album = '%s' AND uid = %d",
@@ -772,7 +828,7 @@ function photos_album_rename($channel_id, $oldname, $newname) {
  */
 function photos_album_get_db_idstr($channel_id, $album, $remote_xchan = '') {
 
-	if($remote_xchan) {
+	if ($remote_xchan) {
 		$r = q("SELECT hash from attach where creator = '%s' and uid = %d and folder = '%s' ",
 			dbesc($remote_xchan),
 			intval($channel_id),
@@ -786,7 +842,7 @@ function photos_album_get_db_idstr($channel_id, $album, $remote_xchan = '') {
 		);
 	}
 	if ($r) {
-		return ids_to_querystr($r,'hash',true);
+		return ids_to_querystr($r, 'hash', true);
 	}
 
 	return false;
@@ -794,7 +850,7 @@ function photos_album_get_db_idstr($channel_id, $album, $remote_xchan = '') {
 
 function photos_album_get_db_idstr_admin($channel_id, $album) {
 
-	if(! is_site_admin())
+	if (!is_site_admin())
 		return false;
 
 	$r = q("SELECT hash from attach where uid = %d and folder = '%s' ",
@@ -803,12 +859,11 @@ function photos_album_get_db_idstr_admin($channel_id, $album) {
 	);
 
 	if ($r) {
-		return ids_to_querystr($r,'hash',true);
+		return ids_to_querystr($r, 'hash', true);
 	}
 
 	return false;
 }
-
 
 
 /**
@@ -824,12 +879,12 @@ function photos_create_item($channel, $creator_hash, $photo, $visible = false) {
 
 	// Create item container
 
-	$item_hidden = (($visible) ? 0 : 1 );
+	$item_hidden = (($visible) ? 0 : 1);
 
 	$uuid = item_message_id();
-	$mid = z_root() . '/item/' . $uuid;
+	$mid  = z_root() . '/item/' . $uuid;
 
-	$arr = array();
+	$arr = [];
 
 	$arr['aid']             = $channel['channel_account_id'];
 	$arr['uid']             = $channel['channel_id'];
@@ -845,18 +900,18 @@ function photos_create_item($channel, $creator_hash, $photo, $visible = false) {
 	$arr['owner_xchan']     = $channel['channel_hash'];
 	$arr['author_xchan']    = $creator_hash;
 
-	$arr['allow_cid']       = $photo['allow_cid'];
-	$arr['allow_gid']       = $photo['allow_gid'];
-	$arr['deny_cid']        = $photo['deny_cid'];
-	$arr['deny_gid']        = $photo['deny_gid'];
+	$arr['allow_cid'] = $photo['allow_cid'];
+	$arr['allow_gid'] = $photo['allow_gid'];
+	$arr['deny_cid']  = $photo['deny_cid'];
+	$arr['deny_gid']  = $photo['deny_gid'];
 
-	$arr['plink']           = $mid;
+	$arr['plink'] = $mid;
 
-	$arr['body']            = '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo['resource_id'] . ']'
+	$arr['body'] = '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo['resource_id'] . ']'
 		. '[zmg]' . z_root() . '/photo/' . $photo['resource_id'] . '-' . $photo['imgscale'] . '[/zmg]'
 		. '[/zrl]';
 
-	$result = item_store($arr);
+	$result  = item_store($arr);
 	$item_id = $result['item_id'];
 
 	return $item_id;
@@ -898,9 +953,9 @@ function gps2Num($coordPart) {
 }
 
 
-function photo_profile_setperms($channel_id,$resource_id,$profile_id) {
+function photo_profile_setperms($channel_id, $resource_id, $profile_id) {
 
-	if(! $profile_id)
+	if (!$profile_id)
 		return;
 
 	$r = q("select profile_guid, is_default from profile where id = %d and uid = %d limit 1",
@@ -908,33 +963,33 @@ function photo_profile_setperms($channel_id,$resource_id,$profile_id) {
 		intval($channel_id)
 	);
 
-	if(! $r)
+	if (!$r)
 		return;
 
 	$is_default   = $r[0]['is_default'];
 	$profile_guid = $r[0]['profile_guid'];
 
-	if($is_default) {
-		$r = q("update photo set allow_cid = '', allow_gid = '', deny_cid = '', deny_gid = ''
+	if ($is_default) {
+		q("update photo set allow_cid = '', allow_gid = '', deny_cid = '', deny_gid = ''
 			where resource_id = '%s' and uid = %d",
 			dbesc($resource_id),
 			intval($channel_id)
 		);
-		$r = q("update attach set allow_cid = '', allow_gid = '', deny_cid = '', deny_gid = ''
+		q("update attach set allow_cid = '', allow_gid = '', deny_cid = '', deny_gid = ''
 			where hash = '%s' and uid = %d",
 			dbesc($resource_id),
 			intval($channel_id)
 		);
 	}
 	else {
-		$r = q("update photo set allow_cid = '', allow_gid = '%s', deny_cid = '', deny_gid = ''
+		q("update photo set allow_cid = '', allow_gid = '%s', deny_cid = '', deny_gid = ''
 			where resource_id = '%s' and uid = %d",
 			dbesc('<vp.' . $profile_guid . '>'),
 			dbesc($resource_id),
 			intval($channel_id)
 		);
 
-		$r = q("update attach set allow_cid = '', allow_gid = '%s', deny_cid = '', deny_gid = ''
+		q("update attach set allow_cid = '', allow_gid = '%s', deny_cid = '', deny_gid = ''
 			where hash = '%s' and uid = %d",
 			dbesc('<vp.' . $profile_guid . '>'),
 			dbesc($resource_id),
@@ -951,9 +1006,7 @@ function photo_profile_setperms($channel_id,$resource_id,$profile_id) {
  */
 function profile_photo_set_profile_perms($uid, $profileid = 0) {
 
-	$allowcid = '';
-
-	if($profileid) {
+	if ($profileid) {
 		$r = q("SELECT photo, profile_guid, id, is_default, uid
 			FROM profile WHERE uid = %d and ( profile.id = %d OR profile.profile_guid = '%s') LIMIT 1",
 			intval($uid),
@@ -962,31 +1015,31 @@ function profile_photo_set_profile_perms($uid, $profileid = 0) {
 		);
 	}
 	else {
-		logger('Resetting permissions on default-profile-photo for user'.local_channel());
+		logger('Resetting permissions on default-profile-photo for user' . local_channel());
 
 		$r = q("SELECT photo, profile_guid, id, is_default, uid  FROM profile
 			WHERE profile.uid = %d AND is_default = 1 LIMIT 1",
 			intval($uid)
 		); //If no profile is given, we update the default profile
 	}
-	if(! $r)
+	if (!$r)
 		return;
 
 	$profile = $r[0];
 
-	if($profile['id'] && $profile['photo']) {
+	if ($profile['id'] && $profile['photo']) {
 		preg_match("@\w*(?=-\d*$)@i", $profile['photo'], $resource_id);
 		$resource_id = $resource_id[0];
 
-		if (! intval($profile['is_default'])) {
+		if (!intval($profile['is_default'])) {
 			$r0 = q("SELECT channel_hash FROM channel WHERE channel_id = %d LIMIT 1",
 				intval($uid)
 			);
 			//Should not be needed in future. Catches old int-profile-ids.
-			$r1 = q("SELECT abook.abook_xchan FROM abook WHERE abook_profile = '%d' ",
+			$r1       = q("SELECT abook.abook_xchan FROM abook WHERE abook_profile = '%d' ",
 				intval($profile['id'])
 			);
-			$r2 = q("SELECT abook.abook_xchan FROM abook WHERE abook_profile = '%s'",
+			$r2       = q("SELECT abook.abook_xchan FROM abook WHERE abook_profile = '%s'",
 				dbesc($profile['profile_guid'])
 			);
 			$allowcid = "<" . $r0[0]['channel_hash'] . ">";

@@ -95,8 +95,6 @@ class Cron_daily {
 		remove_obsolete_hublocs();
 		remove_duplicate_singleton_hublocs();
 
-		z6_discover();
-
 		$date = datetime_convert();
 		call_hooks('cron_daily', $date);
 

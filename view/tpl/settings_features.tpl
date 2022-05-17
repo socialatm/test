@@ -10,12 +10,12 @@
 		<div class="panel">
 			<div class="section-subtitle-wrapper" role="tab" id="{{$g}}-settings-title">
 				<h3>
-					<a data-toggle="collapse" data-target="#{{$g}}-settings-content" href="#" aria-expanded="true" aria-controls="{{$g}}-settings-collapse">
+					<a data-bs-toggle="collapse" data-bs-target="#{{$g}}-settings-content" href="#" aria-expanded="true" aria-controls="{{$g}}-settings-collapse">
 						{{$f.0}}
 					</a>
 				</h3>
 			</div>
-			<div id="{{$g}}-settings-content" class="collapse{{if $g == 'general'}} show{{/if}}" role="tabpanel" aria-labelledby="{{$g}}-settings-title" data-parent="#settings">
+			<div id="{{$g}}-settings-content" class="collapse{{if $g == 'general'}} show{{/if}}" role="tabpanel" aria-labelledby="{{$g}}-settings-title" data-bs-parent="#settings">
 				<div class="section-content-tools-wrapper">
 					{{foreach $f.1 as $fcat}}
 						{{include file="field_checkbox.tpl" field=$fcat}}

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Rating
+ *   * Description: Deprecated rating tool
+ *   * Requires: disabled_for_pdledit_gui
+ */
+
 namespace Zotlabs\Widget;
 
 class Rating {

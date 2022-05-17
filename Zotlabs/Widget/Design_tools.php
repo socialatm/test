@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Design tools
+ *   * Description: Links to useful tools for webpages
+ *   * Requires: webpages
+ */
+
 namespace Zotlabs\Widget;
 
 class Design_tools {

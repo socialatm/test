@@ -1,6 +1,7 @@
-version: 2
+version: 3
 url: $baseurl/uexport
 requires: local_channel
 name: Channel Export
 photo: icon:download
 categories: Personal, System
+desc: Export your channel.

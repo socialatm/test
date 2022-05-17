@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Clock
+ *   * Description: A simple widget that shows the current time
+ */
+
 namespace Zotlabs\Widget;
 
 class Clock {

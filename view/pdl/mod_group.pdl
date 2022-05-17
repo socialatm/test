@@ -1,5 +1,8 @@
 [region=aside]
-[widget=collections][var=mode]groups[/var][/widget]
+[widget=privacygroups][/widget]
+[/region]
+[region=content]
+$content
 [/region]
 [region=right_aside]
 [widget=notifications][/widget]

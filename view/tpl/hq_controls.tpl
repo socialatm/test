@@ -1,8 +1,7 @@
-<div class="widget">
-	<h3>{{$title}}</h3>
-	<ul class="nav nav-pills flex-column">
-		{{foreach $menu as $m}}
-		<li class="nav-item"><a href="{{$m.href}}" id="{{$m.id}}" class="nav-link{{if $m.class}} {{$m.class}}{{/if}}">{{$m.label}}</a></li>
-		{{/foreach}}
-	</ul>
+<div class="mb-3{{if $wrapper_class}} {{$wrapper_class}}{{/if}}">
+	{{foreach $entries as $e}}
+	<button class="{{$e.class}} rounded-circle{{if $entry_class}} {{$entry_class}}{{/if}}" type="{{$e.type}}" title="{{$e.label}}"{{if $e.extra}} {{$e.extra}}{{/if}}>
+		{{if $e.icon}}<i class="fa fa-{{$e.icon}} mt-1 mb-1"></i>{{/if}}
+	</button>
+	{{/foreach}}
 </div>

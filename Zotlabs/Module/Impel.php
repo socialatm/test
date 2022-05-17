@@ -1,5 +1,9 @@
 <?php
-namespace Zotlabs\Module; /** @file */
+namespace Zotlabs\Module;
+
+use URLify;
+
+/** @file */
 
 // import page design element
 
@@ -9,33 +13,33 @@ require_once('include/menu.php');
 class Impel extends \Zotlabs\Web\Controller {
 
 	function init() {
-	
+
 		$ret = array('success' => false);
-	
+
 		if(! local_channel())
 			json_return_and_die($ret);
-	
+
 		logger('impel: ' . print_r($_REQUEST,true), LOGGER_DATA);
-	
+
 		$elm = $_REQUEST['element'];
 		$x = base64url_decode($elm);
 		if(! $x)
 			json_return_and_die($ret);
-	
+
 		$j = json_decode($x,true);
 		if(! $j)
 			json_return_and_die($ret);
-	
+
 		// logger('element: ' . print_r($j,true));
 
 		$channel = \App::get_channel();
-	
+
 		$arr = array();
 		$is_menu = false;
-	
+
 		// a portable menu has its links rewritten with the local baseurl
 		$portable_menu = false;
-	
+
 		switch($j['type']) {
 			case 'webpage':
 				$arr['item_type'] = ITEM_TYPE_WEBPAGE;
@@ -58,12 +62,12 @@ class Impel extends \Zotlabs\Web\Controller {
 			case 'menu':
 				$is_menu = true;
 				$installed_type = t('menu');
-				break;			
+				break;
 			default:
 				logger('mod_impel: unrecognised element type' . print_r($j,true));
 				break;
 		}
-	
+
 		if($is_menu) {
 			$m = array();
 			$m['menu_channel_id'] = local_channel();
@@ -73,23 +77,23 @@ class Impel extends \Zotlabs\Web\Controller {
 				$m['menu_created'] = datetime_convert($j['created']);
 			if($j['edited'])
 				$m['menu_edited'] = datetime_convert($j['edited']);
-	
+
 			$m['menu_flags'] = 0;
 			if($j['flags']) {
 				if(in_array('bookmark',$j['flags']))
 					$m['menu_flags'] |= MENU_BOOKMARK;
 				if(in_array('system',$j['flags']))
 					$m['menu_flags'] |= MENU_SYSTEM;
-	
+
 			}
-	
+
 			$menu_id = menu_create($m);
-	
+
 			if($menu_id) {
 				if(is_array($j['items'])) {
 					foreach($j['items'] as $it) {
 						$mitem = array();
-	
+
 						$mitem['mitem_link'] = str_replace('[channelurl]',z_root() . '/channel/' . $channel['channel_address'],$it['link']);
 						$mitem['mitem_link'] = str_replace('[pageurl]',z_root() . '/page/' . $channel['channel_address'],$it['link']);
 						$mitem['mitem_link'] = str_replace('[cloudurl]',z_root() . '/cloud/' . $channel['channel_address'],$it['link']);
@@ -115,7 +119,7 @@ class Impel extends \Zotlabs\Web\Controller {
 							intval(local_channel())
 						);
 					}
-				}	
+				}
 				$ret['success'] = true;
 			}
 			$x = $ret;
@@ -132,22 +136,21 @@ class Impel extends \Zotlabs\Web\Controller {
 			$arr['owner_xchan'] = get_observer_hash();
 			$arr['author_xchan'] = (($j['author_xchan']) ? $j['author_xchan'] : get_observer_hash());
 			$arr['mimetype'] = (($j['mimetype']) ? $j['mimetype'] : 'text/bbcode');
-	
+
 			if(! $j['mid']) {
 				$j['uuid'] = item_message_id();
 				$j['mid'] = z_root() . '/item/' . $j['uuid'];
 			}
 			$arr['uuid'] = $j['uuid'];
 			$arr['mid'] = $arr['parent_mid'] = $j['mid'];
-	
-	
+
+
 			if($j['pagetitle']) {
-				require_once('library/urlify/URLify.php');
-				$pagetitle = strtolower(\URLify::transliterate($j['pagetitle']));
+				$pagetitle = strtolower(URLify::transliterate($j['pagetitle']));
 			}
-		
+
 			// Verify ability to use html or php!!!
-	
+
 			$execflag = ((intval($channel['channel_id']) == intval(local_channel()) && ($channel['channel_pageflags'] & PAGE_ALLOWCODE)) ? true : false);
 
 			$i = q("select id, edited, item_deleted from item where mid = '%s' and uid = %d limit 1",
@@ -156,7 +159,7 @@ class Impel extends \Zotlabs\Web\Controller {
 			);
 
 			\Zotlabs\Lib\IConfig::Set($arr,'system',$namespace,(($pagetitle) ? $pagetitle : substr($arr['mid'],0,16)),true);
-	
+
 			if($i) {
 				$arr['id'] = $i[0]['id'];
 				// don't update if it has the same timestamp as the original
@@ -174,24 +177,24 @@ class Impel extends \Zotlabs\Web\Controller {
 				else
 					$x = item_store($arr,$execflag);
 			}
-	
+
 			if($x && $x['success']) {
 				$item_id = $x['item_id'];
 			}
 		}
-	
+
 		if($x['success']) {
 			$ret['success'] = true;
-			info( sprintf( t('%s element installed'), $installed_type)); 
+			info( sprintf( t('%s element installed'), $installed_type));
 		}
 		else {
-			notice( sprintf( t('%s element installation failed'), $installed_type)); 
+			notice( sprintf( t('%s element installation failed'), $installed_type));
 		}
-	
-		//??? should perhaps return ret? 
+
+		//??? should perhaps return ret?
 
 		json_return_and_die(true);
-	
+
 	}
-	
+
 }

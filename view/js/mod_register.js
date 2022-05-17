@@ -3,7 +3,7 @@ $(document).ready(function() {
 	typeof(window.tao) == 'undefined' ? window.tao = {} : '';
 	tao.zar = { vsn: '2.0.0', form: {}, msg: {} };
 	tao.zar.patano = /^d[0-9]{5,10}$/;
-	tao.zar.patema = /^[a-z0-9.-]{1,64}@[a-z0-9.-]{2,32}\.[a-z]{2,12}$/;
+	tao.zar.patema = /^[^@\s]{1,64}@[a-z0-9.-]{2,32}\.[a-z]{2,12}$/;
 
 	$('.register_date').each( function () {
 		var date = new Date($(this).data('utc'));

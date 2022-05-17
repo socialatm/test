@@ -1,7 +1,7 @@
 {{if isset($mode) && $mode == 'orbit'}}
 <div class="row">
 		<div class="orbit small-12 medium-9 large-9 columns" id="photo-album-contents-{{$album_id}}" role="region" aria-label="portfolioOrbit-{{$album_id}}" data-orbit data-options="animInFromLeft:fade-in; animInFromRight:fade-in; animOutToLeft:fade-out; animOutToRight:fade-out;">
-               
+
 		  <ul class="orbit-container">
  <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;</button>
 		  <button class="orbit-next"><span class="show-for-sr">Next Slide</span>&#9654;&#xFE0E;</button>

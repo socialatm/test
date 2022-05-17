@@ -17,7 +17,7 @@
 
 		<input id="mood-parent" type="hidden" value="{{$parent}}" name="parent" />
 
-		<div class="form-group field custom">
+		<div class="mb-3 field custom">
 			<select name="verb" id="mood-verb-select" class="form-control" >
 			{{foreach $verbs as $v}}
 				<option value="{{$v.0}}">{{$v.1}}</option>

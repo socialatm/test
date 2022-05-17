@@ -87,8 +87,8 @@ class MarkdownTest extends UnitTestCase {
 						"1. Item 1\n2. Item 2\n3. Item **3**"
 				],
 				'nested lists' => [
-						'<ul><li>Item 1<ol><li>Item 1a</li><li>Item <b>1b</b></ol></li><li>Item 2</li></ul>',
-						"- Item 1\n  1. Item 1a\n  2. Item **1b**\n- Item 2"
+						'<ul><li>Item A</li><li>Item B<ul><li>Nested A</li><li>Nested B</li></ul></li><li>Item C</li></ul>',
+						"- Item A\n- Item B\n    - Nested A\n    - Nested B\n- Item C"
 				],
 				'img' => [
 						'<img src="/path/to/img.png" alt="alt text" title="title text">',

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Saved folders
+ *   * Description: A menu containing saved folders
+ *   * Requires: network
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/contact_widgets.php');
@@ -9,7 +15,6 @@ class Filer {
 	function widget($arr) {
 		if(! local_channel())
 			return '';
-
 
 		$selected = ((x($_REQUEST,'file')) ? $_REQUEST['file'] : '');
 

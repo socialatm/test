@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Category cloud wall
+ *   * Description: Display category links in a cloud restricted to wall posts
+ *   * Requires: channel
+ */
+
 namespace Zotlabs\Widget;
 
 class Catcloud_wall {

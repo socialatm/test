@@ -8,13 +8,13 @@ class Share {
 
 
 	public function __construct($post_id) {
-	
+
 		if(! $post_id)
 			return;
-	
+
 		if(! (local_channel() || remote_channel()))
 			return;
-	
+
 		$r = q("SELECT * from item left join xchan on author_xchan = xchan_hash WHERE id = %d  LIMIT 1",
 			intval($post_id)
 		);
@@ -23,26 +23,26 @@ class Share {
 
 		if(($r[0]['item_private']) && ($r[0]['xchan_network'] !== 'rss'))
 			return;
-	
+
 		$sql_extra = item_permissions_sql($r[0]['uid']);
-	
+
 		$r = q("select * from item where id = %d $sql_extra",
 			intval($post_id)
 		);
 		if(! $r)
 			return;
-	
+
 		if($r[0]['mimetype'] !== 'text/bbcode')
 			return;
-	
+
 		/** @FIXME eventually we want to post remotely via rpost on your home site */
 		// When that works remove this next bit:
-	
+
 		if(! local_channel())
 			return;
 
 		xchan_query($r);
-	
+
 		$this->item = $r[0];
 		return;
 	}
@@ -66,14 +66,14 @@ class Share {
 			'address'  => $this->item['author']['xchan_addr'],
 			'network'  => $this->item['author']['xchan_network'],
 			'link'     => [
-				[ 
-					'rel'  => 'alternate', 
-					'type' => 'text/html', 
+				[
+					'rel'  => 'alternate',
+					'type' => 'text/html',
 					'href' => $this->item['author']['xchan_url']
 				],
 				[
-					'rel'  => 'photo', 
-					'type' => $this->item['author']['xchan_photo_mimetype'], 
+					'rel'  => 'photo',
+					'type' => $this->item['author']['xchan_photo_mimetype'],
 					'href' => $this->item['author']['xchan_photo_m']
 				]
 			]
@@ -84,14 +84,14 @@ class Share {
 			'address'  => $this->item['owner']['xchan_addr'],
 			'network'  => $this->item['owner']['xchan_network'],
 			'link'     => [
-				[ 
-					'rel'  => 'alternate', 
-					'type' => 'text/html', 
+				[
+					'rel'  => 'alternate',
+					'type' => 'text/html',
 					'href' => $this->item['owner']['xchan_url']
 				],
 				[
-					'rel'  => 'photo', 
-					'type' => $this->item['owner']['xchan_photo_mimetype'], 
+					'rel'  => 'photo',
+					'type' => $this->item['owner']['xchan_photo_mimetype'],
 					'href' => $this->item['owner']['xchan_photo_m']
 				]
 			]
@@ -117,7 +117,7 @@ class Share {
 			$object = json_decode($this->item['obj'],true);
 			$photo_bb = $object['body'];
 		}
-	
+
 		if (strpos($this->item['body'], "[/share]") !== false) {
 			$pos = strpos($this->item['body'], "[share");
 			$bb = substr($this->item['body'], $pos);
@@ -126,7 +126,7 @@ class Share {
 				"' profile='"    . $this->item['author']['xchan_url'] .
 				"' avatar='"     . $this->item['author']['xchan_photo_s'] .
 				"' link='"       . $this->item['plink'] .
-				"' auth='"       . ((in_array($this->item['author']['xchan_network'], ['zot6', 'zot'])) ? 'true' : 'false') .
+				"' auth='"       . (($this->item['author']['xchan_network'] === 'zot6') ? 'true' : 'false') .
 				"' posted='"     . $this->item['created'] .
 				"' message_id='" . $this->item['mid'] .
 			"']";

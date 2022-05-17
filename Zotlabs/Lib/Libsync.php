@@ -141,7 +141,6 @@ class Libsync {
 		logger('Packet: ' . print_r($info, true), LOGGER_DATA, LOG_DEBUG);
 
 		$total = count($synchubs);
-
 		foreach ($synchubs as $hub) {
 			$hash = random_string();
 			$n    = Libzot::build_packet($channel, 'sync', $env_recips, json_encode($info), 'hz', $hub['hubloc_sitekey'], $hub['site_crypto']);
@@ -186,7 +185,6 @@ class Libsync {
 		require_once('include/import.php');
 
 		$result = [];
-
 		$keychange = ((array_key_exists('keychange', $arr)) ? true : false);
 
 		foreach ($deliveries as $d) {
@@ -232,8 +230,35 @@ class Libsync {
 
 			if (array_key_exists('config', $arr) && is_array($arr['config']) && count($arr['config'])) {
 				foreach ($arr['config'] as $cat => $k) {
-					foreach ($arr['config'][$cat] as $k => $v)
-						set_pconfig($channel['channel_id'], $cat, $k, $v);
+					$pconfig_updated = [];
+
+					foreach($arr['config'][$cat] as $k => $v) {
+						if ($cat === 'hz_delpconfig' && strpos($k, 'b64.') === 0) {
+							$delpconfig = explode(':', unpack_link_id($k));
+
+							// delete the provided pconfig
+							del_pconfig($channel['channel_id'], $delpconfig[0], $delpconfig[1], $v);
+
+							// delete the messenger pconfig
+							del_pconfig($channel['channel_id'], 'hz_delpconfig', $k);
+						}
+
+						if (strpos($k,'pcfgud:') === 0) {
+							$realk = substr($k,7);
+							$pconfig_updated[$realk] = $v;
+							unset($arr['config'][$cat][$k]);
+						}
+					}
+
+					foreach($arr['config'][$cat] as $k => $v) {
+						if (!isset($pconfig_updated[$k])) {
+							$pconfig_updated[$k] = NULL;
+						}
+
+						if ($cat !== 'hz_delpconfig') {
+							set_pconfig($channel['channel_id'],$cat,$k,$v,$pconfig_updated[$k]);
+						}
+					}
 				}
 			}
 
@@ -246,6 +271,10 @@ class Libsync {
 			if (array_key_exists('app', $arr) && $arr['app'])
 				sync_apps($channel, $arr['app']);
 
+			if (array_key_exists('sysapp',$arr) && $arr['sysapp']) {
+				sync_sysapps($channel, $arr['sysapp']);
+			}
+
 			if (array_key_exists('addressbook', $arr) && $arr['addressbook'])
 				sync_addressbook($channel, $arr['addressbook']);
 
@@ -255,11 +284,8 @@ class Libsync {
 			if (array_key_exists('chatroom', $arr) && $arr['chatroom'])
 				sync_chatrooms($channel, $arr['chatroom']);
 
-			if (array_key_exists('conv', $arr) && $arr['conv'])
-				import_conv($channel, $arr['conv']);
-
-			if (array_key_exists('mail', $arr) && $arr['mail'])
-				sync_mail($channel, $arr['mail']);
+			//if (array_key_exists('mail', $arr) && $arr['mail'])
+			//	sync_mail($channel, $arr['mail']);
 
 			if (array_key_exists('event', $arr) && $arr['event'])
 				sync_events($channel, $arr['event']);
@@ -273,8 +299,8 @@ class Libsync {
 			// deprecated, maintaining for a few months for upward compatibility
 			// this should sync webpages, but the logic is a bit subtle
 
-			if (array_key_exists('item_id', $arr) && $arr['item_id'])
-				sync_items($channel, $arr['item_id']);
+			//if (array_key_exists('item_id', $arr) && $arr['item_id'])
+			//	sync_items($channel, $arr['item_id']);
 
 			if (array_key_exists('menu', $arr) && $arr['menu'])
 				sync_menus($channel, $arr['menu']);
@@ -385,19 +411,42 @@ class Libsync {
 					// This relies on the undocumented behaviour that red sites send xchan info with the abook
 					// and import_author_xchan will look them up on all federated networks
 
-					if ($abook['abook_xchan'] && $abook['xchan_addr']) {
+					$found = false;
+					if ($abook['abook_xchan'] && $abook['xchan_addr'] && (! in_array($abook['xchan_network'], [ 'token', 'unknown' ]))) {
 						$h = Libzot::get_hublocs($abook['abook_xchan']);
-						if (!$h) {
+						if ($h) {
+							$found = true;
+						}
+						else {
 							$xhash = import_author_xchan(encode_item_xchan($abook));
-							if (!$xhash) {
+							if ($xhash) {
+								$found = true;
+							}
+							else {
 								logger('Import of ' . $abook['xchan_addr'] . ' failed.');
-								continue;
 							}
 						}
 					}
 
+					if (!$found && !in_array($abook['xchan_network'], ['zot6', 'activitypub', 'diaspora'])) {
+						// just import the record.
+						$xc = [];
+						foreach ($abook as $k => $v) {
+							if (strpos($k,'xchan_') === 0) {
+								$xc[$k] = $v;
+							}
+						}
+						$r = q("select * from xchan where xchan_hash = '%s'",
+							dbesc($xc['xchan_hash'])
+						);
+						if (! $r) {
+							xchan_store_lowlevel($xc);
+						}
+					}
+
+
 					foreach ($abook as $k => $v) {
-						if (in_array($k, $disallowed) || (strpos($k, 'abook') !== 0)) {
+						if (in_array($k, $disallowed) || (strpos($k, 'abook_') !== 0)) {
 							continue;
 						}
 						if (!in_array($k, $fields)) {
@@ -411,6 +460,13 @@ class Libsync {
 
 					if (array_key_exists('abook_instance', $clean) && $clean['abook_instance'] && strpos($clean['abook_instance'], z_root()) === false) {
 						$clean['abook_not_here'] = 1;
+
+						// guest pass or access token - don't try to probe since it is one-way
+						// we are relying on the undocumented behaviour that the abook record also contains the xchan
+						if ($abook['xchan_network'] === 'token') {
+							$clean['abook_instance'] .= ',';
+							$clean['abook_instance'] .= z_root();
+						}
 					}
 
 
@@ -707,6 +763,15 @@ class Libsync {
 
 		$ret = [];
 
+		// If a sender reports that the channel has been deleted, delete its hubloc
+		if (isset($arr['deleted_locally']) && intval($arr['deleted_locally'])) {
+			q("UPDATE hubloc SET hubloc_deleted = 1, hubloc_updated = '%s' WHERE hubloc_hash = '%s' AND hubloc_url = '%s'",
+				dbesc(datetime_convert()),
+				dbesc($sender['hash']),
+				dbesc($sender['site']['url'])
+			);
+		}
+
 		if ($arr['locations']) {
 
 			if ($absolute)
@@ -760,14 +825,13 @@ class Libsync {
 
 				// match as many fields as possible in case anything at all changed.
 
-				$r = q("select * from hubloc where hubloc_hash = '%s' and hubloc_guid = '%s' and hubloc_guid_sig = '%s' and hubloc_id_url = '%s' and hubloc_url = '%s' and hubloc_url_sig = '%s' and hubloc_site_id = '%s' and hubloc_host = '%s' and hubloc_addr = '%s' and hubloc_callback = '%s' and hubloc_sitekey = '%s' ",
+				$r = q("select * from hubloc where hubloc_hash = '%s' and hubloc_guid = '%s' and hubloc_guid_sig = '%s' and hubloc_id_url = '%s' and hubloc_url = '%s' and hubloc_url_sig = '%s' and hubloc_host = '%s' and hubloc_addr = '%s' and hubloc_callback = '%s' and hubloc_sitekey = '%s' ",
 					dbesc($sender['hash']),
 					dbesc($sender['id']),
 					dbesc($sender['id_sig']),
 					dbesc($location['id_url']),
 					dbesc($location['url']),
 					dbesc($location['url_sig']),
-					dbesc($location['site_id']),
 					dbesc($location['host']),
 					dbesc($location['address']),
 					dbesc($location['callback']),
@@ -775,6 +839,15 @@ class Libsync {
 				);
 				if ($r) {
 					logger('Hub exists: ' . $location['url'], LOGGER_DEBUG);
+
+					// generate a new hubloc_site_id if it's wrong due to historical bugs 2021-11-30
+
+					if ($r[0]['hubloc_site_id'] !== $location['site_id']) {
+						q("update hubloc set hubloc_site_id = '%s' where hubloc_id = %d",
+							dbesc(Libzot::make_xchan_hash($location['url'], $location['sitekey'])),
+							intval($r[0]['hubloc_id'])
+						);
+					}
 
 					// update connection timestamp if this is the site we're talking to
 					// This only happens when called from import_xchan
@@ -864,6 +937,7 @@ class Libsync {
 						$what    .= 'delete_hub ';
 						$changed = true;
 					}
+
 					continue;
 				}
 

@@ -94,7 +94,7 @@
 	},
 	"XOF": {
 		"name": "CFA-franc BCEAO",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XPF": {
 		"name": "CFP-franc",
@@ -133,9 +133,6 @@
 	},
 	"STN": {
 		"name": "dobra fra Sao Tome og Principe"
-	},
-	"TTD": {
-		"name": "dollar fra Trinidad og Tobago"
 	},
 	"DOP": {
 		"name": "dominikansk peso"
@@ -245,7 +242,7 @@
 		"name": "laotisk kip"
 	},
 	"LSL": {
-		"name": "Lesothisk loti"
+		"name": "lesothisk loti"
 	},
 	"LBP": {
 		"name": "libanesisk pund"
@@ -444,6 +441,9 @@
 	},
 	"TOP": {
 		"name": "tongansk paʻanga"
+	},
+	"TTD": {
+		"name": "trinidadisk dollar"
 	},
 	"TND": {
 		"name": "tunesisk dinar"

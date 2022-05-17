@@ -1,6 +1,7 @@
-version: 3
+version: 4
 url: $baseurl/zot_probe
 requires: local_channel
 name: Remote Diagnostics
 photo: icon:user-md
 categories: Developer
+desc: A diagnose tool useful for developers.

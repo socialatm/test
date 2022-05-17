@@ -1,7 +1,7 @@
 <?php /** @file */
 
 
-function contact_profile_assign($current) {
+function contact_profile_assign($current, $label = '') {
 
 	$r = q("SELECT profile_guid, profile_name FROM profile WHERE uid = %d",
 		intval($_SESSION['uid'])
@@ -13,9 +13,13 @@ function contact_profile_assign($current) {
 		}
 	}
 
+	if (!$label) {
+		$label = t('Select a profile to assign to this contact');
+	}
+
 	$select = [
 		'profile_assign',
-		t('Profile to assign new connections'),
+		$label,
 		$current,
 		'',
 		$options
@@ -70,7 +74,7 @@ function gender_selector($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 
 function gender_selector_min($current="",$suffix="") {
 	$o = '';
@@ -87,7 +91,7 @@ function gender_selector_min($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 
 
 
@@ -107,7 +111,7 @@ function sexpref_selector($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 
 
 function sexpref_selector_min($current="",$suffix="") {
@@ -125,7 +129,7 @@ function sexpref_selector_min($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 
 
 
@@ -144,7 +148,7 @@ function marital_selector($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 
 function marital_selector_min($current="",$suffix="") {
 	$o = '';
@@ -161,5 +165,5 @@ function marital_selector_min($current="",$suffix="") {
 	}
 	$o .= '</select>';
 	return $o;
-}	
+}
 

@@ -1,6 +1,6 @@
 <div class="{{if !$no_fullscreen_btn}}generic-content-wrapper{{/if}}">
 	<div class="section-title-wrapper">
-		<div class="pull-right">
+		<div class="float-end">
 			{{if $order}}
 			<a class="btn btn-outline-secondary btn-sm" href="{{$order.1}}" title="{{$order.0}}"><i class="fa fa-sort"></i></a>
 			{{/if}}
@@ -24,7 +24,7 @@
 				{{include file="photo_top.tpl"}}
 			{{/foreach}}
 			{{** make sure this element is at the bottom - we rely on that for endless scroll **}}
-			<span id="page-end" class="d-block float-left w-100" style="position: absolute; bottom: 0px"></span>
+			<span id="page-end" class="d-block float-start w-100" style="position: absolute; bottom: 0px"></span>
 		</div>
 	</div>
 </div>

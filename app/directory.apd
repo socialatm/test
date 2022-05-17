@@ -1,5 +1,6 @@
-version: 2
+version: 3
 url: $baseurl/directory, $baseurl/settings/directory
 name: Directory
 photo: icon:sitemap
 categories: nav_featured_app, Networking
+desc: Members directory of the Zot network.

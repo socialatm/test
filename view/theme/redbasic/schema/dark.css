@@ -157,6 +157,10 @@ option {
 	color:#fff !important;
 }
 
+.dropdown-item {
+  color: $font_colour;
+}
+
 a.btn, aside a {
 	font-weight: 400 !important;
 }
@@ -164,7 +168,7 @@ a.btn, aside a {
 .btn {
 	background-color: #1e1e1e;
 	border-color: #222;
-	color: #ccc;
+	color: $font_colour;
 	text-shadow: none;
 	box-shadow: none;
 }
@@ -181,7 +185,7 @@ a.btn, aside a {
 }
 
 .btn-primary, input#event-submit, input#rmagic-submit-button, input#lostpass-submit-button {
-    background-color: #337AB7;
+    background-color: #20537E;
     color: #FFF;
 }
 
@@ -192,8 +196,8 @@ a.btn, aside a {
 }
 
 .btn-success {
-    color: #FFF !important;
-    background-color: #5CB85C !important;
+    color: #ccc !important;
+    background-color: #336A33 !important;
     border-color: #4CAE4C !important;
 }
 
@@ -216,7 +220,7 @@ a.btn, aside a {
 }
 
 .btn-danger, form#chat-destroy > input {
-    background-color: #D9534F !important;
+    background-color: #B22A26 !important;
     border-color: #D43F3A !important;
 	color: #FFF !important;
 }

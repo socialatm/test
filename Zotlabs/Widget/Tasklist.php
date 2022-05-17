@@ -1,8 +1,11 @@
 <?php
 
-namespace Zotlabs\Widget;
+/**
+ *   * Name: Task list
+ *   * Description: Simple task list mangager
+ */
 
-require_once('include/event.php');
+namespace Zotlabs\Widget;
 
 class Tasklist {
 
@@ -20,7 +23,7 @@ class Tasklist {
 			}
 			</script>';
 
-		$o .= '<div class="widget">' . '<h3>' . t('Tasks') . '</h3><div class="tasklist-tasks">';
+		$o .= '<div class="widget">' . '<h3>' . t('Tasks') . '</h3><div class="tasklist-tasks mb-1">';
 		$o .= '</div><form id="tasklist-new-form" action="" ><input class="form-control" id="tasklist-new-summary" type="text" name="summary" value="" /></form>';
 		$o .= '</div>';
 		return $o;

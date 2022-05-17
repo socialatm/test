@@ -1,3 +1,15 @@
+<?php
+/**
+ *   * Name: default
+ *   * Description: Hubzilla default 3-column layout
+ *   * Version: 1
+ *   * Author: Mario Vavti
+ *   * Maintainer: Mario Vavti
+ *   * ContentRegion: aside, left_aside_wrapper
+ *   * ContentRegion: content, region_2
+ *   * ContentRegion: right_aside, right_aside_wrapper
+ */
+?>
 <!DOCTYPE html >
 <html prefix="og: http://ogp.me/ns#">
 <head>
@@ -8,7 +20,7 @@
 <body <?php if($page['direction']) echo 'dir="rtl"' ?> >
 	<?php if(x($page,'banner')) echo $page['banner']; ?>
 	<header><?php if(x($page,'header')) echo $page['header']; ?></header>
-	<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark"><?php if(x($page,'nav')) echo $page['nav']; ?></nav>
+	<?php if(x($page,'nav')) echo $page['nav']; ?>
 	<main>
 		<div class="content">
 			<div class="columns">

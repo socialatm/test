@@ -23,12 +23,18 @@
 			<div class="p-2 clearfix wall-item-head{{if !$item.title && !$item.event && !$item.photo}} rounded-top{{/if}}{{if $item.is_new && !$item.event && !$item.is_comment}} wall-item-head-new{{/if}}" >
 				<div class="wall-item-info" id="wall-item-info-{{$item.id}}" >
 					<div class="wall-item-photo-wrapper{{if $item.owner_url}} wwfrom{{/if}}" id="wall-item-photo-wrapper-{{$item.id}}">
-						<img src="{{$item.thumb}}" class="fakelink wall-item-photo{{$item.sparkle}} u-photo p-name" id="wall-item-photo-{{$item.id}}" alt="{{$item.name}}" data-toggle="dropdown" loading="lazy" />
+						{{if $item.contact_id}}
+						<div class="spinner-wrapper contact-edit-rotator contact-edit-rotator-{{$item.contact_id}}"><div class="spinner s"></div></div>
+						{{/if}}
+						<img src="{{$item.thumb}}" class="fakelink wall-item-photo{{$item.sparkle}} u-photo p-name" id="wall-item-photo-{{$item.id}}" alt="{{$item.name}}" data-bs-toggle="dropdown" loading="lazy" />
+						{{if $item.author_is_group_actor}}
+						<i class="fa fa-comments-o wall-item-photo-group-actor" title="{{$item.author_is_group_actor}}"></i>
+						{{/if}}
 						{{if $item.thread_author_menu}}
-						<i class="fa fa-caret-down wall-item-photo-caret cursor-pointer" data-toggle="dropdown"></i>
+						<i class="fa fa-caret-down wall-item-photo-caret cursor-pointer" data-bs-toggle="dropdown"></i>
 						<div class="dropdown-menu">
 							{{foreach $item.thread_author_menu as $mitem}}
-							<a class="dropdown-item" {{if $mitem.href}}href="{{$mitem.href}}"{{/if}} {{if $mitem.action}}onclick="{{$mitem.action}}"{{/if}} {{if $mitem.title}}title="{{$mitem.title}}"{{/if}} >{{$mitem.title}}</a>
+							<a class="dropdown-item{{if $mitem.class}} {{$mitem.class}}{{/if}}" {{if $mitem.href}}href="{{$mitem.href}}"{{/if}} {{if $mitem.action}}onclick="{{$mitem.action}}"{{/if}} {{if $mitem.title}}title="{{$mitem.title}}"{{/if}}{{if $mitem.data}} {{$mitem.data}}{{/if}}>{{$mitem.title}}</a>
 							{{/foreach}}
 						</div>
 						{{/if}}
@@ -36,7 +42,7 @@
 				</div>
 				{{if $item.lock}}
 				<div class="wall-item-lock dropdown">
-					<i class="fa {{if $item.locktype == 2}}fa-envelope-o{{else}}fa-lock{{/if}} lockview" data-toggle="dropdown" title="{{$item.lock}}" onclick="lockview('item',{{$item.id}});" ></i><ul id="panel-{{$item.id}}" class="lockview-panel dropdown-menu"></ul>&nbsp;
+					<i class="fa {{if $item.locktype == 2}}fa-envelope-o{{else if $item.locktype == 1}}fa-lock{{else}}fa-unlock{{/if}} lockview{{if $item.privacy_warning}} text-danger{{/if}}" data-bs-toggle="dropdown" title="{{$item.lock}}" onclick="lockview('item',{{$item.id}});" ></i>&nbsp;
 				</div>
 				{{/if}}
 				<div class="wall-item-author">
@@ -65,30 +71,32 @@
 			</div>
 			{{/if}}
 			<div class="p-2 clearfix wall-item-tools">
-				<div class="float-right wall-item-tools-right">
+				<div class="float-end wall-item-tools-right">
 					<div class="btn-group">
 						<div id="like-rotator-{{$item.id}}" class="spinner-wrapper">
 							<div class="spinner s"></div>
 						</div>
 					</div>
+					{{if $item.star || $item.thread_action_menu || $item.drop.dropping}}
 					<div class="btn-group">
-						<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
 							<i class="fa fa-cog"></i>
 						</button>
-						<div class="dropdown-menu dropdown-menu-right">
+						<div class="dropdown-menu dropdown-menu-end">
 							{{if $item.star}}
 							<a class="dropdown-item" href="#" onclick="dostar({{$item.id}}); return false;"><i id="starred-{{$item.id}}" class="fa fa-fw{{if $item.star.isstarred}} starred fa-star{{else}} unstarred fa-star-o{{/if}} generic-icons-nav" title="{{$item.star.toggle}}"></i>{{$item.star.toggle}}</a>
 							{{/if}}
 							{{if $item.thread_action_menu}}
 							{{foreach $item.thread_action_menu as $mitem}}
-							<a class="dropdown-item" {{if $mitem.href}}href="{{$mitem.href}}"{{/if}} {{if $mitem.action}}onclick="{{$mitem.action}}"{{/if}} {{if $mitem.title}}title="{{$mitem.title}}"{{/if}} ><i class="fa fa-fw fa-{{$mitem.icon}} generic-icons-nav"></i>{{$mitem.title}}</a></li>
+							<a class="dropdown-item" {{if $mitem.href}}href="{{$mitem.href}}"{{/if}} {{if $mitem.action}}onclick="{{$mitem.action}}"{{/if}} {{if $mitem.title}}title="{{$mitem.title}}"{{/if}} ><i class="fa fa-fw fa-{{$mitem.icon}} generic-icons-nav"></i>{{$mitem.title}}</a>
 							{{/foreach}}
 							{{/if}}
 							{{if $item.drop.dropping}}
-							<a class="dropdown-item" href="item/drop/{{$item.id}}" onclick="return confirmDelete();" title="{{$item.drop.delete}}" ><i class="fa fa-fw fa-trash-o generic-icons-nav"></i>{{$item.drop.delete}}</a></li>
+							<a class="dropdown-item" href="#" onclick="dropItem('item/drop/{{$item.id}}', '#thread-wrapper-{{$item.id}}', '{{$item.mid}}'); return false;" title="{{$item.drop.delete}}" ><i class="generic-icons-nav fa fa-fw fa-trash-o"></i>{{$item.drop.delete}}</a>
 							{{/if}}
 						</div>
 					</div>
+					{{/if}}
 				</div>
 				{{if $item.star && $item.star.isstarred}}
 				<div class="btn-group" id="star-button-{{$item.id}}">
@@ -97,7 +105,7 @@
 				{{/if}}
 				{{if $item.attachments}}
 				<div class="wall-item-tools-left btn-group">
-					<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-toggle="dropdown" id="attachment-menu-{{$item.id}}"><i class="fa fa-paperclip"></i></button>
+					<button type="button" class="btn btn-outline-secondary btn-sm wall-item-like dropdown-toggle" data-bs-toggle="dropdown" id="attachment-menu-{{$item.id}}"><i class="fa fa-paperclip"></i></button>
 					<div class="dropdown-menu">{{$item.attachments}}</div>
 				</div>
 				{{/if}}

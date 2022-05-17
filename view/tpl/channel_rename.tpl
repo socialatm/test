@@ -8,7 +8,7 @@
 	<div class="section-content-tools-wrapper">
 		<form action="{{$basedir}}/changeaddr" autocomplete="off" method="post" >
 			<input type="hidden" name="verify" value="{{$hash}}" />
-			<div class="form-group" id="rename-channel-pass-wrapper">
+			<div class="mb-3" id="rename-channel-pass-wrapper">
 				<label id="rename-channel-pass-label" for="rename-channel-pass">{{$passwd}}</label>
 				<input class="form-control" type="password" id="rename-channel-pass" autocomplete="off" name="qxz_password" value=" " />
 			</div>

@@ -3,6 +3,12 @@
 
 namespace Zotlabs\Module;
 
+use Zotlabs\Lib\Activity;
+use Zotlabs\Lib\ActivityStreams;
+use Zotlabs\Web\HTTPSig;
+use Zotlabs\Lib\Config;
+
+
 require_once('include/security.php');
 require_once('include/attach.php');
 require_once('include/photo/photo_driver.php');
@@ -10,6 +16,48 @@ require_once('include/photo/photo_driver.php');
 class Photo extends \Zotlabs\Web\Controller {
 
 	function init() {
+
+		if (ActivityStreams::is_as_request()) {
+
+			$sigdata = HTTPSig::verify(EMPTY_STR);
+			if ($sigdata['portable_id'] && $sigdata['header_valid']) {
+				$portable_id = $sigdata['portable_id'];
+				if (! check_channelallowed($portable_id)) {
+					http_status_exit(403, 'Permission denied');
+				}
+				if (! check_siteallowed($sigdata['signer'])) {
+					http_status_exit(403, 'Permission denied');
+				}
+				observer_auth($portable_id);
+			}
+			elseif (Config::get('system','require_authenticated_fetch',false)) {
+				http_status_exit(403,'Permission denied');
+			}
+
+			$observer_xchan = get_observer_hash();
+			$allowed = false;
+
+			$bear = Activity::token_from_request();
+			if ($bear) {
+				logger('bear: ' . $bear, LOGGER_DEBUG);
+			}
+
+			$r = q("select * from item where resource_type = 'photo' and resource_id = '%s' limit 1",
+				dbesc(argv(1))
+			);
+			if ($r) {
+				$allowed = attach_can_view($r[0]['uid'],$observer_xchan,argv(1)/*,$bear*/);
+			}
+			if (! $allowed) {
+				http_status_exit(404,'Permission denied.');
+			}
+			$channel = channelx_by_n($r[0]['uid']);
+
+			$obj = json_decode($r[0]['obj'],true);
+
+			as_return_and_die($obj,$channel);
+
+		}
 
 		$streaming = null;
 		$channel = null;
@@ -33,19 +81,19 @@ class Photo extends \Zotlabs\Web\Controller {
 
 		$cache_mode = [ 'on' => false, 'age' => 86400, 'exp' => true, 'leak' => false ];
 		call_hooks('cache_mode_hook', $cache_mode);
-		
+
 		$observer_xchan = get_observer_hash();
 		$cachecontrol = ', no-cache';
 
 		if(isset($type)) {
-	
+
 			/**
 			 * Profile photos - Access controls on default profile photos are not honoured since they need to be exchanged with remote sites.
-			 * 
+			 *
 			 */
-			 
+
 			$default = get_default_profile_photo();
-			 
+
 			if($type === 'profile') {
 				switch($res) {
 					case 'm':
@@ -62,9 +110,9 @@ class Photo extends \Zotlabs\Web\Controller {
 						break;
 				}
 			}
-	
+
 			$uid = $person;
-			
+
 			$data = '';
 
 			if ($uid > 0) {
@@ -81,13 +129,13 @@ class Photo extends \Zotlabs\Web\Controller {
 				    else
 				        $data = dbunescbin($r[0]['content']);
 				}
-				
+
 				if(! $data) {
 					$d = [ 'imgscale' => $resolution, 'channel_id' => $uid, 'default' => $default, 'data'  => '', 'mimetype' => '' ];
 					call_hooks('get_profile_photo',$d);
-					
+
 					$resolution = $d['imgscale'];
-					$uid        = $d['channel_id']; 	
+					$uid        = $d['channel_id'];
 					$default    = $d['default'];
 					$data       = $d['data'];
 					$mimetype   = $d['mimetype'];
@@ -105,11 +153,11 @@ class Photo extends \Zotlabs\Web\Controller {
 			$cachecontrol .= ', must-revalidate';
 		}
 		else {
-	
+
 			/**
 			 * Other photos
 			 */
-	
+
 			/* Check for a cookie to indicate display pixel density, in order to detect high-resolution
 			   displays. This procedure was derived from the "Retina Images" by Jeremey Worboys,
 			   used in accordance with the Creative Commons Attribution 3.0 Unported License.
@@ -127,12 +175,12 @@ class Photo extends \Zotlabs\Web\Controller {
 			  // $prvcachecontrol = 'no-cache';
 			  $status = 'no cookie';
 			}
-	
+
 			$resolution = 0;
-	
+
 			if(strpos($photo,'.') !== false)
 				$photo = substr($photo,0,strpos($photo,'.'));
-		
+
 			if(substr($photo,-2,1) == '-') {
 				$resolution = intval(substr($photo,-1,1));
 				$photo = substr($photo,0,-2);
@@ -140,7 +188,7 @@ class Photo extends \Zotlabs\Web\Controller {
 				if ($resolution == 2 && ($cookie_value > 1))
 				    $resolution = 1;
 			}
-			
+
 			$r = q("SELECT * FROM photo WHERE resource_id = '%s' AND imgscale = %d LIMIT 1",
 				dbesc($photo),
 				intval($resolution)
@@ -151,7 +199,7 @@ class Photo extends \Zotlabs\Web\Controller {
 				$u = intval($r[0]['photo_usage']);
 				if($u) {
 					$allowed = 1;
-					if($u === PHOTO_COVER) 
+					if($u === PHOTO_COVER)
 						if($resolution < PHOTO_RES_COVER_1200)
 							$allowed = (-1);
 					if($u === PHOTO_PROFILE)
@@ -184,9 +232,9 @@ class Photo extends \Zotlabs\Web\Controller {
 					dbesc($photo),
 					intval($resolution)
 				);
-				
+
 				$exists = (($e) ? true : false);
-			
+
 				if($exists && $allowed) {
 					$expires = strtotime($e[0]['expires'] . 'Z');
 					$data = dbunescbin($e[0]['content']);
@@ -209,16 +257,16 @@ class Photo extends \Zotlabs\Web\Controller {
 					}
 
 				}
-			} 
+			}
 			else
 				http_status_exit(404,'not found');
 		}
 
  		if(! $data)
  			killme();
- 		
+
  		$etag = '"' . md5($data . $modified) . '"';
- 		
+
  		if($modified == 0)
  		    $modified = time();
 
@@ -241,39 +289,39 @@ class Photo extends \Zotlabs\Web\Controller {
 		}
 
 		if(isset($prvcachecontrol)) {
-	
+
 			// it is a private photo that they have no permission to view.
 			// tell the browser not to cache it, in case they authenticate
 			// and subsequently have permission to see it
-	
+
 			header("Cache-Control: " . $prvcachecontrol);
-	
+
 		}
 		else {
 			// The photo cache default is 1 day to provide a privacy trade-off,
-			// as somebody reducing photo permissions on a photo that is already 
+			// as somebody reducing photo permissions on a photo that is already
 			// "in the wild" won't be able to stop the photo from being viewed
 			// for this amount amount of time once it is in the browser cache.
-			// The privacy expectations of your site members and their perception 
+			// The privacy expectations of your site members and their perception
 			// of privacy where it affects the entire project may be affected.
-			// This has performance considerations but we highly recommend you 
-			// leave it alone. 
-	
+			// This has performance considerations but we highly recommend you
+			// leave it alone.
+
 			$maxage = $cache_mode['age'];
 
 			if($cache_mode['exp'] || (! isset($expires)) || (isset($expires) && $expires - 60 < time()))
 				$expires = time() + $maxage;
 			else
 				$maxage = $expires - time();
-			
+
 		 	header("Expires: " . gmdate("D, d M Y H:i:s", $expires) . " GMT");
 
-			// set CDN/Infrastructure caching much lower than maxage 
+			// set CDN/Infrastructure caching much lower than maxage
 			// in the event that infrastructure caching is present.
 			$smaxage = intval($maxage/12);
 
 			header("Cache-Control: s-maxage=" . $smaxage . ", max-age=" . $maxage . $cachecontrol);
-	
+
 		}
 
 		header("Content-type: " . $mimetype);
@@ -281,7 +329,7 @@ class Photo extends \Zotlabs\Web\Controller {
 		header("ETag: " . $etag);
 		header("Content-Length: " . (isset($filesize) ? $filesize : strlen($data)));
 
-		// If it's a file resource, stream it. 
+		// If it's a file resource, stream it.
 		if($streaming) {
 			if(strpos($streaming,'store') !== false)
 				$istream = fopen($streaming,'rb');
@@ -300,5 +348,5 @@ class Photo extends \Zotlabs\Web\Controller {
 
 		killme();
 	}
-	
+
 }

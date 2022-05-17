@@ -19,7 +19,7 @@
 			<input type='hidden' name='form_security_token' value='{{$form_security_token}}'>
 			{{include file="field_input.tpl" field=[$acpin.0,$acpin.1,"","","",$atform]}}
 
-			<div class="pull-right submit-wrapper">
+			<div class="float-end submit-wrapper">
 				<button type="submit" name="submit" class="btn btn-primary" {{$atform}}>{{$submit}}</button>
 			</div>
 

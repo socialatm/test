@@ -4,61 +4,63 @@
 		<div class="clear"></div>
 	</div>
 	<div class="section-content-tools-wrapper">
-		<div class="section-content-info-wrapper">
-			{{$desc}}
-		</div>
+		<form action="permcats/{{$return_path}}" id="settings-permcats-form" method="post" autocomplete="off" >
+			<input type="hidden" name="form_security_token" value="{{$form_security_token}}">
+			<input type="hidden" name="return_path" value="{{$return_path}}">
 
-		<form action="permcats" id="settings-permcats-form" method="post" autocomplete="off" >
-			<input type='hidden' name='form_security_token' value='{{$form_security_token}}'>
+			{{if $is_system_role}}
+			<input type="hidden" name="is_system_role" value="1">
+			<input type="hidden" name="name" value="{{$is_system_role}}">
+			{{/if}}
+
 			{{include file="field_input.tpl" field=$name}}
+			{{include file="field_checkbox.tpl" field=$default_role}}
 
-			<div class="settings-submit-wrapper form-group">
-				<button type="submit" name="submit" class="btn btn-primary">{{$submit}}</button>
+			{{$group_select}}
+
+			<div class="section-subtitle-wrapper" id="perms-tool">
+				<h3>
+					{{$permlbl}}
+				</h3>
 			</div>
-	</div>
-
-	<div class="panel" id="permission-settings">
-		<div class="section-subtitle-wrapper" role="tab" id="perms-tool">
-			<h3>
-				<a data-toggle="collapse" data-parent="#permission-settings" href="#perms-tool-collapse" aria-expanded="true" aria-controls="perms-tool-collapse">
-				{{$permlbl}}
-				</a>
-			</h3>
-		</div>
-		<div id="perms-tool-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="perms-tool">
-			<div class="section-content-tools-wrapper">
-				<div class="section-content-warning-wrapper">
-				{{$permnote}}
-				</div>
-
-				<table id="perms-tool-table" class=form-group>
-					<tr>
-						<td></td><td colspan="2" class="abook-me">{{$me}}</td>
-					</tr>
-						{{foreach $perms as $prm}}
-						{{include file="field_acheckbox.tpl" field=$prm}}
-						{{/foreach}}
-				</table>
-
-				<div class="settings-submit-wrapper" >
-					<button type="submit" name="submit" class="btn btn-primary">{{$submit}}</button>
-				</div>
+			<div class="section-content-warning-wrapper">
+			{{$permnote}}
 			</div>
-		</div>
-		{{if $permcats}}
-		<div class="section-content-wrapper-np">
-			<table id="permcat-index">
-			{{foreach $permcats as $k => $v}}
-			<tr class="permcat-row-{{$k}}">
-				<td width="99%"><a href="permcats/{{$k}}">{{$v}}</a></td>
-				<td width="1%"><i class="fa fa-trash-o drop-icons" onClick="dropItem('permcats/{{$k}}/drop', '.permcat-row-{{$k}}')"></i></td>
-			</tr>
-			{{/foreach}}
+			<table id="" class="table table-hover">
+				{{foreach $perms as $prm}}
+				{{include file="field_acheckbox.tpl" field=$prm}}
+				{{/foreach}}
 			</table>
-		</div>
-		{{/if}}
-
+			<div class="clearfix">
+				{{if !$is_system_role && $return_path}}
+				<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete-modal">{{$delet_role_button}}</button>
+				{{/if}}
+				<button type="submit" name="submit" class="btn btn-primary float-end">{{$submit}}</button>
+			</div>
+		</form>
 	</div>
-	</form>
-
 </div>
+{{if !$is_system_role && $return_path}}
+<div id="delete-modal" class="modal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="h3">
+					{{$delete_label}}
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="permcats" id="delete-permcat-form" method="post">
+				<input type="hidden" name="form_security_token" value="{{$form_security_token}}">
+				<input type="hidden" name="deleted_role" value="{{$current_role}}">
+				<div id="edit-modal-body" class="modal-body">
+					{{include file="field_select.tpl" field=$delete_role_select}}
+				</div>
+				<div class="modal-footer">
+					<button id="" type="submit" class="btn btn-danger">{{$delet_role_button}}</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{/if}}

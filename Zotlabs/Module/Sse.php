@@ -34,6 +34,7 @@ class Sse extends Controller {
 		self::$uid = local_channel();
 		self::$ob_hash = get_observer_hash();
 		self::$sse_id = false;
+		self::$vnotify = -1;
 
 		if(! self::$ob_hash) {
 			if(session_id()) {
@@ -45,7 +46,9 @@ class Sse extends Controller {
 			}
 		}
 
-		self::$vnotify = get_pconfig(self::$uid, 'system', 'vnotify');
+		if (self::$uid) {
+			self::$vnotify = get_pconfig(self::$uid, 'system', 'vnotify');
+		}
 
 		$sleep_seconds = 3;
 
@@ -93,6 +96,14 @@ class Sse extends Controller {
 
 				$result = XConfig::Get(self::$ob_hash, 'sse', 'notifications', []);
 				$lock = XConfig::Get(self::$ob_hash, 'sse', 'lock');
+
+				// We do not have the local_channel in the addon.
+				// Reset pubs here if the app is not installed.
+				if (self::$uid && (!(self::$vnotify & VNOTIFY_PUBS) || !Apps::system_app_installed(self::$uid, 'Public Stream'))) {
+					$result['pubs']['count'] = 0;
+					$result['pubs']['notifications'] = [];
+					$result['pubs']['offset'] = -1;
+				}
 
 				if($result && !$lock) {
 					echo "event: notifications\n";

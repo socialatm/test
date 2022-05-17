@@ -15,10 +15,10 @@ use Zotlabs\Lib\Libsync;
 use Zotlabs\Lib\Activity;
 use Zotlabs\Access\PermissionLimits;
 use Zotlabs\Daemon\Master;
+use Zotlabs\Lib\AccessList;
 
 require_once('include/permissions.php');
 require_once('include/security.php');
-require_once('include/group.php');
 
 /**
  * @brief Guess the mimetype from file ending.
@@ -658,8 +658,12 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	$def_extension = '';
 	$is_photo = 0;
-	$gis = @getimagesize($src);
-	logger('getimagesize: ' . print_r($gis,true), LOGGER_DATA);
+
+	if ($src) {
+		$gis = @getimagesize($src);
+		logger('getimagesize: ' . print_r($gis,true), LOGGER_DATA);
+	}
+
 	if(($gis) && ($gis[2] === IMAGETYPE_GIF || $gis[2] === IMAGETYPE_JPEG || $gis[2] === IMAGETYPE_PNG || $gis[2] === IMAGETYPE_WEBP)) {
 		$is_photo = 1;
 		if($gis[2] === IMAGETYPE_GIF)
@@ -668,8 +672,8 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 			$def_extension =  '.jpg';
 		if($gis[2] === IMAGETYPE_PNG)
 			$def_extension =  '.png';
-                if($gis[2] === IMAGETYPE_WEBP)
-                        $def_extension =  '.webp';
+		if($gis[2] === IMAGETYPE_WEBP)
+			$def_extension =  '.webp';
 	}
 
 	// If we know it's a photo, over-ride the type in case the source system could not determine what it was
@@ -680,7 +684,7 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	$pathname = '';
 
-	if($is_photo) {
+	if($source === 'photos') {
 		if($newalbum) {
 			$pathname = filepath_macro($newalbum);
 		}
@@ -694,6 +698,7 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 	elseif(array_key_exists('folder',$arr)) {
 		$pathname = find_path_by_hash($channel['channel_id'], $arr['folder']);
 	}
+
 	if(! $pathname) {
 		$pathname = filepath_macro($upload_path);
 	}
@@ -2203,7 +2208,7 @@ function attach_recursive_perms($arr_allow_cid, $arr_allow_gid, $arr_deny_cid, $
 
 	//lookup all channels in sharee group and add them to sharee $arr_allow_cid
 	if($arr_allow_gid) {
-		$in_group = expand_groups($arr_allow_gid);
+		$in_group = AccessList::expand($arr_allow_gid);
 		$arr_allow_cid = array_unique(array_merge($arr_allow_cid, $in_group));
 	}
 
@@ -2275,7 +2280,7 @@ function attach_recursive_perms($arr_allow_cid, $arr_allow_gid, $arr_deny_cid, $
 		//check sharee arr_allow_cid against members of allow_gid of all parent folders
 		foreach($parent_arr['allow_gid'] as $folder_arr_allow_gid) {
 			//get the group members
-			$folder_arr_allow_cid = expand_groups($folder_arr_allow_gid);
+			$folder_arr_allow_cid = AccessList::expand($folder_arr_allow_gid);
 			foreach($folder_arr_allow_cid as $ac_hash) {
 				$count_values[$ac_hash]++;
 			}
@@ -2436,7 +2441,6 @@ function attach_export_data($channel, $resource_id, $deleted = false, $zap_compa
 
 	return $ret;
 }
-
 
 /**
  * @brief Strip off 'store/nickname/' from the provided path

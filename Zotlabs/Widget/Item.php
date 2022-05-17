@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Item
+ *   * Description: Display a webpage by title or mid,
+ *   * Requires: channel, articles, cards, wiki
+ */
+
 namespace Zotlabs\Widget;
 
 require_once('include/security.php');
@@ -35,7 +41,7 @@ class Item {
 			);
 		}
 		else {
-			$r = q("select * from item where mid = '%s' and uid = %d and item_type = " 
+			$r = q("select * from item where mid = '%s' and uid = %d and item_type = "
 				. intval(ITEM_TYPE_WEBPAGE) . " $sql_extra limit 1",
 				dbesc($arr['mid']),
 				intval($channel_id)

@@ -42,10 +42,10 @@ Nowy portal można wdrożyć na kilka sposobów:
 
 * PHP 7.1 lub w wersji wyższej.
 	* _Proszę mieć na uwadze, że w niektórych środowiskach hostinu współdzielonego, wersja wiersza poleceń PHP różni się od wersji serwera internetowego_
-	
+
 * Dostęp do wiersza poleceń PHP z ustawionym w pliku php.ini parametrem _register_argc_argv_ na true i bez ograniczeń dostawcy hostingu w zakresie stosowania funkcji _exec()_ i _proc_open()_.
 
-* Rozszerzenia curl, gd (z obsługą co najmmniej jpeg i png), mysqli, mbstring, mcrypt, zip i openssl. Tozszerzenie imagick nie jest wymagane ale jest zalecane.
+* Rozszerzenia curl, gd (z obsługą co najmmniej jpeg i png), mysqli, mbstring, zip i openssl. Tozszerzenie imagick nie jest wymagane ale jest zalecane.
 
 * Wymagane jest rozszerzenie xml, jeśli chce sie mieć działajacą obsługę webdav.
 
@@ -99,9 +99,9 @@ W razie potrzeby nadal trzeba wypełnić w formularzu konfiguracyjnym wszystkie 
 
 Utwórz pusty plik o nazwie _.htconfig.php_ i uczyń go możliwymm do zapisania przez serwer WWW. Krok ten wykonaj, jeśli wiesz, że serwer WWW nie będzie mógł sam utworzyć tego pliku.
 
-##### Krok 4.  
+##### Krok 4.
 
-Odwiedź swoją witrynę za pomocą przeglądarki internetowej i postępuj zgodnie z instrukcjami. Zanotuj wszelkie komunikaty o błędach i popraw je przed kontynuowaniem. Jeśli używasz protokołu SSL (od znanego urzędu autoryzacyjnego), użyj schematu _https_ w adresie URL swojej witryny. 
+Odwiedź swoją witrynę za pomocą przeglądarki internetowej i postępuj zgodnie z instrukcjami. Zanotuj wszelkie komunikaty o błędach i popraw je przed kontynuowaniem. Jeśli używasz protokołu SSL (od znanego urzędu autoryzacyjnego), użyj schematu _https_ w adresie URL swojej witryny.
 
 ##### Krok 5.
 
@@ -243,12 +243,12 @@ Klasy usług pozwalają na ustawienie limitów zasobów systemowych poprzez ogra
 Aby zastosować klasę usług do istniejącego konta, użyj narzędzia wiersza poleceń z katalogu głównego instalacji Hubzilla:
 
 * uzyskanie listy klas usług:
-	
+
 	util/service_class
 
 
 * ustawienie domyślnej klasy usług na _firstclass_:
-	
+
 	util/config system default_service_class firstclass
 
 * uzyskanie listy usług, które należą do klasy _firstclass_:
@@ -264,7 +264,7 @@ Aby zastosować klasę usług do istniejącego konta, użyj narzędzia wiersza p
 	util/service_class --account=5 firstclass
 
 * ustawienie konta, które jest właścicielem kanału `blogchan` na klasę _firstclass_ (z potwierdzeniem)
-	
+
 	util/service_class --channel=blogchan firstclass
 
 **Opcje limitu klas usług**
@@ -281,7 +281,7 @@ Aby zastosować klasę usług do istniejącego konta, użyj narzędzia wiersza p
 
 * _minimum_feedcheck_minutes_ - najniższe ustawienie dozwolone dla odpytywania kanałów RSS
 * _chatrooms_ - maksymalna liczba czatów
-* _chatters_inroom_ - maksymalna liczba rozmówców w czacie 
+* _chatters_inroom_ - maksymalna liczba rozmówców w czacie
 * _access_tokens_ - maksymalna liczba tokenów dostępu gościa na kanał
 
 ### Zarządzanie motywami
@@ -350,17 +350,17 @@ Na dole dostarczonego pliku *.htconfig.php* znajduje się kilka linii, które, j
 
 **Trzeci to "dziennik aplikacji"**. Jest to używane przez Hubzillę do zgłaszania tego, co dzieje się w programie i zwykle zapisywane są tu wszelkie trudności lub nieoczekiwane dane, które otrzymaliśmy. Jego nazwę (ścieżkę) trzeba podać na stronie "Administracja - Logi" (/admin/logs), np. *hubzilla.log* wskazuje na plik o tej nazwie zlokalizowany w katalogu głównym Hubzilla. Czasem zgłaszane są tu również komunikaty o stanie "pulsu", aby wskazać, że osiągnęliśmy określony punkt w skrypcie. Jest to dla nas najważniejszy plik dziennika, ponieważ tworzymy go samodzielnie wyłącznie w celu zgłaszania stanu zadań w tle i wszystkiego, co wydaje się dziwne lub nie na miejscu. Te błędy mogą być "śmiertelne", ale też niegroźne i po prostu nieoczekiwane. Jeśli wykonujesz zadanie i występuje problem, daj nam znać, co znajduje się w tym pliku, gdy wystąpił problem. Proszę nie wysyłaj nam 100 milionów zrzutów, bo tylko nas wkurzysz! Tylko kilka odpowiednich wierszy, ab można było wykluczyć kilkaset tysięcy wierszy kodu i skoncentrować się na tym, gdzie zaczyna się pojawiać problem.
 
-To są dzienniki Twojego serwisu. Zgłaszamy poważne problemy na każdym poziomie dziennika. Gorąco polecam poziom dziennika *DEBUG* dla większości witryn. Dostarcza on trochę dodatkowych informacji i nie tworzy dużych plików dziennika. Kiedy pojawia się problem, który uniemożliwia wszelkie próby śledzenia, możesz wtedy włączyć na krótki czas poziom *DATA*, aby uchwycić wszystkie szczegóły struktur, z którymi mieliśmy do czynienia w tym czasie. Ten poziom dziennika zajmuje dużo miejsca, więc jest zalecany tylko na krótkie okresy lub w przypadku witryn testowych dla programistów.
+To są dzienniki Twojego serwisu. Zgłaszamy poważne problemy na każdym poziomie dziennika. Gorąco polecamy poziom dziennika *DEBUG* dla większości witryn. Dostarcza on trochę dodatkowych informacji i nie tworzy dużych plików dziennika. Kiedy pojawia się problem, który uniemożliwia wszelkie próby śledzenia, możesz wtedy włączyć na krótki czas poziom *DATA*, aby uchwycić wszystkie szczegóły struktur, z którymi mieliśmy do czynienia w tym czasie. Ten poziom dziennika zajmuje dużo miejsca, więc jest zalecany tylko na krótkie okresy lub w przypadku witryn testowych dla programistów.
 
-Zalecam skonfigurowanie *logrotate* zarówno dla dziennika php, jak i dziennika aplikacji. Zazwyczaj co tydzień lub dwa zaglądam do *dbfail.out*, naprawiam zgłoszone problemy i zaczynam od nowego pliku. Podobnie jest z plikiem dziennika PHP. Odwołuję się do tego od czasu do czasu, aby sprawdzić, czy jest coś, co wymaga naprawy.
+Zalecamy skonfigurowanie *logrotate* zarówno dla dziennika php, jak i dziennika aplikacji. Zazwyczaj co tydzień lub dwa zaglądam do *dbfail.out*, naprawiam zgłoszone problemy i zaczynam od nowego pliku. Podobnie jest z plikiem dziennika PHP. Odwołuję się do tego od czasu do czasu, aby sprawdzić, czy jest coś, co wymaga naprawy.
 
-Jeśli coś pójdzie nie tak i nie jest to błąd krytyczny, patrzę na plik dziennika aplikacji. Często robię to:
+Jeśli coś pójdzie nie tak i nie jest to błąd krytyczny, warto zajrzeć do pliku dziennika aplikacji. Można zrobić to tak:
 
 ```
 tail -f logfile.out
 ```
 
-ponieważ powtarza operację, która ma problemy. Często wstawiam w kodzie dodatkowe instrukcje rejestracji, jeśli nie ma żadnej wskazówki, co się dzieje. Nawet coś tak prostego jak "got here" lub drukuję wartości zmiennej, która może być podejrzana. Ty też możesz to zrobić - wręcz zachęcam Cię do tego. Gdy już znajdziesz to, czego potrzebujesz, możesz wykonać:
+ponieważ powtarzaja się wpisy dla operacju, która ma problemy. MOzna wstawić w kodzie dodatkowe instrukcje rejestracji, jeśli nie ma żadnej wskazówki, co się dzieje. Nawet coś tak prostego jak "got here" lub wydrukować wartości zmiennej, która może być podejrzana. Zachecamy aby to robić. Gdy już znajdziesz to, czego potrzebujesz, możesz wykonać:
 
 ```
 git checkout file.php

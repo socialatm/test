@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *   * Name: Wiki list
+ *   * Description: A list of existing wikis
+ */
+
 namespace Zotlabs\Widget;
 
 class Wiki_list {

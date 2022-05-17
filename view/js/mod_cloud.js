@@ -47,7 +47,7 @@ $(document).ready(function () {
 		let id = $(this).data('id');
 		activate_id(id);
 		$('#id_categories_' + id).tagsinput({
-			tagClass: 'badge badge-pill badge-warning text-dark'
+			tagClass: 'badge rounded-pill bg-warning text-dark'
 		});
 		$('#cloud-tool-categories-' + id).show();
 	});
@@ -278,7 +278,7 @@ $(document).ready(function () {
 		disable_multi_acl();
 
 		$('#id_categories').tagsinput({
-			tagClass: 'badge badge-pill badge-warning text-dark'
+			tagClass: 'badge rounded-pill bg-warning text-dark'
 		});
 
 		$('#cloud-multi-tool-submit, #cloud-multi-tool-categories').show();
@@ -402,74 +402,85 @@ $(document).ready(function () {
 function UploadInit() {
 
 	var submit = $("#upload-submit");
-	var count = 1;
+	var idx = 0;
 	var filedrag = $(".cloud-index.attach-drop");
+	var reload = false;
 
 	$('#invisible-cloud-file-upload').fileupload({
-			url: 'file_upload',
-			dataType: 'json',
-			dropZone: filedrag,
-			maxChunkSize: 4 * 1024 * 1024,
+		url: 'file_upload',
+		dataType: 'json',
+		dropZone: filedrag,
+		maxChunkSize: 4 * 1024 * 1024,
+		add: function(e,data) {
 
-			add: function(e,data) {
-				$(data.files).each( function() { this.count = ++ count; prepareHtml(this); });
+			idx++;
+			data.files[0].idx = idx;
+			prepareHtml(data.files[0]);
 
-				var allow_cid = ($('#ajax-upload-files').data('allow_cid') || []);
-				var allow_gid = ($('#ajax-upload-files').data('allow_gid') || []);
-				var deny_cid  = ($('#ajax-upload-files').data('deny_cid') || []);
-				var deny_gid  = ($('#ajax-upload-files').data('deny_gid') || []);
+			var allow_cid = ($('#ajax-upload-files').data('allow_cid') || []);
+			var allow_gid = ($('#ajax-upload-files').data('allow_gid') || []);
+			var deny_cid  = ($('#ajax-upload-files').data('deny_cid') || []);
+			var deny_gid  = ($('#ajax-upload-files').data('deny_gid') || []);
 
-				$('.acl-field').remove();
+			$('.acl-field').remove();
 
-				$(allow_gid).each(function(i,v) {
-					$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='group_allow[]' value='"+v+"'>");
-				});
-				$(allow_cid).each(function(i,v) {
-					$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='contact_allow[]' value='"+v+"'>");
-				});
-				$(deny_gid).each(function(i,v) {
-					$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='group_deny[]' value='"+v+"'>");
-				});
-				$(deny_cid).each(function(i,v) {
-					$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='contact_deny[]' value='"+v+"'>");
-				});
+			$(allow_gid).each(function(i,v) {
+				$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='group_allow[]' value='"+v+"'>");
+			});
+			$(allow_cid).each(function(i,v) {
+				$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='contact_allow[]' value='"+v+"'>");
+			});
+			$(deny_gid).each(function(i,v) {
+				$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='group_deny[]' value='"+v+"'>");
+			});
+			$(deny_cid).each(function(i,v) {
+				$('#ajax-upload-files').append("<input class='acl-field' type='hidden' name='contact_deny[]' value='"+v+"'>");
+			});
 
-				data.formData = $('#ajax-upload-files').serializeArray();
+			data.formData = $('#ajax-upload-files').serializeArray();
+
+			// trick it into not uploadiong all files at once
+			$('#new-upload-' + data.files[0].idx).one('fileupload_trigger', function () {
 				data.submit();
-			},
+			});
 
+			$('#new-upload-1').trigger('fileupload_trigger');
+		},
 
-			progress: function(e,data) {
-
-				// there will only be one file, the one we are looking for
-
-				$(data.files).each( function() {
-					var idx = this.count;
-
-					// Dynamically update the percentage complete displayed in the file upload list
-					$('#upload-progress-' + idx).html(Math.round(data.loaded / data.total * 100) + '%');
-					$('#upload-progress-bar-' + idx).css('background-size', Math.round(data.loaded / data.total * 100) + '%');
-
-				});
-
-
-			},
-
-			stop: function(e,data) {
-				window.location.href = window.location.href;
+		progress: function(e,data) {
+			var id = data.files[0].idx;
+			if(data.loaded == data.total) {
+				if(id == data.originalFiles.length) {
+					reload = true;
+				}
+				else {
+					// trigger uploading the next file
+					var next_id = id + 1;
+					setTimeout(function(){ $('#new-upload-' + next_id).trigger('fileupload_trigger'); }, 1000);
+				}
 			}
 
-		});
+			// Dynamically update the percentage complete displayed in the file upload list
+			$('#upload-progress-' + id).html(Math.round(data.loaded / data.total * 100) + '%');
+			$('#upload-progress-bar-' + id).css('width', Math.round(data.loaded / data.total * 100) + '%');
 
-		$('#upload-submit').click(function(event) { event.preventDefault(); $('#invisible-cloud-file-upload').trigger('click'); return false;});
+		},
+
+		stop: function(e,data) {
+			if(reload) {
+				console.log('Upload completed');
+				window.location.href = window.location.href;
+			}
+		}
+	});
+
+	$('#upload-submit').click(function(event) { event.preventDefault(); $('#invisible-cloud-file-upload').trigger('click');});
 
 }
 
-
-
 function prepareHtml(f) {
-	var num = f.count - 1;
-	var i = f.count;
+	var num = f.idx - 1;
+	var i = f.idx;
 	$('#cloud-index #new-upload-progress-bar-' + num.toString()).after(
 		'<tr id="new-upload-' + i + '" class="new-upload">' +
 		'<td></td>' +
@@ -479,7 +490,11 @@ function prepareHtml(f) {
 		'<td class="d-none d-md-table-cell">' + formatSizeUnits(f.size) + '</td><td class="d-none d-md-table-cell"></td>' +
 		'</tr>' +
 		'<tr id="new-upload-progress-bar-' + i + '" class="new-upload">' +
-		'<td id="upload-progress-bar-' + i + '" colspan="9" class="upload-progress-bar"></td>' +
+		'<td colspan="9" class="upload-progress-bar">' +
+		'<div class="progress" style="height: 1px;">' +
+		'<div id="upload-progress-bar-' + i + '" class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>' +
+		'</div>' +
+		'</td>' +
 		'</tr>'
 	);
 }

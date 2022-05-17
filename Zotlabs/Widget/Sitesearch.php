@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *   * Name: Search
+ *   * Description: A search form
+ *   * Requires: search, network, channel
+ */
+
 namespace Zotlabs\Widget;
 
 

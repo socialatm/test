@@ -81,7 +81,7 @@
 		"name": "dolar bahamski"
 	},
 	"BBD": {
-		"name": "dolar Barbadosu"
+		"name": "dolar barbadoski"
 	},
 	"BZD": {
 		"name": "dolar belizeński"
@@ -126,7 +126,7 @@
 		"name": "dolar surinamski"
 	},
 	"TTD": {
-		"name": "dolar Trynidadu i Tobago"
+		"name": "dolar trynidadzki"
 	},
 	"XCD": {
 		"name": "dolar wschodniokaraibski",
@@ -162,7 +162,7 @@
 	},
 	"XOF": {
 		"name": "frank CFA",
-		"symbol": "CFA"
+		"symbol": "F CFA"
 	},
 	"XAF": {
 		"name": "frank CFA BEAC",
@@ -299,7 +299,7 @@
 		"name": "lira turecka"
 	},
 	"LSL": {
-		"name": "loti Lesoto"
+		"name": "loti lesotyjskie"
 	},
 	"AZN": {
 		"name": "manat azerski"

@@ -3,7 +3,6 @@ namespace Zotlabs\Module;
 
 use Zotlabs\Lib\Libzot;
 
-require_once('include/zot.php');
 require_once('include/crypto.php');
 
 /* fix missing or damaged hublocs */
@@ -59,23 +58,6 @@ class Fhublocs extends \Zotlabs\Web\Controller {
 
 				// Create a verified hub location pointing to this site.
 
-/*
-				$h = hubloc_store_lowlevel(
-					[
-						'hubloc_guid'     => $rr['channel_guid'],
-						'hubloc_guid_sig' => $rr['channel_guid_sig'],
-						'hubloc_hash'     => $rr['channel_hash'],
-						'hubloc_addr'     => channel_reddress($rr),
-						'hubloc_network'  => 'zot',
-						'hubloc_primary'  => $primary,
-						'hubloc_url'      => z_root(),
-						'hubloc_url_sig'  => base64url_encode(Crypto::sign(z_root(),$rr['channel_prvkey'])),
-						'hubloc_host'     => \App::get_hostname(),
-						'hubloc_callback' => z_root() . '/post',
-						'hubloc_sitekey'  => $sitekey
-					]
-				);
-*/
 				$h = hubloc_store_lowlevel(
 					[
 						'hubloc_guid'     => $rr['channel_guid'],

@@ -69,21 +69,21 @@
 		{{/if}}
 		<div id="jot-poll-wrap" class="p-2 d-none">
 			<div id="jot-poll-options">
-				<div class="jot-poll-option form-group">
+				<div class="jot-poll-option mb-3">
 					<input class="w-100 border-0" name="poll_answers[]" type="text" value="" placeholder="{{$poll_option_label}}">
 				</div>
-				<div class="jot-poll-option form-group">
+				<div class="jot-poll-option mb-3">
 					<input class="w-100 border-0" name="poll_answers[]" type="text" value="" placeholder="{{$poll_option_label}}">
 				</div>
 			</div>
 			{{include file="field_checkbox.tpl" field=$multiple_answers}}
 			<div id="jot-poll-tools" class="clearfix">
-				<div id="poll-tools-left" class="float-left">
+				<div id="poll-tools-left" class="float-start">
 					<button id="jot-add-option" class="btn btn-outline-secondary btn-sm" type="button">
 						<i class="fa fa-plus"></i> {{$poll_add_option_label}}
 					</button>
 				</div>
-				<div id="poll-tools-right" class="float-right">
+				<div id="poll-tools-right" class="float-end">
 					<div class="input-group">
 						<input type="text" name="poll_expire_value" class="form-control" value="10" size="3">
 						<select class="form-control" id="duration-select" name="poll_expire_unit">
@@ -96,9 +96,9 @@
 			</div>
 		</div>
 		<div id="profile-jot-submit-wrapper" class="clearfix p-2 jothidden">
-			<div id="profile-jot-submit-left" class="btn-toolbar float-left">
+			<div id="profile-jot-submit-left" class="btn-toolbar float-start">
 				{{if $bbcode}}
-				<div class="btn-group mr-2">
+				<div class="btn-group me-2">
 					<button type="button" id="main-editor-bold" class="btn btn-outline-secondary btn-sm" title="{{$bold}}" onclick="inserteditortag('b', 'profile-jot-text'); return false;">
 						<i class="fa fa-bold jot-icons"></i>
 					</button>
@@ -117,7 +117,7 @@
 				</div>
 				{{/if}}
 				{{if $visitor}}
-				<div class="btn-group mr-2 d-none d-lg-flex">
+				<div class="btn-group me-2 d-none d-lg-flex">
 					{{if $writefiles}}
 					<button type="button" id="wall-file-upload" class="btn btn-outline-secondary btn-sm" title="{{$attach}}" >
 						<i id="wall-file-upload-icon" class="fa fa-paperclip jot-icons"></i>
@@ -134,7 +134,7 @@
 					</button>
 					{{/if}}
 				</div>
-				<div class="btn-group mr-2 d-none d-lg-flex">
+				<div class="btn-group me-2 d-none d-lg-flex">
 					{{if $setloc}}
 					<button type="button" id="profile-location-wrapper" class="btn btn-outline-secondary btn-sm" title="{{$setloc}}" onclick="jotGetLocation();return false;">
 						<i id="profile-location" class="fa fa-globe jot-icons"></i>
@@ -177,7 +177,7 @@
 				</div>
 				{{if $writefiles || $weblink || $setloc || $clearloc || $feature_expire || $feature_encrypt || $custommoretoolsdropdown}}
 				<div class="btn-group d-lg-none">
-					<button type="button" id="more-tools" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+					<button type="button" id="more-tools" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 						<i id="more-tools-icon" class="fa fa-cog jot-icons"></i>
 					</button>
 					<div class="dropdown-menu">
@@ -222,7 +222,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="profile-jot-submit-right" class="btn-group float-right">
+			<div id="profile-jot-submit-right" class="btn-group float-end">
 				{{foreach $customsubmitright as $csr}}
 				<button type="button" class="btn btn-outline-secondary btn-sm" {{$csr.buttonparams}} title="{{$csr.preview}}">
 					{{$csr.buttoncontent}}
@@ -234,12 +234,12 @@
 				</button>
 				{{/if}}
 				{{if $jotnets}}
-				<button type="button" id="dbtn-jotnets" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#jotnetsModal" type="button" title="{{$jotnets_label}}" style="{{if $lockstate == 'lock'}}display: none;{{/if}}">
+				<button type="button" id="dbtn-jotnets" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#jotnetsModal" type="button" title="{{$jotnets_label}}" style="{{if $lockstate == 'lock'}}display: none;{{/if}}">
 					<i class="fa fa-share-alt jot-icons"></i>
 				</button>
 				{{/if}}
 				{{if $showacl}}
-				<button type="button" id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#aclModal" title="{{$permset}}" type="button" data-form_id="profile-jot-form">
+				<button type="button" id="dbtn-acl" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#aclModal" title="{{$permset}}" type="button" data-form_id="profile-jot-form">
 					<i id="jot-perms-icon" class="fa fa-{{$lockstate}} jot-icons{{if $bang}} jot-lock-warn{{/if}}"></i>
 				</button>
 				{{/if}}
@@ -257,13 +257,13 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h3 class="modal-title" id="expiryModalLabel">{{$jotnets_label}}</h3>
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
 						</div>
 						<div class="modal-body">
 							{{$jotnets}}
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal-dialog -->
@@ -284,9 +284,9 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h3 class="modal-title" id="expiryModalLabel">{{$expires}}</h3>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
-			<div class="modal-body form-group" style="width:90%">
+			<div class="modal-body mb-3" style="width:90%">
 				<div class="date">
 					<input type="text" placeholder="yyyy-mm-dd HH:MM" name="start_text" id="expiration-date" class="form-control" />
 				</div>
@@ -297,7 +297,7 @@
 				</script>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{$expiryModalCANCEL}}</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{$expiryModalCANCEL}}</button>
 				<button id="expiry-modal-OKButton" type="button" class="btn btn-primary">{{$expiryModalOK}}</button>
 			</div>
 		</div><!-- /.modal-content -->
@@ -311,9 +311,9 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h3 class="modal-title" id="createdModalLabel">{{$future_txt}}</h3>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
-			<div class="modal-body form-group" style="width:90%">
+			<div class="modal-body mb-3" style="width:90%">
 				<div class="date">
 					<input type="text" placeholder="yyyy-mm-dd HH:MM" name="created_text" id="created-date" class="form-control" />
 				</div>
@@ -324,7 +324,7 @@
 				</script>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{$expiryModalCANCEL}}</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{$expiryModalCANCEL}}</button>
 				<button id="created-modal-OKButton" type="button" class="btn btn-primary">{{$expiryModalOK}}</button>
 			</div>
 		</div><!-- /.modal-content -->
@@ -338,7 +338,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h3 class="modal-title" id="embedPhotoModalLabel">{{$embedPhotosModalTitle}}</h3>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="modal-body" id="embedPhotoModalBody" >
 				<div id="embedPhotoModalBodyAlbumListDialog" class="d-none">
