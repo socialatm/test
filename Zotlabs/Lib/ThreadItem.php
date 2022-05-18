@@ -284,7 +284,7 @@ class ThreadItem {
 
 		if($this->is_toplevel()) {
 			// FIXME check this permission
-			if(($conv->get_profile_owner() == local_channel()) && (! array_key_exists('real_uid',$item))) {
+			if($conv->get_profile_owner() === local_channel() || intval($item['item_private']) === 0) {
 
 				$star = array(
 					'toggle' => t("Toggle Star Status"),
