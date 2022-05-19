@@ -2433,7 +2433,7 @@ class Activity {
 		if (array_key_exists('type', $act->obj)) {
 
 			if ($act->obj['type'] === 'Note' && $s['attach']) {
-				$s['body'] = self::bb_attach($s['attach'], $s['body']) . $s['body'];
+				$s['body'] = self::bb_attach($s['attach'], $s['body']) . "\r\n" . $s['body'];
 			}
 
 			if ($act->obj['type'] === 'Question' && in_array($act->type, ['Create', 'Update'])) {
@@ -2522,13 +2522,13 @@ class Activity {
 						usort($mps,[ '\Zotlabs\Lib\Activity', 'vid_sort' ]);
 						foreach ($mps as $m) {
 							if (intval($m['height']) < 500 && Activity::media_not_in_body($m['href'],$s['body'])) {
-								$s['body'] = $tag . $m['href'] . '[/video]' . "\n\n" . $s['body'];
+								$s['body'] = $tag . $m['href'] . '[/video]' . "\r\n" . $s['body'];
 								break;
 							}
 						}
 					}
 					elseif (is_string($act->obj['url']) && Activity::media_not_in_body($act->obj['url'],$s['body'])) {
-						$s['body'] = $tag . $act->obj['url'] . '[/video]' . "\n\n" . $s['body'];
+						$s['body'] = $tag . $act->obj['url'] . '[/video]' . "\r\n" . $s['body'];
 					}
 
 				}
@@ -2554,13 +2554,13 @@ class Activity {
 						}
 						foreach ($ptr as $vurl) {
 							if (in_array($vurl['mediaType'], $atypes) && self::media_not_in_body($vurl['href'], $s['body'])) {
-								$s['body'] = '[audio]' . $vurl['href'] . '[/audio]' . "\n\n" . $s['body'];
+								$s['body'] = '[audio]' . $vurl['href'] . '[/audio]' . "\r\n" . $s['body'];
 								break;
 							}
 						}
 					}
 					elseif (is_string($act->obj['url']) && self::media_not_in_body($act->obj['url'], $s['body'])) {
-						$s['body'] = '[audio]' . $act->obj['url'] . '[/audio]' . "\n\n" . $s['body'];
+						$s['body'] = '[audio]' . $act->obj['url'] . '[/audio]' . "\r\n" . $s['body'];
 					}
 				}
 
@@ -2580,7 +2580,7 @@ class Activity {
 						}
 						foreach ($ptr as $vurl) {
 							if (strpos($s['body'], $vurl['href']) === false) {
-								$bb_imgs = '[zmg]' . $vurl['href'] . '[/zmg]' . "\n\n";
+								$bb_imgs = '[zmg]' . $vurl['href'] . '[/zmg]' . "\r\n";
 								break;
 							}
 						}
@@ -2588,7 +2588,7 @@ class Activity {
 					}
 					elseif (is_string($act->obj['url'])) {
 						if (strpos($s['body'], $act->obj['url']) === false) {
-							$s['body'] .= '[zmg]' . $act->obj['url'] . '[/zmg]' . "\n\n" . $s['body'];
+							$s['body'] .= '[zmg]' . $act->obj['url'] . '[/zmg]' . "\r\n" . $s['body'];
 						}
 					}
 				}
@@ -2625,10 +2625,10 @@ class Activity {
 					if ($purl) {
 						$li = z_fetch_url(z_root() . '/linkinfo?binurl=' . bin2hex($purl));
 						if ($li['success'] && $li['body']) {
-							$s['body'] .= "\n" . $li['body'];
+							$s['body'] .= "\r\n" . $li['body'];
 						}
 						else {
-							$s['body'] .= "\n\n" . $purl;
+							$s['body'] .= "\r\n" . $purl;
 						}
 					}
 				}
@@ -3590,17 +3590,17 @@ class Activity {
 		foreach ($attach as $a) {
 			if (array_key_exists('type', $a) && stripos($a['type'], 'image') !== false) {
 				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\n\n" . '[img]' . $a['href'] . '[/img]';
+					$ret .= "\r\n" . '[img]' . $a['href'] . '[/img]';
 				}
 			}
 			if (array_key_exists('type', $a) && stripos($a['type'], 'video') !== false) {
 				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\n\n" . '[video]' . $a['href'] . '[/video]';
+					$ret .= "\r\n" . '[video]' . $a['href'] . '[/video]';
 				}
 			}
 			if (array_key_exists('type', $a) && stripos($a['type'], 'audio') !== false) {
 				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\n\n" . '[audio]' . $a['href'] . '[/audio]';
+					$ret .= "\r\n" . '[audio]' . $a['href'] . '[/audio]';
 				}
 			}
 		}
