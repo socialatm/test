@@ -373,6 +373,14 @@ function get_features($filtered = true, $level = (-1)) {
 				t('If location data is available on uploaded photos, link this to a map.'),
 				false,
 				get_config('feature_lock','photo_location'),
+			],
+
+			[
+				'adult_photo_flagging',
+				t('Flag Adult Photos'),
+				t('Provide photo edit option to hide inappropriate photos from default album view'),
+				false,
+				get_config('feature_lock','adult_photo_flagging'),
 			]
 
 		],
