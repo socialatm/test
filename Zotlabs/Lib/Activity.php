@@ -670,24 +670,36 @@ class Activity {
 		return $ret;
 	}
 
-	static function decode_attachment($item) {
+	public static function decode_attachment($item) {
 
 		$ret = [];
 
 		if (array_key_exists('attachment', $item) && is_array($item['attachment'])) {
-			foreach ($item['attachment'] as $att) {
-				$entry = [];
-				if (array_key_exists('href', $att))
-					$entry['href'] = $att['href'];
-				elseif (array_key_exists('url', $att))
-					$entry['href'] = $att['url'];
-				if (array_key_exists('mediaType', $att))
-					$entry['type'] = $att['mediaType'];
-				elseif (array_key_exists('type', $att) && $att['type'] === 'Image')
-					$entry['type'] = 'image/jpeg';
-				if ($entry)
-					$ret[] = $entry;
+			$ptr = $item['attachment'];
+			if (!array_key_exists(0, $ptr)) {
+				$ptr = [$ptr];
 			}
+			foreach ($ptr as $att) {
+				$entry = [];
+				if (array_key_exists('href', $att) && $att['href']) {
+					$entry['href'] = $att['href'];
+				} elseif (array_key_exists('url', $att) && $att['url']) {
+					$entry['href'] = $att['url'];
+				}
+				if (array_key_exists('mediaType', $att) && $att['mediaType']) {
+					$entry['type'] = $att['mediaType'];
+				} elseif (array_key_exists('type', $att) && $att['type'] === 'Image') {
+					$entry['type'] = 'image/jpeg';
+				}
+				if (array_key_exists('name', $att) && $att['name']) {
+					$entry['name'] = html2plain(purify_html($att['name']), 256);
+				}
+				if ($entry) {
+					$ret[] = $entry;
+				}
+			}
+		} elseif (isset($item['attachment']) && is_string($item['attachment'])) {
+			btlogger('not an array: ' . $item['attachment']);
 		}
 
 		return $ret;
@@ -2417,7 +2429,6 @@ class Activity {
 					}
 				}
 			}
-
 		}
 
 		$a = self::decode_attachment($act->obj);
@@ -2432,8 +2443,11 @@ class Activity {
 
 		if (array_key_exists('type', $act->obj)) {
 
-			if ($act->obj['type'] === 'Note' && $s['attach']) {
-				$s['body'] = self::bb_attach($s['attach'], $s['body']) . "\r\n" . $s['body'];
+			// Objects that might have media attachments which aren't already provided in the content element.
+			// We'll check specific media objects separately.
+
+			if (in_array($act->obj['type'], ['Article', 'Document', 'Event', 'Note', 'Page', 'Place', 'Question']) && isset($s['attach']) && $s['attach']) {
+				$s = self::bb_attach($s);
 			}
 
 			if ($act->obj['type'] === 'Question' && in_array($act->type, ['Create', 'Update'])) {
@@ -3583,38 +3597,76 @@ class Activity {
 		return;
 	}
 
-	static function bb_attach($attach, $body) {
+	public static function bb_attach($item) {
 
 		$ret = false;
 
-		foreach ($attach as $a) {
+		if (!(is_array($item['attach']) && $item['attach'])) {
+			return $item;
+		}
+
+		foreach ($item['attach'] as $a) {
+
 			if (array_key_exists('type', $a) && stripos($a['type'], 'image') !== false) {
-				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\r\n" . '[img]' . $a['href'] . '[/img]';
+				// don't add inline image if it's an svg and we already have an inline svg
+				if ($a['type'] === 'image/svg+xml' && strpos($item['body'], '[/svg]')) {
+					continue;
+				}
+				if (self::media_not_in_body($a['href'], $item['body'])) {
+					if (isset($a['name']) && $a['name']) {
+						$alt = htmlspecialchars($a['name'], ENT_QUOTES);
+						$item['body'] = '[img=' . $a['href']  . ']' . $alt . '[/img]' . "\r\n" . $item['body'];
+					} else {
+						$item['body'] = '[img]' . $a['href'] . '[/img]' . "\r\n" . $item['body'];
+					}
 				}
 			}
+
 			if (array_key_exists('type', $a) && stripos($a['type'], 'video') !== false) {
-				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\r\n" . '[video]' . $a['href'] . '[/video]';
+				if (self::media_not_in_body($a['href'], $item['body'])) {
+					$item['body'] = '[video]' . $a['href'] . '[/video]' . "\r\n" . $item['body'];
 				}
 			}
 			if (array_key_exists('type', $a) && stripos($a['type'], 'audio') !== false) {
-				if (self::media_not_in_body($a['href'], $body)) {
-					$ret .= "\r\n" . '[audio]' . $a['href'] . '[/audio]';
+				if (self::media_not_in_body($a['href'], $item['body'])) {
+					$item['body'] = '[audio]' . $a['href'] . '[/audio]' . "\r\n" . $item['body'];
 				}
 			}
+			//if (array_key_exists('type', $a) && stripos($a['type'], 'activity') !== false) {
+				//if (self::media_not_in_body($a['href'], $item['body'])) {
+					//$item = self::get_quote($a['href'], $item);
+				//}
+			//}
 		}
 
-		return $ret;
+		return $item;
 	}
 
-	// check for the existence of existing media link in body
-	static function media_not_in_body($s, $body) {
 
-		if ((strpos($body, ']' . $s . '[/img]') === false) &&
+	// check for the existence of existing media link in body
+
+	public static function media_not_in_body($s, $body) {
+
+		$s_alt = htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+
+		if (
+			(strpos($body, ']' . $s . '[/img]') === false) &&
+			(strpos($body, '[img=' . $s . ']') === false) &&
 			(strpos($body, ']' . $s . '[/zmg]') === false) &&
+			(strpos($body, '[zmg=' . $s . ']') === false) &&
 			(strpos($body, ']' . $s . '[/video]') === false) &&
-			(strpos($body, ']' . $s . '[/audio]') === false)) {
+			(strpos($body, ']' . $s . '[/zvideo]') === false) &&
+			(strpos($body, ']' . $s . '[/audio]') === false) &&
+			(strpos($body, ']' . $s . '[/zaudio]') === false) &&
+			(strpos($body, ']' . $s_alt . '[/img]') === false) &&
+			(strpos($body, '[img=' . $s_alt . ']') === false) &&
+			(strpos($body, ']' . $s_alt . '[/zmg]') === false) &&
+			(strpos($body, '[zmg=' . $s_alt . ']') === false) &&
+			(strpos($body, ']' . $s_alt . '[/video]') === false) &&
+			(strpos($body, ']' . $s_alt . '[/zvideo]') === false) &&
+			(strpos($body, ']' . $s_alt . '[/audio]') === false) &&
+			(strpos($body, ']' . $s_alt . '[/zaudio]') === false)
+		) {
 			return true;
 		}
 		return false;
