@@ -4831,7 +4831,10 @@ function fix_attached_photo_permissions($uid,$xchan_hash,$body,
 	$match = null;
 	// match img and zmg image links
 	if(preg_match_all("/\[[zi]mg(.*?)\](.*?)\[\/[zi]mg\]/",$body,$match)) {
-		$images = $match[2];
+
+		// The URI can be in both places
+		$images = array_merge($match[1], $match[2]);
+
 		if($images) {
 			foreach($images as $image) {
 				if(! stristr($image,z_root() . '/photo/'))
@@ -4849,6 +4852,7 @@ function fix_attached_photo_permissions($uid,$xchan_hash,$body,
 					dbesc($image_uri),
 					intval($uid)
 				);
+
 				if($r && $r[0]['folder']) {
 					$f = q("select * from attach where hash = '%s' and is_dir = 1 and uid = %d limit 1",
 						dbesc($r[0]['folder']),

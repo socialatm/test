@@ -359,13 +359,13 @@ function photo_upload($channel, $observer, $args) {
 		$scale  = 1;
 		$width  = $url[1]['width'];
 		$height = $url[1]['height'];
-		$tag    = (($r1) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
+		$tag    = (($r1) ? '[zmg=' . $url[1]['href'] . ']' : '[zmg]');
 	}
 	else {
 		$scale  = 2;
 		$width  = $url[2]['width'];
 		$height = $url[2]['height'];
-		$tag    = (($r2) ? '[zmg=' . $width . 'x' . $height . ']' : '[zmg]');
+		$tag    = (($r2) ? '[zmg=' .$url[2]['href'] . ']' : '[zmg]');
 	}
 
 	$author_link = '[zrl=' . z_root() . '/channel/' . $channel['channel_address'] . ']' . $channel['channel_name'] . '[/zrl]';
@@ -379,7 +379,7 @@ function photo_upload($channel, $observer, $args) {
 	$summary = (($args['body']) ? $args['body'] : '') . '[footer]' . $activity_format . '[/footer]';
 
 	$obj_body = '[zrl=' . z_root() . '/photos/' . $channel['channel_address'] . '/image/' . $photo_hash . ']'
-		. $tag . z_root() . "/photo/{$photo_hash}-{$scale}." . $ph->getExt() . '[/zmg]'
+		. $tag . $filename . '[/zmg]'
 		. '[/zrl]';
 
 	$url[] = [
