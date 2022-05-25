@@ -695,11 +695,7 @@ function sys_boot() {
 
 
 function startup() {
-	error_reporting(E_ALL & ~E_NOTICE);
-
-	if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
-		error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED);
-	}
+	error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED);
 
 	// Some hosting providers block/disable this
 	@set_time_limit(0);
