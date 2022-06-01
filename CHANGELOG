@@ -1,4 +1,4 @@
-Hubzilla 7.4 (2022-06-??)
+Hubzilla 7.4 (2022-06-01)
 	Updated russian translations
 	Raise min PHP version to 8.0
 	Rewrite inbound attachment handling
