@@ -83,7 +83,8 @@ function nav($template = 'default') {
 	if ($observer) {
 		$userinfo = [
 			'icon' => $observer['xchan_photo_m'] . '?rev=' . strtotime($observer['xchan_photo_date']),
-			'name' => $observer['xchan_addr'],
+			'addr' => $observer['xchan_addr'],
+			'name' => $observer['xchan_name'],
 		];
 	}
 
@@ -499,29 +500,6 @@ function channel_apps($is_owner = false, $nickname = null) {
 		];
 	}
 
-	if ($p['view_pages'] && Apps::system_app_installed($uid, 'Cards')) {
-		$tabs[] = [
-			'label' => t('Cards'),
-			'url'   => z_root() . '/cards/' . $nickname,
-			'sel'   => ((argv(0) == 'cards') ? 'active' : ''),
-			'title' => t('View Cards'),
-			'id'    => 'cards-tab',
-			'icon'  => 'list'
-		];
-	}
-
-	if ($p['view_pages'] && Apps::system_app_installed($uid, 'Articles')) {
-		$tabs[] = [
-			'label' => t('Articles'),
-			'url'   => z_root() . '/articles/' . $nickname,
-			'sel'   => ((argv(0) == 'articles') ? 'active' : ''),
-			'title' => t('View Articles'),
-			'id'    => 'articles-tab',
-			'icon'  => 'file-text-o'
-		];
-	}
-
-
 	if ($has_webpages && Apps::system_app_installed($uid, 'Webpages')) {
 		$tabs[] = [
 			'label' => t('Webpages'),
@@ -532,7 +510,6 @@ function channel_apps($is_owner = false, $nickname = null) {
 			'icon'  => 'newspaper-o'
 		];
 	}
-
 
 	if ($p['view_wiki'] && Apps::system_app_installed($uid, 'Wiki')) {
 		$tabs[] = [

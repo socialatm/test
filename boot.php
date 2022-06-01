@@ -60,10 +60,10 @@ require_once('include/bbcode.php');
 require_once('include/items.php');
 
 define('PLATFORM_NAME', 'hubzilla');
-define('STD_VERSION', '7.2.2');
+define('STD_VERSION', '7.4');
 define('ZOT_REVISION', '6.0');
 
-define('DB_UPDATE_VERSION', 1252);
+define('DB_UPDATE_VERSION', 1253);
 
 define('PROJECT_BASE', __DIR__);
 
@@ -695,11 +695,7 @@ function sys_boot() {
 
 
 function startup() {
-	error_reporting(E_ALL & ~E_NOTICE);
-
-	if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
-		error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
-	}
+	error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED);
 
 	// Some hosting providers block/disable this
 	@set_time_limit(0);

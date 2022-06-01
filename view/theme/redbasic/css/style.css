@@ -845,7 +845,7 @@ div.jGrowl div.jGrowl-notification {
 
 .shared_header img {
 	border-radius: $radius;
-	margin-right: 10px;
+	margin-right: .75rem;
 }
 
 .tag1 {

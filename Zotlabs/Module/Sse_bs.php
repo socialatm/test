@@ -160,8 +160,12 @@ class Sse_bs extends Controller {
 		$offset = self::$offset;
 
 		$sql_extra = '';
-		if(! (self::$vnotify & VNOTIFY_LIKE))
+		if (!(self::$vnotify & VNOTIFY_LIKE)) {
 			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_LIKE) . "', '" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
+		elseif (!feature_enabled(self::$uid, 'dislike')) {
+			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
 
 		$sql_extra2 = '';
 		if(self::$xchans)
@@ -236,8 +240,12 @@ class Sse_bs extends Controller {
 		$offset = self::$offset;
 
 		$sql_extra = '';
-		if(! (self::$vnotify & VNOTIFY_LIKE))
+		if (!(self::$vnotify & VNOTIFY_LIKE)) {
 			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_LIKE) . "', '" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
+		elseif (!feature_enabled(self::$uid, 'dislike')) {
+			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
 
 		$sql_extra2 = '';
 		if(self::$xchans)
@@ -311,8 +319,12 @@ class Sse_bs extends Controller {
 		$offset = self::$offset;
 
 		$sql_extra = '';
-		if(! (self::$vnotify & VNOTIFY_LIKE))
+		if (!(self::$vnotify & VNOTIFY_LIKE)) {
 			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_LIKE) . "', '" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
+		elseif (!feature_enabled(self::$uid, 'dislike')) {
+			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
 
 		$sql_extra2 = '';
 		if(self::$xchans)
@@ -398,8 +410,12 @@ class Sse_bs extends Controller {
 
 		$sys = get_sys_channel();
 		$sql_extra = '';
-		if(! (self::$vnotify & VNOTIFY_LIKE))
+		if (!(self::$vnotify & VNOTIFY_LIKE)) {
 			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_LIKE) . "', '" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
+		elseif (!feature_enabled(self::$uid, 'dislike')) {
+			$sql_extra = " AND verb NOT IN ('" . dbesc(ACTIVITY_DISLIKE) . "') ";
+		}
 
 		$sql_extra2 = '';
 		if(self::$xchans)

@@ -7,12 +7,17 @@
 
 namespace Zotlabs\Widget;
 
+use App;
+
 class Tasklist {
 
 	function widget($arr) {
 
-		if (! local_channel())
-			return;
+		if(! local_channel())
+			return EMPTY_STR;
+
+		if(App::$profile_uid !== local_channel())
+			return EMPTY_STR;
 
 		$o .= '<script>var tasksShowAll = 0; $(document).ready(function() { tasksFetch(); $("#tasklist-new-form").submit(function(event) { event.preventDefault(); $.post( "tasks/new", $("#tasklist-new-form").serialize(), function(data) { tasksFetch();  $("#tasklist-new-summary").val(""); } ); return false; } )});</script>';
 		$o .= '<script>function taskComplete(id) { $.post("tasks/complete/"+id, function(data) { tasksFetch();}); }

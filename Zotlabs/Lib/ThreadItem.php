@@ -162,23 +162,10 @@ class ThreadItem {
 
 		$mode = $conv->get_mode();
 
-		switch($item['item_type']) {
-			case ITEM_TYPE_CARD:
-				$edlink = 'card_edit';
-				break;
-			case ITEM_TYPE_ARTICLE:
-				$edlink = 'article_edit';
-				break;
-			default:
-				$edlink = 'editpost';
-				break;
-		}
-
 		if(local_channel() && $observer['xchan_hash'] === $item['author_xchan'])
-			$edpost = array(z_root() . '/' . $edlink . '/' . $item['id'], t('Edit'));
+			$edpost = array(z_root() . '/editpost/' . $item['id'], t('Edit'));
 		else
 			$edpost = false;
-
 
 		if($observer && $observer['xchan_hash']
 			&& ($observer['xchan_hash'] == $this->get_data_value('author_xchan')
@@ -297,7 +284,7 @@ class ThreadItem {
 
 		if($this->is_toplevel()) {
 			// FIXME check this permission
-			if(($conv->get_profile_owner() == local_channel()) && (! array_key_exists('real_uid',$item))) {
+			if($conv->get_profile_owner() === local_channel() || intval($item['item_private']) === 0) {
 
 				$star = array(
 					'toggle' => t("Toggle Star Status"),

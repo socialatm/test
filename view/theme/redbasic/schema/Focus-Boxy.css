@@ -1,9 +1,14 @@
 .comment .wall-item-body {
-	padding-left: 42px;
+	padding-left: 3rem;
 }
 
-.wall-item-content-wrapper.comment {
+.wall-item-content-wrapper {
 	border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.hide-comments-outer,
+.hide-comments-outer:hover {
+	border: 0;
 }
 
 .widget {

@@ -10,12 +10,16 @@
 
 namespace Zotlabs\Widget;
 
+use App;
 use Zotlabs\Lib\Apps;
 
 class Notes {
 
 	function widget($arr) {
 		if(! local_channel())
+			return EMPTY_STR;
+
+		if(App::$profile_uid !== local_channel())
 			return EMPTY_STR;
 
 		if(! Apps::system_app_installed(local_channel(), 'Notes'))

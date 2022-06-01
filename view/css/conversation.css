@@ -104,11 +104,11 @@
 .wall-item-info {
 	display: block;
 	float: left;
-	margin-right: 10px;
+	margin-right: .75rem;
 }
 
 .wall-item-wrapper {
-	margin-left:10px;
+	margin-left: .75rem;
 }
 
 .wall-item-photo-wrapper {

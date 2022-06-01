@@ -256,8 +256,8 @@ class Enotify {
 
 		$itemlink =  $params['link'];
 
-		if (array_key_exists('item',$params) && activity_match($params['item']['verb'],ACTIVITY_LIKE)) {
-			if(! $always_show_in_notices  || !($vnotify & VNOTIFY_LIKE)) {
+		if (array_key_exists('item',$params) && (activity_match($params['item']['verb'], ACTIVITY_LIKE) || activity_match($params['item']['verb'], ACTIVITY_DISLIKE))) {
+			if(! $always_show_in_notices  || !($vnotify & VNOTIFY_LIKE) || !feature_enabled($recip['channel_id'], 'dislike')) {
 				logger('notification: not a visible activity. Ignoring.');
 				pop_lang();
 				return;
@@ -291,22 +291,29 @@ class Enotify {
 			);
 		}
 
+		if (!$p) {
+			pop_lang();
+			return;
+		}
+
 		xchan_query($p);
 
-//@@FIXME $p can be null (line 285)
 		$item_post_type = item_post_type($p[0]);
 //		$private = $p[0]['item_private'];
 		$parent_id = $p[0]['id'];
 
 		$parent_item = $p[0];
 
+		$verb = ((activity_match($params['item']['verb'], ACTIVITY_DISLIKE)) ? t('disliked') : t('liked'));
 
 		// "your post"
 		if($p[0]['owner']['xchan_name'] === $p[0]['author']['xchan_name'] && intval($p[0]['item_wall']))
-			$dest_str = sprintf(t('%1$s liked [zrl=%2$s]your %3$s[/zrl]'),
+			$dest_str = sprintf(t('%1$s %2$s [zrl=%3$s]your %4$s[/zrl]'),
 				'[zrl=' . $sender['xchan_url'] . ']' . $sender['xchan_name'] . '[/zrl]',
+				$verb,
 				$itemlink,
-				$item_post_type);
+				$item_post_type
+			);
 		else {
 			pop_lang();
 			return;
@@ -822,6 +829,14 @@ class Enotify {
 
 			if($item['verb'] === ACTIVITY_SHARE) {
 				$itemem_text = sprintf( t('repeated %s\'s post'), '[bdi]' . $item['author']['xchan_name'] . '[/bdi]');
+			}
+
+			if($item['verb'] === ACTIVITY_LIKE) {
+				$itemem_text = sprintf( t('liked %s\'s post'), '[bdi]' . $item['author']['xchan_name'] . '[/bdi]');
+			}
+
+			if($item['verb'] === ACTIVITY_DISLIKE) {
+				$itemem_text = sprintf( t('disliked %s\'s post'), '[bdi]' . $item['author']['xchan_name'] . '[/bdi]');
 			}
 
 			if(in_array($item['obj_type'], ['Document', 'Video', 'Audio', 'Image'])) {

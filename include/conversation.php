@@ -773,7 +773,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					$conv_link_module = 'hq';
 				}
 
-				$conv_link = ((in_array($item['item_type'],[ ITEM_TYPE_CARD, ITEM_TYPE_ARTICLE] )) ? $item['plink'] : z_root() . '/' . $conv_link_module . '/' . gen_link_id($conv_link_mid));
+				$conv_link = z_root() . '/' . $conv_link_module . '/' . gen_link_id($conv_link_mid);
 
 				$contact = [];
 

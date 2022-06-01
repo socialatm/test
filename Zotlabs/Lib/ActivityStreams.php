@@ -70,9 +70,12 @@ class ActivityStreams {
 				}
 			}
 
+			// This indicates only that we have sucessfully decoded JSON.
 			$this->valid = true;
 
-			if (array_key_exists('type', $this->data) && array_key_exists('actor', $this->data) && array_key_exists('object', $this->data)) {
+			// Special handling for Mastodon "delete actor" activities which will often fail to verify
+			// because the key cannot be fetched. We will catch this condition elsewhere.
+			if (is_array($this->data) && array_key_exists('type', $this->data) && array_key_exists('actor', $this->data) && array_key_exists('object', $this->data)) {
 				if ($this->data['type'] === 'Delete' && $this->data['actor'] === $this->data['object']) {
 					$this->deleted = $this->data['actor'];
 					$this->valid   = false;
@@ -81,6 +84,7 @@ class ActivityStreams {
 
 		}
 
+		// Attempt to assemble an Activity from what we were given.
 		if ($this->is_valid()) {
 			$this->id     = $this->get_property_obj('id');
 			$this->type   = $this->get_primary_type();

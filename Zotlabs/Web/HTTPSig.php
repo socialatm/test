@@ -502,8 +502,11 @@ class HTTPSig {
 
 		$x = self::sign($head, $prvkey, $alg);
 
-		// TODO: should we default to hs2019?
-		// $headerval = 'keyId="' . $keyid . '",algorithm="' . (($algorithm === 'rsa-sha256') ? 'hs2019' : $algorithm) . '",headers="' . $x['headers'] . '",signature="' . $x['signature'] . '"';
+		// TODO: should we default to hs2019? cavage-http-signatures-12 is not very wide spread yet
+
+		if (get_config('system', 'use_hs2019', false) && $algorithm === 'rsa-sha256') {
+			$algorithm = 'hs2019';
+		}
 
 		$headerval = 'keyId="' . $keyid . '",algorithm="' . $algorithm . '",headers="' . $x['headers'] . '",signature="' . $x['signature'] . '"';
 
