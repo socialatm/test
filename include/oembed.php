@@ -164,6 +164,25 @@ function oembed_fetch_url($embedurl){
 		$txt = EMPTY_STR;
 
 		if ($action !== 'block') {
+			$max_oembed_size = get_config('system', 'oembed_max_size', 1 * 1024 * 1024 /* 1MB */);
+
+			stream_context_set_default(
+				[
+					'http' => [
+						'method' => 'HEAD',
+						'timeout' => 5
+					]
+				]
+			);
+
+			$headers = get_headers($furl, true);
+
+			if (isset($headers['Content-Length']) && $headers['Content-Length'] > $max_oembed_size) {
+				$action = 'block';
+			}
+		}
+
+		if ($action !== 'block') {
 			// try oembed autodiscovery
 			$redirects = 0;
 			$result = z_fetch_url($furl, false, $redirects,
