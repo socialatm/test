@@ -21,7 +21,7 @@
                         $ogtitle = $item['title'];
 
                 // find first image if exist
-                if(preg_match("/\[[zi]mg(=[0-9]+x[0-9]+)?\]([^\[]+)/is", $item['body'], $matches)) {
+                if (preg_match("/\[[zi]mg(=[0-9]+x[0-9]+)?\]([^\[]+)/is", $item['body'], $matches) || preg_match("/\[[zi]mg(=)([^\]]+)/is", $item['body'], $matches)) {
                         $ogimage = $matches[2];
                         $ogimagetype = guess_image_type($ogimage);
                 }
