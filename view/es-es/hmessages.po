@@ -7256,7 +7256,7 @@ msgstr "Configuración del canal"
 
 #: ../../Zotlabs/Widget/Settings_menu.php:49
 msgid "Privacy settings"
-msgstr "Ajustes de peivacidad"
+msgstr "Ajustes de privacidad"
 
 #: ../../Zotlabs/Widget/Settings_menu.php:56
 msgid "Display settings"
@@ -11807,7 +11807,7 @@ msgstr "Aprobar contacto"
 #: ../../Zotlabs/Module/Contactedit.php:431
 #: ../../Zotlabs/Module/Connedit.php:717
 msgid "Their"
-msgstr "Su/Sus"
+msgstr "Su"
 
 #: ../../Zotlabs/Module/Contactedit.php:432
 #: ../../Zotlabs/Module/Connedit.php:718
