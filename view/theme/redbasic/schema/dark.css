@@ -40,11 +40,17 @@ option {
 	color: $link_colour !important;
 }
 
-.vcard, #contact-block, .widget {
+.vcard,
+#contact-block,
+.widget {
 	background-color: transparent;
 	border: none;
 	border-bottom: 1px solid #333;
 	border-radius: 0px
+}
+
+.vcard-card {
+	background-color: transparent;
 }
 
 #profile-photo-wrapper {
