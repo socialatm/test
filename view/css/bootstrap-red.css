@@ -41,20 +41,6 @@ nav .dropdown-menu {
 	overflow: auto;
 }
 
-#navbar-collapse-2 {
-	flex-basis: 100%;
-	max-height: 70vh;
-}
-
-#navbar-collapse-2.show {
-	overflow: auto;
-}
-
-
-#navbar-collapse-2.collapsing .dropdown-header,
-#navbar-collapse-2.show .dropdown-header {
-	padding: 0.5rem 0.1rem;
-}
 
 .navbar-dark .navbar-toggler {
 	color: rgba(255,255,255,1);

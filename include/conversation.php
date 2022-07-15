@@ -1719,12 +1719,14 @@ function prepare_page($item) {
 	}
 
 	$body = prepare_body($item, true, [ 'newwin' => false ]);
+	$edit_link = (($item['uid'] === local_channel()) ? z_root() . '/editwebpage/' . argv(1) . '/' . $item['id'] : '');
 
 	if(App::$page['template'] == 'none') {
 		$tpl = 'page_display_empty.tpl';
 
 		return replace_macros(get_markup_template($tpl), array(
-			'$body' => $body['html']
+			'$body' => $body['html'],
+			'$edit_link' => $edit_link
 		));
 
 	}
@@ -1741,6 +1743,7 @@ function prepare_page($item) {
 		'$body' => $body['html'],
 		'$preview' => $preview,
 		'$link' => $link,
+		'$edit_link' => $edit_link
 	));
 }
 

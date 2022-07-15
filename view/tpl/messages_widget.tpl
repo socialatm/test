@@ -69,7 +69,9 @@
 
 	$(document).ready(function () {
 		$('.messages-timeago').timeago();
-		$('.message[data-b64mid=\'' + bParam_mid + '\']').addClass('active');
+		if (bParam_mid) {
+			$('.message[data-b64mid=\'' + bParam_mid + '\']').addClass('active');
+		}
 	});
 
 	$('#messages-widget').on('scroll', function() {
@@ -130,7 +132,9 @@
 			else {
 				$('#messages-empty').show();
 			}
-			$('.message[data-b64mid=\'' + bParam_mid + '\']').addClass('active');
+			if (bParam_mid) {
+				$('.message[data-b64mid=\'' + bParam_mid + '\']').addClass('active');
+			}
 			$('#messages-loading').hide();
 			$('.messages-timeago').timeago();
 

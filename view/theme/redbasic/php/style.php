@@ -80,13 +80,13 @@ if (! $nav_active_icon_colour)
 if (! $link_colour)
 	$link_colour = '#0d6efd';
 if (! $banner_colour)
-	$banner_colour = '#fff';
+	$banner_colour = '#efefef';
 if (! $bgcolour)
 	$bgcolour = 'rgb(254,254,254)';
 if (! $background_image)
 	$background_image ='';
 if (! $item_colour)
-	$item_colour = 'rgb(238,238,238)';
+	$item_colour = '#f6f6f6';
 if (! $comment_item_colour)
 	$comment_item_colour = 'rgb(255,255,255)';
 if (! $item_opacity)

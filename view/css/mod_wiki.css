@@ -1,5 +1,5 @@
 #ace-editor {
-	position: relative;        
+	position: relative;
 	width: 100%;
 	height: 500px;
 	border: 1px solid #ccc;
@@ -46,28 +46,4 @@ td > i {
 #wikis-index th:nth-last-child(1),
 #wikis-index td:nth-last-child(1){
 	padding-right: 10px;
-}
-
-pre code {
-	background: #F5F5F5;
-	font-family: Courier, monospace;
-	font-size: 1em;
-	padding: 1em 1.5em;
-	display: block;
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-code {
-	background: #F5F5F5;
-	font-family: Courier, monospace;
-	font-size: 1em;
-	display: inline;
-	padding: 0.2em 0.2em;
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-#wiki-content-container code {
-	background: #F5F5F5;
 }

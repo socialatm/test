@@ -316,14 +316,10 @@ a.wall-item-name-link {
 }
 
 code {
-	font-family: Courier, monospace;
-	font-size: 1em;
-	padding: 1em 1.5em;
 	display: block;
 }
 
 code.inline-code {
-	padding: 0.2em;
 	display: inline;
 }
 

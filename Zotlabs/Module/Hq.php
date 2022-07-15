@@ -49,16 +49,16 @@ class Hq extends \Zotlabs\Web\Controller {
 		$sql_extra = '';
 
 		if(! $item_hash) {
-			$r = q("SELECT mid FROM item
-				WHERE uid = %d $item_normal
-				AND mid = parent_mid
-				AND item_private IN (0, 1)
-				ORDER BY created DESC LIMIT 1",
-				intval(local_channel())
-			);
-			if($r[0]['mid']) {
-				$item_hash = $r[0]['mid'];
-			}
+			//$r = q("SELECT mid FROM item
+				//WHERE uid = %d $item_normal
+				//AND mid = parent_mid
+				//AND item_private IN (0, 1)
+				//ORDER BY created DESC LIMIT 1",
+				//intval(local_channel())
+			//);
+			//if($r[0]['mid']) {
+				//$item_hash = $r[0]['mid'];
+			//}
 		}
 
 		if($item_hash) {
