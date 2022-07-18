@@ -8,6 +8,7 @@
 namespace Zotlabs\Widget;
 
 use App;
+use Zotlabs\Lib\Apps;
 
 class Channel_activities {
 
@@ -133,6 +134,10 @@ class Channel_activities {
 	}
 
 	private static function get_webpages_activity() {
+
+		if(!Apps::system_app_installed(self::$uid, 'Webpages')) {
+			return;
+		}
 
 		$r = q("SELECT * FROM iconfig LEFT JOIN item ON iconfig.iid = item.id WHERE item.uid = %d
 			AND iconfig.cat = 'system' AND iconfig.k = 'WEBPAGE' AND item_type = %d
