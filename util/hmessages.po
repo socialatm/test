@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 7.4RC1\n"
+"Project-Id-Version: 7.6RC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-25 08:39+0000\n"
+"POT-Creation-Date: 2022-07-19 09:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -538,12 +538,12 @@ msgid "Page name"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_list.php:20 ../../addon/wiki/Mod_Wiki.php:209
-#: ../../include/nav.php:516
+#: ../../addon/wiki/wiki.php:75 ../../include/nav.php:516
 msgid "Wikis"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_page_history.php:28
-#: ../../addon/wiki/Lib/NativeWikiPage.php:580
+#: ../../addon/wiki/Lib/NativeWikiPage.php:588
 #: ../../addon/wiki/Mod_Wiki.php:221 ../../addon/rendezvous/rendezvous.php:172
 #: ../../Zotlabs/Module/Oauth.php:111 ../../Zotlabs/Module/Oauth.php:137
 #: ../../Zotlabs/Module/Chat.php:255 ../../Zotlabs/Module/Cdav.php:1372
@@ -555,24 +555,24 @@ msgid "Name"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_page_history.php:29
-#: ../../addon/wiki/Lib/NativeWikiPage.php:581
+#: ../../addon/wiki/Lib/NativeWikiPage.php:589
 msgctxt "wiki_history"
 msgid "Message"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_page_history.php:30
-#: ../../addon/wiki/Lib/NativeWikiPage.php:582
+#: ../../addon/wiki/Lib/NativeWikiPage.php:590
 msgid "Date"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_page_history.php:31
-#: ../../addon/wiki/Lib/NativeWikiPage.php:583
+#: ../../addon/wiki/Lib/NativeWikiPage.php:591
 #: ../../addon/wiki/Mod_Wiki.php:370
 msgid "Revert"
 msgstr ""
 
 #: ../../addon/wiki/Widget/Wiki_page_history.php:32
-#: ../../addon/wiki/Lib/NativeWikiPage.php:584
+#: ../../addon/wiki/Lib/NativeWikiPage.php:592
 msgid "Compare"
 msgstr ""
 
@@ -611,40 +611,40 @@ msgid "Error reading page content"
 msgstr ""
 
 #: ../../addon/wiki/Lib/NativeWikiPage.php:367
-#: ../../addon/wiki/Lib/NativeWikiPage.php:417
-#: ../../addon/wiki/Lib/NativeWikiPage.php:485
-#: ../../addon/wiki/Lib/NativeWikiPage.php:526
+#: ../../addon/wiki/Lib/NativeWikiPage.php:425
+#: ../../addon/wiki/Lib/NativeWikiPage.php:493
+#: ../../addon/wiki/Lib/NativeWikiPage.php:534
 msgid "Error reading wiki"
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:404
+#: ../../addon/wiki/Lib/NativeWikiPage.php:411
 msgid "Page update failed."
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:439
+#: ../../addon/wiki/Lib/NativeWikiPage.php:447
 msgid "Nothing deleted"
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:506
+#: ../../addon/wiki/Lib/NativeWikiPage.php:514
 msgid "Compare: object not found."
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:513
+#: ../../addon/wiki/Lib/NativeWikiPage.php:521
 msgid "Page updated"
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:521
+#: ../../addon/wiki/Lib/NativeWikiPage.php:529
 msgid "Wiki resource_id required for git commit"
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:537 ../../addon/cards/cards.php:103
-#: ../../addon/articles/articles.php:103 ../../include/help.php:133
+#: ../../addon/wiki/Lib/NativeWikiPage.php:545 ../../addon/cards/cards.php:105
+#: ../../addon/articles/articles.php:105 ../../include/help.php:133
 #: ../../Zotlabs/Module/Display.php:142 ../../Zotlabs/Module/Page.php:136
 #: ../../Zotlabs/Module/Block.php:77 ../../Zotlabs/Web/Router.php:186
 msgid "Page not found."
 msgstr ""
 
-#: ../../addon/wiki/Lib/NativeWikiPage.php:622 ../../include/bbcode.php:1050
+#: ../../addon/wiki/Lib/NativeWikiPage.php:630 ../../include/bbcode.php:1050
 #: ../../include/bbcode.php:1235
 msgid "Different viewers will see this text differently"
 msgstr ""
@@ -746,9 +746,9 @@ msgid "Error downloading wiki: "
 msgstr ""
 
 #: ../../addon/wiki/Mod_Wiki.php:214 ../../addon/wiki/Mod_Wiki.php:387
-#: ../../addon/cards/Mod_Card_edit.php:99 ../../addon/cards/cards.php:73
+#: ../../addon/cards/Mod_Card_edit.php:99 ../../addon/cards/cards.php:75
 #: ../../addon/articles/Mod_Article_edit.php:97
-#: ../../addon/articles/articles.php:73 ../../include/menu.php:120
+#: ../../addon/articles/articles.php:75 ../../include/menu.php:120
 #: ../../include/channel.php:1530 ../../include/channel.php:1534
 #: ../../Zotlabs/Widget/Cdav.php:142 ../../Zotlabs/Widget/Cdav.php:179
 #: ../../Zotlabs/Module/Group.php:245 ../../Zotlabs/Module/Oauth.php:171
@@ -3536,16 +3536,16 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../../addon/cards/cards.php:47 ../../addon/cards/Mod_Cards.php:209
-#: ../../Zotlabs/Lib/Apps.php:330
+#: ../../addon/cards/cards.php:49 ../../addon/cards/cards.php:166
+#: ../../addon/cards/Mod_Cards.php:209 ../../Zotlabs/Lib/Apps.php:330
 msgid "Cards"
 msgstr ""
 
-#: ../../addon/cards/cards.php:50
+#: ../../addon/cards/cards.php:52
 msgid "View Cards"
 msgstr ""
 
-#: ../../addon/cards/cards.php:81 ../../addon/articles/articles.php:81
+#: ../../addon/cards/cards.php:83 ../../addon/articles/articles.php:83
 #: ../../include/conversation.php:842
 msgid "View in context"
 msgstr ""
@@ -4007,12 +4007,12 @@ msgstr ""
 msgid "Edit Article"
 msgstr ""
 
-#: ../../addon/articles/articles.php:46
+#: ../../addon/articles/articles.php:48 ../../addon/articles/articles.php:165
 #: ../../addon/articles/Mod_Articles.php:228 ../../Zotlabs/Lib/Apps.php:329
 msgid "Articles"
 msgstr ""
 
-#: ../../addon/articles/articles.php:49
+#: ../../addon/articles/articles.php:51
 msgid "View Articles"
 msgstr ""
 
@@ -4976,6 +4976,7 @@ msgid "Ability to display only posts that you've interacted on"
 msgstr ""
 
 #: ../../include/features.php:368 ../../include/nav.php:448
+#: ../../Zotlabs/Widget/Channel_activities.php:94
 #: ../../Zotlabs/Module/Fbrowser.php:29 ../../Zotlabs/Lib/Apps.php:349
 msgid "Photos"
 msgstr ""
@@ -5596,7 +5597,8 @@ msgstr ""
 msgid "Click to authenticate to your home hub"
 msgstr ""
 
-#: ../../include/nav.php:99 ../../Zotlabs/Widget/Admin.php:29
+#: ../../include/nav.php:99 ../../Zotlabs/Widget/Channel_activities.php:240
+#: ../../Zotlabs/Widget/Admin.php:29
 #: ../../Zotlabs/Module/Admin/Channels.php:146
 #: ../../Zotlabs/Module/Manage.php:162 ../../Zotlabs/Module/Admin.php:116
 msgid "Channels"
@@ -5738,7 +5740,8 @@ msgstr ""
 msgid "Profile Details"
 msgstr ""
 
-#: ../../include/nav.php:456 ../../Zotlabs/Widget/Notifications.php:107
+#: ../../include/nav.php:456 ../../Zotlabs/Widget/Channel_activities.php:126
+#: ../../Zotlabs/Widget/Notifications.php:107
 #: ../../Zotlabs/Module/Fbrowser.php:85 ../../Zotlabs/Lib/Apps.php:344
 #: ../../Zotlabs/Storage/Browser.php:351
 msgid "Files"
@@ -5762,8 +5765,8 @@ msgstr ""
 msgid "Saved Bookmarks"
 msgstr ""
 
-#: ../../include/nav.php:505 ../../Zotlabs/Module/Webpages.php:249
-#: ../../Zotlabs/Lib/Apps.php:345
+#: ../../include/nav.php:505 ../../Zotlabs/Widget/Channel_activities.php:169
+#: ../../Zotlabs/Module/Webpages.php:249 ../../Zotlabs/Lib/Apps.php:345
 msgid "Webpages"
 msgstr ""
 
@@ -6194,7 +6197,7 @@ msgstr ""
 msgid "Summary (optional)"
 msgstr ""
 
-#: ../../include/conversation.php:1775 ../../include/taxonomy.php:670
+#: ../../include/conversation.php:1778 ../../include/taxonomy.php:670
 #: ../../include/channel.php:1774 ../../Zotlabs/Module/Photos.php:1142
 #: ../../Zotlabs/Lib/ThreadItem.php:259
 msgctxt "noun"
@@ -6203,7 +6206,7 @@ msgid_plural "Likes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1778 ../../Zotlabs/Module/Photos.php:1147
+#: ../../include/conversation.php:1781 ../../Zotlabs/Module/Photos.php:1147
 #: ../../Zotlabs/Lib/ThreadItem.php:264
 msgctxt "noun"
 msgid "Dislike"
@@ -6211,42 +6214,42 @@ msgid_plural "Dislikes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1781
+#: ../../include/conversation.php:1784
 msgctxt "noun"
 msgid "Attending"
 msgid_plural "Attending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1784
+#: ../../include/conversation.php:1787
 msgctxt "noun"
 msgid "Not Attending"
 msgid_plural "Not Attending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1787
+#: ../../include/conversation.php:1790
 msgctxt "noun"
 msgid "Undecided"
 msgid_plural "Undecided"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1790
+#: ../../include/conversation.php:1793
 msgctxt "noun"
 msgid "Agree"
 msgid_plural "Agrees"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1793
+#: ../../include/conversation.php:1796
 msgctxt "noun"
 msgid "Disagree"
 msgid_plural "Disagrees"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../include/conversation.php:1796
+#: ../../include/conversation.php:1799
 msgctxt "noun"
 msgid "Abstain"
 msgid_plural "Abstains"
@@ -7238,19 +7241,19 @@ msgstr ""
 msgid "View PDF"
 msgstr ""
 
-#: ../../include/oembed.php:367
+#: ../../include/oembed.php:386
 msgid " by "
 msgstr ""
 
-#: ../../include/oembed.php:368
+#: ../../include/oembed.php:387
 msgid " on "
 msgstr ""
 
-#: ../../include/oembed.php:397
+#: ../../include/oembed.php:416
 msgid "Embedded content"
 msgstr ""
 
-#: ../../include/oembed.php:406
+#: ../../include/oembed.php:425
 msgid "Embedding disabled"
 msgstr ""
 
@@ -7326,6 +7329,20 @@ msgstr ""
 #: ../../Zotlabs/Widget/Chatroom_members.php:17
 msgid "Chat Members"
 msgstr ""
+
+#: ../../Zotlabs/Widget/Channel_activities.php:215
+msgctxt "noun"
+msgid "new connection"
+msgid_plural "new connections"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../../Zotlabs/Widget/Channel_activities.php:221
+msgctxt "noun"
+msgid "notice"
+msgid_plural "notices"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../../Zotlabs/Widget/Pinned.php:73 ../../Zotlabs/Lib/ThreadItem.php:222
 msgid "I will attend"
@@ -7537,12 +7554,16 @@ msgstr ""
 msgid "App Categories"
 msgstr ""
 
-#: ../../Zotlabs/Widget/Hq_controls.php:24
+#: ../../Zotlabs/Widget/Hq_controls.php:23
 msgid "Toggle post editor"
 msgstr ""
 
-#: ../../Zotlabs/Widget/Hq_controls.php:35
+#: ../../Zotlabs/Widget/Hq_controls.php:33
 msgid "Toggle personal notes"
+msgstr ""
+
+#: ../../Zotlabs/Widget/Hq_controls.php:43
+msgid "Channel activities"
 msgstr ""
 
 #: ../../Zotlabs/Widget/Permcats.php:42
@@ -12840,7 +12861,7 @@ msgstr ""
 msgid "Invalid item."
 msgstr ""
 
-#: ../../Zotlabs/Module/Page.php:173
+#: ../../Zotlabs/Module/Page.php:174
 msgid ""
 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
 "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, "
