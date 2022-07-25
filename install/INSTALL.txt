@@ -57,8 +57,8 @@ follow the browser advice. This is disruptive to the community. That said, we
 recognise the issues surrounding the current certificate infrastructure and
 agree there are many problems, but that doesn't change the requirement.
 
-Free "browser-valid" certificates are available from providers such as StartSSL
-and LetsEncrypt.
+Free "browser-valid" certificates are available from providers such as ZeroSSL,
+LetsEncrypt and a few others.
 
 If you do NOT use SSL, there may be a delay of up to a minute for the initial
 install script - while we check the SSL port to see if anything responds there.
