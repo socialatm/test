@@ -29,7 +29,19 @@ class MessageFilter {
 				if (! $word) {
 					continue;
 				}
-				if (substr($word, 0, 1) === '#' && $tags) {
+				if (isset($lang) && ((strpos($word, 'lang=') === 0) || (strpos($word, 'lang!=') === 0))) {
+					if (!strlen($lang)) {
+						// Result is ambiguous. As we are matching deny rules only at this time, continue tests.
+						// Any matching deny rule concludes testing.
+						continue;
+					}
+					if (strpos($word, 'lang=') === 0 && strcasecmp($lang, trim(substr($word, 5))) == 0) {
+						return false;
+					} elseif (strpos($word, 'lang!=') === 0 && strcasecmp($lang, trim(substr($word, 6))) != 0) {
+						return false;
+					}
+				}
+                elseif (substr($word, 0, 1) === '#' && $tags) {
 					foreach ($tags as $t) {
 						if ((($t['ttype'] == TERM_HASHTAG) || ($t['ttype'] == TERM_COMMUNITYTAG)) && (($t['term'] === substr($word, 1)) || (substr($word, 1) === '*'))) {
 							return false;
@@ -50,10 +62,6 @@ class MessageFilter {
 						return false;
 					}
 				} elseif ((strpos($word, '/') === 0) && preg_match($word, $text)) {
-					return false;
-				} elseif ((strpos($word, 'lang=') === 0) && ($lang) && (strcasecmp($lang, trim(substr($word, 5))) == 0)) {
-					return false;
-				} elseif ((strpos($word, 'lang!=') === 0) && ($lang) && (strcasecmp($lang, trim(substr($word, 6))) != 0)) {
 					return false;
 				} elseif (stristr($text, $word) !== false) {
 					return false;
@@ -69,7 +77,19 @@ class MessageFilter {
 				if (! $word) {
 					continue;
 				}
-				if (substr($word, 0, 1) === '#' && $tags) {
+				if (isset($lang) && ((strpos($word, 'lang=') === 0) || (strpos($word, 'lang!=') === 0))) {
+					if (!strlen($lang))  {
+						// Result is ambiguous. However we are checking allow rules
+						// and an ambiguous language is always permitted.
+						return true;
+					}
+					if (strpos($word, 'lang=') === 0 && strcasecmp($lang, trim(substr($word, 5))) == 0) {
+						return true;
+					} elseif (strpos($word, 'lang!=') === 0 && strcasecmp($lang, trim(substr($word, 6))) != 0) {
+						return true;
+					}
+				}
+                elseif (substr($word, 0, 1) === '#' && $tags) {
 					foreach ($tags as $t) {
 						if ((($t['ttype'] == TERM_HASHTAG) || ($t['ttype'] == TERM_COMMUNITYTAG)) && (($t['term'] === substr($word, 1)) || (substr($word, 1) === '*'))) {
 							return true;
@@ -90,10 +110,6 @@ class MessageFilter {
 						return true;
 					}
 				} elseif ((strpos($word, '/') === 0) && preg_match($word, $text)) {
-					return true;
-				} elseif ((strpos($word, 'lang=') === 0) && ($lang) && (strcasecmp($lang, trim(substr($word, 5))) == 0)) {
-					return true;
-				} elseif ((strpos($word, 'lang!=') === 0) && ($lang) && (strcasecmp($lang, trim(substr($word, 6))) != 0)) {
 					return true;
 				} elseif (stristr($text, $word) !== false) {
 					return true;
