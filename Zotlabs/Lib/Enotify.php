@@ -860,7 +860,7 @@ class Enotify {
 		// convert this logic into a json array just like the system notifications
 
 		$who = (($item['verb'] === ACTIVITY_SHARE) ? 'owner' : 'author');
-		$body = html2plain(bbcode($item['body'], ['drop_media']), 75, true);
+		$body = html2plain(bbcode($item['body'], ['drop_media' => true, 'tryoembed' => false]), 75, true);
 		if ($body) {
 			$body = htmlentities($body, ENT_QUOTES, 'UTF-8', false);
 		}

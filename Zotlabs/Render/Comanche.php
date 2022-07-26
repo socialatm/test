@@ -219,7 +219,8 @@ class Comanche {
 	 * - [if $config.system.foo {} baz] which will check if 'baz' is an array element in get_config('system','foo')
 	 * - [if $config.system.foo {*} baz] which will check if 'baz' is an array key in get_config('system','foo')
 	 * - [if $config.system.foo] which will check for a return of a true condition for get_config('system','foo');
-	 *
+     * - [if !$config.system.foo] which will check for a return of a false condition for get_config('system','foo');
+     *
 	 * The values 0, '', an empty array, and an unset value will all evaluate to false.
 	 *
 	 * @param int|string $s
@@ -296,6 +297,15 @@ class Comanche {
 			if(is_array($x) && array_key_exists(trim($matches[2]),$x))
 				return true;
 
+			return false;
+		}
+
+		// Ordering of this check (for falsiness) with relation to the following one (check for truthiness) is important.
+		if (preg_match('/[\!\$](.*?)$/', $s, $matches)) {
+			$x = $this->get_condition_var($matches[1]);
+			if (!$x) {
+				return true;
+			}
 			return false;
 		}
 

@@ -19,15 +19,13 @@ class Hq_controls {
 		if (! local_channel())
 			return;
 
-		$entries = [
-			'toggle_editor' => [
-				'label' => t('Toggle post editor'),
-				'href' => '#',
-				'class' => 'btn jot-toggle',
-				'type' => 'button',
-				'icon' => 'pencil',
-				'extra' => 'data-toggle="button"'
-			]
+		$entries['toggle_editor'] = [
+			'label' => t('Toggle post editor'),
+			'href' => '#',
+			'class' => 'btn jot-toggle',
+			'type' => 'button',
+			'icon' => 'pencil',
+			'extra' => 'data-toggle="button"'
 		];
 
 		if(Apps::system_app_installed(local_channel(), 'Notes')) {
@@ -40,6 +38,15 @@ class Hq_controls {
 				'extra' => 'data-toggle="button"'
 			];
 		}
+
+		$entries['toggle_channel_activities'] = [
+			'label' => t('Channel activities'),
+			'href' => '#',
+			'class' => 'btn channel-activities-toggle d-none',
+			'type' => 'button',
+			'icon' => 'user-circle-o',
+			'extra' => 'data-toggle="button"'
+		];
 
 		return replace_macros(get_markup_template('hq_controls.tpl'),
 			[

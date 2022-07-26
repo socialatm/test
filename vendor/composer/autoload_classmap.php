@@ -1721,6 +1721,7 @@ return array(
     'Zotlabs\\Widget\\Catcloud_wall' => $baseDir . '/Zotlabs/Widget/Catcloud_wall.php',
     'Zotlabs\\Widget\\Categories' => $baseDir . '/Zotlabs/Widget/Categories.php',
     'Zotlabs\\Widget\\Cdav' => $baseDir . '/Zotlabs/Widget/Cdav.php',
+    'Zotlabs\\Widget\\Channel_activities' => $baseDir . '/Zotlabs/Widget/Channel_activities.php',
     'Zotlabs\\Widget\\Chatroom_list' => $baseDir . '/Zotlabs/Widget/Chatroom_list.php',
     'Zotlabs\\Widget\\Chatroom_members' => $baseDir . '/Zotlabs/Widget/Chatroom_members.php',
     'Zotlabs\\Widget\\Clock' => $baseDir . '/Zotlabs/Widget/Clock.php',

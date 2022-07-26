@@ -24,29 +24,24 @@
 	</div>
 </div>
 <script>
+
 	let poi;
 	let section = 'roles';
 	let sub_section;
 
-
-	$('#edit-modal').on('hidden.bs.modal', function (e) {
-		if (window.location.hash) {
-			history.replaceState(null, '', 'connections');
-		}
-	})
-
-	if (window.location.hash) {
-		poi = window.location.hash.substr(1);
-		init_contact_edit(poi);
-	}
-
-	window.onhashchange = function() {
+	$(document).ready(function() {
 		if (window.location.hash) {
 			poi = window.location.hash.substr(1);
 			init_contact_edit(poi);
 		}
-	};
 
+		window.onhashchange = function() {
+			if (window.location.hash) {
+				poi = window.location.hash.substr(1);
+				init_contact_edit(poi);
+			}
+		};
+	});
 
 	$(document).on('click', '.contact-edit', function (e) {
 		e.preventDefault();
@@ -98,6 +93,12 @@
 		else {
 			$(this).addClass('sub_section_active');
 			sub_section = this.dataset.section;
+		}
+	});
+
+	$('#edit-modal').on('hidden.bs.modal', function (e) {
+		if (window.location.hash) {
+			history.replaceState(null, '', 'connections');
 		}
 	});
 

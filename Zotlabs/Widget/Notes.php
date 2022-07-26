@@ -31,7 +31,7 @@ class Notes {
 
 		$o = replace_macros($tpl, array(
 			'$text' => $text,
-			'$html' => bbcode($text),
+			'$html' => bbcode($text, ['tryoembed' => false]),
 			'$app' => ((isset($arr['app'])) ? true : false),
 			'$hidden' => ((isset($arr['hidden'])) ? true : false),
 			'$strings' => [

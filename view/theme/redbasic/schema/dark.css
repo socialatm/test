@@ -40,11 +40,17 @@ option {
 	color: $link_colour !important;
 }
 
-.vcard, #contact-block, .widget {
+.vcard,
+#contact-block,
+.widget {
 	background-color: transparent;
 	border: none;
 	border-bottom: 1px solid #333;
 	border-radius: 0px
+}
+
+.vcard-card {
+	background-color: transparent;
 }
 
 #profile-photo-wrapper {
@@ -323,10 +329,6 @@ a, a:visited, a:link, .fakelink, .fakelink:visited, .fakelink:link {
 	background-color: #222;
 }
 
-.text-dark {
-	color: #aaa !important;
-}
-
 .group-selected, .fileas-selected, .categories-selected, .search-selected, a.active {
 	color: #fff !important;
 	text-decoration: underline !important;
@@ -484,18 +486,18 @@ pre {
 
 
 /* category badge fix: */
-a.text-dark:focus, a.text-dark:hover {
-	color: #ddd !important;
-}
 
-.badge-warning {
-/*     background-color: #ffc927; */
+.bg-warning {
+    background-color: #e38916;
 }
-.badge-warning a.text-dark {
-    color: #333 !important;
+.bg-warning:hover, .bg-warning:focus {
+	background-color: #ffc927 !important;
 }
-.badge-warning a.text-dark:focus, .badge-warning a.text-dark:hover {
-    color: red !important;
+.bg-warning a.text-dark {
+    color: #111 !important;
+}
+.bg-warning a.text-dark:focus, .bg-warning a.text-dark:hover {
+    color: #bd0000 !important;
     text-decoration: none;
 }
 

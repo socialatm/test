@@ -1932,6 +1932,7 @@ class ComposerStaticInit7b34d7e50a62201ec5d5e526a5b8b35d
         'Zotlabs\\Widget\\Catcloud_wall' => __DIR__ . '/../..' . '/Zotlabs/Widget/Catcloud_wall.php',
         'Zotlabs\\Widget\\Categories' => __DIR__ . '/../..' . '/Zotlabs/Widget/Categories.php',
         'Zotlabs\\Widget\\Cdav' => __DIR__ . '/../..' . '/Zotlabs/Widget/Cdav.php',
+        'Zotlabs\\Widget\\Channel_activities' => __DIR__ . '/../..' . '/Zotlabs/Widget/Channel_activities.php',
         'Zotlabs\\Widget\\Chatroom_list' => __DIR__ . '/../..' . '/Zotlabs/Widget/Chatroom_list.php',
         'Zotlabs\\Widget\\Chatroom_members' => __DIR__ . '/../..' . '/Zotlabs/Widget/Chatroom_members.php',
         'Zotlabs\\Widget\\Clock' => __DIR__ . '/../..' . '/Zotlabs/Widget/Clock.php',

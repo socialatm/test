@@ -2,7 +2,7 @@
 
 if(! function_exists("string_plural_select_es_es")) {
 function string_plural_select_es_es($n){
-	return ($n != 1);
+	return ($n != 1 ? 1 : 0);
 }}
 App::$rtl = 0;
 App::$strings["plural_function_code"] = "(n != 1 ? 1 : 0)";
@@ -1619,7 +1619,7 @@ App::$strings["Remove term"] = "Eliminar término";
 App::$strings["Suggested Chatrooms"] = "Salas de chat sugeridas";
 App::$strings["Account settings"] = "Configuración de la cuenta";
 App::$strings["Channel settings"] = "Configuración del canal";
-App::$strings["Privacy settings"] = "Ajustes de peivacidad";
+App::$strings["Privacy settings"] = "Ajustes de privacidad";
 App::$strings["Display settings"] = "Ajustes de visualización";
 App::$strings["Manage locations"] = "Gestión de ubicaciones (clones) del canal";
 App::$strings["Overview"] = "Resumen";
@@ -2653,7 +2653,7 @@ App::$strings["Custom Filter"] = "Filtro personalizado";
 App::$strings["Only import posts with this text"] = "Importar solo entradas que contengan este texto";
 App::$strings["Do not import posts with this text"] = "No importar entradas que contengan este texto";
 App::$strings["Approve contact"] = "Aprobar contacto";
-App::$strings["Their"] = "Su/Sus";
+App::$strings["Their"] = "Su";
 App::$strings["My"] = "Mi";
 App::$strings["Roles"] = "Roles";
 App::$strings["Compare permissions"] = "Comparar permisos";

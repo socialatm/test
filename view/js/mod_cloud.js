@@ -14,6 +14,11 @@ $(document).ready(function () {
 
 	// Per File Tools
 
+	// highlight and scroll into view if we got an id via hash
+	if(window.location.hash) {
+		$('#cloud-index-' + window.location.hash.substr(1)).addClass('cloud-index-active').get(0).scrollIntoView({block: 'center'});
+	}
+
 	$('.cloud-tool-info-btn').on('click', function (e) {
 		e.preventDefault();
 		let id = $(this).data('id');

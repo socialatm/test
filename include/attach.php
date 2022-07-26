@@ -2702,10 +2702,11 @@ function attach_move($channel_id, $resource_id, $new_folder_hash, $newname = '',
 	}
 
 
-	q("update attach set content = '%s', folder = '%s', filename = '%s' where id = %d",
+	q("update attach set content = '%s', folder = '%s', filename = '%s', edited = '%s' where id = %d",
 		dbescbin($newstorepath),
 		dbesc($new_folder_hash),
 		dbesc($filename),
+		dbesc(datetime_convert()),
 		intval($r[0]['id'])
 	);
 

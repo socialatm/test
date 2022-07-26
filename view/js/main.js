@@ -164,8 +164,8 @@ $(document).ready(function() {
 	jQuery.timeago.settings.allowFuture = true;
 
 	$(document).on('click', '.notification, .message', function(e) {
-		let b64mid = $(this).data('b64mid');
-		let notify_id = $(this).data('notify_id');
+		let b64mid = this.dataset.b64mid;
+		let notify_id = this.dataset.notify_id;
 		let path = $(this)[0].pathname.split('/')[1];
 		let stateObj = { b64mid: b64mid };
 		let singlethread_modules = ['display', 'hq'];
@@ -882,7 +882,7 @@ function updateInit() {
 	if($('#live-channel').length)    { src = 'channel'; }
 	if($('#live-pubstream').length)  { src = 'pubstream'; }
 	if($('#live-display').length)    { src = 'display'; }
-	if($('#live-hq').length)         { src = 'hq'; }
+	//if($('#live-hq').length)         { src = 'hq'; }
 	if($('#live-search').length)     { src = 'search'; }
 	// if($('#live-cards').length)      { src = 'cards'; }
 	// if($('#live-articles').length)   { src = 'articles'; }

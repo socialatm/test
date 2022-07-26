@@ -113,7 +113,7 @@ class Messages {
 			}
 
 			if (!$summary) {
-				$summary = html2plain(bbcode($item['body'], ['drop_media' => true]), 75, true);
+				$summary = html2plain(bbcode($item['body'], ['drop_media' => true, 'tryoembed' => false]), 75, true);
 				if ($summary) {
 					$summary = htmlentities($summary, ENT_QUOTES, 'UTF-8', false);
 				}

@@ -1,28 +1,50 @@
-Hubzilla 7.4 (2022-06-01)
-	Updated russian translations
-	Raise min PHP version to 8.0
-	Rewrite inbound attachment handling
-	Move photo flag feature from addon to core
-	Adjust default production php logging
-	Update composer libs
-	Add a hidden config to enable the hs2019 http signature algorithm
-	Allow starring of pubstream items
-	Update spanish translations
-	Add the title in forum post reshares if applicable
-	Implement inbound pleroma reactions
-	Add real name info to the navbar template data
-	Add the updated date to the icon url so that other platforms will pick it up on change
-	Move wiki from core to addon
-	Move articles from core to addon
-	Move cards from core to addon
+Hubzilla 7.6 (2022-07-26)
+	- Add filter rule to check for false conition
+	- Implement HQ dashboard to display recently created content for various modules
+	- Updated spanish translations
+	- Implement a max oembed size which defaults to 1MB
+	- Update composer libs
 
 	Addons
-	Rendezvous: add missing default value to sql schema
-	Wiki: moved from core to addons
-	Articles: moved from core to addons
-	Cards: moved from core to addons
-	Photoflag: moved to core
-	Sse: fix issue where notifications were emited for created tasks
+	- Cart: do not attempt oembed
+	- Cards: implement channel_activities_widget for HQ dashboard
+	- Articles: implement channel_activities_widget for HQ dashboard
+	- Wiki: implement channel_activities_widget for HQ dashboard
+
+	Bugfixes
+	- Fix language filter filtering ambigous results
+	- Fix vcard-card background for dark schema
+	- Fix contact edit dialog not displayed in chrome browser
+	- Fix readability of category pills in dark schema
+	- Fix opengraph images inside zmg opening tag
+	- Fix oembed attempted for text previews
+
+
+Hubzilla 7.4 (2022-06-01)
+	- Updated russian translations
+	- Raise min PHP version to 8.0
+	- Rewrite inbound attachment handling
+	- Move photo flag feature from addon to core
+	- Adjust default production php logging
+	- Update composer libs
+	- Add a hidden config to enable the hs2019 http signature algorithm
+	- Allow starring of pubstream items
+	- Update spanish translations
+	- Add the title in forum post reshares if applicable
+	- Implement inbound pleroma reactions
+	- Add real name info to the navbar template data
+	- Add the updated date to the icon url so that other platforms will pick it up on change
+	- Move wiki from core to addon
+	- Move articles from core to addon
+	- Move cards from core to addon
+
+	Addons
+	- Rendezvous: add missing default value to sql schema
+	- Wiki: moved from core to addons
+	- Articles: moved from core to addons
+	- Cards: moved from core to addons
+	- Photoflag: moved to core
+	- Sse: fix issue where notifications were emited for created tasks
 
 	Bugfixes
 	- Fix issue where inbound activitypub items lost image descriptions (issue 1679)
