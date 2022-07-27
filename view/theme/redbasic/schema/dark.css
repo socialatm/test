@@ -1,5 +1,6 @@
 .generic-content-wrapper {
 	background-color: transparent;
+	border: 1px solid #333;
 }
 
 textarea, input, select
