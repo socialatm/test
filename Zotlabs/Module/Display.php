@@ -226,7 +226,7 @@ class Display extends \Zotlabs\Web\Controller {
 				);
 			}
 
-			if(!$r) {
+			if($r === null) {
 				$r = q("SELECT item.id AS item_id FROM item
 					WHERE ((mid = '%s'
 					AND (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''
@@ -263,7 +263,7 @@ class Display extends \Zotlabs\Web\Controller {
 				);
 			}
 
-			if(! $r) {
+			if($r === null) {
 				$r = q("SELECT item.id as item_id from item
 					WHERE ((parent_mid = '%s'
 					AND (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''
