@@ -2,7 +2,7 @@
 
 /**
  *   * Name: Channel Activity
- *   * Description: A widget that shows you a greeting and info about your last login and other channel activities
+ *   * Description: A widget that provides an overview of channels that require your attention and quick links to content that you have recently created or edited
  */
 
 namespace Zotlabs\Widget;

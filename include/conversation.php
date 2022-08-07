@@ -1,6 +1,7 @@
 <?php /** @file */
 
 use Zotlabs\Lib\Apps;
+use Zotlabs\Lib\Activity;
 
 require_once('include/items.php');
 
@@ -90,7 +91,6 @@ function item_redir_and_replace_images($body, $images, $cid) {
 function localize_item(&$item){
 
 	if (activity_match($item['verb'],ACTIVITY_LIKE) || activity_match($item['verb'],ACTIVITY_DISLIKE)){
-
 		if(! $item['obj'])
 			return;
 
@@ -106,6 +106,8 @@ function localize_item(&$item){
 			$author_link = get_rel_link($obj['author']['link'],'alternate');
 		elseif(is_array($obj['actor']) && $obj['actor']['url'])
 			$author_link = ((is_array($obj['actor']['url'])) ? $obj['actor']['url'][0]['href'] : $obj['actor']['url']);
+		elseif (is_string($obj['actor']))
+			$author_link = $obj['actor'];
 		else
 			$author_link = '';
 
@@ -113,6 +115,13 @@ function localize_item(&$item){
 
 		if(!$author_name)
 			$author_name = ((is_array($obj['actor']) && $obj['actor']['name']) ? $obj['actor']['name'] : '');
+
+		if(!$author_name && is_string($obj['actor'])) {
+			$cached_actor = Activity::get_cached_actor($obj['actor']);
+			if (is_array($cached_actor)) {
+				$author_name = (($cached_actor['name']) ? $cached_actor['name'] : $cached_actor['preferredUsername']);
+			}
+		}
 
 		if(is_array($obj['link']))
 			$item_url = get_rel_link($obj['link'],'alternate');
