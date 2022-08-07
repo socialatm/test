@@ -1,5 +1,16 @@
+Hubzilla 7.6.1 (2022-08-07)
+	Bugfixes
+	- Fix attachments displayed in visible response activities
+	- Fix wrong attribution in unseen like notifications
+
+	Addons
+	- Cards: fix widget not implemented via pdl file (requires re-install)
+	- Articles: fix widget not implemented via pdl file (requires re-install)
+	- Wiki: fix widget not implemented via pdl file (requires re-install)
+
+
 Hubzilla 7.6 (2022-07-26)
-	- Add filter rule to check for false conition
+	- Add filter rule to check for false condition
 	- Implement HQ dashboard to display recently created content for various modules
 	- Updated spanish translations
 	- Implement a max oembed size which defaults to 1MB
