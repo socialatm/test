@@ -96,7 +96,7 @@ if (! $font_size)
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
 if (! $radius)
-	$radius = '0.25rem';
+	$radius = '0.375rem';
 if (! $shadow)
 	$shadow = '0';
 if (! $converse_width)
