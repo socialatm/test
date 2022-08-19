@@ -12,7 +12,6 @@
 	--bs-border-radius: $radius;
 }
 
-
 html {
 	font-size: $font_size;
 }
@@ -1408,18 +1407,27 @@ main.fullscreen .section-content-wrapper-np {
 .notify-seen {
 	background-color: $item_colour;
 }
+
 /* bootstrap overrides */
 
-.btn,
-.form-control,
-.nav-pills .nav-link,
-.nav-tabs .nav-link {
-	border-radius: var(--bs-border-radius);
+.nav-tabs {
+	--bs-nav-tabs-border-radius: $radius;
 }
 
-.rounded-top {
-	border-top-left-radius: var(--bs-border-radius);
-	border-top-right-radius: var(--bs-border-radius);
+.nav-pills {
+	--bs-nav-pills-border-radius: $radius;
+}
+
+.btn {
+	--bs-btn-border-radius: $radius;
+}
+
+.card {
+	--bs-card-border-radius: $radius;
+}
+
+.form-control {
+	border-radius: $radius;
 }
 
 blockquote {
