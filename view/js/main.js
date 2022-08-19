@@ -89,7 +89,7 @@ $(document).ready(function() {
 		tao.zin.axim = '<div class="zinpax fa fa-sync fa-spin"> </div>';
 		$('.navbar-app[href*="/lang"]').attr({"aria-expand": "true", "id": "zintog"})
 			.removeAttr('href').addClass('zinlcx zinlcxp dropdown dropdown-toggle').css('cursor','pointer');
-		$('.dropdown-item[href*="/lang"]').addClass('zinlcxmi zinlcx').removeAttr('href').css('cursor','pointer');
+		$('.nav-link[href*="/lang"]').addClass('zinlcxmi zinlcx').removeAttr('href').css('cursor','pointer');
 	}
 	$('.zinlcx').on('click',  function(e) {
 		if (tao.zin.syslc == '') {
@@ -103,7 +103,7 @@ $(document).ready(function() {
    			 	tao.zin.syslcs = tao.zin.re.lcs;
 				tao.zin.htm = '<ul class="zinlcs fa-ul">';
 				$.each( tao.zin.syslcs, function( k, v ) {
-					tao.zin.htm += '<li><a id="zinlc' + k + '" class="zinlc dropdown-item fakelink">' + k + ' ' + v + '</a></li>';
+					tao.zin.htm += '<li><a id="zinlc' + k + '" class="zinlc nav-link fakelink">' + k + ' ' + v + '</a></li>';
 				});
 				tao.zin.htm += '</ul>';
 				$('.zinpax').remove();
