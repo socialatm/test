@@ -1,21 +1,34 @@
+
+:root {
+  color-scheme: dark;
+  --bs-dark-rgb: #e1e1e1;
+}
+
+--bs-dark-rgb
 .widget,
 .vcard-card {
-  background-color: unset;
+	background-color: unset;
 }
 
 .comment-edit-text {
-  border: 1px solid rgba(250, 250, 250, 0.125);
+	border: 1px solid rgba(250, 250, 250, 0.125);
 }
 
 .generic-content-wrapper {
-  border: 1px solid rgba(250, 250, 250, 0.125);
+	border: 1px solid rgba(250, 250, 250, 0.125);
 }
 
 #profile-jot-wrapper {
 	background-color: unset;
 	border: 1px solid rgba(250, 250, 250, 0.125);
-
 }
+
 .bootstrap-tagsinput {
 	background-color: unset;
 }
+
+a,
+.fakelink {
+	color: var(--bs-link-color);
+}
+
