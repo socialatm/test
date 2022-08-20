@@ -1022,11 +1022,7 @@ img.mail-conv-sender-photo {
 
 }
 
-#jot-title,
-#jot-pagetitle,
-#profile-jot-text {
-	border-radius: var(--bs-border-radius);
-}
+
 
 #profile-jot-text::-webkit-input-placeholder {
 	font-size: 1.2rem;

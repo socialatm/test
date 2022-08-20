@@ -11,7 +11,7 @@
 		<h2>{{$title}}</h2>
 		<div class="clear"></div>
 	</div>
-	<div id="webpage-editor" class="section-content-tools-wrapper">
+	<div id="webpage-editor" class="section-content-tools-wrapper rounded-bottom">
 		{{$editor}}
 	</div>
 </div>
