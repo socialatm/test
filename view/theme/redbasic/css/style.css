@@ -6,11 +6,32 @@
  */
 
 
-/* generals */
+/* bootstrap variable */
 
 :root {
 	--bs-border-radius: $radius;
+	--bs-link-color: $link_colour;
+	--bs-link-hover-color: $link_hover_colour;
 }
+
+.nav-tabs {
+	--bs-nav-tabs-border-radius: $radius;
+}
+
+.nav-pills {
+	--bs-nav-pills-border-radius: $radius;
+}
+
+.btn {
+	--bs-btn-border-radius: $radius;
+}
+
+.card {
+	--bs-card-border-radius: $radius;
+}
+
+
+/* generals */
 
 html {
 	font-size: $font_size;
@@ -109,7 +130,7 @@ abbr {
 
 a,
 .fakelink {
-  color: $link_colour;
+	color: var(--bs-link-color);
 }
 
 
@@ -117,7 +138,7 @@ a:hover,
 a:focus,
 .fakelink:hover,
 .fakelink:focus {
-  color: $link_colour;
+	color: var(--bs-link-hover-color);
 }
 
 .fakelink,
@@ -1410,22 +1431,6 @@ main.fullscreen .section-content-wrapper-np {
 
 /* bootstrap overrides */
 
-.nav-tabs {
-	--bs-nav-tabs-border-radius: $radius;
-}
-
-.nav-pills {
-	--bs-nav-pills-border-radius: $radius;
-}
-
-.btn {
-	--bs-btn-border-radius: $radius;
-}
-
-.card {
-	--bs-card-border-radius: $radius;
-}
-
 .form-control {
 	border-radius: $radius;
 }
@@ -1617,11 +1622,11 @@ dl.bb-dl > dd > li {
 }
 
 .onoffswitch.checkbox:hover label {
-	color: $link_colour;
+	color: var(--bs-link-color);
 }
 
 .onoffswitch.checkbox:hover > div label {
-	border-color: $link_colour;
+	border-color: var(--bs-link-color);
 }
 
 .onoffswitch-inner {
@@ -1665,7 +1670,7 @@ dl.bb-dl > dd > li {
 
 .onoffswitch.checkbox > div > input:checked + label .onoffswitch-switch {
     right: 0px;
-    background-color: $link_colour;
+    background-color: var(--bs-link-color);
 }
 
 

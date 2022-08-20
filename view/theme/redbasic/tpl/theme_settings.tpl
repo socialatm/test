@@ -15,6 +15,7 @@
 	{{*include file="field_input.tpl" field=$comment_indent*}}
 	{{include file="field_colorinput.tpl" field=$font_colour}}
 	{{include file="field_colorinput.tpl" field=$link_colour}}
+	{{include file="field_colorinput.tpl" field=$link_hover_colour}}
 	{{include file="field_input.tpl" field=$radius}}
 	{{include file="field_input.tpl" field=$shadow}}
 	{{include file="field_input.tpl" field=$top_photo}}
@@ -23,7 +24,7 @@
 <script>
 	$(function(){
 		$('#id_redbasic_nav_bg, #id_redbasic_nav_icon_colour, #id_redbasic_nav_active_icon_colour, #id_redbasic_banner_colour').colorpicker({format: 'rgba'});
-		$('#id_redbasic_link_colour,#id_redbasic_background_colour').colorpicker();
+		$('#id_redbasic_link_colour,#id_redbasic_link_hover_colour,#id_redbasic_background_colour').colorpicker();
 		$('#id_redbasic_toolicon_colour,#id_redbasic_toolicon_activecolour,#id_redbasic_font_colour').colorpicker();
 		$('#id_redbasic_item_colour,#id_redbasic_comment_item_colour,#id_redbasic_comment_border_colour').colorpicker({format: 'rgba'});
 	});

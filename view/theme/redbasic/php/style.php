@@ -16,6 +16,7 @@ if(! App::$install) {
 	$banner_colour = get_pconfig($uid,'redbasic','banner_colour');
 	$narrow_navbar = get_pconfig($uid,'redbasic','narrow_navbar');
 	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
+	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
 	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
 	$background_image = get_pconfig($uid, 'redbasic', 'background_image');
@@ -79,6 +80,8 @@ if (! $nav_active_icon_colour)
 	$nav_active_icon_colour = 'rgba(255, 255, 255, 0.75)';
 if (! $link_colour)
 	$link_colour = '#0d6efd';
+if (! $link_hover_colour)
+	$link_hover_colour = '#0a58ca;';
 if (! $banner_colour)
 	$banner_colour = '#efefef';
 if (! $bgcolour)
@@ -111,9 +114,9 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	$x = file_get_contents('view/theme/redbasic/css/style.css');
 
-  if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
-    $x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
-  }
+	if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
+		$x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
+	}
 
 	if($narrow_navbar && file_exists('view/theme/redbasic/css/narrow_navbar.css')) {
 		$x .= file_get_contents('view/theme/redbasic/css/narrow_navbar.css');
@@ -136,6 +139,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$nav_icon_colour' => $nav_icon_colour,
 		'$nav_active_icon_colour' => $nav_active_icon_colour,
 		'$link_colour' => $link_colour,
+		'$link_hover_colour' => $link_hover_colour,
 		'$banner_colour' => $banner_colour,
 		'$bgcolour' => $bgcolour,
 		'$background_image' => $background_image,
