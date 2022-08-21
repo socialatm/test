@@ -1715,7 +1715,7 @@ class Activity {
 					'xchan_guid'      => $url,
 					'xchan_pubkey'    => escape_tags($pubkey),
 					'xchan_addr'      => $webfinger_addr,
-					'xchan_url'       => escape_tags($profile),
+					'xchan_url'       => $profile,
 					'xchan_name'      => escape_tags($name),
 					'xchan_name_date' => datetime_convert(),
 					'xchan_network'   => 'activitypub'
