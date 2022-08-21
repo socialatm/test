@@ -2680,8 +2680,7 @@ class Activity {
 		// assume this is private unless specifically told otherwise.
 
 		$s['item_private'] = 1;
-
-		if ($act->recips && in_array(ACTIVITY_PUBLIC_INBOX, $act->recips)) {
+		if ($act->recips && (in_array(ACTIVITY_PUBLIC_INBOX, $act->recips) || in_array('Public', $act->recips) || in_array('as:Public', $act->recips))) {
 			$s['item_private'] = 0;
 		}
 
