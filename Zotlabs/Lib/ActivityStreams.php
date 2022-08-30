@@ -308,20 +308,25 @@ class ActivityStreams {
 
 	function get_actor($property, $base = '', $namespace = '') {
 		$x = $this->get_property_obj($property, $base, $namespace);
+
 		if ($this->is_url($x)) {
 			$y = Activity::get_cached_actor($x);
 			if ($y) {
 				return $y;
 			}
 		}
+
 		$actor = $this->get_compound_property($property, $base, $namespace, true);
+
 		if (is_array($actor) && self::is_an_actor($actor['type'])) {
 			if (array_key_exists('id', $actor) && (!array_key_exists('inbox', $actor))) {
 				$actor = $this->fetch_property($actor['id']);
 			}
 			return $actor;
 		}
-		return null;
+
+		return Activity::get_unknown_actor($this->data);
+
 	}
 
 

@@ -3874,6 +3874,19 @@ class Activity {
 		return $hookdata['actor'];
 	}
 
+	static function get_unknown_actor($act) {
+
+		// try other get_actor providers (e.g. diaspora)
+		$hookdata = [
+			'activity' => $act,
+			'actor' => null
+		];
+
+		call_hooks('get_actor_provider', $hookdata);
+
+		return $hookdata['actor'];
+	}
+
 	static function get_actor_hublocs($url, $options = 'all') {
 
 		switch ($options) {
