@@ -44,14 +44,13 @@ class Channel_activities {
 
 		if (!$hookdata['activities']) {
 			$o .= '<h3>No recent activity to display</h3>';
+			$o .= '</div>';
 			return $o;
 		}
 
 		$keys = array_column($hookdata['activities'], 'date');
 
 		array_multisort($keys, SORT_DESC, $hookdata['activities']);
-
-	//	hz_syslog('activities: ' . print_r($hookdata['activities'], true));
 
 		foreach($hookdata['activities'] as $a) {
 			$o .= replace_macros(get_markup_template($a['tpl']), [
