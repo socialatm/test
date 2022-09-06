@@ -283,14 +283,11 @@ class ThreadItem {
 		$this->check_wall_to_wall();
 
 		if($this->is_toplevel()) {
-			// FIXME check this permission
-			if($conv->get_profile_owner() === local_channel() || intval($item['item_private']) === 0) {
-
-				$star = array(
+			if(($conv->get_profile_owner() === local_channel()) || (local_channel() && App::$module === 'pubstream')) {
+				$star = [
 					'toggle' => t("Toggle Star Status"),
 					'isstarred' => ((intval($item['item_starred'])) ? true : false),
-				);
-
+				];
 			}
 		}
 		else {
@@ -352,7 +349,7 @@ class ThreadItem {
 		if($keep_reports === 0)
 			$keep_reports = 10;
 
-		if((! get_config('system','disable_dreport')) && strcmp(datetime_convert('UTC','UTC',$item['created']),datetime_convert('UTC','UTC',"now - $keep_reports days")) > 0) {
+		if((intval($item['item_type']) == ITEM_TYPE_POST) && (! get_config('system','disable_dreport')) && strcmp(datetime_convert('UTC','UTC',$item['created']),datetime_convert('UTC','UTC',"now - $keep_reports days")) > 0) {
 			$dreport = t('Delivery Report');
 			$dreport_link = gen_link_id($item['mid']);
 		}
