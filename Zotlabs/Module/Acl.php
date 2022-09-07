@@ -66,6 +66,11 @@ class Acl extends \Zotlabs\Web\Controller {
 			killme();
 
 		$permitted = [];
+		$sql_extra = '';
+		$sql_extra2 = '';
+		$sql_extra3 = '';
+		$sql_extra2_xchan = '';
+		$order_extra2 = '';
 
 		if(in_array($type, [ 'm', 'a', 'c', 'f' ])) {
 
@@ -80,7 +85,6 @@ class Acl extends \Zotlabs\Web\Controller {
 			$permitted = ids_to_array($x,'xchan');
 
 		}
-
 
 		if($search) {
 			$sql_extra = " AND pgrp.gname LIKE " . protect_sprintf( "'%" . dbesc($search) . "%'" ) . " ";
@@ -100,10 +104,6 @@ class Acl extends \Zotlabs\Web\Controller {
 			$sql_extra3 = "AND ( xchan_addr like " . protect_sprintf( "'%" . dbesc(punify($search)) . "%'" ) . " OR xchan_name like " . protect_sprintf( "'%" . dbesc($search) . "%'" ) . " ) ";
 
 		}
-		else {
-			$sql_extra = $sql_extra2 = $sql_extra3 = "";
-		}
-
 
 		$groups = array();
 		$contacts = array();
@@ -342,7 +342,7 @@ class Acl extends \Zotlabs\Web\Controller {
 			$x = [];
 			foreach($r as $g) {
 
-				if(in_array($g['net'],['rss','anon','unknown']) && ($type != 'a'))
+				if(isset($g['net']) && in_array($g['net'], ['rss','anon','unknown']) && ($type != 'a'))
 					continue;
 
 				$g['hash'] = urlencode($g['hash']);
@@ -383,7 +383,7 @@ class Acl extends \Zotlabs\Web\Controller {
 							"self"     => (intval($g['abook_self']) ? 'abook-self' : ''),
 							"taggable" => '',
 							"label"    => '',
-							"net"      => $g['net']
+							"net"      => $g['net'] ?? ''
 						);
 					}
 				}

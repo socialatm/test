@@ -25,7 +25,7 @@ class Channel_activities {
 		self::$uid = local_channel();
 		self::$channel = App::get_channel();
 
-		$o .= '<div id="channel-activities" class="d-none overflow-hidden">';
+		$o = '<div id="channel-activities" class="d-none overflow-hidden">';
 		$o .= '<h2 class="mb-4">Welcome ' . self::$channel['channel_name'] . '!</h2>';
 		//$o .= 'Last login date: ' . get_pconfig(self::$uid, 'system', 'stored_login_date') . ' from ' . get_pconfig(self::$uid, 'system', 'stored_login_addr');
 

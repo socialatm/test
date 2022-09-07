@@ -604,7 +604,8 @@ function public_permissions_sql($observer_hash) {
 function get_form_security_token($typename = '') {
 
 	$timestamp = time();
-	$sec_hash = hash('whirlpool', App::$observer['xchan_guid'] . ((local_channel()) ? App::$channel['channel_prvkey'] : '') . session_id() . $timestamp . $typename);
+	$guid = App::$observer['xchan_guid'] ?? '';
+	$sec_hash = hash('whirlpool', $guid . ((local_channel()) ? App::$channel['channel_prvkey'] : '') . session_id() . $timestamp . $typename);
 
 	return $timestamp . '.' . $sec_hash;
 }

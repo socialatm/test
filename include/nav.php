@@ -19,6 +19,8 @@ function nav($template = 'default') {
 	App::$page['htmlhead'] .= '<script>$(document).ready(function() { $("#nav-search-text").search_autocomplete(\'' . z_root() . '/acl' . '\');});</script>';
 	$is_owner = (((local_channel()) && ((App::$profile_uid == local_channel()) || (App::$profile_uid == 0))) ? true : false);
 	$observer = App::get_observer();
+	$chans = [];
+
 
 	if (local_channel()) {
 		$channel = App::get_channel();
@@ -35,7 +37,7 @@ function nav($template = 'default') {
 		$sitelocation = (($is_owner) ? '' : App::$profile['reddress']);
 	}
 	else {
-		$sitelocation = ((App::$profile['reddress']) ? App::$profile['reddress'] : '@' . App::get_hostname());
+		$sitelocation = ((isset(App::$profile['reddress'])) ? App::$profile['reddress'] : '@' . App::get_hostname());
 	}
 
 	require_once('include/conversation.php');
@@ -336,8 +338,8 @@ function nav($template = 'default') {
 		'$featured_apps'      => t('Featured Apps'),
 		'$url'                => (($url) ? $url : z_root() . '/' . App::$cmd),
 		'$settings_url'       => $settings_url,
-		'$name'               => ((!$is_owner) ? App::$profile['fullname'] : ''),
-		'$thumb'              => ((!$is_owner) ? App::$profile['thumb'] : ''),
+		'$name'               => ((!$is_owner && isset(App::$profile['fullname'])) ? App::$profile['fullname'] : ''),
+		'$thumb'              => ((!$is_owner && isset(App::$profile['thumb'])) ? App::$profile['thumb'] : ''),
 		'$form_security_token' => get_form_security_token('pconfig')
 	]);
 

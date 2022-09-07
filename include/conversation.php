@@ -1431,7 +1431,13 @@ function hz_status_editor($a, $x, $popup = false) {
 	];
 
 	call_hooks('jot_header_tpl_filter',$tplmacros);
-	App::$page['htmlhead'] .= replace_macros($tpl, $tplmacros);
+
+	if (isset(App::$page['htmlhead'])) {
+		App::$page['htmlhead'] .= replace_macros($tpl, $tplmacros);
+	}
+	else {
+		App::$page['htmlhead'] = replace_macros($tpl, $tplmacros);
+	}
 
 	$tpl = get_markup_template('jot.tpl');
 

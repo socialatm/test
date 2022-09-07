@@ -22,6 +22,7 @@ if(! App::$install) {
 	$background_image = get_pconfig($uid, 'redbasic', 'background_image');
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
+	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
 	$font_size = get_pconfig($uid, 'redbasic', 'font_size');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
 	$radius = get_pconfig($uid, 'redbasic', 'radius');
@@ -64,6 +65,7 @@ if ((!$schema) || ($schema == '---')) {
 		require_once ($schemefile);
 	}
 
+	$schemecss = '';
 	if(file_exists('view/theme/redbasic/schema/default.css')) {
 		$schemecss = file_get_contents('view/theme/redbasic/schema/default.css');
 	}
@@ -150,12 +152,8 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$radius' => $radius,
 		'$shadow' => $shadow,
 		'$converse_width' => $converse_width,
-		'$nav_float_min_opacity' => $nav_float_min_opacity,
-		'$nav_percent_min_opacity' => $nav_percent_min_opacity,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
-		'$pmenu_top' => $pmenu_top,
-		'$pmenu_reply' => $pmenu_reply,
 		'$main_width' => $main_width,
 		'$left_aside_width' => $left_aside_width,
 		'$right_aside_width' => $right_aside_width

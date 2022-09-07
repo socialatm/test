@@ -521,8 +521,13 @@ class Apps {
 		$hosturl = '';
 
 		if(local_channel()) {
-			if(self::app_installed(local_channel(),$papp) && !$papp['deleted'])
+			if(self::app_installed(local_channel(),$papp)) {
 				$installed = true;
+			}
+
+			if ($installed && isset($papp['deleted']) && $papp['deleted']) {
+				$installed = false;
+			}
 
 			$hosturl = z_root() . '/';
 		}

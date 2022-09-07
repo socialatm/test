@@ -36,7 +36,7 @@ class Home extends Controller {
 
 		$channel = App::get_channel();
 		if (local_channel() && $channel && $channel['xchan_url'] && !$splash) {
-			$dest = (($ret['startpage']) ? $ret['startpage'] : '');
+			$dest = $ret['startpage'] ?? '';
 			if (!$dest)
 				$dest = get_config('system', 'startpage');
 			if (!$dest)

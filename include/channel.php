@@ -2002,7 +2002,7 @@ function atoken_delete_and_sync($channel_id, $atoken_guid) {
  * @return int
  */
 function get_theme_uid() {
-	$uid = (($_REQUEST['puid']) ? intval($_REQUEST['puid']) : 0);
+	$uid = $_REQUEST['puid'] ?? 0;
 	if(local_channel()) {
 		if((get_pconfig(local_channel(),'system','always_my_theme')) || (! $uid))
 			return local_channel();
@@ -2010,10 +2010,10 @@ function get_theme_uid() {
 	if(! $uid) {
 		$x = get_sys_channel();
 		if($x)
-			return $x['channel_id'];
+			return intval($x['channel_id']);
 	}
 
-	return $uid;
+	return intval($uid);
 }
 
 /**

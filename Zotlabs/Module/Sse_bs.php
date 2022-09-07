@@ -41,7 +41,7 @@ class Sse_bs extends Controller {
 		self::$offset = 0;
 		self::$xchans = '';
 
-		if($_REQUEST['sse_rmids'])
+		if(isset($_REQUEST['sse_rmids']))
 			self::mark_read($_REQUEST['sse_rmids']);
 
 		if(!empty($_REQUEST['nquery']) && $_REQUEST['nquery'] !== '%') {
