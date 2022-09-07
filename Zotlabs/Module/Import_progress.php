@@ -49,11 +49,6 @@ class Import_progress extends \Zotlabs\Web\Controller {
 			}
 
 			$ccompleted_str = t('Item sync completed but no items were found!');
-
-			if(argv(1) === 'resume_itemsync') {
-				Master::Summon(["Content_importer","0","0001-01-01 00:00:00","2021-10-02 19:49:14","ct5","https%3A%2F%2Fhub.somaton.com"]);
-				goaway('/import_progress');
-			}
 		}
 
 		$cprogress_str = ((intval($cprogress)) ? $cprogress . '%' : $cprogress);
@@ -76,8 +71,6 @@ class Import_progress extends \Zotlabs\Web\Controller {
 				Master::Summon($f['next_cmd']);
 				goaway('/import_progress');
 			}
-
-
 		}
 		else {
 			$fprogress = 'waiting to start...';
