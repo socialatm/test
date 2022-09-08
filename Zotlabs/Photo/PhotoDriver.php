@@ -421,30 +421,30 @@ abstract class PhotoDriver {
 
 		$p = [];
 
-		$p['aid'] = ((intval($arr['aid'])) ? intval($arr['aid']) : 0);
-		$p['uid'] = ((intval($arr['uid'])) ? intval($arr['uid']) : 0);
-		$p['xchan'] = (($arr['xchan']) ? $arr['xchan'] : '');
-		$p['resource_id'] = (($arr['resource_id']) ? $arr['resource_id'] : '');
-		$p['filename'] = (($arr['filename']) ? $arr['filename'] : '');
-		$p['mimetype'] = (($arr['mimetype']) ? $arr['mimetype'] : $this->getType());
-		$p['album'] = (($arr['album']) ? $arr['album'] : '');
-		$p['imgscale'] = ((intval($arr['imgscale'])) ? intval($arr['imgscale']) : 0);
-		$p['allow_cid'] = (($arr['allow_cid']) ? $arr['allow_cid'] : '');
-		$p['allow_gid'] = (($arr['allow_gid']) ? $arr['allow_gid'] : '');
-		$p['deny_cid'] = (($arr['deny_cid']) ? $arr['deny_cid'] : '');
-		$p['deny_gid'] = (($arr['deny_gid']) ? $arr['deny_gid'] : '');
-		$p['edited'] = (($arr['edited']) ? $arr['edited'] : datetime_convert());
-		$p['title'] = (($arr['title']) ? $arr['title'] : '');
-		$p['description'] = (($arr['description']) ? $arr['description'] : '');
-		$p['photo_usage'] = intval($arr['photo_usage']);
-		$p['os_storage'] = intval($arr['os_storage']);
-		$p['os_path'] = $arr['os_path'];
-		$p['os_syspath'] = ((array_key_exists('os_syspath', $arr)) ? $arr['os_syspath'] : '');
-		$p['display_path'] = (($arr['display_path']) ? $arr['display_path'] : '');
-		$p['width'] = (($arr['width']) ? $arr['width'] : $this->getWidth());
-		$p['height'] = (($arr['height']) ? $arr['height'] : $this->getHeight());
-		$p['expires'] = (($arr['expires']) ? $arr['expires'] : gmdate('Y-m-d H:i:s', time() + get_config('system', 'photo_cache_time', 86400)));
-		$p['profile'] = ((array_key_exists('profile', $arr)) ? intval($arr['profile']) : 0);
+		$p['aid'] = $arr['aid'] ?? 0;
+		$p['uid'] = $arr['uid'] ?? 0;
+		$p['xchan'] = $arr['xchan'] ?? '';
+		$p['resource_id'] = $arr['resource_id'] ?? '';
+		$p['filename'] = $arr['filename'] ?? '';
+		$p['mimetype'] = $arr['mimetype'] ?? $this->getType();
+		$p['album'] = $arr['album'] ?? '';
+		$p['imgscale'] = $arr['imgscale'] ?? 0;
+		$p['allow_cid'] = $arr['allow_cid'] ?? '';
+		$p['allow_gid'] = $arr['allow_gid'] ?? '';
+		$p['deny_cid'] = $arr['deny_cid'] ?? '';
+		$p['deny_gid'] = $arr['deny_gid'] ?? '';
+		$p['edited'] = $arr['edited'] ?? datetime_convert();
+		$p['title'] = $arr['title'] ?? '';
+		$p['description'] = $arr['description'] ?? '';
+		$p['photo_usage'] = $arr['photo_usage'] ?? PHOTO_NORMAL;
+		$p['os_storage'] = $arr['os_storage'] ?? 1;
+		$p['os_path'] = $arr['os_path'] ?? '';
+		$p['os_syspath'] = $arr['os_syspath'] ?? '';
+		$p['display_path'] = $arr['display_path'] ?? '';
+		$p['width'] = $arr['width'] ?? $this->getWidth();
+		$p['height'] = $arr['height'] ?? $this->getHeight();
+		$p['expires'] = $arr['expires'] ?? gmdate('Y-m-d H:i:s', time() + get_config('system', 'photo_cache_time', 86400));
+		$p['profile'] = $arr['profile'] ?? 0;
 
 		if(! intval($p['imgscale']))
 			logger('save: ' . print_r($arr, true), LOGGER_DATA);
@@ -452,7 +452,7 @@ abstract class PhotoDriver {
 		$x = q("select id, created from photo where resource_id = '%s' and uid = %d and xchan = '%s' and imgscale = %d limit 1", dbesc($p['resource_id']), intval($p['uid']), dbesc($p['xchan']), intval($p['imgscale']));
 
 		if($x) {
-			$p['created'] = (($x['created']) ? $x['created'] : $p['edited']);
+			$p['created'] = $x['created'] ?? $p['edited'];
 			$r = q("UPDATE photo set
 				aid = %d,
 				uid = %d,

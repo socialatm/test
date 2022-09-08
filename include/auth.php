@@ -280,8 +280,8 @@ else {
 
 	// handle a fresh login request
 
-	$password = $_POST['main_login_password'] ?? $_POST['modal_login_password'];
-	$username = $_POST['main_login_username'] ?? $_POST['modal_login_username'];
+	$password = $_POST['main_login_password'] ?? $_POST['modal_login_password'] ?? '';
+	$username = $_POST['main_login_username'] ?? $_POST['modal_login_username'] ?? '';
 
 	if($password)
 		$encrypted = hash('whirlpool', trim($password));

@@ -304,8 +304,14 @@ class Libzot {
 
 		$record = Zotfinger::exec($url, $channel);
 
+		if (!$record) {
+			return false;
+		}
+
 		// Check the HTTP signature
 		$hsig = $record['signature'];
+		$hsig_valid = false;
+
 		if ($hsig && $hsig['signer'] === $url && $hsig['header_valid'] === true && $hsig['content_valid'] === true) {
 			$hsig_valid = true;
 		}

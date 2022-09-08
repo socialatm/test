@@ -367,26 +367,30 @@ function bb_format_attachdata($body) {
 
 	if($data) {
 		$txt = '';
-		if($data['url'] && $data['title']) {
+		if(isset($data['url']) && isset($data['title'])) {
 			$txt .= "\n\n" . '[url=' . $data['url'] . ']' . $data['title'] . '[/url]';
 		}
 		else {
-			if($data['url']) {
+			if(isset($data['url'])) {
 				$txt .= "\n\n" . $data['url'];
 			}
-			if($data['title']) {
+			if(isset($data['title'])) {
 				$txt .= "\n\n" . $data['title'];
 			}
 		}
-		if($data['preview']) {
+
+		if(isset($data['preview'])) {
 			$txt .= "\n\n" . '[img]' . $data['preview'] . '[/img]';
 		}
-		if($data['image']) {
+
+		if(isset($data['image'])) {
 			$txt .= "\n\n" . '[img]' . $data['image'] . '[/img]';
 		}
 
+		if(isset($data['text'])) {
+			$txt .= "\n\n" . $data['text'];
+		}
 
-		$txt .= "\n\n" . $data['text'];
 		return preg_replace('/\[attachment(.*?)\](.*?)\[\/attachment\]/ism',$txt,$body);
 	}
 

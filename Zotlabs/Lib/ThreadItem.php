@@ -98,7 +98,7 @@ class ThreadItem {
 		$is_item = false;
 		$osparkle = '';
 		$total_children = $this->count_descendants();
-		$unseen_comments = (($item['real_uid']) ? 0 : $this->count_unseen_descendants());
+		$unseen_comments = ((isset($item['real_uid']) && $item['real_uid']) ? 0 : $this->count_unseen_descendants());
 
  		$conv = $this->get_conversation();
 		$observer = $conv->get_observer();
@@ -148,7 +148,7 @@ class ThreadItem {
 		}
 
 		if ($lock) {
- 			if (($item['mid'] == $item['parent_mid']) && count(get_terms_oftype($item['term'],TERM_FORUM))) {
+ 			if (($item['mid'] == $item['parent_mid']) && isset($item['term']) && count(get_terms_oftype($item['term'], TERM_FORUM))) {
  				$privacy_warning = true;
 				$conv_flags['parent_privacy_warning'] = true;
  			}
@@ -191,13 +191,6 @@ class ThreadItem {
 			$drop = [ 'dropping' => true, 'delete' => t('Admin Delete') ];
 		}
 
-// FIXME
-		if($observer_is_pageowner) {
-			$multidrop = array(
-				'select' => t('Select'),
-			);
-		}
-
 		$filer = ((($conv->get_profile_owner() == local_channel()) && (! array_key_exists('real_uid',$item))) ? t("Save to Folder") : false);
 
 		$profile_avatar = $item['author']['xchan_photo_m'];
@@ -207,7 +200,6 @@ class ThreadItem {
 		$location = format_location($item);
 		$isevent = false;
 		$attend = null;
-		$canvote = false;
 
 		// process action responses - e.g. like/dislike/attend/agree/whatever
 		$response_verbs = array('like');
@@ -227,17 +219,6 @@ class ThreadItem {
 			$response_verbs[] = 'answer';
 		}
 
-		$consensus = (intval($item['item_consensus']) ? true : false);
-		if($consensus) {
-			$response_verbs[] = 'agree';
-			$response_verbs[] = 'disagree';
-			$response_verbs[] = 'abstain';
-			if($this->is_commentable() && $observer) {
-				$conlabels = array( t('I agree'), t('I disagree'), t('I abstain'));
-				$canvote = true;
-			}
-		}
-
 		if(! feature_enabled($conv->get_profile_owner(),'dislike'))
 			unset($conv_responses['dislike']);
 
@@ -245,7 +226,8 @@ class ThreadItem {
 
 		$my_responses = [];
 		foreach($response_verbs as $v) {
-			$my_responses[$v] = (($conv_responses[$v][$item['mid'] . '-m']) ? 1 : 0);
+
+			$my_responses[$v] = ((isset($conv_responses[$v][$item['mid'] . '-m'])) ? 1 : 0);
 		}
 
 		$like_count = ((x($conv_responses['like'],$item['mid'])) ? $conv_responses['like'][$item['mid']] : '');
@@ -333,14 +315,16 @@ class ThreadItem {
 			$reply_to = array( t("Reply on this comment"), t("reply"), t("Reply to"));
 		}
 
+		$share = [];
+		$embed = [];
 		if ($shareable) {
 			// This actually turns out not to be possible in some protocol stacks without opening up hundreds of new issues.
 			// Will allow it only for uri resolvable sources.
 			if(strpos($item['mid'],'http') === 0) {
-				$share = []; //Not yet ready for primetime
+				//Not yet ready for primetime
 				//$share = array( t('Repeat This'), t('repeat'));
 			}
-			$embed = array( t('Share This'), t('share'));
+			$embed = [t('Share This'), t('share')];
 		}
 
 		$dreport = '';
@@ -349,11 +333,13 @@ class ThreadItem {
 		if($keep_reports === 0)
 			$keep_reports = 10;
 
+		$dreport_link = '';
 		if((intval($item['item_type']) == ITEM_TYPE_POST) && (! get_config('system','disable_dreport')) && strcmp(datetime_convert('UTC','UTC',$item['created']),datetime_convert('UTC','UTC',"now - $keep_reports days")) > 0) {
 			$dreport = t('Delivery Report');
 			$dreport_link = gen_link_id($item['mid']);
 		}
 
+		$is_new = false;
 		if(strcmp(datetime_convert('UTC','UTC',$item['created']),datetime_convert('UTC','UTC','now - 12 hours')) > 0)
 			$is_new = true;
 
@@ -423,9 +409,6 @@ class ThreadItem {
 			'author_is_group_actor' => (($item['author']['xchan_pubforum']) ? t('Forum') : ''),
 			'isevent' => $isevent,
 			'attend' => $attend,
-			'consensus' => $consensus,
-			'conlabels' => $conlabels,
-			'canvote' => $canvote,
 			'linktitle' => (($item['author']['xchan_addr']) ? $item['author']['xchan_addr'] : $item['author']['xchan_url']),
 			'olinktitle' => (($item['owner']['xchan_addr']) ? $item['owner']['xchan_addr'] : $item['owner']['xchan_url']),
 			'llink' => $item['llink'],
@@ -494,7 +477,6 @@ class ThreadItem {
 			'bookmark'  => (($conv->get_profile_owner() == local_channel() && local_channel() && $has_bookmarks) ? t('Save Bookmarks') : ''),
 			'addtocal'  => (($has_event) ? t('Add to Calendar') : ''),
 			'drop'      => $drop,
-			'multidrop' => ((feature_enabled($conv->get_profile_owner(),'multi_delete')) ? $multidrop : ''),
 			'dropdown_extras' => $dropdown_extras,
 // end toolbar buttons
 			'unseen_comments' => $unseen_comments,
@@ -517,7 +499,7 @@ class ThreadItem {
 			'modal_dismiss' => t('Close'),
 			'showlike' => $showlike,
 			'showdislike' => $showdislike,
-			'comment' => ($item['item_delayed'] ? '' : $this->get_comment_box($indent)),
+			'comment' => ($item['item_delayed'] ? '' : $this->get_comment_box()),
 			'previewing' => ($conv->is_preview() ? true : false ),
 			'preview_lbl' => t('This is an unsaved preview'),
 			'wait' => t('Please wait'),
@@ -811,7 +793,7 @@ class ThreadItem {
 	 *      _ The comment box string (empty if no comment box)
 	 *      _ false on failure
 	 */
-	private function get_comment_box($indent) {
+	private function get_comment_box() {
 
 		if(!$this->is_toplevel() && !get_config('system','thread_allow')) {
 			return '';
@@ -857,7 +839,6 @@ class ThreadItem {
 			'$edurl' => t('Insert Link'),
 			'$edvideo' => t('Video'),
 			'$preview' => t('Preview'), // ((feature_enabled($conv->get_profile_owner(),'preview')) ? t('Preview') : ''),
-			'$indent' => $indent,
 			'$can_upload' => (perm_is_allowed($conv->get_profile_owner(),get_observer_hash(),'write_storage') && $conv->is_uploadable()),
 			'$feature_encrypt' => ((feature_enabled($conv->get_profile_owner(),'content_encrypt')) ? true : false),
 			'$encrypt' => t('Encrypt text'),

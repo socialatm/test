@@ -1554,6 +1554,8 @@ function theme_attachments(&$item) {
 			if(isset($r['type']))
 				$icon = getIconFromType($r['type']);
 
+			$label = '';
+
 			if(isset($r['title']))
 				$label = urldecode(htmlspecialchars($r['title'], ENT_COMPAT, 'UTF-8'));
 
@@ -1593,7 +1595,7 @@ function theme_attachments(&$item) {
 function format_categories(&$item,$writeable) {
 	$s = '';
 
-	$terms = get_terms_oftype($item['term'],TERM_CATEGORY);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_CATEGORY) : [];
 	if($terms) {
 		$categories = array();
 		foreach($terms as $t) {
@@ -1623,7 +1625,7 @@ function format_categories(&$item,$writeable) {
 function format_hashtags(&$item) {
 
 	$s = '';
-	$terms = get_terms_oftype($item['term'], array(TERM_HASHTAG,TERM_COMMUNITYTAG));
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], array(TERM_HASHTAG, TERM_COMMUNITYTAG)) : [];
 	if($terms) {
 		foreach($terms as $t) {
 			$term = htmlspecialchars($t['term'], ENT_COMPAT, 'UTF-8', false) ;
@@ -1647,7 +1649,7 @@ function format_hashtags(&$item) {
 function format_mentions(&$item) {
 
 	$s = '';
-	$terms = get_terms_oftype($item['term'],TERM_MENTION);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_MENTION) : [];
 	if($terms) {
 		foreach($terms as $t) {
 			if(! isset($t['term']))
@@ -1670,7 +1672,7 @@ function format_mentions(&$item) {
 function format_filer(&$item) {
 	$s = '';
 
-	$terms = get_terms_oftype($item['term'],TERM_FILE);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_FILE) : [];
 	if($terms) {
 		$categories = array();
 		foreach($terms as $t) {
@@ -1789,14 +1791,15 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 		$s = $poll;
 	}
 
-	$event = (($item['obj_type'] === ACTIVITY_OBJ_EVENT) ? format_event_obj($item['obj']) : false);
+	$event = (($item['obj_type'] === ACTIVITY_OBJ_EVENT) ? format_event_obj($item['obj']) : []);
 
 	$prep_arr = [
 		'item' => $item,
 		'html' => $event ? $event['content'] : $s,
-		'event' => $event['header'],
+		'event' => $event ? $event['header'] : '',
 		'photo' => $photo
 	];
+
 	/**
 	 * @hooks prepare_body
 	 *   * \e array \b item
@@ -1827,6 +1830,7 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 
 	$tags = format_hashtags($item);
 
+	$mentions = '';
 	if($item['resource_type'] == 'photo')
 		$mentions = format_mentions($item);
 

@@ -1433,10 +1433,10 @@ function profile_load($nickname, $profile = '') {
 		dbesc($p[0]['profile_guid']),
 		intval($p[0]['profile_uid'])
 	);
-	if($q) {
-		$extra_fields = array();
 
-		require_once('include/channel.php');
+	$extra_fields = [];
+
+	if($q) {
 		$profile_fields_basic    = get_profile_fields_basic();
 		$profile_fields_advanced = get_profile_fields_advanced();
 
@@ -1568,7 +1568,7 @@ function profile_edit_menu($uid) {
  * @param array $profile
  * @param int $block
  * @param boolean $show_connect (optional) default true
- * @param mixed $zcard (optional) default false
+ * @param mixed $details (optional) default false
  *
  * @return string (HTML) suitable for sidebar inclusion
  * Exceptions: Returns empty string if passed $profile is wrong type or not populated
@@ -1635,7 +1635,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 //	logger('online: ' . $profile['online']);
 
 
-	if(($profile['hidewall'] && (! local_channel()) && (! remote_channel())) || $block ) {
+	if((isset($profile['hidewall']) && (! local_channel()) && (! remote_channel())) || $block ) {
 		$location = $reddress = $pdesc = $gender = $marital = $homepage = False;
 	}
 
@@ -1664,10 +1664,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 		$channel_menu .= $comanche->block($menublock);
 	}
 
-	if($zcard)
-		$tpl = get_markup_template('profile_vcard_short.tpl');
-	else
-		$tpl = get_markup_template('profile_vcard.tpl');
+	$tpl = get_markup_template('profile_vcard.tpl');
 
 	$o .= replace_macros($tpl, array(
 		'$details'       => $details,

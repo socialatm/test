@@ -48,6 +48,7 @@ class Hq extends \Zotlabs\Web\Controller {
 		$sys_item = false;
 		$sql_extra = '';
 		$target_item = null;
+		$o = '';
 
 		if($item_hash) {
 
@@ -101,7 +102,7 @@ class Hq extends \Zotlabs\Web\Controller {
 			];
 
 			$a = '';
-			$o = status_editor($a, $x, true);
+			$o .= status_editor($a, $x, true);
 
 		}
 

@@ -267,6 +267,7 @@ class Channel extends Controller {
 					'reset'               => t('Reset form')
 				];
 
+				$a = '';
 				$o .= status_editor($a, $x, false, 'Channel');
 			}
 
