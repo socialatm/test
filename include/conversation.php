@@ -102,28 +102,29 @@ function localize_item(&$item){
 			logger('localize_item: failed to decode object: ' . print_r($item['obj'],true));
 		}
 
-		if(is_array($obj['author']) && $obj['author']['link'])
+		if(isset($obj['author']) && isset($obj['author']['link']))
 			$author_link = get_rel_link($obj['author']['link'],'alternate');
-		elseif(is_array($obj['actor']) && $obj['actor']['url'])
+		elseif(isset($obj['actor']) && isset($obj['actor']['url']))
 			$author_link = ((is_array($obj['actor']['url'])) ? $obj['actor']['url'][0]['href'] : $obj['actor']['url']);
 		elseif (is_string($obj['actor']))
 			$author_link = $obj['actor'];
 		else
 			$author_link = '';
 
-		$author_name = (($obj['author'] && $obj['author']['name']) ? $obj['author']['name'] : '');
+		$author_name = $obj['author']['name'] ?? '';
 
 		if(!$author_name)
-			$author_name = ((is_array($obj['actor']) && $obj['actor']['name']) ? $obj['actor']['name'] : '');
+			$author_name = $obj['actor']['name'] ?? '';
 
 		if(!$author_name && is_string($obj['actor'])) {
 			$cached_actor = Activity::get_cached_actor($obj['actor']);
 			if (is_array($cached_actor)) {
-				$author_name = (($cached_actor['name']) ? $cached_actor['name'] : $cached_actor['preferredUsername']);
+				$author_name = $cached_actor['name'] ?? $cached_actor['preferredUsername'];
 			}
 		}
 
-		if(is_array($obj['link']))
+		$item_url = '';
+		if(isset($obj['link']) && is_array($obj['link']))
 			$item_url = get_rel_link($obj['link'],'alternate');
 
 		if(!$item_url)
@@ -1055,14 +1056,14 @@ function author_is_pmable($xchan, $abook) {
 function thread_author_menu($item, $mode = '') {
 
 	$menu = [];
-
+	$channel = [];
 	$local_channel = local_channel();
 
 	if($local_channel) {
 		if(! count(App::$contacts))
 			load_contact_links($local_channel);
+
 		$channel = App::get_channel();
-		$channel_hash = (($channel) ? $channel['channel_hash'] : '');
 	}
 
 	$profile_link = chanlink_hash($item['author_xchan']);
@@ -1070,7 +1071,7 @@ function thread_author_menu($item, $mode = '') {
 
 	$follow_url = '';
 
-	if($channel['channel_hash'] !== $item['author_xchan']) {
+	if(isset($channel['channel_hash']) && $channel['channel_hash'] !== $item['author_xchan']) {
 		if(App::$contacts && array_key_exists($item['author_xchan'],App::$contacts)) {
 			$contact = App::$contacts[$item['author_xchan']];
 		}

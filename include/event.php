@@ -28,7 +28,7 @@ function format_event_html($ev) {
 	if(! ((is_array($ev)) && count($ev)))
 		return '';
 
-	$tz = (($ev['timezone']) ? $ev['timezone'] : 'UTC');
+	$tz = $ev['timezone'] ?? 'UTC';
 
 	$bd_format = t('l F d, Y \@ g:i A') ; // Friday January 18, 2011 @ 8:01 AM
 
@@ -39,9 +39,9 @@ function format_event_html($ev) {
 	$o .= '<div class="event-title"><h3><i class="fa fa-calendar"></i>&nbsp;' . zidify_links(smilies(bbcode($ev['summary']))) .  '</h3></div>' . "\r\n";
 
 	$o .= '<div class="event-start"><span class="event-label">' . t('Starts:') . '</span>&nbsp;<span class="dtstart" title="'
-		. datetime_convert('UTC', 'UTC', $ev['dtstart'], (($ev['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' ))
+		. datetime_convert('UTC', 'UTC', $ev['dtstart'], ((isset($ev['adjust']) && $ev['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' ))
 		. '" >'
-		. (($ev['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(),
+		. ((isset($ev['adjust']) && $ev['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(),
 			$ev['dtstart'] , $bd_format ))
 			:  day_translate(datetime_convert('UTC', 'UTC',
 			$ev['dtstart'] , $bd_format)))
@@ -49,9 +49,9 @@ function format_event_html($ev) {
 
 	if(! $ev['nofinish'])
 		$o .= '<div class="event-end" ><span class="event-label">' . t('Finishes:') . '</span>&nbsp;<span class="dtend" title="'
-			. datetime_convert('UTC','UTC',$ev['dtend'], (($ev['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' ))
+			. datetime_convert('UTC','UTC',$ev['dtend'], ((isset($ev['adjust']) && $ev['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' ))
 			. '" >'
-			. (($ev['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(),
+			. ((isset($ev['adjust']) && $ev['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(),
 				$ev['dtend'] , $bd_format ))
 				:  day_translate(datetime_convert('UTC', 'UTC',
 				$ev['dtend'] , $bd_format )))
@@ -59,7 +59,7 @@ function format_event_html($ev) {
 
 	$o .= '<div class="event-description">' . zidify_links(smilies(bbcode($ev['description']))) .  '</div>' . "\r\n";
 
-	if(strlen($ev['location']))
+	if(isset($ev['location']) && $ev['location'])
 		$o .= '<div class="event-location"><span class="event-label"> ' . t('Location:') . '</span>&nbsp;<span class="location">'
 			. zidify_links(smilies(bbcode($ev['location'])))
 			. '</span></div>' . "\r\n";

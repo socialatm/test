@@ -180,7 +180,7 @@ class ThreadItem {
 			$dropping = false;
 		}
 
-
+		$drop = [];
 		if($dropping) {
 			$drop = array(
 				'dropping' => $dropping,
@@ -308,6 +308,10 @@ class ThreadItem {
 		$has_event = false;
 		if(($item['obj_type'] === ACTIVITY_OBJ_EVENT) && $conv->get_profile_owner() == local_channel())
 			$has_event = true;
+
+		$like = [];
+		$dislike = [];
+		$reply_to = [];
 
 		if($this->is_commentable() && $observer) {
 			$like = array( t("I like this \x28toggle\x29"), t("like"));

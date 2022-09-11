@@ -116,17 +116,17 @@ class ActivityStreams {
 				$this->obj['object'] = $this->get_compound_property($this->obj['object']);
 			}
 
-			if ($this->obj && is_array($this->obj) && $this->obj['actor'])
+			if ($this->obj && is_array($this->obj) && isset($this->obj['actor']))
 				$this->obj['actor'] = $this->get_actor('actor', $this->obj);
-			if ($this->tgt && is_array($this->tgt) && $this->tgt['actor'])
+			if ($this->tgt && is_array($this->tgt) && isset($this->tgt['actor']))
 				$this->tgt['actor'] = $this->get_actor('actor', $this->tgt);
 
 			$this->parent_id = $this->get_property_obj('inReplyTo');
 
-			if ((!$this->parent_id) && is_array($this->obj)) {
+			if ((!$this->parent_id) && is_array($this->obj) && isset($this->obj['inReplyTo'])) {
 				$this->parent_id = $this->obj['inReplyTo'];
 			}
-			if ((!$this->parent_id) && is_array($this->obj)) {
+			if ((!$this->parent_id) && is_array($this->obj) && isset($this->obj['id'])) {
 				$this->parent_id = $this->obj['id'];
 			}
 		}

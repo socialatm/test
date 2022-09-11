@@ -646,15 +646,15 @@ class Activity {
 
 		$ret = [];
 
-		if (is_array($item['attachment']) && $item['attachment']) {
+		if (isset($item['attachment'])) {
 			$ptr = $item['attachment'];
 			if (!array_key_exists(0, $ptr)) {
 				$ptr = [$ptr];
 			}
 			foreach ($ptr as $att) {
 				$entry = [];
-				if ($att['type'] === 'PropertyValue') {
-					if (array_key_exists('name', $att) && $att['name']) {
+				if (isset($att['type']) && $att['type'] === 'PropertyValue') {
+					if (isset($att['name'])) {
 						$key = explode('.', $att['name']);
 						if (count($key) === 3 && $key[0] === 'zot') {
 							$entry['cat']     = $key[1];
@@ -674,7 +674,7 @@ class Activity {
 
 		$ret = [];
 
-		if (array_key_exists('attachment', $item) && is_array($item['attachment'])) {
+		if (isset($item['attachment'])) {
 			$ptr = $item['attachment'];
 			if (!array_key_exists(0, $ptr)) {
 				$ptr = [$ptr];
@@ -1600,7 +1600,7 @@ class Activity {
 		$m = parse_url($url);
 		if ($m) {
 			$hostname = $m['host'];
-			$baseurl  = $m['scheme'] . '://' . $m['host'] . (($m['port']) ? ':' . $m['port'] : '');
+			$baseurl  = $m['scheme'] . '://' . $m['host'] . ((isset($m['port'])) ? ':' . $m['port'] : '');
 			$site_url = $m['scheme'] . '://' . $m['host'];
 		}
 
@@ -1791,9 +1791,13 @@ class Activity {
 
 	// sort function width decreasing
 	static function vid_sort($a, $b) {
-		if ($a['width'] === $b['width'])
+		$a_width = $a['width'] ?? 0;
+		$b_width = $b['width'] ?? 0;
+
+		if ($a_width === $b_width)
 			return 0;
-		return (($a['width'] > $b['width']) ? -1 : 1);
+
+		return (($a_width > $b_width) ? -1 : 1);
 	}
 
 	static function create_note($channel, $observer_hash, $act) {
@@ -2673,7 +2677,7 @@ class Activity {
 			}
 		}
 
-		if (!$s['plink']) {
+        if (!(isset($s['plink']) && $s['plink'])) {
 			$s['plink'] = $s['mid'];
 		}
 
@@ -2865,7 +2869,7 @@ class Activity {
 
 			// The $item['item_fetched'] flag is set in fetch_and_store_parents().
 			// In this case we should check against author permissions because sender is not owner.
-			if (perm_is_allowed($channel['channel_id'], (($item['item_fetched']) ? $item['author_xchan'] : $observer_hash), 'send_stream') || $is_sys_channel) {
+			if (perm_is_allowed($channel['channel_id'], ((isset($item['item_fetched']) && $item['item_fetched']) ? $item['author_xchan'] : $observer_hash), 'send_stream') || $is_sys_channel) {
 				$allowed = true;
 			}
 			// TODO: not implemented

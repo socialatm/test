@@ -416,9 +416,6 @@ function channel_apps($is_owner = false, $nickname = null) {
 
 	$has_webpages = (($r) ? true : false);
 
-	if (x($_GET, 'tab'))
-		$tab = notags(trim($_GET['tab']));
-
 	$url = z_root() . '/channel/' . $nickname;
 	$pr  = z_root() . '/profile/' . $nickname;
 
@@ -524,7 +521,7 @@ function channel_apps($is_owner = false, $nickname = null) {
 		];
 	}
 
-	$arr = ['is_owner' => $is_owner, 'nickname' => $nickname, 'tab' => (($tab) ? $tab : false), 'tabs' => $tabs];
+	$arr = ['is_owner' => $is_owner, 'nickname' => $nickname, 'tabs' => $tabs];
 
 	call_hooks('channel_apps', $arr);
 

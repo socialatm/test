@@ -1836,6 +1836,7 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 
 	$categories = format_categories($item,$writeable);
 
+	$filer = '';
 	if(local_channel() == $item['uid'])
 		$filer = format_filer($item);
 

@@ -2926,12 +2926,11 @@ class Libzot {
 		// This is a template - %s will be replaced with the follow_url we discover for the return channel.
 
 		if ($special_channel) {
-			$ret['connect_url'] = (($e['xchan_connpage']) ? $e['xchan_connpage'] : z_root() . '/connect/' . $e['channel_address']);
+			$ret['connect_url'] = $e['xchan_connpage'] ?? z_root() . '/connect/' . $e['channel_address'];
 		}
 
 		// This is a template for our follow url, %s will be replaced with a webbie
-		if (!$ret['follow_url'])
-			$ret['follow_url'] = z_root() . '/follow?f=&url=%s';
+		$ret['follow_url'] = $ret['follow_url'] ?? z_root() . '/follow?f=&url=%s';
 
 		$permissions = get_all_perms($e['channel_id'], $ztarget_hash, false, false);
 

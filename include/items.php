@@ -1163,8 +1163,7 @@ function encode_item($item,$mirror = false,$zap_compat = false) {
 	if($item['comments_closed'] > NULL_DATE)
 		$x['comments_closed'] = $item['comments_closed'];
 
-	$x['public_scope']    = $scope;
-
+	$x['public_scope'] = $item['public_policy'];
 	$x['comment_scope'] = $item['comment_policy'];
 
 	if(! empty($item['term']))
@@ -2432,17 +2431,14 @@ function send_status_notifications($post_id,$item) {
 		return;
 
 	// my own post - no notification needed
-	if($item['author_xchan'] === $r[0]['channel_hash'])
+	if(isset($item['author_xchan']) && $item['author_xchan'] === $r[0]['channel_hash'])
 		return;
 
-
 	// I'm the owner - notify me
-
-	if($item['owner_hash'] === $r[0]['channel_hash'])
+	if(isset($item['owner_hash']) && $item['owner_hash'] === $r[0]['channel_hash'])
 		$notify = true;
 
 	// Was I involved in this conversation?
-
 	$x = q("select * from item where parent_mid = '%s' and uid = %d",
 		dbesc($item['parent_mid']),
 		intval($item['uid'])

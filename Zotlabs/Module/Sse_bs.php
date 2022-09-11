@@ -580,12 +580,12 @@ class Sse_bs extends Controller {
 
 					$forums[$x]['notify_link'] = z_root() . '/network/?f=&pf=1&unseen=1&cid=' . $forums[$x]['abook_id'];
 					$forums[$x]['name'] = $forums[$x]['xchan_name'];
-					$forums[$x]['addr'] = $forums[$x]['xchan_addr'];
+					$forums[$x]['addr'] = $forums[$x]['xchan_addr'] ?? $forums[$x]['xchan_url'];
 					$forums[$x]['url'] = $forums[$x]['xchan_url'];
 					$forums[$x]['photo'] = $forums[$x]['xchan_photo_s'];
 					$forums[$x]['unseen'] = count($b64mids);
-					$forums[$x]['private_forum'] = (($forums[$x]['private_forum']) ? 'lock' : '');
-					$forums[$x]['message'] = (($forums[$x]['private_forum']) ? t('Private forum') : t('Public forum'));
+					$forums[$x]['private_forum'] = ((isset($forums[$x]['private_forum']) && $forums[$x]['private_forum']) ? 'lock' : '');
+					$forums[$x]['message'] = ((isset($forums[$x]['private_forum']) && $forums[$x]['private_forum']) ? t('Private forum') : t('Public forum'));
 					$forums[$x]['mids'] = json_encode($b64mids);
 
 					unset($forums[$x]['abook_id']);
