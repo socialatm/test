@@ -85,6 +85,10 @@ function guess_image_type($filename, $data = '') {
 		$hdrs = [];
 		$h = explode("\n", $headers);
 		foreach ($h as $l) {
+			if (strpos($l, ':') === false) {
+				continue;
+			}
+
 			list($k, $v) = array_map('trim', explode(':', trim($l), 2));
 			$hdrs[strtolower($k)] = $v;
 		}
@@ -251,6 +255,10 @@ function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 			$hdrs = [];
 			$h = explode("\n", $result['header']);
 			foreach ($h as $l) {
+				if (strpos($l, ':') === false) {
+					continue;
+				}
+
 				list($t,$v) = array_map("trim", explode(":", trim($l), 2));
 				$hdrs[strtolower($t)] = $v;
 			}
