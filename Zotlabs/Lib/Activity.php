@@ -1523,22 +1523,31 @@ class Activity {
 	}
 
 
-	static function actor_store($url, $person_obj, $force = false) {
+	static function actor_store($url, $person_obj = null, $force = false) {
+
+		if ($person_obj === null) {
+			$tgt = self::fetch($url);
+			if (is_array($tgt) && ActivityStreams::is_an_actor($tgt['type'])) {
+				self::actor_store($tgt['id'], $tgt);
+			}
+			return;
+		}
 
 		if (!is_array($person_obj)) {
 			return;
 		}
 
 		/* not implemented
-				if (array_key_exists('movedTo',$person_obj) && $person_obj['movedTo'] && ! is_array($person_obj['movedTo'])) {
-					$tgt = self::fetch($person_obj['movedTo']);
-					if (is_array($tgt)) {
-						self::actor_store($person_obj['movedTo'],$tgt);
-						ActivityPub::move($person_obj['id'],$tgt);
-					}
-					return;
-				}
+		if (array_key_exists('movedTo',$person_obj) && $person_obj['movedTo'] && ! is_array($person_obj['movedTo'])) {
+			$tgt = self::fetch($person_obj['movedTo']);
+			if (is_array($tgt)) {
+				self::actor_store($person_obj['movedTo'],$tgt);
+				ActivityPub::move($person_obj['id'],$tgt);
+			}
+			return;
+		}
 		*/
+
 		$ap_hubloc = null;
 
 		$hublocs = self::get_actor_hublocs($url);
@@ -2281,12 +2290,6 @@ class Activity {
 				}
 			}
 
-			if ($act->type === 'Announce') {
-				$s['author_xchan'] = $obj_actor['id'];
-				$s['mid'] = $act->obj['id'];
-				$s['parent_mid'] = $act->obj['id'];
-			}
-
 			if ($act->type === 'emojiReaction') {
 				$content['content'] = (($act->tgt && $act->tgt['type'] === 'Image') ? '[img=32x32]' . $act->tgt['url'] . '[/img]' : '&#x' . $act->tgt['name'] . ';');
 			}
@@ -2465,12 +2468,17 @@ class Activity {
 			$s['comments_closed'] = datetime_convert('UTC', 'UTC', $act->obj['closed']);
 		}
 
-
-		// we will need a hook here to extract magnet links e.g. peertube
-		// right now just link to the largest mp4 we find that will fit in our
-		// standard content region
-
 		if (!$response_activity) {
+			if ($act->type === 'Announce') {
+				$s['author_xchan'] = self::get_attributed_to_actor_url($act);
+				$s['mid'] = $act->obj['id'];
+				$s['parent_mid'] = $act->obj['id'];
+			}
+
+			// we will need a hook here to extract magnet links e.g. peertube
+			// right now just link to the largest mp4 we find that will fit in our
+			// standard content region
+
 			if ($act->obj['type'] === 'Video') {
 
 				$vtypes = [
@@ -2766,6 +2774,7 @@ class Activity {
 
 		set_iconfig($s, 'activitypub', 'recips', $act->raw_recips);
 
+
 		$hookinfo = [
 			'act' => $act,
 			's'   => $s
@@ -2774,6 +2783,8 @@ class Activity {
 		call_hooks('decode_note', $hookinfo);
 
 		$s = $hookinfo['s'];
+
+
 
 		return $s;
 
@@ -3980,6 +3991,37 @@ class Activity {
 		}
 
 		return $ret;
+	}
+
+	static function get_attributed_to_actor_url($act) {
+
+		$url = '';
+
+		if (!isset($act->obj['attributedTo'])) {
+			return $url;
+		}
+
+		if (is_string($act->obj['attributedTo'])) {
+			$url = $act->obj['attributedTo'];
+		}
+
+		if (is_array($act->obj['attributedTo'])) {
+			foreach($act->obj['attributedTo'] as $a) {
+				if (is_array($a) && isset($a['type']) && $a['type'] === 'Person') {
+					if (isset($a['id'])) {
+						$url = $a['id'];
+						break;
+					}
+				}
+				elseif (is_string($a)) {
+					$url = $a;
+					break;
+				}
+			}
+		}
+
+		return $url;
+
 	}
 
 }

@@ -271,11 +271,8 @@ function get_atom_author($feed, $item) {
 	$found_author = $item->get_author();
 	if($found_author) {
 		$rawauthor = $feed->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author');
-		hz_syslog('rawauthor: ' . print_r($rawauthor, true));
-
-		if($rawauthor) {
-			if(isset($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data']))
-				$author['full_name'] = unxmlify($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data']);
+		if(isset($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data'])) {
+			$author['full_name'] = unxmlify($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data']);
 		}
 
 		$author['author_name'] = unxmlify($found_author->get_name());

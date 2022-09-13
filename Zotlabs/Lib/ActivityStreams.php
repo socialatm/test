@@ -294,7 +294,7 @@ class ActivityStreams {
 		if (!$s) {
 			return false;
 		}
-		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Announce', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
+		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
 	}
 
 	/**
