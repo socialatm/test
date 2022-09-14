@@ -103,7 +103,7 @@ class Contactedit extends Controller {
 				dbesc($profile_id),
 				intval(local_channel())
 			);
-			if (!count($r)) {
+			if (!$r) {
 				notice(t('Could not locate selected profile.') . EOL);
 				return;
 			}
