@@ -3,7 +3,7 @@
 // post categories and "save to file" use the same item.file table for storage.
 // We will differentiate the different uses by wrapping categories in angle brackets
 // and save to file categories in square brackets.
-// To do this we need to escape these characters if they appear in our tag. 
+// To do this we need to escape these characters if they appear in our tag.
 
 use Zotlabs\Lib\Cache;
 
@@ -50,10 +50,10 @@ function term_query($table,$s,$type = TERM_UNKNOWN, $type2 = '') {
 function term_item_parent_query($uid,$table,$s,$type = TERM_UNKNOWN, $type2 = '') {
 
 	// Allow asterisks for wildcard search
-	// In theory this means '%' will also do a wildcard search, but there appear to be multiple escape 
+	// In theory this means '%' will also do a wildcard search, but there appear to be multiple escape
 	// issues with '%' in term names and trying to fix this with '\\%' here did not help.
 	// Ideally I think we want '*' to indicate wildcards and allow '%' literally in names, but that is being
-	// left for another developer on another day.  
+	// left for another developer on another day.
 
 	$s = str_replace('*','%',$s);
 
@@ -89,11 +89,11 @@ function term_item_parent_query($uid,$table,$s,$type = TERM_UNKNOWN, $type2 = ''
 
 
 function store_item_tag($uid,$iid,$otype,$type,$term,$url = '') {
-	if(! $term) 
+	if(! $term)
 		return false;
 
-	$r = q("select * from term 
-		where uid = %d and oid = %d and otype = %d and ttype = %d 
+	$r = q("select * from term
+		where uid = %d and oid = %d and otype = %d and ttype = %d
 		and term = '%s' and url = '%s' ",
 		intval($uid),
 		intval($iid),
@@ -146,9 +146,9 @@ function format_term_for_display($term) {
 	else
 		return $s;
 
-	if($term['url']) 
+	if($term['url'])
 		$s .= '<a href="' . $term['url'] . '">' . htmlspecialchars($term['term'], ENT_COMPAT,'UTF-8') . '</a>';
-	else 
+	else
 		$s .= htmlspecialchars($term['term'], ENT_COMPAT,'UTF-8');
 	return $s;
 }
@@ -177,17 +177,17 @@ function tagadelic($uid, $count = 0, $authors = '', $owner = '', $flags = 0, $re
 		if(! is_array($authors))
 			$authors = array($authors);
 
-		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") "; 
+		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") ";
 	}
 
 	if($owner) {
 		$sql_options .= " and owner_xchan  = '" . dbesc($owner) . "' ";
-	}	
+	}
 
 	// Fetch tags
 	$r = q("select term, count(term) as total from term left join item on term.oid = item.id
-		where term.uid = %d and term.ttype = %d 
-		and otype = %d and item_type = %d 
+		where term.uid = %d and term.ttype = %d
+		and otype = %d and item_type = %d
 		$sql_options $item_normal
 		group by term order by total desc %s",
 		intval($uid),
@@ -229,19 +229,19 @@ function card_tagadelic($uid, $count = 0, $authors = '', $owner = '', $flags = 0
 		if(! is_array($authors))
 			$authors = array($authors);
 
-		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") "; 
+		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") ";
 	}
 
 	if($owner) {
 		$sql_options .= " and owner_xchan  = '" . dbesc($owner) . "' ";
-	}	
+	}
 
 
 	// Fetch tags
 
 	$r = q("select term, count(term) as total from term left join item on term.oid = item.id
-		where term.uid = %d and term.ttype = %d 
-		and otype = %d and item_type = %d 
+		where term.uid = %d and term.ttype = %d
+		and otype = %d and item_type = %d
 		$sql_options $item_normal
 		group by term order by total desc %s",
 		intval($uid),
@@ -281,18 +281,18 @@ function article_tagadelic($uid, $count = 0, $authors = '', $owner = '', $flags 
 		if(! is_array($authors))
 			$authors = array($authors);
 
-		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") "; 
+		$sql_options .= " and author_xchan in (" . stringify_array($authors,true) . ") ";
 	}
 
 	if($owner) {
 		$sql_options .= " and owner_xchan  = '" . dbesc($owner) . "' ";
-	}	
+	}
 
 
 	// Fetch tags
 	$r = q("select term, count(term) as total from term left join item on term.oid = item.id
-		where term.uid = %d and term.ttype = %d 
-		and otype = %d and item_type = %d 
+		where term.uid = %d and term.ttype = %d
+		and otype = %d and item_type = %d
 		$sql_options $item_normal
 		group by term order by total desc %s",
 		intval($uid),
@@ -321,7 +321,7 @@ function pubtagblock($net,$site,$limit,$recent = 0,$safemode = 1, $type = TERM_H
 
 	if($r) {
 		$o = '<div class="tagblock widget"><h3>' . (($recent) ? t('Trending') : t('Tags')) . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 		  $o .= '<span class="tag'.$rr[2].'">#</span><a href="'.$link .'/' . '?f=&tag=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -332,7 +332,7 @@ function pubtagblock($net,$site,$limit,$recent = 0,$safemode = 1, $type = TERM_H
 
 
 function pub_tagadelic($net, $site, $limit, $recent, $safemode, $type) {
-	
+
 	$item_normal = item_normal();
 	$count = intval($limit);
 	$sql_extra = "";
@@ -354,12 +354,12 @@ function pub_tagadelic($net, $site, $limit, $recent, $safemode, $type) {
                         $sql_extra .= " and not term.term in ( " . stringify_array($unsafetags,true) . ") ";
                 }
         }
-		
+
 		$key = __FUNCTION__ . "-" . md5($site . $recent . $safemode . $limit . $type);
-		
+
 		$content = Cache::get($key, '5 MINUTE');
 		if(! $content) {
-			
+
 			$content = Cache::get($key, '1 MONTH');
 			$arr = [
 				"SELECT term, count(term) AS total FROM term LEFT JOIN item ON term.oid = item.id
@@ -373,10 +373,10 @@ function pub_tagadelic($net, $site, $limit, $recent, $safemode, $type) {
 				intval(ITEM_TYPE_POST),
 				(intval($count) ? "LIMIT $count" : '')
 			];
-			
+
 			\Zotlabs\Daemon\Master::Summon([ 'Cache_query', $key, base64_encode(json_encode($arr)) ]);
 		}
-		
+
 		$r = unserialize($content);
 		if(! $r)
 			return [];
@@ -390,8 +390,8 @@ function dir_tagadelic($count = 0, $hub = '') {
 	$count = intval($count);
 
 	if($hub) {
-		$r = q("select xtag_term as term, count(xtag_term) as total from xtag 
-			left join hubloc on xtag_hash = hubloc_hash 
+		$r = q("select xtag_term as term, count(xtag_term) as total from xtag
+			left join hubloc on xtag_hash = hubloc_hash
 			where xtag_flags = 0  and xtag_hash in (select hubloc_hash from hubloc where hubloc_host =  '%s' )
 			group by xtag_term order by total desc %s",
 			dbesc($hub),
@@ -418,7 +418,7 @@ function app_tagblock($link,$count = 0) {
 
 	if($r) {
 		$o = '<div class="tagblock widget"><h3>' . t('Categories') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 		  $o .= '<a href="'.$link .'/' . '?f=&cat=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -458,7 +458,7 @@ function tagblock($link,$uid,$count = 0,$authors = '',$owner = '', $flags = 0,$r
 
 	if($r) {
 		$o = '<div class="tagblock widget"><h3>' . t('Tags') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 		  $o .= '<span class="tag'.$rr[2].'">#</span><a href="'.$link .'/' . '?f=&tag=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -477,9 +477,9 @@ function wtagblock($uid,$count = 0,$authors = '',$owner = '', $flags = 0,$restri
 		$c = q("select channel_address from channel where channel_id = %d limit 1",
 			intval($uid)
 		);
-	
+
 		$o = '<div class="tagblock widget"><h3>' . t('Tags') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 		  $o .= '<span class="tag' . $rr[2] . '">#</span><a href="channel/' . $c[0]['channel_address'] . '?f=&tag=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -498,9 +498,9 @@ function catblock($uid,$count = 0,$authors = '',$owner = '', $flags = 0,$restric
 		$c = q("select channel_address from channel where channel_id = %d limit 1",
 			intval($uid)
 		);
-	
+
 		$o = '<div class="tagblock widget"><h3>' . t('Categories') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 			$o .= '<a href="channel/' . $c[0]['channel_address']. '?f=&cat=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -518,9 +518,9 @@ function card_catblock($uid,$count = 0,$authors = '',$owner = '', $flags = 0,$re
 		$c = q("select channel_address from channel where channel_id = %d limit 1",
 			intval($uid)
 		);
-	
+
 		$o = '<div class="tagblock widget"><h3>' . t('Categories') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 			$o .= '<a href="cards/' . $c[0]['channel_address']. '?f=&cat=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -539,9 +539,9 @@ function article_catblock($uid,$count = 0,$authors = '',$owner = '', $flags = 0,
 		$c = q("select channel_address from channel where channel_id = %d limit 1",
 			intval($uid)
 		);
-	
+
 		$o = '<div class="tagblock widget"><h3>' . t('Categories') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 			$o .= '<a href="articles/' . $c[0]['channel_address']. '?f=&cat=' . urlencode($rr[0]).'" class="tag'.$rr[2].'">'.$rr[0].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -559,7 +559,7 @@ function dir_tagblock($link,$r) {
 
 	if($r) {
 		$o = '<div class="dirtagblock widget"><h3>' . t('Keywords') . '</h3><div class="tags" align="center">';
-		foreach($r as $rr) { 
+		foreach($r as $rr) {
 			$o .= '<a href="'.$link .'/' . '?f=&keywords=' . urlencode($rr['term']).'" class="tag'.$rr['normalise'].'" rel="nofollow" >'.$rr['term'].'</a> ' . "\r\n";
 		}
 		$o .= '</div></div>';
@@ -570,8 +570,8 @@ function dir_tagblock($link,$r) {
 
 
 
-	/** 
-	 * verbs: [0] = first person singular, e.g. "I want", [1] = 3rd person singular, e.g. "Bill wants" 
+	/**
+	 * verbs: [0] = first person singular, e.g. "I want", [1] = 3rd person singular, e.g. "Bill wants"
 	 * We use the first person form when creating an activity, but the third person for use in activities
 	 * FIXME: There is no accounting for verb gender for languages where this is significant. We may eventually
 	 * require obj_verbs() to provide full conjugations and specify which form to use in the $_REQUEST params to this module.
@@ -606,9 +606,11 @@ function obj_verb_selector($current = '') {
 
 function get_things($profile_hash,$uid) {
 
-	$sql_extra = (($profile_hash) ? " and obj_page = '" . $profile_hash . "' " : '');
+	$sql_extra = permissions_sql($uid);
 
-	$r = q("select * from obj where obj_channel = %d and obj_type = %d $sql_extra order by obj_verb, obj_term",
+	$sql_extra_profile = (($profile_hash) ? " and obj_page = '" . $profile_hash . "' " : '');
+
+	$r = q("select * from obj where obj_channel = %d and obj_type = %d $sql_extra $sql_extra_profile order by obj_verb, obj_term",
 		intval($uid),
 		intval(TERM_OBJ_THING)
 	);
@@ -619,7 +621,7 @@ function get_things($profile_hash,$uid) {
 
 	if($r) {
 
-		// if no profile_hash was specified (display on profile page mode), match each of the things to a profile name 
+		// if no profile_hash was specified (display on profile page mode), match each of the things to a profile name
 		// (list all my things mode). This is harder than it sounds.
 
 		foreach($r as $rr) {
@@ -632,7 +634,7 @@ function get_things($profile_hash,$uid) {
 			$p = q("select profile_guid as hash, profile_name as name from profile where profile_guid in ( $exp ) ");
 			if($p) {
 				foreach($r as $rr) {
-					foreach($p as $pp) { 
+					foreach($p as $pp) {
 						if($rr['obj_page'] == $pp['hash']) {
 							$rr['profile_name'] == $pp['name'];
 						}
@@ -646,7 +648,7 @@ function get_things($profile_hash,$uid) {
 		// Use the system obj_verbs array as a sort key, since we don't really
 		// want an alphabetic sort. To change the order, use a plugin to
 		// alter the obj_verbs() array or alter it in code. Unknown verbs come
-		// after the known ones - in no particular order. 
+		// after the known ones - in no particular order.
 
 		$v = obj_verbs();
 		foreach($v as $k => $foo)
@@ -668,7 +670,7 @@ function get_things($profile_hash,$uid) {
 				$things[$rr['obj_verb']] = array();
 
 			$things[$rr['obj_verb']][] = array('term' => $rr['obj_term'],'url' => $rr['obj_url'],'img' => $rr['obj_imgurl'], 'editurl' => z_root() . '/thing/' . $rr['obj_obj'], 'profile' => $rr['profile_name'],'term_hash' => $rr['obj_obj'], 'likes' => $l,'like_count' => count($l),'like_label' => tt('Like','Likes',count($l),'noun'));
-		} 
+		}
 		$sorted_things = array();
 		if($things) {
 			foreach($things as $k => $v) {
