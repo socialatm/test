@@ -904,11 +904,11 @@ class Libzot {
 		$s = Libsync::sync_locations($arr, $arr);
 
 		if ($s) {
-			if ($s['change_message'])
+			if (isset($s['change_message']))
 				$what .= $s['change_message'];
-			if ($s['changed'])
+			if (isset($s['changed']))
 				$changed = $s['changed'];
-			if ($s['message'])
+			if (isset($s['message']))
 				$ret['message'] .= $s['message'];
 		}
 
@@ -1769,7 +1769,7 @@ class Libzot {
 				dbesc($arr['author_xchan'])
 			);
 
-			if (intval($arr['item_deleted'])) {
+			if (isset($arr['item_deleted']) && $arr['item_deleted']) {
 
 				// remove_community_tag is a no-op if this isn't a community tag activity
 				self::remove_community_tag($sender, $arr, $channel['channel_id']);
@@ -2020,11 +2020,11 @@ class Libzot {
 				$arr['owner_xchan'] = $a['signature']['signer'];
 			}
 
-			if ($AS->meta['hubloc'] || $arr['author_xchan'] === $arr['owner_xchan']) {
+			if (isset($AS->meta['hubloc']) || $arr['author_xchan'] === $arr['owner_xchan']) {
 				$arr['item_verified'] = true;
 			}
 
-			if ($AS->meta['signed_data']) {
+			if (isset($AS->meta['signed_data'])) {
 				IConfig::Set($arr, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
 				$j = json_decode($AS->meta['signed_data'], true);
 				if ($j) {
@@ -2518,14 +2518,14 @@ class Libzot {
 				$access_policy = ACCESS_PRIVATE;
 		}
 
-		$directory_url = htmlspecialchars((string)$arr['directory_url'], ENT_COMPAT, 'UTF-8', false);
-		$url           = htmlspecialchars((string)strtolower($arr['url']), ENT_COMPAT, 'UTF-8', false);
-		$sellpage      = htmlspecialchars((string)$arr['sellpage'], ENT_COMPAT, 'UTF-8', false);
-		$site_location = htmlspecialchars((string)$arr['location'], ENT_COMPAT, 'UTF-8', false);
-		$site_realm    = htmlspecialchars((string)$arr['realm'], ENT_COMPAT, 'UTF-8', false);
-		$site_project  = htmlspecialchars((string)$arr['project'], ENT_COMPAT, 'UTF-8', false);
-		$site_crypto   = ((array_key_exists('encryption', $arr) && is_array($arr['encryption'])) ? htmlspecialchars((string)implode(',', $arr['encryption']), ENT_COMPAT, 'UTF-8', false) : '');
-		$site_version  = ((array_key_exists('version', $arr)) ? htmlspecialchars((string)$arr['version'], ENT_COMPAT, 'UTF-8', false) : '');
+		$directory_url = ((isset($arr['directory_url'])) ? htmlspecialchars($arr['directory_url'], ENT_COMPAT, 'UTF-8', false) : '');
+		$url           = ((isset($arr['url'])) ? htmlspecialchars(strtolower($arr['url']), ENT_COMPAT, 'UTF-8', false) : '');
+		$sellpage      = ((isset($arr['sellpage'])) ? htmlspecialchars($arr['sellpage'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_location = ((isset($arr['location'])) ? htmlspecialchars($arr['location'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_realm    = ((isset($arr['realm'])) ? htmlspecialchars($arr['realm'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_project  = ((isset($arr['project'])) ? htmlspecialchars($arr['project'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_crypto   = ((isset($arr['encryption']) && is_array($arr['encryption'])) ? htmlspecialchars(implode(',', $arr['encryption']), ENT_COMPAT, 'UTF-8', false) : '');
+		$site_version  = ((isset($arr['version'])) ? htmlspecialchars($arr['version'], ENT_COMPAT, 'UTF-8', false) : '');
 
 		// You can have one and only one primary directory per realm.
 		// Downgrade any others claiming to be primary. As they have
@@ -3198,7 +3198,7 @@ class Libzot {
 		}
 
 		foreach ($arr as $v) {
-			if ($v[$check] === 'zot6') {
+			if (isset($v[$check]) && $v[$check] === 'zot6') {
 				return $v;
 			}
 		}

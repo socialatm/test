@@ -2858,7 +2858,6 @@ App::$strings["Send multi-media HTML articles"] = "Multimedia HTML Artikel verse
 App::$strings["Not supported by some microblog services such as Mastodon"] = "Wird von einigen Microblogging-Plattformen wie Mastodon nicht unterstützt";
 App::$strings["Activitypub Protocol"] = "ActivityPub-Protokoll";
 App::$strings["Your account on %s will expire in a few days."] = "Dein Konto auf %s wird in ein paar Tagen ablaufen.";
-App::$strings["Your $Productname test account is about to expire."] = "";
 App::$strings["Libertree Crosspost Connector Settings saved."] = "";
 App::$strings["Libertree Crosspost Connector App"] = "";
 App::$strings["Relay public posts to Libertree"] = "";

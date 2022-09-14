@@ -1544,8 +1544,10 @@ function link_compare($a, $b) {
 
 function theme_attachments(&$item) {
 
+
 	$s = '';
 	$arr = json_decode($item['attach'],true);
+
 	if(is_array($arr) && count($arr)) {
 
 		$attaches = [];
@@ -1568,13 +1570,15 @@ function theme_attachments(&$item) {
 
 			$title = t('Size') . ' ' . (isset($r['length']) ? userReadableSize($r['length']) : t('unknown'));
 
+			$revision = $r['revision'] ?? '';
+
 			require_once('include/channel.php');
 
 			if (isset($r['href'])) {
 				if(is_foreigner($item['author_xchan']))
 					$url = $r['href'];
 				else
-					$url = z_root() . '/magic?f=&owa=1&hash=' . $item['author_xchan'] . '&bdest=' . bin2hex($r['href'] . '/' . $r['revision']);
+					$url = z_root() . '/magic?f=&owa=1&hash=' . $item['author_xchan'] . '&bdest=' . bin2hex($r['href'] . '/' . $revision);
 			}
 
 			//$s .= '<a href="' . $url . '" title="' . $title . '" class="attachlink"  >' . $icon . '</a>';

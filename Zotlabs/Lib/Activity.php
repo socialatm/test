@@ -2252,11 +2252,11 @@ class Activity {
 
 			// over-ride the object timestamp with the activity
 
-			if ($act->data['published']) {
+			if (isset($act->data['published'])) {
 				$s['created'] = datetime_convert('UTC', 'UTC', $act->data['published']);
 			}
 
-			if ($act->data['updated']) {
+			if (isset($act->data['updated'])) {
 				$s['edited'] = datetime_convert('UTC', 'UTC', $act->data['updated']);
 			}
 
@@ -2710,7 +2710,7 @@ class Activity {
 
 		// This is a zot6 packet and the raw activitypub or diaspora message json
 		// is possibly available in the attachement.
-		if (array_key_exists('signed', $raw_arr) && is_array($act->data['attachment'])) {
+		if (array_key_exists('signed', $raw_arr) && isset($act->data['attachment']) && is_array($act->data['attachment'])) {
 			foreach($act->data['attachment'] as $a) {
 				if (
 					isset($a['type']) && $a['type'] === 'PropertyValue' &&
@@ -2730,7 +2730,7 @@ class Activity {
 		}
 
 		// old style: can be removed after most hubs are on 7.0.2
-		elseif (array_key_exists('signed', $raw_arr) && is_array($act->obj) && is_array($act->obj['attachment'])) {
+		elseif (array_key_exists('signed', $raw_arr) && is_array($act->obj) && isset($act->data['attachment']) && is_array($act->obj['attachment'])) {
 			foreach($act->obj['attachment'] as $a) {
 				if (
 					isset($a['type']) && $a['type'] === 'PropertyValue' &&
@@ -3019,28 +3019,32 @@ class Activity {
 				dbesc($item['parent_mid']),
 				intval($item['uid'])
 			);
+
 			if (!$parent) {
 				if (!plugin_is_installed('pubcrawl')) {
 					return;
 				}
 				else {
 					$fetch = false;
+
 					// TODO: debug
 					// if (perm_is_allowed($channel['channel_id'],$observer_hash,'send_stream') && (PConfig::Get($channel['channel_id'],'system','hyperdrive',true) || $act->type === 'Announce')) {
 					if (perm_is_allowed($channel['channel_id'], $observer_hash, 'send_stream') || $is_sys_channel) {
 						$fetch = (($fetch_parents) ? self::fetch_and_store_parents($channel, $observer_hash, $item, $force) : false);
 					}
+
 					if ($fetch) {
 						$parent = q("select * from item where mid = '%s' and uid = %d limit 1",
 							dbesc($item['parent_mid']),
 							intval($item['uid'])
 						);
 					}
-					else {
-						logger('no parent');
-						return;
-					}
 				}
+			}
+
+			if (!$parent) {
+				logger('no parent');
+				return;
 			}
 
 			if ($parent[0]['parent_mid'] !== $item['parent_mid']) {

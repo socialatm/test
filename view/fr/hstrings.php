@@ -2248,7 +2248,6 @@ App::$strings["Diaspora Protocol Settings"] = "Paramètres du protocole Diaspora
 App::$strings["No username found in import file."] = "Pas de nom d'utilisateur dans le fichier d'import.";
 App::$strings["Unable to create a unique channel address. Import failed."] = "Impossible de créer une adresse de canal unique. Echec de l'import.";
 App::$strings["Your account on %s will expire in a few days."] = "Votre compte sur %s expirera dans quelques jours.";
-App::$strings["Your $Productname test account is about to expire."] = "Votre compte de test $NomDeProduit est sur le point d'expirer.";
 App::$strings["Enable Rainbowtag"] = "Activer Rainbowtag";
 App::$strings["Rainbowtag Settings"] = "Paramètres Rainbowtag";
 App::$strings["Rainbowtag Settings saved."] = "Paramètres Rainbowtag sauvegardés.";

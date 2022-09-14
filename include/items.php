@@ -974,10 +974,10 @@ function import_author_rss($x) {
 
 	$r = xchan_store_lowlevel(
 		[
-			'xchan_hash'         => $x['guid'],
-			'xchan_guid'         => $x['guid'],
-			'xchan_url'          => $x['url'],
-			'xchan_name'         => (($name) ? $name : t('(Unknown)')),
+			'xchan_hash'         => $x['guid'] ?? '',
+			'xchan_guid'         => $x['guid'] ?? '',
+			'xchan_url'          => $x['url'] ?? '',
+			'xchan_name'         => $name ?? '(Unknown)',
 			'xchan_name_date'    => datetime_convert(),
 			'xchan_network'      => 'rss'
 		]
@@ -3424,7 +3424,7 @@ function start_delivery_chain($channel, $item, $item_id, $parent, $group = false
 function check_item_source($uid, $item) {
 
 	logger('source: uid: ' . $uid, LOGGER_DEBUG);
-	$xchan = (($item['source_xchan'] && intval($item['item_uplink'])) ?  $item['source_xchan'] : $item['owner_xchan']);
+	$xchan = ((isset($item['source_xchan']) && $item['source_xchan'] && isset($item['item_uplink']) && $item['item_uplink']) ?  $item['source_xchan'] : $item['owner_xchan']);
 
 	$r = q("select * from source where src_channel_id = %d and ( src_xchan = '%s' or src_xchan = '*' ) limit 1",
 		intval($uid),
@@ -4352,7 +4352,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		);
 	}
 
-	if($arr['uid']) {
+	if(isset($arr['uid'])) {
 		$uid = $arr['uid'];
 	}
 
@@ -4362,30 +4362,30 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$item_uids = " item.uid = " . intval($uid) . " ";
 	}
 
-	if($arr['top'])
+	if(isset($arr['top']))
 		$sql_options .= " and item_thread_top = 1 ";
 
-	if($arr['star'])
+	if(isset($arr['star']))
 		$sql_options .= " and item_starred = 1 ";
 
-	if($arr['wall'])
+	if(isset($arr['wall']))
 		$sql_options .= " and item_wall = 1 ";
 
-	if($arr['item_id'])
+	if(isset($arr['item_id']))
 		$sql_options .= " and parent = " . intval($arr['item_id']) . " ";
 
-	if($arr['mid'])
+	if(isset($arr['mid']))
 		$sql_options .= " and parent_mid = '" . dbesc($arr['mid']) . "' ";
 
 	$sql_extra = " AND item.parent IN ( SELECT parent FROM item WHERE $item_uids and item_thread_top = 1 $sql_options $item_normal ) ";
 
-	if($arr['since_id'])
+	if(isset($arr['since_id']))
 		$sql_extra .= " and item.id > " . intval($arr['since_id']) . " ";
 
-	if($arr['cat'])
+	if(isset($arr['cat']))
 		$sql_extra .= protect_sprintf(term_query('item', $arr['cat'], TERM_CATEGORY));
 
-	if($arr['gid'] && $uid) {
+	if(isset($arr['gid']) && $uid) {
 		$r = q("SELECT * FROM pgrp WHERE id = %d AND uid = %d LIMIT 1",
 			intval($arr['group']),
 			intval($uid)
@@ -4416,7 +4416,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$x = AccessList::by_hash($uid, $r[0]['hash']);
 		$result['headline'] = sprintf( t('Privacy group: %s'),$x['gname']);
 	}
-	elseif($arr['cid'] && $uid) {
+	elseif(isset($arr['cid']) && $uid) {
 
 		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_id = %d and abook_channel = %d and abook_blocked = 0 limit 1",
 			intval($arr['cid']),
@@ -4435,14 +4435,14 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$sql_extra = " AND author_xchan = '" . $channel['channel_hash'] . "' and item_private = 0 $item_normal ";
 	}
 
-	if ($arr['datequery']) {
+	if (isset($arr['datequery'])) {
 		$sql_extra3 .= protect_sprintf(sprintf(" AND item.created <= '%s' ", dbesc(datetime_convert('UTC','UTC',$arr['datequery']))));
 	}
-	if ($arr['datequery2']) {
+	if (isset($arr['datequery2'])) {
 		$sql_extra3 .= protect_sprintf(sprintf(" AND item.created >= '%s' ", dbesc(datetime_convert('UTC','UTC',$arr['datequery2']))));
 	}
 
-	if($arr['search']) {
+	if(isset($arr['search'])) {
 		if(strpos($arr['search'],'#') === 0)
 			$sql_extra .= term_query('item',substr($arr['search'],1),TERM_HASHTAG,TERM_COMMUNITYTAG);
 		else
@@ -4451,11 +4451,11 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 			);
 	}
 
-	if($arr['file']) {
+	if(isset($arr['file'])) {
 		$sql_extra .= term_query('item',$arr['files'],TERM_FILE);
 	}
 
-	if($arr['conv'] && $channel) {
+	if(isset($arr['conv']) && $channel) {
 		$sql_extra .= sprintf(" AND parent IN (SELECT distinct parent from item where ( author_xchan like '%s' or item_mentionsme = 1 )) ",
 			dbesc(protect_sprintf($uidhash))
 		);
@@ -4465,7 +4465,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		// only setup pagination on initial page view
 		$pager_sql = '';
 	} else {
-		if(! $arr['total']) {
+		if(!isset($arr['total'])) {
 			$itemspage = (($channel) ? get_pconfig($uid,'system','itemspage') : 10);
 			App::set_pager_itemspage(((intval($itemspage)) ? $itemspage : 10));
 			$pager_sql = sprintf(" LIMIT %d OFFSET %d ", intval(App::$pager['itemspage']), intval(App::$pager['start']));
@@ -4505,19 +4505,19 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 	require_once('include/security.php');
 	$sql_extra .= item_permissions_sql($channel['channel_id'],$observer_hash);
 
-	if($arr['pages'])
+	if(isset($arr['pages']))
 		$item_restrict = " AND item_type = " . ITEM_TYPE_WEBPAGE . " ";
 	else
 		$item_restrict = " AND item_type = 0 ";
 
-	if($arr['item_type'] === '*')
+	if(isset($arr['item_type']) && $arr['item_type'] === '*')
 		$item_restrict = '';
 
-	if ((($arr['compat']) || ($arr['nouveau'] && ($client_mode & CLIENT_MODE_LOAD))) && $channel) {
+	if (((isset($arr['compat'])) || (isset($arr['nouveau']) && ($client_mode & CLIENT_MODE_LOAD))) && $channel) {
 
 		// "New Item View" - show all items unthreaded in reverse created date order
 
-		if ($arr['total']) {
+		if (isset($arr['total'])) {
 			$items = dbq("SELECT count(item.id) AS total FROM item
 				WHERE $item_uids $item_restrict
 				$simple_update $sql_options
@@ -4544,7 +4544,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 
 		// Normal conversation view
 
-		if($arr['order'] === 'post')
+		if(isset($arr['order']) && $arr['order'] === 'post')
 			$ordering = "created";
 		else
 			$ordering = "commented";

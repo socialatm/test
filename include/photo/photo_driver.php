@@ -263,16 +263,23 @@ function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 				$hdrs[strtolower($t)] = $v;
 			}
 
+			$expires = time() + 86400;
+
 			if(array_key_exists('expires', $hdrs))
 				$expires = strtotime($hdrs['expires']);
-				if($expires - 60 < time())
-					$expires = time() + 60;
+
+			if($expires - 60 < time()) {
+				$expires = time() + 60;
+			}
 			else {
 				$cc = '';
-				if(array_key_exists('cache-control', $hdrs))
+				if(array_key_exists('cache-control', $hdrs)) {
 					$cc = $hdrs['cache-control'];
-				if(strpos($cc, 'no-cache'))
+				}
+
+				if(strpos($cc, 'no-cache')) {
 					$expires = time() + 60;
+				}
 				else {
 					$ttl = (preg_match('/max-age=(\d+)/i', $cc, $o) ? intval($o[1]) : 86400);
 					$expires = time() + $ttl;
@@ -297,7 +304,7 @@ function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 			$micro = z_root() . '/photo/' . $hash . '-6';
 			if(isset($result))
 				q("UPDATE photo SET expires = '%s' WHERE xchan = '%s' and photo_usage = %d and imgscale IN (4, 5, 6)",
-					dbescdate(gmdate('Y-m-d H:i:s', (isset($expires) ? $expires : time() + 86400))),
+					dbescdate(gmdate('Y-m-d H:i:s', $expires)),
 					dbesc($xchan),
 					intval(PHOTO_XCHAN)
 				);

@@ -110,21 +110,30 @@ class Queue {
 			return false;
 		}
 
+		$hash = $arr['hash'] ?? '';
+		$account_id = $arr['account_id'] ?? 0;
+		$channel_id = $arr['channel_id'] ?? 0;
+		$driver = $arr['driver'] ?? 'zot6';
+		$posturl = $arr['posturl'] ?? '';
+		$priority = $arr['priority'] ?? 0;
+		$priority = $arr['notify'] ?? '';
+		$msg = $arr['msg'] ?? '';
+
 		$x = q("insert into outq ( outq_hash, outq_account, outq_channel, outq_driver, outq_posturl, outq_async, outq_priority,
 			outq_created, outq_updated, outq_scheduled, outq_notify, outq_msg )
 			values ( '%s', %d, %d, '%s', '%s', %d, %d, '%s', '%s', '%s', '%s', '%s' )",
-			dbesc($arr['hash']),
-			intval($arr['account_id']),
-			intval($arr['channel_id']),
-			dbesc(($arr['driver']) ? $arr['driver'] : 'zot6'),
-			dbesc($arr['posturl']),
+			dbesc($hash),
+			intval($account_id),
+			intval($channel_id),
+			dbesc($driver),
+			dbesc($posturl),
 			intval(1),
-			intval(isset($arr['priority']) ? $arr['priority'] : 0),
+			intval($priority),
 			dbesc(datetime_convert()),
 			dbesc(datetime_convert()),
 			dbesc(datetime_convert()),
-			dbesc($arr['notify']),
-			dbesc(($arr['msg']) ? $arr['msg'] : '')
+			dbesc($notify),
+			dbesc($msg)
 		);
 		return $x;
 

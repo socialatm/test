@@ -1376,19 +1376,19 @@ function profile_load($nickname, $profile = '') {
 	}
 
 	// get the current observer
-	$observer = App::get_observer();
+	$observer_hash = get_observer_hash();
 
 	$can_view_profile = true;
 
 	// Can the observer see our profile?
 	require_once('include/permissions.php');
-	if(! perm_is_allowed($user[0]['channel_id'],$observer['xchan_hash'],'view_profile')) {
+	if(! perm_is_allowed($user[0]['channel_id'], $observer_hash, 'view_profile')) {
 		$can_view_profile = false;
 	}
 
-	if(! $profile) {
+	if($observer_hash && !$profile) {
 		$r = q("SELECT abook_profile FROM abook WHERE abook_xchan = '%s' and abook_channel = '%d' limit 1",
-			dbesc($observer['xchan_hash']),
+			dbesc($observer_hash),
 			intval($user[0]['channel_id'])
 		);
 		if($r)
@@ -1575,14 +1575,14 @@ function profile_edit_menu($uid) {
  */
 function profile_sidebar($profile, $block = 0, $show_connect = true, $details = false) {
 
-	$observer = App::get_observer();
+	$observer_hash = get_observer_hash();
 
 	$o = '';
 	$location = false;
 	$pdesc = true;
 	$reddress = true;
 
-	if(! perm_is_allowed($profile['uid'],((is_array($observer)) ? $observer['xchan_hash'] : ''),'view_profile')) {
+	if(! perm_is_allowed($profile['uid'], $observer_hash, 'view_profile')) {
 		$block = true;
 	}
 
@@ -1654,7 +1654,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 	$menu = get_pconfig($profile['uid'],'system','channel_menu');
 	if($menu && ! $block) {
 		require_once('include/menu.php');
-		$m = menu_fetch($menu,$profile['uid'],$observer['xchan_hash']);
+		$m = menu_fetch($menu,$profile['uid'], $observer_hash);
 		if($m)
 			$channel_menu = menu_render($m);
 	}

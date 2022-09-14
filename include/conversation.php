@@ -106,7 +106,7 @@ function localize_item(&$item){
 			$author_link = get_rel_link($obj['author']['link'],'alternate');
 		elseif(isset($obj['actor']) && isset($obj['actor']['url']))
 			$author_link = ((is_array($obj['actor']['url'])) ? $obj['actor']['url'][0]['href'] : $obj['actor']['url']);
-		elseif (is_string($obj['actor']))
+		elseif (isset($obj['actor']) && is_string($obj['actor']))
 			$author_link = $obj['actor'];
 		else
 			$author_link = '';
@@ -116,7 +116,7 @@ function localize_item(&$item){
 		if(!$author_name)
 			$author_name = $obj['actor']['name'] ?? '';
 
-		if(!$author_name && is_string($obj['actor'])) {
+		if(!$author_name && isset($obj['actor']) && is_string($obj['actor'])) {
 			$cached_actor = Activity::get_cached_actor($obj['actor']);
 			if (is_array($cached_actor)) {
 				$author_name = $cached_actor['name'] ?? $cached_actor['preferredUsername'];
@@ -691,7 +691,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 				];
 				call_hooks('stream_item',$x);
 
-				if($x['item']['blocked'])
+				if(isset($x['item']['blocked']) && $x['item']['blocked'])
 					continue;
 
 				$item = $x['item'];
@@ -964,14 +964,12 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 
 
 function best_link_url($item) {
-
-	$best_url = '';
+	$best_url = $item['author-link'] ?? $item['url'] ?? '';
 	$sparkle  = false;
-
 	$clean_url = isset($item['author-link']) ? normalise_link($item['author-link']) : '';
 
-	if((local_channel()) && (local_channel() == $item['uid'])) {
-		if(isset(App::$contacts) && x(App::$contacts,$clean_url)) {
+	if($clean_url  && local_channel() && (local_channel() == $item['uid'])) {
+		if(isset(App::$contacts) && x(App::$contacts, $clean_url)) {
 			if(App::$contacts[$clean_url]['network'] === NETWORK_DFRN) {
 				$best_url = z_root() . '/redir/' . App::$contacts[$clean_url]['id'];
 				$sparkle = true;
@@ -979,12 +977,6 @@ function best_link_url($item) {
 			else
 				$best_url = App::$contacts[$clean_url]['url'];
 		}
-	}
-	if(! $best_url) {
-		if($item['author-link'])
-			$best_url = $item['author-link'];
-		else
-			$best_url = $item['url'];
 	}
 
 	return $best_url;
