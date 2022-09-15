@@ -1618,7 +1618,7 @@ class Activity {
 		}
 
 		$icon = z_root() . '/' . get_default_profile_photo(300);
-		if ($person_obj['icon']) {
+		if (isset($person_obj['icon'])) {
 			if (is_array($person_obj['icon'])) {
 				if (array_key_exists('url', $person_obj['icon'])) {
 					$icon = $person_obj['icon']['url'];

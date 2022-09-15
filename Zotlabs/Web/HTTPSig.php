@@ -299,6 +299,7 @@ class HTTPSig {
 
 		// Check the local cache first, but remove any fragments like #main-key since these won't be present in our cached data
 		$url = ((strpos($id, '#')) ? substr($id, 0, strpos($id, '#')) : $id);
+		$best = [];
 
 		// $force is used to ignore the local cache and only use the remote data; for instance the cached key might be stale
 		if (!$force) {
@@ -374,6 +375,8 @@ class HTTPSig {
 
 	static function get_webfinger_key($id, $force = false) {
 
+		$best = [];
+
 		if (!$force) {
 			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
 				dbesc($id)
@@ -420,6 +423,9 @@ class HTTPSig {
 	 */
 
 	static function get_zotfinger_key($id, $force = false) {
+
+		$best = [];
+
 		if (!$force) {
 			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc",
 				dbesc($id)

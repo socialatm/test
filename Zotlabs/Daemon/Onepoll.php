@@ -46,6 +46,7 @@ class Onepoll {
 		}
 
 		$contact      = $contacts[0];
+
 		$importer_uid = $contact['abook_channel'];
 
 		$importer = channelx_by_n($importer_uid);
@@ -53,7 +54,7 @@ class Onepoll {
 		if (!$importer)
 			return;
 
-		logger("onepoll: poll: ({$contact['id']}) IMPORTER: {$importer['xchan_name']}, CONTACT: {$contact['xchan_name']}");
+		logger("onepoll: poll: ($contact_id) IMPORTER: {$importer['xchan_name']}, CONTACT: {$contact['xchan_name']}");
 
 		$last_update = ((($contact['abook_updated'] === $contact['abook_created']) || ($contact['abook_updated'] <= NULL_DATE))
 			? datetime_convert('UTC', 'UTC', 'now - 7 days')

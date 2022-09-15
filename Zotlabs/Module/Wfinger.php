@@ -21,7 +21,7 @@ class Wfinger extends \Zotlabs\Web\Controller {
 		elseif(x($_SERVER,'HTTP_X_FORWARDED_PROTO') && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'))
 			$scheme = 'https';
 
-		$zot = intval($_REQUEST['zot']);
+		$zot = $_REQUEST['zot'] ?? '';
 
 		if(($scheme !== 'https') && (! $zot)) {
 			header($_SERVER["SERVER_PROTOCOL"] . ' ' . 500 . ' ' . 'Webfinger requires HTTPS');

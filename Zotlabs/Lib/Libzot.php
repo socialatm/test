@@ -251,7 +251,7 @@ class Libzot {
 
 		$url = null;
 
-		if ($them['hubloc_id_url']) {
+		if (isset($them['hubloc_id_url']) && $them['hubloc_id_url']) {
 			$url = $them['hubloc_id_url'];
 		}
 		else {
@@ -1744,7 +1744,7 @@ class Libzot {
 					if (in_array('undefined', $existing_route) || $last_hop == 'undefined' || $sender == 'undefined')
 						$last_hop = '';
 
-					$current_route = (($arr['route']) ? $arr['route'] . ',' : '') . $sender;
+					$current_route = ((isset($arr['route']) && $arr['route']) ? $arr['route'] . ',' : '') . $sender;
 
 					if ($last_hop && $last_hop != $sender) {
 						logger('comment route mismatch: parent route = ' . $r[0]['route'] . ' expected = ' . $current_route, LOGGER_DEBUG);

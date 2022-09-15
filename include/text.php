@@ -3022,6 +3022,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 
 		$fn_results = [];
 		$access_tag = EMPTY_STR;
+		$url = EMPTY_STR;
 
 		// $r is set if we found something
 

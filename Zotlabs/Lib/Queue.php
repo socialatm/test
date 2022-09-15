@@ -116,7 +116,7 @@ class Queue {
 		$driver = $arr['driver'] ?? 'zot6';
 		$posturl = $arr['posturl'] ?? '';
 		$priority = $arr['priority'] ?? 0;
-		$priority = $arr['notify'] ?? '';
+		$notify = $arr['notify'] ?? '';
 		$msg = $arr['msg'] ?? '';
 
 		$x = q("insert into outq ( outq_hash, outq_account, outq_channel, outq_driver, outq_posturl, outq_async, outq_priority,
