@@ -3,6 +3,7 @@
 function js_strings() {
 	return replace_macros(get_markup_template('js_strings.tpl'), array(
 		'$delitem'     => t('Delete this item?'),
+		'$itemdel'     => t('Item deleted'),
 		'$comment'     => t('Comment'),
 		'$showmore'    => sprintf( t('%s show all'), '<i class=\'fa fa-chevron-down\'></i>'),
 		'$showfewer'   => sprintf( t('%s show less'), '<i class=\'fa fa-chevron-up\'></i>'),

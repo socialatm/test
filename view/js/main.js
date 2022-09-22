@@ -1284,6 +1284,8 @@ function dropItem(url, object, b64mid) {
 			$(object + ', #pinned-wrapper-' + id).remove();
 			$('body').css('cursor', 'auto');
 
+			$.jGrowl(aStr.itemdel, { sticky: false, theme: 'notice', life: 3000 });
+
 			if (typeof b64mid !== typeof undefined) {
 				$('[data-b64mid=\'' + b64mid + '\']').fadeOut(function() {
 					this.remove();
