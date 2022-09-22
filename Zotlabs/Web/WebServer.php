@@ -58,7 +58,7 @@ class WebServer {
 		if((x($_GET,'zid')) && (! \App::$install)) {
 			\App::$query_string = strip_zids(\App::$query_string);
 			if(! local_channel()) {
-				if ($_SESSION['my_address']!=$_GET['zid']) {
+				if (isset($_SESSION['my_address']) && $_SESSION['my_address'] != $_GET['zid']) {
 					$_SESSION['my_address'] = $_GET['zid'];
 					$_SESSION['authenticated'] = 0;
 				}

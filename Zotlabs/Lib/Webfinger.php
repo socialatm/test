@@ -56,7 +56,7 @@ class Webfinger {
 				if($m['scheme'] !== 'https') {
 					return false;
 				}
-				self::$server = $m['host'] . (($m['port']) ? ':' . $m['port'] : '');
+				self::$server = $m['host'] . ((isset($m['port'])) ? ':' . $m['port'] : '');
 			}
 			else {
 				return false;
@@ -86,7 +86,7 @@ class Webfinger {
 	/**
 	 * @brief fetch a webfinger resource and return a zot6 discovery url if present
 	 *
-	 */ 
+	 */
 
 	static function zot_url($resource) {
 

@@ -2735,6 +2735,8 @@ class Libzot {
 		$token     = ((x($arr, 'token')) ? $arr['token'] : '');
 		$feed      = ((x($arr, 'feed')) ? intval($arr['feed']) : 0);
 
+		$ztarget_hash = EMPTY_STR;
+
 		if ($ztarget) {
 			$t = q("select * from hubloc where hubloc_id_url = '%s' and hubloc_network = 'zot6' limit 1",
 				dbesc($ztarget)
@@ -2742,7 +2744,6 @@ class Libzot {
 			if ($t) {
 
 				$ztarget_hash = $t[0]['hubloc_hash'];
-
 			}
 			else {
 
@@ -2750,7 +2751,6 @@ class Libzot {
 				// permissions we would know about them and we only want to know who they are to
 				// enumerate their specific permissions
 
-				$ztarget_hash = EMPTY_STR;
 			}
 		}
 
