@@ -10,14 +10,14 @@ class Siteinfo extends \Zotlabs\Web\Controller {
 			json_return_and_die($data);
 		}
 	}
-		
+
 	function get() {
 
 		$federated = [];
 		call_hooks('federated_transports',$federated);
-	
+
 		$siteinfo = replace_macros(get_markup_template('siteinfo.tpl'),
-			[ 
+			[
 				'$title' => t('About this site'),
 				'$sitenametxt' => t('Site Name'),
 				'$sitename' => \Zotlabs\Lib\System::get_site_name(),
@@ -29,7 +29,7 @@ class Siteinfo extends \Zotlabs\Web\Controller {
 				'$prj_header' => t('Software and Project information'),
 				'$prj_name' => t('This site is powered by $Projectname'),
 				'$prj_transport' => t('Federated and decentralised networking and identity services provided by Zot'),
-				'$transport_link' => '<a href="https://zotlabs.com">https://zotlabs.com</a>',
+				'$transport_link' => '<a href="https://zotlabs.org">https://zotlabs.org</a>',
 
 				'$additional_text' => t('Additional federated transport protocols:'),
 				'$additional_fed' => implode(', ', $federated),
@@ -41,11 +41,11 @@ class Siteinfo extends \Zotlabs\Web\Controller {
 			]
 		);
 
-		call_hooks('about_hook', $siteinfo); 	
+		call_hooks('about_hook', $siteinfo);
 
 		return $siteinfo;
 
 	}
 
-	
+
 }
