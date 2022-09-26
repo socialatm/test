@@ -34,7 +34,10 @@ class Cover_photo {
 		if(! array_key_exists('channels_visited',$_SESSION)) {
 			$_SESSION['channels_visited'] = [];
 		}
-		$_SESSION['channels_visited'][] = $channel_id;
+
+		if (!in_array($channel_id, $_SESSION['channels_visited'])) {
+			$_SESSION['channels_visited'][] = $channel_id;
+		}
 
 		$channel = channelx_by_n($channel_id);
 
