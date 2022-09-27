@@ -1254,26 +1254,24 @@ function sslify($s) {
  *  * \e value is array containing past tense verb, translation of present, translation of past
  */
 function get_poke_verbs() {
-	if (get_config('system', 'poke_basic')) {
-		$arr = array(
-			'poke' => array('poked', t('poke'), t('poked')),
-		);
-	} else {
-		$arr = array(
-			'poke' => array( 'poked', t('poke'), t('poked')),
-			'ping' => array( 'pinged', t('ping'), t('pinged')),
-			'prod' => array( 'prodded', t('prod'), t('prodded')),
-			'slap' => array( 'slapped', t('slap'), t('slapped')),
-			'finger' => array( 'fingered', t('finger'), t('fingered')),
-			'rebuff' => array( 'rebuffed', t('rebuff'), t('rebuffed')),
-		);
 
-		/**
-		 * @hooks poke_verbs
-		 *   * \e array associative array with another array as value
-		 */
-		call_hooks('poke_verbs', $arr);
-	}
+	$arr = [
+		'poke' => ['poked', t('poke'), t('poked')],
+		'ping' => ['pinged', t('ping'), t('pinged')],
+
+		// Those might be better suited for a nsfw poke addon
+
+		// 'prod' => ['prodded', t('prod'), t('prodded')],
+		// 'slap' => ['slapped', t('slap'), t('slapped')],
+		// 'finger' => ['fingered', t('finger'), t('fingered')],
+		// 'rebuff' => ['rebuffed', t('rebuff'), t('rebuffed')]
+	];
+
+	/**
+	 * @hooks poke_verbs
+	 *   * \e array associative array with another array as value
+	 */
+	call_hooks('poke_verbs', $arr);
 
 	return $arr;
 }
