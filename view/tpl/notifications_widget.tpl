@@ -542,7 +542,7 @@
 	</div>
 	<div id="notifications" class="border border-top-0 rounded navbar-nav collapse">
 		{{foreach $notifications as $notification}}
-		<div class="{{if $notification@first}}rounded-top {{/if}}rounded-bottom border border-start-0 border-end-0 border-bottom-0 list-group list-group-flush collapse {{$notification.type}}-button">
+		<div class="rounded-top rounded-bottom border border-start-0 border-end-0 border-bottom-0 list-group list-group-flush collapse {{$notification.type}}-button">
 			<a id="notification-link-{{$notification.type}}" class="collapsed list-group-item fakelink notification-link" href="#" title="{{$notification.title}}" data-bs-target="#nav-{{$notification.type}}-sub" data-bs-toggle="collapse" data-sse_type="{{$notification.type}}">
 				<i class="fa fa-fw fa-{{$notification.icon}}"></i> {{$notification.label}}
 				<span class="float-end badge bg-{{$notification.severity}} {{$notification.type}}-update"></span>
