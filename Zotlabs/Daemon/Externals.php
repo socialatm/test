@@ -133,7 +133,7 @@ class Externals {
 								continue;
 							}
 
-							$obj_id = isset($message['object']['id']) ?? $message['object'];
+							$obj_id = $message['object']['id'] ?? $message['object'];
 
 							Libzot::fetch_conversation($importer, $obj_id);
 							$total++;
