@@ -95,6 +95,19 @@ class Messages {
 
 		foreach($items as $item) {
 
+			$hook_data = [
+				'uid' => $item['uid'],
+				'owner_xchan' => $item['owner_xchan'],
+				'author_xchan' => $item['author_xchan'],
+				'cancel' => false
+			];
+
+			call_hooks('messages_widget', $hook_data);
+
+			if ($hook_data['cancel']) {
+				continue;
+			}
+
 			$info = '';
 			if ($type == 'direct') {
 				$info .= self::get_dm_recipients($channel, $item);
