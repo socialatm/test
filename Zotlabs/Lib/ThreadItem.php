@@ -265,7 +265,7 @@ class ThreadItem {
 		$this->check_wall_to_wall();
 
 		if($this->is_toplevel()) {
-			if(($conv->get_profile_owner() === local_channel()) || (local_channel() && App::$module === 'pubstream')) {
+			if((local_channel() && $conv->get_profile_owner() === local_channel()) || (local_channel() && App::$module === 'pubstream')) {
 				$star = [
 					'toggle' => t("Toggle Star Status"),
 					'isstarred' => ((intval($item['item_starred'])) ? true : false),
@@ -286,7 +286,7 @@ class ThreadItem {
 		$tagger = [];
 
 		// FIXME - check this permission
-		if($conv->get_profile_owner() == local_channel()) {
+		if(local_channel() && $conv->get_profile_owner() == local_channel()) {
 			/* disable until we agree on how to implemnt this in zot6/activitypub
 			$tagger = array(
 				'tagit' => t("Add Tag"),
