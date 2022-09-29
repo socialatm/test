@@ -1,17 +1,17 @@
 <div class="generic-content-wrapper-styled">
 <h2>{{$title}}</h2>
+<hr><br/>
+<h3>{{$sitenametxt}}</h3> <div>{{$sitename}}</div>
 
-<h3>{{$sitenametxt}}</h3>
-
-<div>{{$sitename}}</div>
-
+<br/>
 <h3>{{$headline}}</h3>
 
 <div>{{if $site_about}}{{$site_about}}{{else}}--{{/if}}</div>
-
+<br>
 <h3>{{$admin_headline}}</h3>
 
 <div>{{if $admin_about}}{{$admin_about}}{{else}}--{{/if}}</div>
+
 
 <br><br>
 <div><a href="help/TermsOfService">{{$terms}}</a></div>
@@ -25,12 +25,11 @@
 {{if $prj_version}}
 <div>{{$prj_version}}</div>
 {{/if}}
-
+<br>
 
 <h3>{{$prj_linktxt}}</h3>
-
 <div>{{$prj_link}}</div>
-
+<br>
 <h3>{{$prj_srctxt}}</h3>
 
 <div>{{$prj_src}}</div>
