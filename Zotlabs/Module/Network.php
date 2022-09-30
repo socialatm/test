@@ -374,9 +374,9 @@ class Network extends \Zotlabs\Web\Controller {
 			// ActivityStreams specification.
 
 			if (substr($verb, 0, 1) === '.') {
-				$verb = substr($verb, 1);
+				$sql_verb = substr($verb, 1);
 				$sql_extra .= sprintf(" AND item.obj_type like '%s' ",
-					dbesc(protect_sprintf('%' . $verb . '%'))
+					dbesc(protect_sprintf('%' . $sql_verb . '%'))
 				);
 			}
 			else {
