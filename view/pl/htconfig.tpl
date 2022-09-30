@@ -20,7 +20,7 @@ $db_type = '{{$dbtype}}'; // liczba całkowita. 0 lub nieustawienie dla mysql, 1
  * ustawiać elementy bazy danych, jeśli z jakiegoś powodu panel administracyjny
  * nie jest dostępny a ustawienia systemowe wymagają modyfikacji.
  *
- */ 
+ */
 
 // Wybierz legalną domyślną strefę czasową. Dla obszaru Polski jest to „Europe/Warsaw”.
 // Można to zmienić później i ma to związek tylko z sygnaturami czasowymi dla
@@ -68,7 +68,7 @@ App::$config['system']['verify_email'] = 1;
 // wyświetlany jako witryna z otwartą resjestracją.
 // Używamy polityki dostępu do systemu (poniżej) aby określić, czy portal ma być
 // umieszczony w katalogu jako portal otwarty, w którym każdy może tworzyć konta.
-// Twój inny wybór to: paid, tiered lub free.  
+// Twój inny wybór to: paid, tiered lub free.
 
 App::$config['system']['access_policy'] = ACCESS_PRIVATE;
 
@@ -105,7 +105,7 @@ App::$config['system']['theme'] = 'redbasic';
 // lub zmień nazwę (poniżej) na plik lub ścieżkę, jeśli jest to dozwolone.
 
 // Odkomentuj te 4 linie, aby włączyć rejestrowanie błędów PHP.
-//error_reporting(E_ERROR | E_WARNING | E_PARSE ); 
-//ini_set('error_log','php.out'); 
-//ini_set('log_errors','1'); 
+//error_reporting(E_ALL & ~E_WARNING & ~E_PARSE & ~E_NOTICE & ~E_DEPRECATED);
+//ini_set('error_log','php.out');
+//ini_set('log_errors','1');
 //ini_set('display_errors', '0');
