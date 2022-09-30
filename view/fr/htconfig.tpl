@@ -105,7 +105,7 @@ App::$config['system']['theme'] = 'redbasic';
 // ou changez le nom (ci-dessous) pour un fichier/chemin où cela est autorisé.
 // Décommentez les 4 lignes suivantes pour activer la journalisation des erreurs PHP.
 
-//error_reporting(E_ERROR | E_WARNING | E_PARSE ) ;
+//error_reporting(E_ALL & ~E_WARNING & ~E_PARSE & ~E_NOTICE & ~E_DEPRECATED);
 //ini_set('error_log', 'php.out') ;
 //ini_set('log_errors', '1') ;
 //ini_set('display_errors', '0') ;
