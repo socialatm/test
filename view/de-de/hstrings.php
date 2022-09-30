@@ -749,7 +749,6 @@ App::$strings["Directory to store rotated logs"] = "Verzeichnis, in dem rotierte
 App::$strings["Logfile size in bytes before rotating"] = "zu erreichende Logdateigröße in Bytes, bevor rotiert wird";
 App::$strings["Number of logfiles to retain"] = "Anzahl aufzubewahrender rotierter Logdateien";
 App::$strings["Your account on %s will expire in a few days."] = "Dein Konto auf %s wird in ein paar Tagen ablaufen.";
-App::$strings["Your $Productname test account is about to expire."] = "Dein $Productname Test-Konto wird bald auslaufen.";
 App::$strings["Hide Aside App"] = "Hide Aside App";
 App::$strings["Fade out aside areas after a while when using endless scroll"] = "Ausblenden von Randbereichen nach einer Weile bei Verwendung des Endlos-Scrollens";
 App::$strings["Some setting"] = "Einige Einstellungen";
