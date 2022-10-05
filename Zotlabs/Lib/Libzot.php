@@ -3106,7 +3106,8 @@ class Libzot {
 
 		$t = datetime_convert('UTC', 'UTC', 'now - 15 minutes');
 
-		$r = q("update hubloc set hubloc_connected = '%s' where hubloc_id = %d and hubloc_site_id = '%s' and hubloc_connected < '%s' ",
+		q("update hubloc set hubloc_connected = '%s', hubloc_updated = '%s' where hubloc_id = %d and hubloc_site_id = '%s' and hubloc_connected < '%s' ",
+			dbesc(datetime_convert()),
 			dbesc(datetime_convert()),
 			intval($hub['hubloc_id']),
 			dbesc($site_id),
