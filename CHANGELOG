@@ -1,3 +1,40 @@
+Hubzilla 7.8 (2022-10-??)
+	- Always update hubloc_updated timestamp if a hubloc is updated
+	- Do better with re-installs in various situations
+	- Update htconfig templates
+	- Emit an info if an item is deleted manually (issue #1691)
+	- Updated german translations
+	- Make Activity::actor_store() fetch the actor object if none is provided
+	- Check for various forms of as:Public for compatibility
+	- Cleanup dark schema
+	- Make use of CSS variables in redbasic
+	- Implement link hover color in redbasic
+	- Update to bootstrap version 5.2 which implements CSS variables
+
+	Bugfixes
+	- Fix stream filter for polls and events does not work anymore (issue #1694)
+	- Fix item menu display issue
+	- Fix HQ widget displaying superblocked items
+	- Fix mod poke
+	- Fix link to article or card not processed correctly if umlauts are involved (issue #1687)
+	- Fix mod siteinfo containing a dead link (issue #1690)
+	- Fix permission issue when displaying things (issue #1686).
+	- Fix check for existing profiles (issue #1688)
+	- Fix modal missing for conversation settings
+	- Fix missing closing div tag if there are no recent channel activities
+	- Fix issue where an unkown diaspora author was not imported if the comment arrived via a relayed activity
+	- Fix mangled xchan_url due to escape_tags()
+	- Fix the AP url not decode bin mod search
+	- Fix some php warnings
+
+	Addons
+	- Wiki: move create_missing_page() from widget to module
+	- Superblock: implement blocking for messages widget_item
+	- Diaspora: fix verification of relayed comments and likes
+	- Pubcrawl: make sure to store the attributedTo actor in announce activities
+	- Diaspora: fix issue where an unkown author was not imported if the comment arrived via a relayed activity
+
+
 Hubzilla 7.6.1 (2022-08-07)
 	Bugfixes
 	- Fix attachments displayed in visible response activities
