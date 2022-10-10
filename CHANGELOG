@@ -1,4 +1,4 @@
-Hubzilla 7.8 (2022-10-??)
+Hubzilla 7.8 (2022-10-10)
 	- Updated spanish translations
 	- Always update hubloc_updated timestamp if a hubloc is updated
 	- Do better with re-installs in various situations
