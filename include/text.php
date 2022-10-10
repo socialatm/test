@@ -1254,26 +1254,24 @@ function sslify($s) {
  *  * \e value is array containing past tense verb, translation of present, translation of past
  */
 function get_poke_verbs() {
-	if (get_config('system', 'poke_basic')) {
-		$arr = array(
-			'poke' => array('poked', t('poke'), t('poked')),
-		);
-	} else {
-		$arr = array(
-			'poke' => array( 'poked', t('poke'), t('poked')),
-			'ping' => array( 'pinged', t('ping'), t('pinged')),
-			'prod' => array( 'prodded', t('prod'), t('prodded')),
-			'slap' => array( 'slapped', t('slap'), t('slapped')),
-			'finger' => array( 'fingered', t('finger'), t('fingered')),
-			'rebuff' => array( 'rebuffed', t('rebuff'), t('rebuffed')),
-		);
 
-		/**
-		 * @hooks poke_verbs
-		 *   * \e array associative array with another array as value
-		 */
-		call_hooks('poke_verbs', $arr);
-	}
+	$arr = [
+		'poke' => ['poked', t('poke'), t('poked')],
+		'ping' => ['pinged', t('ping'), t('pinged')],
+
+		// Those might be better suited for a nsfw poke addon
+
+		// 'prod' => ['prodded', t('prod'), t('prodded')],
+		// 'slap' => ['slapped', t('slap'), t('slapped')],
+		// 'finger' => ['fingered', t('finger'), t('fingered')],
+		// 'rebuff' => ['rebuffed', t('rebuff'), t('rebuffed')]
+	];
+
+	/**
+	 * @hooks poke_verbs
+	 *   * \e array associative array with another array as value
+	 */
+	call_hooks('poke_verbs', $arr);
 
 	return $arr;
 }
@@ -1544,8 +1542,10 @@ function link_compare($a, $b) {
 
 function theme_attachments(&$item) {
 
+
 	$s = '';
 	$arr = json_decode($item['attach'],true);
+
 	if(is_array($arr) && count($arr)) {
 
 		$attaches = [];
@@ -1553,6 +1553,8 @@ function theme_attachments(&$item) {
 
 			if(isset($r['type']))
 				$icon = getIconFromType($r['type']);
+
+			$label = '';
 
 			if(isset($r['title']))
 				$label = urldecode(htmlspecialchars($r['title'], ENT_COMPAT, 'UTF-8'));
@@ -1566,13 +1568,15 @@ function theme_attachments(&$item) {
 
 			$title = t('Size') . ' ' . (isset($r['length']) ? userReadableSize($r['length']) : t('unknown'));
 
+			$revision = $r['revision'] ?? '';
+
 			require_once('include/channel.php');
 
 			if (isset($r['href'])) {
 				if(is_foreigner($item['author_xchan']))
 					$url = $r['href'];
 				else
-					$url = z_root() . '/magic?f=&owa=1&hash=' . $item['author_xchan'] . '&bdest=' . bin2hex($r['href'] . '/' . $r['revision']);
+					$url = z_root() . '/magic?f=&owa=1&hash=' . $item['author_xchan'] . '&bdest=' . bin2hex($r['href'] . '/' . $revision);
 			}
 
 			//$s .= '<a href="' . $url . '" title="' . $title . '" class="attachlink"  >' . $icon . '</a>';
@@ -1593,7 +1597,7 @@ function theme_attachments(&$item) {
 function format_categories(&$item,$writeable) {
 	$s = '';
 
-	$terms = get_terms_oftype($item['term'],TERM_CATEGORY);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_CATEGORY) : [];
 	if($terms) {
 		$categories = array();
 		foreach($terms as $t) {
@@ -1623,7 +1627,7 @@ function format_categories(&$item,$writeable) {
 function format_hashtags(&$item) {
 
 	$s = '';
-	$terms = get_terms_oftype($item['term'], array(TERM_HASHTAG,TERM_COMMUNITYTAG));
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], array(TERM_HASHTAG, TERM_COMMUNITYTAG)) : [];
 	if($terms) {
 		foreach($terms as $t) {
 			$term = htmlspecialchars($t['term'], ENT_COMPAT, 'UTF-8', false) ;
@@ -1647,7 +1651,7 @@ function format_hashtags(&$item) {
 function format_mentions(&$item) {
 
 	$s = '';
-	$terms = get_terms_oftype($item['term'],TERM_MENTION);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_MENTION) : [];
 	if($terms) {
 		foreach($terms as $t) {
 			if(! isset($t['term']))
@@ -1670,7 +1674,7 @@ function format_mentions(&$item) {
 function format_filer(&$item) {
 	$s = '';
 
-	$terms = get_terms_oftype($item['term'],TERM_FILE);
+	$terms = isset($item['term']) ? get_terms_oftype($item['term'], TERM_FILE) : [];
 	if($terms) {
 		$categories = array();
 		foreach($terms as $t) {
@@ -1789,14 +1793,15 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 		$s = $poll;
 	}
 
-	$event = (($item['obj_type'] === ACTIVITY_OBJ_EVENT) ? format_event_obj($item['obj']) : false);
+	$event = (($item['obj_type'] === ACTIVITY_OBJ_EVENT) ? format_event_obj($item['obj']) : []);
 
 	$prep_arr = [
 		'item' => $item,
 		'html' => $event ? $event['content'] : $s,
-		'event' => $event['header'],
+		'event' => $event ? $event['header'] : '',
 		'photo' => $photo
 	];
+
 	/**
 	 * @hooks prepare_body
 	 *   * \e array \b item
@@ -1827,11 +1832,13 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 
 	$tags = format_hashtags($item);
 
+	$mentions = '';
 	if($item['resource_type'] == 'photo')
 		$mentions = format_mentions($item);
 
 	$categories = format_categories($item,$writeable);
 
+	$filer = '';
 	if(local_channel() == $item['uid'])
 		$filer = format_filer($item);
 
@@ -3013,6 +3020,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 
 		$fn_results = [];
 		$access_tag = EMPTY_STR;
+		$url = EMPTY_STR;
 
 		// $r is set if we found something
 

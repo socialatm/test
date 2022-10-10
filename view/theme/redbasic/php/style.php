@@ -16,11 +16,13 @@ if(! App::$install) {
 	$banner_colour = get_pconfig($uid,'redbasic','banner_colour');
 	$narrow_navbar = get_pconfig($uid,'redbasic','narrow_navbar');
 	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
+	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
 	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
 	$background_image = get_pconfig($uid, 'redbasic', 'background_image');
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
+	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
 	$font_size = get_pconfig($uid, 'redbasic', 'font_size');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
 	$radius = get_pconfig($uid, 'redbasic', 'radius');
@@ -63,6 +65,7 @@ if ((!$schema) || ($schema == '---')) {
 		require_once ($schemefile);
 	}
 
+	$schemecss = '';
 	if(file_exists('view/theme/redbasic/schema/default.css')) {
 		$schemecss = file_get_contents('view/theme/redbasic/schema/default.css');
 	}
@@ -79,6 +82,8 @@ if (! $nav_active_icon_colour)
 	$nav_active_icon_colour = 'rgba(255, 255, 255, 0.75)';
 if (! $link_colour)
 	$link_colour = '#0d6efd';
+if (! $link_hover_colour)
+	$link_hover_colour = '#0a58ca;';
 if (! $banner_colour)
 	$banner_colour = '#efefef';
 if (! $bgcolour)
@@ -96,7 +101,7 @@ if (! $font_size)
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
 if (! $radius)
-	$radius = '0.25rem';
+	$radius = '0.375rem';
 if (! $shadow)
 	$shadow = '0';
 if (! $converse_width)
@@ -111,9 +116,9 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	$x = file_get_contents('view/theme/redbasic/css/style.css');
 
-  if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
-    $x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
-  }
+	if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
+		$x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
+	}
 
 	if($narrow_navbar && file_exists('view/theme/redbasic/css/narrow_navbar.css')) {
 		$x .= file_get_contents('view/theme/redbasic/css/narrow_navbar.css');
@@ -136,6 +141,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$nav_icon_colour' => $nav_icon_colour,
 		'$nav_active_icon_colour' => $nav_active_icon_colour,
 		'$link_colour' => $link_colour,
+		'$link_hover_colour' => $link_hover_colour,
 		'$banner_colour' => $banner_colour,
 		'$bgcolour' => $bgcolour,
 		'$background_image' => $background_image,
@@ -146,12 +152,8 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$radius' => $radius,
 		'$shadow' => $shadow,
 		'$converse_width' => $converse_width,
-		'$nav_float_min_opacity' => $nav_float_min_opacity,
-		'$nav_percent_min_opacity' => $nav_percent_min_opacity,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
-		'$pmenu_top' => $pmenu_top,
-		'$pmenu_reply' => $pmenu_reply,
 		'$main_width' => $main_width,
 		'$left_aside_width' => $left_aside_width,
 		'$right_aside_width' => $right_aside_width

@@ -815,10 +815,10 @@ class Enotify {
 
 		localize_item($item);
 
-		if($item['shortlocalize']) {
+		if(isset($item['shortlocalize'])) {
 			$itemem_text = $item['shortlocalize'];
 		}
-		elseif($item['localize']) {
+		elseif(isset($item['localize'])) {
 			$itemem_text = $item['localize'];
 		}
 		else {

@@ -98,7 +98,7 @@
 /* conv_item */
 
 .wall-item-head-new {
-	border-top: 0.2rem solid #007bff;
+	border-top: 0.2rem solid var(--bs-blue);
 }
 
 .wall-item-info {

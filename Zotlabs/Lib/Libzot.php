@@ -251,7 +251,7 @@ class Libzot {
 
 		$url = null;
 
-		if ($them['hubloc_id_url']) {
+		if (isset($them['hubloc_id_url']) && $them['hubloc_id_url']) {
 			$url = $them['hubloc_id_url'];
 		}
 		else {
@@ -304,8 +304,14 @@ class Libzot {
 
 		$record = Zotfinger::exec($url, $channel);
 
+		if (!$record) {
+			return false;
+		}
+
 		// Check the HTTP signature
 		$hsig = $record['signature'];
+		$hsig_valid = false;
+
 		if ($hsig && $hsig['signer'] === $url && $hsig['header_valid'] === true && $hsig['content_valid'] === true) {
 			$hsig_valid = true;
 		}
@@ -898,11 +904,11 @@ class Libzot {
 		$s = Libsync::sync_locations($arr, $arr);
 
 		if ($s) {
-			if ($s['change_message'])
+			if (isset($s['change_message']))
 				$what .= $s['change_message'];
-			if ($s['changed'])
+			if (isset($s['changed']))
 				$changed = $s['changed'];
-			if ($s['message'])
+			if (isset($s['message']))
 				$ret['message'] .= $s['message'];
 		}
 
@@ -1227,7 +1233,7 @@ class Libzot {
 					return;
 				}
 
-				$r = q("select hubloc_hash, hubloc_network, hubloc_url from hubloc where hubloc_id_url = '%s'",
+				$r = q("select hubloc_hash, hubloc_network, hubloc_url from hubloc where hubloc_id_url = '%s' order by hubloc_id desc",
 					dbesc($AS->actor['id'])
 				);
 
@@ -1235,7 +1241,7 @@ class Libzot {
 					// Author is unknown to this site. Perform channel discovery and try again.
 					$z = discover_by_webbie($AS->actor['id']);
 					if ($z) {
-						$r = q("select hubloc_hash, hubloc_network, hubloc_url from hubloc where hubloc_id_url = '%s'",
+						$r = q("select hubloc_hash, hubloc_network, hubloc_url from hubloc where hubloc_id_url = '%s' order by hubloc_id desc",
 							dbesc($AS->actor['id'])
 						);
 					}
@@ -1255,7 +1261,7 @@ class Libzot {
 
 				if(filter_var($env['sender'], FILTER_VALIDATE_URL)) {
 					// in individual delivery, change owner if needed
-					$s = q("select hubloc_hash, hubloc_url from hubloc where hubloc_id_url = '%s' and hubloc_network = 'zot6' limit 1",
+					$s = q("select hubloc_hash, hubloc_url from hubloc where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc limit 1",
 						dbesc($env['sender'])
 					);
 
@@ -1738,7 +1744,7 @@ class Libzot {
 					if (in_array('undefined', $existing_route) || $last_hop == 'undefined' || $sender == 'undefined')
 						$last_hop = '';
 
-					$current_route = (($arr['route']) ? $arr['route'] . ',' : '') . $sender;
+					$current_route = ((isset($arr['route']) && $arr['route']) ? $arr['route'] . ',' : '') . $sender;
 
 					if ($last_hop && $last_hop != $sender) {
 						logger('comment route mismatch: parent route = ' . $r[0]['route'] . ' expected = ' . $current_route, LOGGER_DEBUG);
@@ -1763,7 +1769,7 @@ class Libzot {
 				dbesc($arr['author_xchan'])
 			);
 
-			if (intval($arr['item_deleted'])) {
+			if (isset($arr['item_deleted']) && $arr['item_deleted']) {
 
 				// remove_community_tag is a no-op if this isn't a community tag activity
 				self::remove_community_tag($sender, $arr, $channel['channel_id']);
@@ -2014,11 +2020,11 @@ class Libzot {
 				$arr['owner_xchan'] = $a['signature']['signer'];
 			}
 
-			if ($AS->meta['hubloc'] || $arr['author_xchan'] === $arr['owner_xchan']) {
+			if (isset($AS->meta['hubloc']) || $arr['author_xchan'] === $arr['owner_xchan']) {
 				$arr['item_verified'] = true;
 			}
 
-			if ($AS->meta['signed_data']) {
+			if (isset($AS->meta['signed_data'])) {
 				IConfig::Set($arr, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
 				$j = json_decode($AS->meta['signed_data'], true);
 				if ($j) {
@@ -2512,14 +2518,14 @@ class Libzot {
 				$access_policy = ACCESS_PRIVATE;
 		}
 
-		$directory_url = htmlspecialchars((string)$arr['directory_url'], ENT_COMPAT, 'UTF-8', false);
-		$url           = htmlspecialchars((string)strtolower($arr['url']), ENT_COMPAT, 'UTF-8', false);
-		$sellpage      = htmlspecialchars((string)$arr['sellpage'], ENT_COMPAT, 'UTF-8', false);
-		$site_location = htmlspecialchars((string)$arr['location'], ENT_COMPAT, 'UTF-8', false);
-		$site_realm    = htmlspecialchars((string)$arr['realm'], ENT_COMPAT, 'UTF-8', false);
-		$site_project  = htmlspecialchars((string)$arr['project'], ENT_COMPAT, 'UTF-8', false);
-		$site_crypto   = ((array_key_exists('encryption', $arr) && is_array($arr['encryption'])) ? htmlspecialchars((string)implode(',', $arr['encryption']), ENT_COMPAT, 'UTF-8', false) : '');
-		$site_version  = ((array_key_exists('version', $arr)) ? htmlspecialchars((string)$arr['version'], ENT_COMPAT, 'UTF-8', false) : '');
+		$directory_url = ((isset($arr['directory_url'])) ? htmlspecialchars($arr['directory_url'], ENT_COMPAT, 'UTF-8', false) : '');
+		$url           = ((isset($arr['url'])) ? htmlspecialchars(strtolower($arr['url']), ENT_COMPAT, 'UTF-8', false) : '');
+		$sellpage      = ((isset($arr['sellpage'])) ? htmlspecialchars($arr['sellpage'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_location = ((isset($arr['location'])) ? htmlspecialchars($arr['location'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_realm    = ((isset($arr['realm'])) ? htmlspecialchars($arr['realm'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_project  = ((isset($arr['project'])) ? htmlspecialchars($arr['project'], ENT_COMPAT, 'UTF-8', false) : '');
+		$site_crypto   = ((isset($arr['encryption']) && is_array($arr['encryption'])) ? htmlspecialchars(implode(',', $arr['encryption']), ENT_COMPAT, 'UTF-8', false) : '');
+		$site_version  = ((isset($arr['version'])) ? htmlspecialchars($arr['version'], ENT_COMPAT, 'UTF-8', false) : '');
 
 		// You can have one and only one primary directory per realm.
 		// Downgrade any others claiming to be primary. As they have
@@ -2729,14 +2735,15 @@ class Libzot {
 		$token     = ((x($arr, 'token')) ? $arr['token'] : '');
 		$feed      = ((x($arr, 'feed')) ? intval($arr['feed']) : 0);
 
+		$ztarget_hash = EMPTY_STR;
+
 		if ($ztarget) {
-			$t = q("select * from hubloc where hubloc_id_url = '%s' and hubloc_network = 'zot6' limit 1",
+			$t = q("select * from hubloc where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc limit 1",
 				dbesc($ztarget)
 			);
 			if ($t) {
 
 				$ztarget_hash = $t[0]['hubloc_hash'];
-
 			}
 			else {
 
@@ -2744,7 +2751,6 @@ class Libzot {
 				// permissions we would know about them and we only want to know who they are to
 				// enumerate their specific permissions
 
-				$ztarget_hash = EMPTY_STR;
 			}
 		}
 
@@ -2920,12 +2926,11 @@ class Libzot {
 		// This is a template - %s will be replaced with the follow_url we discover for the return channel.
 
 		if ($special_channel) {
-			$ret['connect_url'] = (($e['xchan_connpage']) ? $e['xchan_connpage'] : z_root() . '/connect/' . $e['channel_address']);
+			$ret['connect_url'] = $e['xchan_connpage'] ?? z_root() . '/connect/' . $e['channel_address'];
 		}
 
 		// This is a template for our follow url, %s will be replaced with a webbie
-		if (!$ret['follow_url'])
-			$ret['follow_url'] = z_root() . '/follow?f=&url=%s';
+		$ret['follow_url'] = $ret['follow_url'] ?? z_root() . '/follow?f=&url=%s';
 
 		$permissions = get_all_perms($e['channel_id'], $ztarget_hash, false, false);
 
@@ -3194,7 +3199,7 @@ class Libzot {
 		}
 
 		foreach ($arr as $v) {
-			if ($v[$check] === 'zot6') {
+			if (isset($v[$check]) && $v[$check] === 'zot6') {
 				return $v;
 			}
 		}

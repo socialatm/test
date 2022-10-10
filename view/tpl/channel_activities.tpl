@@ -1,9 +1,9 @@
 <div class="mb-1 text-uppercase">
 	<a href="{{$url}}"><i class="fa fa-fw fa-{{$icon}} generic-icons-nav"></i>{{$label}}</a>
 </div>
-<div class="row mb-3">
+<div class="row row-cols-1 row-cols-sm-3 g-4 mb-4">
 	{{foreach $items as $i}}
-	<div class="col-sm-4 mb-3">
+	<div class="col">
 		<div class="card">
 			<a href="{{$i.url}}" class="text-dark">
 				<div class="card-body">

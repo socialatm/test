@@ -16,13 +16,13 @@ class System {
 	}
 
 	static public function get_site_name() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['sitename'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['sitename']))
 			return \App::$config['system']['sitename'];
 		return '';
 	}
 
 	static public function get_project_version() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['hide_version'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['hide_version']))
 			return '';
 		if(is_array(\App::$config) && is_array(\App::$config['system']) && array_key_exists('std_version',\App::$config['system']))
 			return \App::$config['system']['std_version'];
@@ -31,33 +31,33 @@ class System {
 	}
 
 	static public function get_update_version() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['hide_version'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['hide_version']))
 			return '';
 		return DB_UPDATE_VERSION;
 	}
 
 
 	static public function get_notify_icon() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['email_notify_icon_url'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['email_notify_icon_url']))
 			return \App::$config['system']['email_notify_icon_url'];
 		return z_root() . DEFAULT_NOTIFY_ICON;
 	}
 
 	static public function get_site_icon() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['site_icon_url'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['site_icon_url']))
 			return \App::$config['system']['site_icon_url'];
 		return z_root() . DEFAULT_PLATFORM_ICON ;
 	}
 
 
 	static public function get_project_link() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['project_link'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['project_link']))
 			return \App::$config['system']['project_link'];
 		return 'https://hubzilla.org';
 	}
 
 	static public function get_project_srclink() {
-		if(is_array(\App::$config) && is_array(\App::$config['system']) && \App::$config['system']['project_srclink'])
+		if(is_array(\App::$config) && is_array(\App::$config['system']) && isset(\App::$config['system']['project_srclink']))
 			return \App::$config['system']['project_srclink'];
 		return 'https://framagit.org/hubzilla/core.git';
 	}
@@ -68,7 +68,7 @@ class System {
 
 
 	static public function get_zot_revision() {
-		$x = [ 'revision' => ZOT_REVISION ]; 
+		$x = [ 'revision' => ZOT_REVISION ];
 		call_hooks('zot_revision',$x);
 		return $x['revision'];
 	}

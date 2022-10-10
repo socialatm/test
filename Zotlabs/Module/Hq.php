@@ -47,23 +47,10 @@ class Hq extends \Zotlabs\Web\Controller {
 		$sys = get_sys_channel();
 		$sys_item = false;
 		$sql_extra = '';
-
-		if(! $item_hash) {
-			//$r = q("SELECT mid FROM item
-				//WHERE uid = %d $item_normal
-				//AND mid = parent_mid
-				//AND item_private IN (0, 1)
-				//ORDER BY created DESC LIMIT 1",
-				//intval(local_channel())
-			//);
-			//if($r[0]['mid']) {
-				//$item_hash = $r[0]['mid'];
-			//}
-		}
+		$target_item = null;
+		$o = '';
 
 		if($item_hash) {
-
-			$target_item = null;
 
 			$r = q("select id, uid, mid, parent_mid, thr_parent, verb, item_type, item_deleted, item_blocked from item where mid = '%s' limit 1",
 				dbesc($item_hash)
@@ -115,7 +102,7 @@ class Hq extends \Zotlabs\Web\Controller {
 			];
 
 			$a = '';
-			$o = status_editor($a, $x, true);
+			$o .= status_editor($a, $x, true);
 
 		}
 

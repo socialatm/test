@@ -3,6 +3,7 @@
 	var aStr = {
 
 		'delitem'     : "{{$delitem}}",
+		'itemdel'     : "{{$itemdel}}",
 		'comment'     : "{{$comment}}",
 		'showmore'    : "{{$showmore}}",
 		'showfewer'   : "{{$showfewer}}",

@@ -28,13 +28,9 @@
 		<input type="hidden" id="jot-consensus" name="consensus" value="{{if $consensus}}{{$consensus}}{{else}}0{{/if}}" />
 		<input type="hidden" id="jot-nocomment" name="nocomment" value="{{if $nocomment}}{{$nocomment}}{{else}}0{{/if}}" />
 
-		{{if $webpage}}
-		<div id="jot-pagetitle-wrap" class="jothidden">
-			<input class="w-100 border-0" name="pagetitle" id="jot-pagetitle" type="text" placeholder="{{$placeholdpagetitle}}" value="{{$pagetitle}}">
-		</div>
-		{{/if}}
+
 		<div id="jot-title-wrap" class="jothidden">
-			<input class="w-100 border-0" name="title" id="jot-title" type="text" placeholder="{{$placeholdertitle}}" tabindex="1" value="{{$title}}">
+			<input class="w-100 border-0 rounded-top" name="title" id="jot-title" type="text" placeholder="{{$placeholdertitle}}" tabindex="1" value="{{$title}}">
 		</div>
 		<div id="jot-summary-wrap" class="jothidden">
 			<input class="w-100 border-0" name="summary" id="jot-summary" type="text" placeholder="{{$placeholdersummary}}" tabindex="2" value="{{$summary}}">
@@ -42,6 +38,11 @@
 		{{if $catsenabled}}
 		<div id="jot-category-wrap" class="jothidden">
 			<input class="w-100 border-0" name="category" id="jot-category" type="text" placeholder="{{$placeholdercategory}}" value="{{$category}}" data-role="cat-tagsinput">
+		</div>
+		{{/if}}
+		{{if $webpage}}
+		<div id="jot-pagetitle-wrap" class="jothidden">
+			<input class="w-100 border-0 rounded-top" name="pagetitle" id="jot-pagetitle" type="text" placeholder="{{$placeholdpagetitle}}" value="{{$pagetitle}}">
 		</div>
 		{{/if}}
 		{{if $customjotheaders}}
@@ -60,7 +61,7 @@
 				</button>
 				{{/if}}
 			</div>
-			<textarea class="profile-jot-text" id="profile-jot-text" name="body" tabindex="2" placeholder="{{$placeholdtext}}" tabindex="3">{{$content}}</textarea>
+			<textarea class="profile-jot-text rounded" id="profile-jot-text" name="body" tabindex="2" placeholder="{{$placeholdtext}}" tabindex="3">{{$content}}</textarea>
 		</div>
 		{{if $attachment}}
 		<div id="jot-attachment-wrap">

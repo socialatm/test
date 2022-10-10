@@ -6,6 +6,31 @@
  */
 
 
+/* bootstrap variable */
+
+:root {
+	--bs-border-radius: $radius;
+	--bs-link-color: $link_colour;
+	--bs-link-hover-color: $link_hover_colour;
+}
+
+.nav-tabs {
+	--bs-nav-tabs-border-radius: $radius;
+}
+
+.nav-pills {
+	--bs-nav-pills-border-radius: $radius;
+}
+
+.btn {
+	--bs-btn-border-radius: $radius;
+}
+
+.card {
+	--bs-card-border-radius: $radius;
+}
+
+
 /* generals */
 
 html {
@@ -105,7 +130,7 @@ abbr {
 
 a,
 .fakelink {
-  color: $link_colour;
+	color: var(--bs-link-color);
 }
 
 
@@ -113,7 +138,7 @@ a:hover,
 a:focus,
 .fakelink:hover,
 .fakelink:focus {
-  color: $link_colour;
+	color: var(--bs-link-hover-color);
 }
 
 .fakelink,
@@ -605,7 +630,7 @@ nav .acpopup {
 #cboxContent {
 	padding: 3px;
 	border: 0px solid #fff;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	background-color: #fff;
 	z-index: 1052;
 }
@@ -827,7 +852,7 @@ div.jGrowl div.jGrowl-notification {
 }
 
 .shared_header img {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	margin-right: .75rem;
 }
 
@@ -973,7 +998,7 @@ th,td {
 /* mail */
 
 img.mail-conv-sender-photo {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 /* jot */
@@ -993,15 +1018,11 @@ img.mail-conv-sender-photo {
 #profile-jot-wrapper {
 	background-color: rgba(254, 254, 254, 1);
 	border: 1px solid rgba(0, 0, 0, .2);
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 
 }
 
-#jot-title,
-#jot-pagetitle,
-#profile-jot-text {
-	border-radius: $radius;
-}
+
 
 #profile-jot-text::-webkit-input-placeholder {
 	font-size: 1.2rem;
@@ -1032,22 +1053,22 @@ img.mail-conv-sender-photo {
 /* conversation */
 
 .top-radius {
-	border-top-right-radius: $radius;
-	border-top-left-radius: $radius;
+	border-top-right-radius: var(--bs-border-radius);
+	border-top-left-radius: var(--bs-border-radius);
 }
 
 .wall-event-item {
 	padding: 10px;
 	color: #fff;
 	background-color: #3A87AD; /* should reflect calendar color */
-	border-top-left-radius: $radius;
-	border-top-right-radius: $radius;
+	border-top-left-radius: var(--bs-border-radius);
+	border-top-right-radius: var(--bs-border-radius);
 }
 
 .wall-photo-item img {
 	max-width: 100% !important;
-	border-top-right-radius: $radius;
-	border-top-left-radius: $radius;
+	border-top-right-radius: var(--bs-border-radius);
+	border-top-left-radius: var(--bs-border-radius);
 }
 
 .wall-item-footer {
@@ -1057,8 +1078,8 @@ img.mail-conv-sender-photo {
 
 .wall-item-content-wrapper {
 	background-color: $item_colour;
-	border-top-right-radius: $radius;
-	border-top-left-radius: $radius;
+	border-top-right-radius: var(--bs-border-radius);
+	border-top-left-radius: var(--bs-border-radius);
 }
 
 .wall-item-content-wrapper.comment {
@@ -1085,8 +1106,8 @@ img.mail-conv-sender-photo {
 	padding: 7px 10px;
 	background-color: $item_colour;
 	border-radius: 0px;
-	border-bottom-right-radius: $radius;
-	border-bottom-left-radius: $radius;
+	border-bottom-right-radius: var(--bs-border-radius);
+	border-bottom-left-radius: var(--bs-border-radius);
 	border-top: 3px solid $comment_item_colour;
 }
 
@@ -1099,7 +1120,7 @@ img.mail-conv-sender-photo {
 	width: $top_photo;
 	height: $top_photo;
 	border: none;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
 }
 
@@ -1124,7 +1145,7 @@ img.mail-conv-sender-photo {
 
 .comment-edit-text {
 	border: 1px solid #e0e0e0;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .divgrow-showmore {
@@ -1145,7 +1166,7 @@ img.mail-conv-sender-photo {
 
 .widget {
 	background-color: rgba(254,254,254,.5);
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .widget h3 {
@@ -1155,7 +1176,7 @@ img.mail-conv-sender-photo {
 
 
 #note-text {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .fileas-ul {
@@ -1164,7 +1185,7 @@ img.mail-conv-sender-photo {
 
 #datebrowse-sidebar select {
 	border: 1px solid #e0e0e0;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .thing-show img {
@@ -1186,24 +1207,24 @@ img.mail-conv-sender-photo {
 
 .chat-item-photo,
 .chat-item-photo-self {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .chat-item-title,
 .chat-item-title-self {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	background-color: $item_colour;
 }
 
 #chatMembers img {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .menu-img-3 {
 	width: 2.7rem;
 	height: 2.7rem;
 	margin-right: 5px;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	float: left;
 }
 
@@ -1211,14 +1232,14 @@ img.mail-conv-sender-photo {
 	height: 1.8rem;
 	width: 1.8rem;
 	margin-right: 5px;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	float: left;
 }
 
 .menu-img-1 {
 	height: 1.1rem;
 	width: 1.1rem;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .usermenu {
@@ -1228,7 +1249,7 @@ img.mail-conv-sender-photo {
 #avatar {
 	width: 2.35rem;
 	height: 2.35rem;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 #nav-app-link-wrapper.has_location .nav-link {
@@ -1244,20 +1265,20 @@ img.mail-conv-sender-photo {
 .generic-content-wrapper-styled {
 	background-color: $bgcolour;
 	padding: 10px;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .generic-content-wrapper {
 	border: 1px solid #e0e0e0;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	margin-bottom: 1.5rem;
 }
 
 .section-title-wrapper {
 	padding: 7px 10px;
 	background-color: $item_colour;
-	border-top-left-radius: $radius;
-	border-top-right-radius: $radius;
+	border-top-left-radius: var(--bs-border-radius);
+	border-top-right-radius: var(--bs-border-radius);
 	border-bottom: 3px solid $comment_item_colour;
 }
 
@@ -1327,22 +1348,22 @@ img.mail-conv-sender-photo {
 .section-content-wrapper .section-content-danger-wrapper {
 	margin-bottom: 10px;
 	border-bottom: none;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 
 .section-content-wrapper {
 	padding: 7px 10px;
 	background-color: $comment_item_colour;
-	border-bottom-left-radius: $radius;
-	border-bottom-right-radius: $radius;
+	border-bottom-left-radius: var(--bs-border-radius);
+	border-bottom-right-radius: var(--bs-border-radius);
 	word-wrap: break-word;
 }
 
 .section-content-wrapper-np {
 	background-color: $comment_item_colour;
-	border-bottom-left-radius: $radius;
-	border-bottom-right-radius: $radius;
+	border-bottom-left-radius: var(--bs-border-radius);
+	border-bottom-right-radius: var(--bs-border-radius);
 	word-wrap: break-word;
 }
 
@@ -1403,18 +1424,11 @@ main.fullscreen .section-content-wrapper-np {
 .notify-seen {
 	background-color: $item_colour;
 }
+
 /* bootstrap overrides */
 
-.btn,
-.form-control,
-.nav-pills .nav-link,
-.nav-tabs .nav-link {
+.form-control {
 	border-radius: $radius;
-}
-
-.rounded-top {
-	border-top-left-radius: $radius !important;
-	border-top-right-radius: $radius !important;
 }
 
 blockquote {
@@ -1427,7 +1441,6 @@ blockquote {
 
 .dropdown-menu {
 	color: $font_colour;
-	border-radius: $radius;
 }
 
 .dropdown-item {
@@ -1561,7 +1574,7 @@ dl.bb-dl > dd > li {
 	margin-bottom: 0px;
 	box-shadow: none;
 	display: inline-block;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 	cursor: text;
 	padding: 0px 10px;
 	width: 100%;
@@ -1605,11 +1618,11 @@ dl.bb-dl > dd > li {
 }
 
 .onoffswitch.checkbox:hover label {
-	color: $link_colour;
+	color: var(--bs-link-color);
 }
 
 .onoffswitch.checkbox:hover > div label {
-	border-color: $link_colour;
+	border-color: var(--bs-link-color);
 }
 
 .onoffswitch-inner {
@@ -1653,7 +1666,7 @@ dl.bb-dl > dd > li {
 
 .onoffswitch.checkbox > div > input:checked + label .onoffswitch-switch {
     right: 0px;
-    background-color: $link_colour;
+    background-color: var(--bs-link-color);
 }
 
 
@@ -1685,8 +1698,8 @@ dl.bb-dl > dd > li {
 
 #ace-editor,
 #editor {
-	border-bottom-left-radius: $radius;
-	border-bottom-right-radius: $radius;
+	border-bottom-left-radius: var(--bs-border-radius);
+	border-bottom-right-radius: var(--bs-border-radius);
 }
 
 .sub-menu-wrapper {
@@ -1733,7 +1746,7 @@ dl.bb-dl > dd > li {
 	width: 64px;
 	height: 64px;
 	border: 1px solid #eee;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .cloud-icon i {
@@ -1746,7 +1759,7 @@ dl.bb-dl > dd > li {
 .cloud-icon img {
 	max-width: 64px;
 	max-height: 64px;
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }
 
 .cloud-title {
@@ -1786,5 +1799,5 @@ span.default-highlight {
 }
 
 .jg-entry img {
-	border-radius: $radius;
+	border-radius: var(--bs-border-radius);
 }

@@ -13,6 +13,7 @@ class Notifications {
 	function widget($arr) {
 
 		$channel = \App::get_channel();
+		$notifications = [];
 
 		if(local_channel()) {
 			$notifications[] = [

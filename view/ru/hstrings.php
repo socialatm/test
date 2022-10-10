@@ -2928,7 +2928,6 @@ App::$strings["Social authentication settings saved."] = "Настройки Soc
 App::$strings["Recent Channel/Profile Viewers"] = "Последние просмотры канала / профиля";
 App::$strings["No entries."] = "Нет записей.";
 App::$strings["Your account on %s will expire in a few days."] = "Ваш аккаунт на %s перестанет работать через несколько дней.";
-App::$strings["Your $Productname test account is about to expire."] = "�аша тестовая учётная запись в $Productname близка к окончанию срока действия";
 App::$strings["Post to Twitter"] = "Опубликовать в Twitter";
 App::$strings["Submit Settings"] = "Отправить настройки";
 App::$strings["Twitter settings updated."] = "Настройки Twitter обновлены";

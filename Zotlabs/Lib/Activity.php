@@ -646,15 +646,15 @@ class Activity {
 
 		$ret = [];
 
-		if (is_array($item['attachment']) && $item['attachment']) {
+		if (isset($item['attachment'])) {
 			$ptr = $item['attachment'];
 			if (!array_key_exists(0, $ptr)) {
 				$ptr = [$ptr];
 			}
 			foreach ($ptr as $att) {
 				$entry = [];
-				if ($att['type'] === 'PropertyValue') {
-					if (array_key_exists('name', $att) && $att['name']) {
+				if (isset($att['type']) && $att['type'] === 'PropertyValue') {
+					if (isset($att['name'])) {
 						$key = explode('.', $att['name']);
 						if (count($key) === 3 && $key[0] === 'zot') {
 							$entry['cat']     = $key[1];
@@ -674,7 +674,7 @@ class Activity {
 
 		$ret = [];
 
-		if (array_key_exists('attachment', $item) && is_array($item['attachment'])) {
+		if (isset($item['attachment'])) {
 			$ptr = $item['attachment'];
 			if (!array_key_exists(0, $ptr)) {
 				$ptr = [$ptr];
@@ -1523,22 +1523,31 @@ class Activity {
 	}
 
 
-	static function actor_store($url, $person_obj, $force = false) {
+	static function actor_store($url, $person_obj = null, $force = false) {
+
+		if ($person_obj === null) {
+			$tgt = self::fetch($url);
+			if (is_array($tgt) && ActivityStreams::is_an_actor($tgt['type'])) {
+				self::actor_store($tgt['id'], $tgt);
+			}
+			return;
+		}
 
 		if (!is_array($person_obj)) {
 			return;
 		}
 
 		/* not implemented
-				if (array_key_exists('movedTo',$person_obj) && $person_obj['movedTo'] && ! is_array($person_obj['movedTo'])) {
-					$tgt = self::fetch($person_obj['movedTo']);
-					if (is_array($tgt)) {
-						self::actor_store($person_obj['movedTo'],$tgt);
-						ActivityPub::move($person_obj['id'],$tgt);
-					}
-					return;
-				}
+		if (array_key_exists('movedTo',$person_obj) && $person_obj['movedTo'] && ! is_array($person_obj['movedTo'])) {
+			$tgt = self::fetch($person_obj['movedTo']);
+			if (is_array($tgt)) {
+				self::actor_store($person_obj['movedTo'],$tgt);
+				ActivityPub::move($person_obj['id'],$tgt);
+			}
+			return;
+		}
 		*/
+
 		$ap_hubloc = null;
 
 		$hublocs = self::get_actor_hublocs($url);
@@ -1600,7 +1609,7 @@ class Activity {
 		$m = parse_url($url);
 		if ($m) {
 			$hostname = $m['host'];
-			$baseurl  = $m['scheme'] . '://' . $m['host'] . (($m['port']) ? ':' . $m['port'] : '');
+			$baseurl  = $m['scheme'] . '://' . $m['host'] . ((isset($m['port'])) ? ':' . $m['port'] : '');
 			$site_url = $m['scheme'] . '://' . $m['host'];
 		}
 
@@ -1609,7 +1618,7 @@ class Activity {
 		}
 
 		$icon = z_root() . '/' . get_default_profile_photo(300);
-		if ($person_obj['icon']) {
+		if (isset($person_obj['icon'])) {
 			if (is_array($person_obj['icon'])) {
 				if (array_key_exists('url', $person_obj['icon'])) {
 					$icon = $person_obj['icon']['url'];
@@ -1715,7 +1724,7 @@ class Activity {
 					'xchan_guid'      => $url,
 					'xchan_pubkey'    => escape_tags($pubkey),
 					'xchan_addr'      => $webfinger_addr,
-					'xchan_url'       => escape_tags($profile),
+					'xchan_url'       => $profile,
 					'xchan_name'      => escape_tags($name),
 					'xchan_name_date' => datetime_convert(),
 					'xchan_network'   => 'activitypub'
@@ -1791,9 +1800,13 @@ class Activity {
 
 	// sort function width decreasing
 	static function vid_sort($a, $b) {
-		if ($a['width'] === $b['width'])
+		$a_width = $a['width'] ?? 0;
+		$b_width = $b['width'] ?? 0;
+
+		if ($a_width === $b_width)
 			return 0;
-		return (($a['width'] > $b['width']) ? -1 : 1);
+
+		return (($a_width > $b_width) ? -1 : 1);
 	}
 
 	static function create_note($channel, $observer_hash, $act) {
@@ -2239,11 +2252,11 @@ class Activity {
 
 			// over-ride the object timestamp with the activity
 
-			if ($act->data['published']) {
+			if (isset($act->data['published'])) {
 				$s['created'] = datetime_convert('UTC', 'UTC', $act->data['published']);
 			}
 
-			if ($act->data['updated']) {
+			if (isset($act->data['updated'])) {
 				$s['edited'] = datetime_convert('UTC', 'UTC', $act->data['updated']);
 			}
 
@@ -2275,12 +2288,6 @@ class Activity {
 				if ($act->type === 'TentativeReject') {
 					$content['content'] = sprintf(t('May not attend %s\'s event'), $mention) . EOL . EOL . $content['content'];
 				}
-			}
-
-			if ($act->type === 'Announce') {
-				$s['author_xchan'] = $obj_actor['id'];
-				$s['mid'] = $act->obj['id'];
-				$s['parent_mid'] = $act->obj['id'];
 			}
 
 			if ($act->type === 'emojiReaction') {
@@ -2461,12 +2468,17 @@ class Activity {
 			$s['comments_closed'] = datetime_convert('UTC', 'UTC', $act->obj['closed']);
 		}
 
-
-		// we will need a hook here to extract magnet links e.g. peertube
-		// right now just link to the largest mp4 we find that will fit in our
-		// standard content region
-
 		if (!$response_activity) {
+			if ($act->type === 'Announce') {
+				$s['author_xchan'] = self::get_attributed_to_actor_url($act);
+				$s['mid'] = $act->obj['id'];
+				$s['parent_mid'] = $act->obj['id'];
+			}
+
+			// we will need a hook here to extract magnet links e.g. peertube
+			// right now just link to the largest mp4 we find that will fit in our
+			// standard content region
+
 			if ($act->obj['type'] === 'Video') {
 
 				$vtypes = [
@@ -2673,15 +2685,14 @@ class Activity {
 			}
 		}
 
-		if (!$s['plink']) {
+        if (!(isset($s['plink']) && $s['plink'])) {
 			$s['plink'] = $s['mid'];
 		}
 
 		// assume this is private unless specifically told otherwise.
 
 		$s['item_private'] = 1;
-
-		if ($act->recips && in_array(ACTIVITY_PUBLIC_INBOX, $act->recips)) {
+		if ($act->recips && (in_array(ACTIVITY_PUBLIC_INBOX, $act->recips) || in_array('Public', $act->recips) || in_array('as:Public', $act->recips))) {
 			$s['item_private'] = 0;
 		}
 
@@ -2699,7 +2710,7 @@ class Activity {
 
 		// This is a zot6 packet and the raw activitypub or diaspora message json
 		// is possibly available in the attachement.
-		if (array_key_exists('signed', $raw_arr) && is_array($act->data['attachment'])) {
+		if (array_key_exists('signed', $raw_arr) && isset($act->data['attachment']) && is_array($act->data['attachment'])) {
 			foreach($act->data['attachment'] as $a) {
 				if (
 					isset($a['type']) && $a['type'] === 'PropertyValue' &&
@@ -2719,7 +2730,7 @@ class Activity {
 		}
 
 		// old style: can be removed after most hubs are on 7.0.2
-		elseif (array_key_exists('signed', $raw_arr) && is_array($act->obj) && is_array($act->obj['attachment'])) {
+		elseif (array_key_exists('signed', $raw_arr) && is_array($act->obj) && isset($act->data['attachment']) && is_array($act->obj['attachment'])) {
 			foreach($act->obj['attachment'] as $a) {
 				if (
 					isset($a['type']) && $a['type'] === 'PropertyValue' &&
@@ -2763,6 +2774,7 @@ class Activity {
 
 		set_iconfig($s, 'activitypub', 'recips', $act->raw_recips);
 
+
 		$hookinfo = [
 			'act' => $act,
 			's'   => $s
@@ -2771,6 +2783,8 @@ class Activity {
 		call_hooks('decode_note', $hookinfo);
 
 		$s = $hookinfo['s'];
+
+
 
 		return $s;
 
@@ -2866,7 +2880,7 @@ class Activity {
 
 			// The $item['item_fetched'] flag is set in fetch_and_store_parents().
 			// In this case we should check against author permissions because sender is not owner.
-			if (perm_is_allowed($channel['channel_id'], (($item['item_fetched']) ? $item['author_xchan'] : $observer_hash), 'send_stream') || $is_sys_channel) {
+			if (perm_is_allowed($channel['channel_id'], ((isset($item['item_fetched']) && $item['item_fetched']) ? $item['author_xchan'] : $observer_hash), 'send_stream') || $is_sys_channel) {
 				$allowed = true;
 			}
 			// TODO: not implemented
@@ -3005,28 +3019,32 @@ class Activity {
 				dbesc($item['parent_mid']),
 				intval($item['uid'])
 			);
+
 			if (!$parent) {
 				if (!plugin_is_installed('pubcrawl')) {
 					return;
 				}
 				else {
 					$fetch = false;
+
 					// TODO: debug
 					// if (perm_is_allowed($channel['channel_id'],$observer_hash,'send_stream') && (PConfig::Get($channel['channel_id'],'system','hyperdrive',true) || $act->type === 'Announce')) {
 					if (perm_is_allowed($channel['channel_id'], $observer_hash, 'send_stream') || $is_sys_channel) {
 						$fetch = (($fetch_parents) ? self::fetch_and_store_parents($channel, $observer_hash, $item, $force) : false);
 					}
+
 					if ($fetch) {
 						$parent = q("select * from item where mid = '%s' and uid = %d limit 1",
 							dbesc($item['parent_mid']),
 							intval($item['uid'])
 						);
 					}
-					else {
-						logger('no parent');
-						return;
-					}
 				}
+			}
+
+			if (!$parent) {
+				logger('no parent');
+				return;
 			}
 
 			if ($parent[0]['parent_mid'] !== $item['parent_mid']) {
@@ -3875,6 +3893,19 @@ class Activity {
 		return $hookdata['actor'];
 	}
 
+	static function get_unknown_actor($act) {
+
+		// try other get_actor providers (e.g. diaspora)
+		$hookdata = [
+			'activity' => $act,
+			'actor' => null
+		];
+
+		call_hooks('get_actor_provider', $hookdata);
+
+		return $hookdata['actor'];
+	}
+
 	static function get_actor_hublocs($url, $options = 'all') {
 
 		switch ($options) {
@@ -3964,6 +3995,37 @@ class Activity {
 		}
 
 		return $ret;
+	}
+
+	static function get_attributed_to_actor_url($act) {
+
+		$url = '';
+
+		if (!isset($act->obj['attributedTo'])) {
+			return $url;
+		}
+
+		if (is_string($act->obj['attributedTo'])) {
+			$url = $act->obj['attributedTo'];
+		}
+
+		if (is_array($act->obj['attributedTo'])) {
+			foreach($act->obj['attributedTo'] as $a) {
+				if (is_array($a) && isset($a['type']) && $a['type'] === 'Person') {
+					if (isset($a['id'])) {
+						$url = $a['id'];
+						break;
+					}
+				}
+				elseif (is_string($a)) {
+					$url = $a;
+					break;
+				}
+			}
+		}
+
+		return $url;
+
 	}
 
 }

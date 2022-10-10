@@ -111,6 +111,12 @@ class Notifier {
 
 		$sys         = get_sys_channel();
 		$normal_mode = true;
+		$upstream = false;
+		$uplink = false;
+		$target_item = [];
+		$parent_item = [];
+		$top_level_post = false;
+		$relay_to_owner = false;
 
 		if ($cmd === 'keychange') {
 			self::$channel = channelx_by_n($item_id);
@@ -360,8 +366,6 @@ class Notifier {
 			// the hostname in the message_id and provides a second (fallback) opinion.
 
 			$relay_to_owner = (!$top_level_post && intval($target_item['item_origin']) && comment_local_origin($target_item));
-			$uplink         = false;
-			$upstream       = false;
 
 			// $cmd === 'relay' indicates the owner is sending it to the original recipients
 			// don't allow the item in the relay command to relay to owner under any circumstances, it will loop

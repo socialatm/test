@@ -1997,7 +1997,7 @@ function getBestSupportedMimeType($mimeTypes = null, $acceptedTypes = false) {
 	$AcceptTypes = [];
 
 	if($acceptedTypes === false)
-		$acceptedTypes = $_SERVER['HTTP_ACCEPT'];
+		$acceptedTypes = $_SERVER['HTTP_ACCEPT'] ?? '';
 
 	if (!$acceptedTypes) {
 		return null;

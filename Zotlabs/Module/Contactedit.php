@@ -103,7 +103,7 @@ class Contactedit extends Controller {
 				dbesc($profile_id),
 				intval(local_channel())
 			);
-			if (!count($r)) {
+			if (!$r) {
 				notice(t('Could not locate selected profile.') . EOL);
 				return;
 			}
@@ -452,8 +452,8 @@ class Contactedit extends Controller {
 
 		if (is_ajax()) {
 			json_return_and_die([
-				'success' => ((intval($_REQUEST['success'])) ? intval($_REQUEST['success']) : 1),
-				'message' => (($_REQUEST['success']) ? t('Contact updated') : t('Contact update failed')),
+				'success' => ((isset($_REQUEST['success'])) ? intval($_REQUEST['success']) : 1),
+				'message' => ((isset($_REQUEST['success'])) ? t('Contact updated') : t('Contact update failed')),
 				'id' => $contact_id,
 				'title' => $header_html,
 				'role' => ((intval($contact['abook_pending'])) ? '' : $roles_dict[$current_permcat]),

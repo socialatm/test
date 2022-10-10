@@ -129,6 +129,9 @@ class Network extends \Zotlabs\Web\Controller {
 		$pf       = ((x($_GET, 'pf'))    ? $_GET['pf']            : '');
 		$unseen   = ((x($_GET, 'unseen'))    ? $_GET['unseen']            : '');
 
+		$status_editor = '';
+
+
 		if (Apps::system_app_installed(local_channel(), 'Affinity Tool')) {
 			$affinity_locked = intval(get_pconfig(local_channel(), 'affinity', 'lock', 1));
 			if ($affinity_locked) {
@@ -208,6 +211,7 @@ class Network extends \Zotlabs\Web\Controller {
 				'reset' => t('Reset form')
 			);
 
+			$a = '';
 			$status_editor = status_editor($a, $x, false, 'Network');
 			$o .= $status_editor;
 
@@ -370,9 +374,9 @@ class Network extends \Zotlabs\Web\Controller {
 			// ActivityStreams specification.
 
 			if (substr($verb, 0, 1) === '.') {
-				$verb = substr($verb, 1);
+				$sql_verb = substr($verb, 1);
 				$sql_extra .= sprintf(" AND item.obj_type like '%s' ",
-					dbesc(protect_sprintf('%' . $verb . '%'))
+					dbesc(protect_sprintf('%' . $sql_verb . '%'))
 				);
 			}
 			else {

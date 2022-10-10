@@ -179,7 +179,7 @@
 			</a>
 			{{/if}}
 		</div>
-		<div class="d-lg-flex"></div>
+		<div class="nav d-lg-flex"></div>
 		{{else}}
 		<div class="lh-1" id="app-bin-label">
 			{{if $name}}
@@ -196,43 +196,49 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 
 	</div>
-	<div class="offcanvas-body pt-0">
+	<div class="offcanvas-body">
 		{{if $channel_apps.0}}
-		<div class="dropdown-header text-uppercase text-muted">
+		<div class="text-uppercase text-muted">
 			{{$channelapps}}
 		</div>
-		{{foreach $channel_apps as $channel_app}}
-		{{$channel_app}}
-		{{/foreach}}
+		<div class="nav nav-pills flex-column">
+			{{foreach $channel_apps as $channel_app}}
+			{{$channel_app}}
+			{{/foreach}}
+		</div>
 		{{/if}}
 		{{if $navbar_apps.0}}
 		<div class="d-lg-none dropdown-header text-uppercase text-muted">
 			{{$pinned_apps}}
 		</div>
-		<div id="nav-app-bin-container" class="d-lg-none">
+		<div id="nav-app-bin-container" class="d-lg-none nav nav-pills flex-column">
 			{{foreach $navbar_apps as $navbar_app}}
-				{{$navbar_app|replace:'navbar-app nav-link':'dropdown-item nav-app-sortable'|replace:'fa':'generic-icons-nav fa'}}
+				{{$navbar_app|replace:'fa':'generic-icons-nav fa'}}
 			{{/foreach}}
 		</div>
 		{{/if}}
 		{{if $is_owner}}
-		<div class="dropdown-header text-uppercase text-muted">
+		<div class="text-uppercase text-muted nav-link">
 			{{$featured_apps}}
 		</div>
-		<div id="app-bin-container" data-token="{{$form_security_token}}">
+		<div id="app-bin-container" data-token="{{$form_security_token}}" class="nav nav-pills flex-column">
 			{{foreach $nav_apps as $nav_app}}
 				{{$nav_app}}
 			{{/foreach}}
 		</div>
-		<div class="dropdown-divider"></div>
-		<a class="dropdown-item" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
+		<hr>
+		<div class="nav nav-pills flex-column">
+			<a class="nav-link" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
+		</div>
 		{{else}}
-		<div class="dropdown-header text-uppercase text-muted">
+		<div class="text-uppercase text-muted nav-link">
 			{{$sysapps}}
 		</div>
-		{{foreach $nav_apps as $nav_app}}
-			{{$nav_app}}
-		{{/foreach}}
+		<div class="nav nav-pills flex-column">
+			{{foreach $nav_apps as $nav_app}}
+				{{$nav_app}}
+			{{/foreach}}
+		</div>
 		{{/if}}
 	</div>
 </div>

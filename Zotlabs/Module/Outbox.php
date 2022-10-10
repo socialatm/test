@@ -76,7 +76,7 @@ class Outbox extends Controller {
 				App::set_pager_itemspage(30);
 			}
 
-			if (App::$pager['unset'] && $total > 30) {
+			if (isset(App::$pager['unset']) && $total > 30) {
 				$ret = Activity::paged_collection_init($total, App::$query_string);
 			}
 			else {

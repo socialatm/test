@@ -12,18 +12,18 @@ class Queue {
 
 		$o = '';
 
-		$expert = ((array_key_exists('expert',$_REQUEST)) ? intval($_REQUEST['expert']) : 0);
+		$expert = $_REQUEST['expert'] ?? false;
 
-		if($_REQUEST['drophub']) {
+		if(isset($_REQUEST['drophub'])) {
 			hubloc_mark_as_down($_REQUEST['drophub']);
 			LibQueue::remove_by_posturl($_REQUEST['drophub']);
 		}
 
-		if($_REQUEST['emptyhub']) {
+		if(isset($_REQUEST['emptyhub'])) {
 			LibQueue::remove_by_posturl($_REQUEST['emptyhub']);
 		}
 
-		if($_REQUEST['deliverhub']) {
+		if(isset($_REQUEST['deliverhub'])) {
 
 			$hubq = q("SELECT * FROM outq WHERE outq_posturl = '%s'",
 				dbesc($_REQUEST['deliverhub'])
@@ -39,7 +39,6 @@ class Queue {
 
 		for($x = 0; $x < count($r); $x ++) {
 			$r[$x]['eurl'] = urlencode($r[$x]['outq_posturl']);
-			$r[$x]['connected'] = datetime_convert('UTC',date_default_timezone_get(),$r[$x]['connected'],'Y-m-d');
 		}
 
 		$o = replace_macros(get_markup_template('admin_queue.tpl'), array(

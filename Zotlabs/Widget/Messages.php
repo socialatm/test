@@ -45,11 +45,14 @@ class Messages {
 		if (!local_channel())
 			return;
 
-		if (isset($options['offset']) && $options['offset'] == -1) {
+		$offset = $options['offset'] ?? 0;
+		$type = $options['type'] ?? 'default';
+
+		if ($offset == -1) {
 			return;
 		}
 
-		if (isset($options['type']) && $options['type'] == 'notification') {
+		if ($type == 'notification') {
 			return self::get_notices_page($options);
 		}
 
@@ -58,15 +61,9 @@ class Messages {
 		$entries = [];
 		$limit = 30;
 		$dummy_order_sql = '';
-
-		$offset = 0;
-		if ($options['offset']) {
-			$offset = intval($options['offset']);
-		}
-
 		$loadtime = (($offset) ? $_SESSION['messages_loadtime'] : datetime_convert());
 
-		switch($options['type']) {
+		switch($type) {
 			case 'direct':
 				$type_sql = ' AND item_private = 2 ';
 				// $dummy_order_sql has no other meaning but to trick
@@ -98,8 +95,21 @@ class Messages {
 
 		foreach($items as $item) {
 
+			$hook_data = [
+				'uid' => $item['uid'],
+				'owner_xchan' => $item['owner_xchan'],
+				'author_xchan' => $item['author_xchan'],
+				'cancel' => false
+			];
+
+			call_hooks('messages_widget', $hook_data);
+
+			if ($hook_data['cancel']) {
+				continue;
+			}
+
 			$info = '';
-			if ($options['type'] == 'direct') {
+			if ($type == 'direct') {
 				$info .= self::get_dm_recipients($channel, $item);
 			}
 

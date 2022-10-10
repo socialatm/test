@@ -367,26 +367,30 @@ function bb_format_attachdata($body) {
 
 	if($data) {
 		$txt = '';
-		if($data['url'] && $data['title']) {
+		if(isset($data['url']) && isset($data['title'])) {
 			$txt .= "\n\n" . '[url=' . $data['url'] . ']' . $data['title'] . '[/url]';
 		}
 		else {
-			if($data['url']) {
+			if(isset($data['url'])) {
 				$txt .= "\n\n" . $data['url'];
 			}
-			if($data['title']) {
+			if(isset($data['title'])) {
 				$txt .= "\n\n" . $data['title'];
 			}
 		}
-		if($data['preview']) {
+
+		if(isset($data['preview'])) {
 			$txt .= "\n\n" . '[img]' . $data['preview'] . '[/img]';
 		}
-		if($data['image']) {
+
+		if(isset($data['image'])) {
 			$txt .= "\n\n" . '[img]' . $data['image'] . '[/img]';
 		}
 
+		if(isset($data['text'])) {
+			$txt .= "\n\n" . $data['text'];
+		}
 
-		$txt .= "\n\n" . $data['text'];
 		return preg_replace('/\[attachment(.*?)\](.*?)\[\/attachment\]/ism',$txt,$body);
 	}
 
@@ -502,32 +506,37 @@ function bb_ShareAttributes($match) {
 
 	$author = "";
 	preg_match("/author='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "")
+	if (isset($matches[1]) && $matches[1] !== '') {
 		$author = urldecode($matches[1]);
+	}
 
 	$link = "";
 	preg_match("/link='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "")
+	if (isset($matches[1]) && $matches[1] !== '') {
 		$link = $matches[1];
+	}
 
 	$avatar = "";
 	preg_match("/avatar='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "")
+	if (isset($matches[1]) && $matches[1] !== '') {
 		$avatar = $matches[1];
+	}
 
 	$profile = "";
 	preg_match("/profile='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "")
+	if (isset($matches[1]) && $matches[1] !== '') {
 		$profile = $matches[1];
+	}
 
 	$posted = "";
 	preg_match("/posted='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "")
+	if (isset($matches[1]) && $matches[1] !== '') {
 		$posted = $matches[1];
+	}
 
 	$auth = "";
 	preg_match("/auth='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "") {
+	if (isset($matches[1]) && $matches[1] !== '') {
 		if($matches[1] === 'true')
 			$auth = true;
 		else

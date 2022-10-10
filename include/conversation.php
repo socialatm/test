@@ -102,28 +102,29 @@ function localize_item(&$item){
 			logger('localize_item: failed to decode object: ' . print_r($item['obj'],true));
 		}
 
-		if(is_array($obj['author']) && $obj['author']['link'])
+		if(isset($obj['author']) && isset($obj['author']['link']))
 			$author_link = get_rel_link($obj['author']['link'],'alternate');
-		elseif(is_array($obj['actor']) && $obj['actor']['url'])
+		elseif(isset($obj['actor']) && isset($obj['actor']['url']))
 			$author_link = ((is_array($obj['actor']['url'])) ? $obj['actor']['url'][0]['href'] : $obj['actor']['url']);
-		elseif (is_string($obj['actor']))
+		elseif (isset($obj['actor']) && is_string($obj['actor']))
 			$author_link = $obj['actor'];
 		else
 			$author_link = '';
 
-		$author_name = (($obj['author'] && $obj['author']['name']) ? $obj['author']['name'] : '');
+		$author_name = $obj['author']['name'] ?? '';
 
 		if(!$author_name)
-			$author_name = ((is_array($obj['actor']) && $obj['actor']['name']) ? $obj['actor']['name'] : '');
+			$author_name = $obj['actor']['name'] ?? '';
 
-		if(!$author_name && is_string($obj['actor'])) {
+		if(!$author_name && isset($obj['actor']) && is_string($obj['actor'])) {
 			$cached_actor = Activity::get_cached_actor($obj['actor']);
 			if (is_array($cached_actor)) {
-				$author_name = (($cached_actor['name']) ? $cached_actor['name'] : $cached_actor['preferredUsername']);
+				$author_name = $cached_actor['name'] ?? $cached_actor['preferredUsername'];
 			}
 		}
 
-		if(is_array($obj['link']))
+		$item_url = '';
+		if(isset($obj['link']) && is_array($obj['link']))
 			$item_url = get_rel_link($obj['link'],'alternate');
 
 		if(!$item_url)
@@ -165,7 +166,7 @@ function localize_item(&$item){
 			case 'Note':
 			default:
 				$post_type = t('post');
-				if(($obj['parent'] && $obj['id'] != $obj['parent']) || $obj['inReplyTo'])
+				if(((isset($obj['parent']) && isset($obj['id']) && $obj['id'] != $obj['parent'])) || isset($obj['inReplyTo']))
 					$post_type = t('comment');
 				break;
 		}
@@ -567,15 +568,12 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 		$page_writeable = ($profile_owner == local_channel());
 
 		if (!$update) {
-			$tab = notags(trim((string)$_GET['tab']));
-			if ($tab === 'posts') {
-				// This is ugly, but we can't pass the profile_uid through the session to the ajax updater,
-				// because browser prefetching might change it on us. We have to deliver it with the page.
+			// This is ugly, but we can't pass the profile_uid through the session to the ajax updater,
+			// because browser prefetching might change it on us. We have to deliver it with the page.
 
-				$live_update_div = '<div id="live-channel"></div>' . "\r\n"
-					. "<script> var profile_uid = " . App::$profile['profile_uid']
-					. "; var netargs = '?f='; var profile_page = " . App::$pager['page'] . "; </script>\r\n";
-			}
+			$live_update_div = '<div id="live-channel"></div>' . "\r\n"
+				. "<script> var profile_uid = " . App::$profile['profile_uid']
+				. "; var netargs = '?f='; var profile_page = " . App::$pager['page'] . "; </script>\r\n";
 		}
 	}
 
@@ -693,7 +691,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 				];
 				call_hooks('stream_item',$x);
 
-				if($x['item']['blocked'])
+				if(isset($x['item']['blocked']) && $x['item']['blocked'])
 					continue;
 
 				$item = $x['item'];
@@ -801,7 +799,7 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 					'id' => (($preview) ? 'P0' : $item['item_id']),
 					'mid' => gen_link_id($item['mid']),
 					'mids' => json_encode([gen_link_id($item['mid'])]),
-					'linktitle' => sprintf( t('View %s\'s profile @ %s'), $profile_name, $profile_url),
+					'linktitle' => sprintf( t('View %s\'s profile @ %s'), $profile_name, $profile_link),
 					'profile_url' => $profile_link,
 					'thread_action_menu' => thread_action_menu($item,$mode),
 					'thread_author_menu' => thread_author_menu($item,$mode),
@@ -966,14 +964,12 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 
 
 function best_link_url($item) {
-
-	$best_url = '';
+	$best_url = $item['author-link'] ?? $item['url'] ?? '';
 	$sparkle  = false;
+	$clean_url = isset($item['author-link']) ? normalise_link($item['author-link']) : '';
 
-	$clean_url = normalise_link($item['author-link']);
-
-	if((local_channel()) && (local_channel() == $item['uid'])) {
-		if(isset(App::$contacts) && x(App::$contacts,$clean_url)) {
+	if($clean_url  && local_channel() && (local_channel() == $item['uid'])) {
+		if(isset(App::$contacts) && x(App::$contacts, $clean_url)) {
 			if(App::$contacts[$clean_url]['network'] === NETWORK_DFRN) {
 				$best_url = z_root() . '/redir/' . App::$contacts[$clean_url]['id'];
 				$sparkle = true;
@@ -981,12 +977,6 @@ function best_link_url($item) {
 			else
 				$best_url = App::$contacts[$clean_url]['url'];
 		}
-	}
-	if(! $best_url) {
-		if($item['author-link'])
-			$best_url = $item['author-link'];
-		else
-			$best_url = $item['url'];
 	}
 
 	return $best_url;
@@ -1058,20 +1048,22 @@ function author_is_pmable($xchan, $abook) {
 function thread_author_menu($item, $mode = '') {
 
 	$menu = [];
-
+	$channel = [];
 	$local_channel = local_channel();
 
 	if($local_channel) {
 		if(! count(App::$contacts))
 			load_contact_links($local_channel);
+
 		$channel = App::get_channel();
-		$channel_hash = (($channel) ? $channel['channel_hash'] : '');
 	}
 
 	$profile_link = chanlink_hash($item['author_xchan']);
 	$contact = false;
 
-	if($channel['channel_hash'] !== $item['author_xchan']) {
+	$follow_url = '';
+
+	if(isset($channel['channel_hash']) && $channel['channel_hash'] !== $item['author_xchan']) {
 		if(App::$contacts && array_key_exists($item['author_xchan'],App::$contacts)) {
 			$contact = App::$contacts[$item['author_xchan']];
 		}
@@ -1083,18 +1075,17 @@ function thread_author_menu($item, $mode = '') {
 		}
 	}
 
+
+	$contact_url = '';
+	$posts_link = '';
+	$poke_link = '';
+
 	if($contact) {
 		$poke_link = ((Apps::system_app_installed($local_channel, 'Poke')) ? z_root() . '/poke/?f=&c=' . $contact['abook_id'] : '');
-		if (! intval($contact['abook_self']))
+		if (isset($contact['abook_self']) && !intval($contact['abook_self']))
 			$contact_url = z_root() . '/connections#' . $contact['abook_id'];
 		$posts_link = z_root() . '/network/?cid=' . $contact['abook_id'];
-
-		$clean_url = normalise_link($item['author-link']);
 	}
-
-	$rating_enabled = get_config('system','rating_enabled');
-
-	$ratings_url = (($rating_enabled) ? z_root() . '/ratings/' . urlencode($item['author_xchan']) : '');
 
 	if($profile_link) {
 		$menu[] = [
@@ -1141,30 +1132,6 @@ function thread_author_menu($item, $mode = '') {
 			'href' => $contact_url,
 			'data' => 'data-id="' . $contact['abook_id'] . '"',
 			'class' => 'contact-edit'
-		];
-	}
-
-	if($pm_url) {
-		$menu[] = [
-			'menu' => 'prv_message',
-			'title' => t('Message'),
-			'icon' => 'fw',
-			'action' => '',
-			'href' => $pm_url,
-			'data' => '',
-			'class' => ''
-		];
-	}
-
-	if($ratings_url) {
-		$menu[] = [
-			'menu' => 'ratings',
-			'title' => t('Ratings'),
-			'icon' => 'fw',
-			'action' => '',
-			'href' => $ratings_url,
-			'data' => '',
-			'class' => ''
 		];
 	}
 
@@ -1431,7 +1398,13 @@ function hz_status_editor($a, $x, $popup = false) {
 	];
 
 	call_hooks('jot_header_tpl_filter',$tplmacros);
-	App::$page['htmlhead'] .= replace_macros($tpl, $tplmacros);
+
+	if (isset(App::$page['htmlhead'])) {
+		App::$page['htmlhead'] .= replace_macros($tpl, $tplmacros);
+	}
+	else {
+		App::$page['htmlhead'] = replace_macros($tpl, $tplmacros);
+	}
 
 	$tpl = get_markup_template('jot.tpl');
 
@@ -1760,11 +1733,11 @@ function get_responses($conv_responses,$response_verbs,$ob,$item) {
 
 	$ret = array();
 	foreach($response_verbs as $v) {
-		$ret[$v] = array();
-		$ret[$v]['count'] = ((x($conv_responses[$v],$item['mid'])) ? $conv_responses[$v][$item['mid']] : 0);
-		$ret[$v]['list']  = ((x($conv_responses[$v],$item['mid'])) ? $conv_responses[$v][$item['mid'] . '-l'] : '');
-		$ret[$v]['button'] = get_response_button_text($v,$ret[$v]['count']);
-		$ret[$v]['title'] = $conv_responses[$v]['title'];
+		$ret[$v] = [];
+		$ret[$v]['count'] = $conv_responses[$v][$item['mid']] ?? 0;
+		$ret[$v]['list']  = ((isset($conv_responses[$v][$item['mid']])) ? $conv_responses[$v][$item['mid'] . '-l'] : '');
+		$ret[$v]['button'] = get_response_button_text($v, $ret[$v]['count']);
+		$ret[$v]['title'] = $conv_responses[$v]['title'] ?? '';
 		$ret[$v]['modal'] = (($ret[$v]['count'] > MAX_LIKERS) ? true : false);
 	}
 

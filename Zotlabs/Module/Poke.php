@@ -3,6 +3,7 @@ namespace Zotlabs\Module; /** @file */
 
 use App;
 use Zotlabs\Lib\Apps;
+use Zotlabs\Lib\Activity;
 use Zotlabs\Web\Controller;
 
 /**
@@ -107,11 +108,6 @@ class Poke extends Controller {
 			$deny_gid      = (($item_private) ? '' : $channel['channel_deny_gid']);
 		}
 
-
-		$arr = array();
-
-
-
 		$arr['item_wall']     = 1;
 		$arr['owner_xchan']   = (($parent_item) ? $parent_item['owner_xchan'] : $channel['channel_hash']);
 		$arr['parent_mid']    = (($parent_mid) ? $parent_mid : '');
@@ -122,26 +118,15 @@ class Poke extends Controller {
 		$arr['deny_gid']      = $deny_gid;
 		$arr['verb']          = $activity;
 		$arr['item_private']  = $item_private;
-		$arr['obj_type']      = ACTIVITY_OBJ_PERSON;
+		$arr['obj_type']      = ACTIVITY_OBJ_NOTE;
 		$arr['body']          = '[zrl=' . $channel['xchan_url'] . ']' . $channel['xchan_name'] . '[/zrl]' . ' ' . t($verbs[$verb][0]) . ' ' . '[zrl=' . $target['xchan_url'] . ']' . $target['xchan_name'] . '[/zrl]';
-
-		$obj = array(
-			'type' => ACTIVITY_OBJ_PERSON,
-			'title' => $target['xchan_name'],
-			'id' => $target['xchan_hash'],
-			'link' => array(
-				array('rel' => 'alternate', 'type' => 'text/html', 'href' => $target['xchan_url']),
-				array('rel' => 'photo', 'type' => $target['xchan_photo_mimetype'], 'href' => $target['xchan_photo_l'])
-			),
-		);
-
-		$arr['obj'] = json_encode($obj);
-
 		$arr['item_origin']   = 1;
 		$arr['item_wall']     = 1;
 		$arr['item_unseen']   = 1;
 		if(! $parent_item)
-			$item['item_thread_top'] = 1;
+			$arr['item_thread_top'] = 1;
+
+		$arr['obj'] = Activity::encode_item($arr);
 
 
 		post_activity_item($arr);
@@ -198,8 +183,8 @@ class Poke extends Controller {
 			$desc = t('Poke somebody');
 		}
 		else {
-			$title = t('Poke/Prod');
-			$desc = t('Poke, prod or do other things to somebody');
+			$title = t('Poke');
+			$desc = t('Poke or ping somebody');
 		}
 
 		$o = replace_macros(get_markup_template('poke_content.tpl'),array(
@@ -207,7 +192,7 @@ class Poke extends Controller {
 			'$poke_basic' => $poke_basic,
 			'$desc' => $desc,
 			'$clabel' => t('Recipient'),
-			'$choice' => t('Choose what you wish to do to recipient'),
+			'$choice' => t('Choose action'),
 			'$verbs' => $shortlist,
 			'$parent' => $parent,
 			'$prv_desc' => t('Make this post private'),

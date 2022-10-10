@@ -42,6 +42,7 @@ class RedbasicConfig {
 		$arr['nav_icon_colour'] = get_pconfig(local_channel(),'redbasic', 'nav_icon_colour' );
 		$arr['nav_active_icon_colour'] = get_pconfig(local_channel(),'redbasic', 'nav_active_icon_colour' );
 		$arr['link_colour'] = get_pconfig(local_channel(),'redbasic', 'link_colour' );
+		$arr['link_hover_colour'] = get_pconfig(local_channel(),'redbasic', 'link_hover_colour' );
 		$arr['banner_colour'] = get_pconfig(local_channel(),'redbasic', 'banner_colour' );
 		$arr['bgcolour'] = get_pconfig(local_channel(),'redbasic', 'background_colour' );
 		$arr['background_image'] = get_pconfig(local_channel(),'redbasic', 'background_image' );
@@ -69,6 +70,7 @@ class RedbasicConfig {
 			set_pconfig(local_channel(), 'redbasic', 'nav_icon_colour', $_POST['redbasic_nav_icon_colour']);
 			set_pconfig(local_channel(), 'redbasic', 'nav_active_icon_colour', $_POST['redbasic_nav_active_icon_colour']);
 			set_pconfig(local_channel(), 'redbasic', 'link_colour', $_POST['redbasic_link_colour']);
+			set_pconfig(local_channel(), 'redbasic', 'link_hover_colour', $_POST['redbasic_link_hover_colour']);
 			set_pconfig(local_channel(), 'redbasic', 'background_colour', $_POST['redbasic_background_colour']);
 			set_pconfig(local_channel(), 'redbasic', 'banner_colour', $_POST['redbasic_banner_colour']);
 			set_pconfig(local_channel(), 'redbasic', 'background_image', $_POST['redbasic_background_image']);
@@ -100,7 +102,8 @@ class RedbasicConfig {
 			'$nav_bg' => array('redbasic_nav_bg', t('Navigation bar background color'), $arr['nav_bg']),
 			'$nav_icon_colour' => array('redbasic_nav_icon_colour', t('Navigation bar icon color '), $arr['nav_icon_colour']),
 			'$nav_active_icon_colour' => array('redbasic_nav_active_icon_colour', t('Navigation bar active icon color '), $arr['nav_active_icon_colour']),
-			'$link_colour' => array('redbasic_link_colour', t('Link color'), $arr['link_colour'], '', $link_colours),
+			'$link_colour' => array('redbasic_link_colour', t('Link color'), $arr['link_colour'], '', $link_colour),
+			'$link_hover_colour' => array('redbasic_link_hover_colour', t('Link hover color'), $arr['link_hover_colour'], '', $link_hover_colour),
 			'$banner_colour' => array('redbasic_banner_colour', t('Set font-color for banner'), $arr['banner_colour']),
 			'$bgcolour' => array('redbasic_background_colour', t('Set the background color'), $arr['bgcolour']),
 			'$background_image' => array('redbasic_background_image', t('Set the background image'), $arr['background_image']),

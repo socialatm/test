@@ -1376,19 +1376,19 @@ function profile_load($nickname, $profile = '') {
 	}
 
 	// get the current observer
-	$observer = App::get_observer();
+	$observer_hash = get_observer_hash();
 
 	$can_view_profile = true;
 
 	// Can the observer see our profile?
 	require_once('include/permissions.php');
-	if(! perm_is_allowed($user[0]['channel_id'],$observer['xchan_hash'],'view_profile')) {
+	if(! perm_is_allowed($user[0]['channel_id'], $observer_hash, 'view_profile')) {
 		$can_view_profile = false;
 	}
 
-	if(! $profile) {
+	if($observer_hash && !$profile) {
 		$r = q("SELECT abook_profile FROM abook WHERE abook_xchan = '%s' and abook_channel = '%d' limit 1",
-			dbesc($observer['xchan_hash']),
+			dbesc($observer_hash),
 			intval($user[0]['channel_id'])
 		);
 		if($r)
@@ -1433,10 +1433,10 @@ function profile_load($nickname, $profile = '') {
 		dbesc($p[0]['profile_guid']),
 		intval($p[0]['profile_uid'])
 	);
-	if($q) {
-		$extra_fields = array();
 
-		require_once('include/channel.php');
+	$extra_fields = [];
+
+	if($q) {
 		$profile_fields_basic    = get_profile_fields_basic();
 		$profile_fields_advanced = get_profile_fields_advanced();
 
@@ -1568,21 +1568,21 @@ function profile_edit_menu($uid) {
  * @param array $profile
  * @param int $block
  * @param boolean $show_connect (optional) default true
- * @param mixed $zcard (optional) default false
+ * @param mixed $details (optional) default false
  *
  * @return string (HTML) suitable for sidebar inclusion
  * Exceptions: Returns empty string if passed $profile is wrong type or not populated
  */
 function profile_sidebar($profile, $block = 0, $show_connect = true, $details = false) {
 
-	$observer = App::get_observer();
+	$observer_hash = get_observer_hash();
 
 	$o = '';
 	$location = false;
 	$pdesc = true;
 	$reddress = true;
 
-	if(! perm_is_allowed($profile['uid'],((is_array($observer)) ? $observer['xchan_hash'] : ''),'view_profile')) {
+	if(! perm_is_allowed($profile['uid'], $observer_hash, 'view_profile')) {
 		$block = true;
 	}
 
@@ -1635,7 +1635,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 //	logger('online: ' . $profile['online']);
 
 
-	if(($profile['hidewall'] && (! local_channel()) && (! remote_channel())) || $block ) {
+	if((isset($profile['hidewall']) && (! local_channel()) && (! remote_channel())) || $block ) {
 		$location = $reddress = $pdesc = $gender = $marital = $homepage = False;
 	}
 
@@ -1654,7 +1654,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 	$menu = get_pconfig($profile['uid'],'system','channel_menu');
 	if($menu && ! $block) {
 		require_once('include/menu.php');
-		$m = menu_fetch($menu,$profile['uid'],$observer['xchan_hash']);
+		$m = menu_fetch($menu,$profile['uid'], $observer_hash);
 		if($m)
 			$channel_menu = menu_render($m);
 	}
@@ -1664,10 +1664,7 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 		$channel_menu .= $comanche->block($menublock);
 	}
 
-	if($zcard)
-		$tpl = get_markup_template('profile_vcard_short.tpl');
-	else
-		$tpl = get_markup_template('profile_vcard.tpl');
+	$tpl = get_markup_template('profile_vcard.tpl');
 
 	$o .= replace_macros($tpl, array(
 		'$details'       => $details,
@@ -2002,7 +1999,7 @@ function atoken_delete_and_sync($channel_id, $atoken_guid) {
  * @return int
  */
 function get_theme_uid() {
-	$uid = (($_REQUEST['puid']) ? intval($_REQUEST['puid']) : 0);
+	$uid = $_REQUEST['puid'] ?? 0;
 	if(local_channel()) {
 		if((get_pconfig(local_channel(),'system','always_my_theme')) || (! $uid))
 			return local_channel();
@@ -2010,10 +2007,10 @@ function get_theme_uid() {
 	if(! $uid) {
 		$x = get_sys_channel();
 		if($x)
-			return $x['channel_id'];
+			return intval($x['channel_id']);
 	}
 
-	return $uid;
+	return intval($uid);
 }
 
 /**

@@ -270,18 +270,14 @@ function get_atom_author($feed, $item) {
 
 	$found_author = $item->get_author();
 	if($found_author) {
-		/// @FIXME $rawauthor is undefined here
-		if($rawauthor) {
-			if($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data'])
-				$author['full_name'] = unxmlify($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data']);
+		$rawauthor = $feed->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author');
+		if(isset($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data'])) {
+			$author['full_name'] = unxmlify($rawauthor[0]['child'][NAMESPACE_POCO]['displayName'][0]['data']);
 		}
+
 		$author['author_name'] = unxmlify($found_author->get_name());
 		$author['author_link'] = unxmlify($found_author->get_link());
 		$author['author_is_feed'] = false;
-
-		$rawauthor = $feed->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author');
-		//logger('rawauthor: ' . print_r($rawauthor, true));
-
 	}
 	else {
 		$author['author_name'] = unxmlify($feed->get_title());
@@ -497,6 +493,7 @@ function get_atom_elements($feed, $item) {
 		$res['verb'] = unxmlify($rawverb[0]['data']);
 	}
 
+	$ostatus_conversation = '';
 	$rawcnv = $item->get_item_tags(NAMESPACE_OSTATUS, 'conversation');
 	if($rawcnv) {
 		// new style
@@ -1434,9 +1431,9 @@ function consume_feed($xml, $importer, &$contact, $pass = 0) {
 
 				if($author['author_link'] != $contact['xchan_url']) {
 					$name = '';
-					if($author['full_name']) {
+					if(isset($author['full_name'])) {
 						$name = $author['full_name'];
-						if($author['author_name'])
+						if(isset($author['author_name']))
 							$name .= ' (' . $author['author_name'] . ')';
 					}
 					else {
@@ -1468,8 +1465,8 @@ function consume_feed($xml, $importer, &$contact, $pass = 0) {
 				// Update content if 'updated' changes
 
 				if($r) {
-					if(activity_match($datarray['verb'],ACTIVITY_DELETE)
-						&& $datarray['author_xchan'] === $r[0]['author_xchan']) {
+					if(isset($datarray['verb']) && activity_match($datarray['verb'], ACTIVITY_DELETE)
+						&& isset($datarray['author_xchan']) && $datarray['author_xchan'] === $r[0]['author_xchan']) {
 						if(! intval($r[0]['item_deleted'])) {
 							logger('deleting item ' . $r[0]['id'] . ' mid=' . $datarray['mid'], LOGGER_DEBUG);
 							drop_item($r[0]['id'],false);
@@ -1498,11 +1495,11 @@ function consume_feed($xml, $importer, &$contact, $pass = 0) {
 				$datarray['uid'] = $importer['channel_id'];
 				$datarray['aid'] = $importer['channel_account_id'];
 
-				if(! link_compare($author['owner_link'], $contact['xchan_url'])) {
+				if(isset($author['owner_link']) && !link_compare($author['owner_link'], $contact['xchan_url'])) {
 					logger('Correcting item owner.', LOGGER_DEBUG);
-					$author['owner_name']   = $contact['name'];
-					$author['owner_link']   = $contact['url'];
-					$author['owner_avatar'] = $contact['thumb'];
+					$author['owner_name']   = $contact['xchan_name'];
+					$author['owner_link']   = $contact['xchan_url'];
+					$author['owner_avatar'] = $contact['xchan_photo_m'];
 				}
 
 				if($importer['channel_system']) {

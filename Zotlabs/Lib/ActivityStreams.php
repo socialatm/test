@@ -116,17 +116,17 @@ class ActivityStreams {
 				$this->obj['object'] = $this->get_compound_property($this->obj['object']);
 			}
 
-			if ($this->obj && is_array($this->obj) && $this->obj['actor'])
+			if ($this->obj && is_array($this->obj) && isset($this->obj['actor']))
 				$this->obj['actor'] = $this->get_actor('actor', $this->obj);
-			if ($this->tgt && is_array($this->tgt) && $this->tgt['actor'])
+			if ($this->tgt && is_array($this->tgt) && isset($this->tgt['actor']))
 				$this->tgt['actor'] = $this->get_actor('actor', $this->tgt);
 
 			$this->parent_id = $this->get_property_obj('inReplyTo');
 
-			if ((!$this->parent_id) && is_array($this->obj)) {
+			if ((!$this->parent_id) && is_array($this->obj) && isset($this->obj['inReplyTo'])) {
 				$this->parent_id = $this->obj['inReplyTo'];
 			}
-			if ((!$this->parent_id) && is_array($this->obj)) {
+			if ((!$this->parent_id) && is_array($this->obj) && isset($this->obj['id'])) {
 				$this->parent_id = $this->obj['id'];
 			}
 		}
@@ -294,7 +294,7 @@ class ActivityStreams {
 		if (!$s) {
 			return false;
 		}
-		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Announce', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
+		return (in_array($s, ['Like', 'Dislike', 'Flag', 'Block', 'Accept', 'Reject', 'TentativeAccept', 'TentativeReject', 'emojiReaction', 'EmojiReaction', 'EmojiReact']));
 	}
 
 	/**
@@ -308,20 +308,25 @@ class ActivityStreams {
 
 	function get_actor($property, $base = '', $namespace = '') {
 		$x = $this->get_property_obj($property, $base, $namespace);
+
 		if ($this->is_url($x)) {
 			$y = Activity::get_cached_actor($x);
 			if ($y) {
 				return $y;
 			}
 		}
+
 		$actor = $this->get_compound_property($property, $base, $namespace, true);
+
 		if (is_array($actor) && self::is_an_actor($actor['type'])) {
 			if (array_key_exists('id', $actor) && (!array_key_exists('inbox', $actor))) {
 				$actor = $this->fetch_property($actor['id']);
 			}
 			return $actor;
 		}
-		return null;
+
+		return Activity::get_unknown_actor($this->data);
+
 	}
 
 

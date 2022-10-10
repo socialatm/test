@@ -25,7 +25,7 @@ class Channel_activities {
 		self::$uid = local_channel();
 		self::$channel = App::get_channel();
 
-		$o .= '<div id="channel-activities" class="d-none overflow-hidden">';
+		$o = '<div id="channel-activities" class="d-none overflow-hidden">';
 		$o .= '<h2 class="mb-4">Welcome ' . self::$channel['channel_name'] . '!</h2>';
 		//$o .= 'Last login date: ' . get_pconfig(self::$uid, 'system', 'stored_login_date') . ' from ' . get_pconfig(self::$uid, 'system', 'stored_login_addr');
 
@@ -44,14 +44,13 @@ class Channel_activities {
 
 		if (!$hookdata['activities']) {
 			$o .= '<h3>No recent activity to display</h3>';
+			$o .= '</div>';
 			return $o;
 		}
 
 		$keys = array_column($hookdata['activities'], 'date');
 
 		array_multisort($keys, SORT_DESC, $hookdata['activities']);
-
-	//	hz_syslog('activities: ' . print_r($hookdata['activities'], true));
 
 		foreach($hookdata['activities'] as $a) {
 			$o .= replace_macros(get_markup_template($a['tpl']), [
