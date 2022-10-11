@@ -3519,11 +3519,7 @@ class SSH2
 
         if (!is_resource($this->fsock) || feof($this->fsock)) {
             $this->bitmap = 0;
-            $str = 'Connection closed (by server) prematurely';
-            if (isset($elapsed)) {
-                $str.= ' ' . $elapsed . 's';
-            }
-            user_error($str);
+            user_error('Connection closed (by server) prematurely ' . $elapsed . 's');
             return false;
         }
 

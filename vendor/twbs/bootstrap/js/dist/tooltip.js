@@ -1,5 +1,5 @@
 /*!
-  * Bootstrap tooltip.js v5.2.2 (https://getbootstrap.com/)
+  * Bootstrap tooltip.js v5.2.0 (https://getbootstrap.com/)
   * Copyright 2011-2022 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
   */
@@ -37,7 +37,7 @@
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v5.2.2): tooltip.js
+   * Bootstrap (v5.2.0): tooltip.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    * --------------------------------------------------------------------------
    */
@@ -126,7 +126,7 @@
 
       this._isEnabled = true;
       this._timeout = 0;
-      this._isHovered = null;
+      this._isHovered = false;
       this._activeTrigger = {};
       this._popper = null;
       this._templateFactory = null;
@@ -135,10 +135,6 @@
       this.tip = null;
 
       this._setListeners();
-
-      if (!this._config.selector) {
-        this._fixTitle();
-      }
     } // Getters
 
 
@@ -167,12 +163,24 @@
       this._isEnabled = !this._isEnabled;
     }
 
-    toggle() {
+    toggle(event) {
       if (!this._isEnabled) {
         return;
       }
 
-      this._activeTrigger.click = !this._activeTrigger.click;
+      if (event) {
+        const context = this._initializeOnDelegatedTarget(event);
+
+        context._activeTrigger.click = !context._activeTrigger.click;
+
+        if (context._isWithActiveTrigger()) {
+          context._enter();
+        } else {
+          context._leave();
+        }
+
+        return;
+      }
 
       if (this._isShown()) {
         this._leave();
@@ -189,10 +197,6 @@
 
       if (this.tip) {
         this.tip.remove();
-      }
-
-      if (this._element.getAttribute('data-bs-original-title')) {
-        this._element.setAttribute('title', this._element.getAttribute('data-bs-original-title'));
       }
 
       this._disposePopper();
@@ -255,13 +259,13 @@
       }
 
       const complete = () => {
+        const previousHoverState = this._isHovered;
+        this._isHovered = false;
         EventHandler__default.default.trigger(this._element, this.constructor.eventName(EVENT_SHOWN));
 
-        if (this._isHovered === false) {
+        if (previousHoverState) {
           this._leave();
         }
-
-        this._isHovered = false;
       };
 
       this._queueCallback(complete, this.tip, this._isAnimated());
@@ -292,7 +296,7 @@
       this._activeTrigger[TRIGGER_CLICK] = false;
       this._activeTrigger[TRIGGER_FOCUS] = false;
       this._activeTrigger[TRIGGER_HOVER] = false;
-      this._isHovered = null; // it is a trick to support manual triggering
+      this._isHovered = false;
 
       const complete = () => {
         if (this._isWithActiveTrigger()) {
@@ -385,7 +389,7 @@
     }
 
     _getTitle() {
-      return this._resolvePossibleFunction(this._config.title) || this._element.getAttribute('data-bs-original-title');
+      return this._resolvePossibleFunction(this._config.title) || this._config.originalTitle;
     } // Private
 
 
@@ -471,11 +475,7 @@
 
       for (const trigger of triggers) {
         if (trigger === 'click') {
-          EventHandler__default.default.on(this._element, this.constructor.eventName(EVENT_CLICK), this._config.selector, event => {
-            const context = this._initializeOnDelegatedTarget(event);
-
-            context.toggle();
-          });
+          EventHandler__default.default.on(this._element, this.constructor.eventName(EVENT_CLICK), this._config.selector, event => this.toggle(event));
         } else if (trigger !== TRIGGER_MANUAL) {
           const eventIn = trigger === TRIGGER_HOVER ? this.constructor.eventName(EVENT_MOUSEENTER) : this.constructor.eventName(EVENT_FOCUSIN);
           const eventOut = trigger === TRIGGER_HOVER ? this.constructor.eventName(EVENT_MOUSELEAVE) : this.constructor.eventName(EVENT_FOCUSOUT);
@@ -503,10 +503,19 @@
       };
 
       EventHandler__default.default.on(this._element.closest(SELECTOR_MODAL), EVENT_MODAL_HIDE, this._hideModalHandler);
+
+      if (this._config.selector) {
+        this._config = { ...this._config,
+          trigger: 'manual',
+          selector: ''
+        };
+      } else {
+        this._fixTitle();
+      }
     }
 
     _fixTitle() {
-      const title = this._element.getAttribute('title');
+      const title = this._config.originalTitle;
 
       if (!title) {
         return;
@@ -515,9 +524,6 @@
       if (!this._element.getAttribute('aria-label') && !this._element.textContent.trim()) {
         this._element.setAttribute('aria-label', title);
       }
-
-      this._element.setAttribute('data-bs-original-title', title); // DO NOT USE IT. Is only for backwards compatibility
-
 
       this._element.removeAttribute('title');
     }
@@ -590,6 +596,8 @@
         };
       }
 
+      config.originalTitle = this._element.getAttribute('title') || '';
+
       if (typeof config.title === 'number') {
         config.title = config.title.toString();
       }
@@ -608,12 +616,10 @@
         if (this.constructor.Default[key] !== this._config[key]) {
           config[key] = this._config[key];
         }
-      }
-
-      config.selector = false;
-      config.trigger = 'manual'; // In the future can be replaced with:
+      } // In the future can be replaced with:
       // const keysWithDifferentValues = Object.entries(this._config).filter(entry => this.constructor.Default[entry[0]] !== this._config[entry[0]])
       // `Object.fromEntries(keysWithDifferentValues)`
+
 
       return config;
     }

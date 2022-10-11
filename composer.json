@@ -30,7 +30,7 @@
         "ext-openssl": "*",
         "ext-json": "*",
         "ext-posix": "*",
-        "sabre/dav": "^4.4",
+        "sabre/dav": "^4.0",
         "michelf/php-markdown": "^1.7",
         "bshaffer/oauth2-server-php": "^1.9",
         "ezyang/htmlpurifier": "^4.9",

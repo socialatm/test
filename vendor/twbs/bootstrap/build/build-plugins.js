@@ -9,7 +9,7 @@
 
 'use strict'
 
-const path = require('node:path')
+const path = require('path')
 const rollup = require('rollup')
 const globby = require('globby')
 const { babel } = require('@rollup/plugin-babel')

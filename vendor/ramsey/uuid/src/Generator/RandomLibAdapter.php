@@ -29,7 +29,10 @@ use RandomLib\Generator;
  */
 class RandomLibAdapter implements RandomGeneratorInterface
 {
-    private Generator $generator;
+    /**
+     * @var Generator
+     */
+    private $generator;
 
     /**
      * Constructs a RandomLibAdapter
