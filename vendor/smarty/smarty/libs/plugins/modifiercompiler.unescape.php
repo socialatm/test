@@ -14,28 +14,20 @@
  * @author Rodney Rehm
  *
  * @param array $params parameters
- * @param Smarty_Internal_TemplateCompilerBase $compiler
  *
  * @return string with compiled code
  */
-function smarty_modifiercompiler_unescape($params, Smarty_Internal_TemplateCompilerBase $compiler)
+function smarty_modifiercompiler_unescape($params)
 {
-    $compiler->template->_checkPlugins(
-        array(
-            array(
-                'function' => 'smarty_literal_compiler_param',
-                'file'     => SMARTY_PLUGINS_DIR . 'shared.literal_compiler_param.php'
-            )
-        )
-    );
-
-    $esc_type = smarty_literal_compiler_param($params, 1, 'html');
-
+    if (!isset($params[ 1 ])) {
+        $params[ 1 ] = 'html';
+    }
     if (!isset($params[ 2 ])) {
         $params[ 2 ] = '\'' . addslashes(Smarty::$_CHARSET) . '\'';
+    } else {
+        $params[ 2 ] = "'{$params[ 2 ]}'";
     }
-
-    switch ($esc_type) {
+    switch (trim($params[ 1 ], '"\'')) {
         case 'entity':
         case 'htmlall':
             if (Smarty::$_MBSTRING) {

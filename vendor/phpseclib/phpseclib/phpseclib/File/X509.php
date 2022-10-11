@@ -145,7 +145,6 @@ class X509
     var $AuthorityKeyIdentifier;
     var $CertificatePolicies;
     var $AuthorityInfoAccessSyntax;
-    var $SubjectInfoAccessSyntax;
     var $SubjectAltName;
     var $SubjectDirectoryAttributes;
     var $PrivateKeyUsagePeriod;
@@ -2164,11 +2163,7 @@ class X509
                 if (!$fsock) {
                     return false;
                 }
-                $path = $parts['path'];
-                if (isset($parts['query'])) {
-                    $path.= '?' . $parts['query'];
-                }
-                fputs($fsock, "GET $path HTTP/1.0\r\n");
+                fputs($fsock, "GET $parts[path] HTTP/1.0\r\n");
                 fputs($fsock, "Host: $parts[host]\r\n\r\n");
                 $line = fgets($fsock, 1024);
                 if (strlen($line) < 3) {

@@ -456,7 +456,7 @@ HELP
      */
     protected function color($vObj)
     {
-        $this->serializeComponent($vObj);
+        fwrite($this->stdout, $this->serializeComponent($vObj));
     }
 
     /**

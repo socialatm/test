@@ -349,7 +349,7 @@ function parseMimeType(string $str): array
         // The quality parameter, if it appears, also marks the end of
         // the parameter list. Anything after the q= counts as an
         // 'accept extension' and could introduce new semantics in
-        // content-negotiation.
+        // content-negotation.
         if ('q' !== $partName) {
             $parameters[$partName] = $part;
         } else {
@@ -404,9 +404,11 @@ function decodePath(string $path): string
 function decodePathSegment(string $path): string
 {
     $path = rawurldecode($path);
+    $encoding = mb_detect_encoding($path, ['UTF-8', 'ISO-8859-1']);
 
-    if (!mb_check_encoding($path, 'UTF-8') && mb_check_encoding($path, 'ISO-8859-1')) {
-        $path = mb_convert_encoding($path, 'UTF-8', 'ISO-8859-1');
+    switch ($encoding) {
+        case 'ISO-8859-1':
+            $path = utf8_encode($path);
     }
 
     return $path;

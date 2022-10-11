@@ -53,11 +53,7 @@ class CalAddress extends Text
             return $input;
         }
         list($schema, $everythingElse) = explode(':', $input, 2);
-        $schema = strtolower($schema);
-        if ('mailto' === $schema) {
-            $everythingElse = strtolower($everythingElse);
-        }
 
-        return $schema.':'.$everythingElse;
+        return strtolower($schema).':'.$everythingElse;
     }
 }

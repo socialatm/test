@@ -645,10 +645,6 @@ class CorePlugin extends ServerPlugin
         if (!$this->server->emit('beforeBind', [$copyInfo['destination']])) {
             return false;
         }
-        if (!$this->server->emit('beforeCopy', [$path, $copyInfo['destination']])) {
-            return false;
-        }
-
         if ($copyInfo['destinationExists']) {
             if (!$this->server->emit('beforeUnbind', [$copyInfo['destination']])) {
                 return false;
@@ -657,7 +653,6 @@ class CorePlugin extends ServerPlugin
         }
 
         $this->server->tree->copy($path, $copyInfo['destination']);
-        $this->server->emit('afterCopy', [$path, $copyInfo['destination']]);
         $this->server->emit('afterBind', [$copyInfo['destination']]);
 
         // If a resource was overwritten we should send a 204, otherwise a 201

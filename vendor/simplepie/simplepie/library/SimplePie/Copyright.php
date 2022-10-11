@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2016, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -41,15 +41,86 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-use SimplePie\Copyright;
+/**
+ * Manages `<media:copyright>` copyright tags as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_copyright()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_copyright_class()}
+ *
+ * @package SimplePie
+ * @subpackage API
+ */
+class SimplePie_Copyright
+{
+	/**
+	 * Copyright URL
+	 *
+	 * @var string
+	 * @see get_url()
+	 */
+	var $url;
 
-class_exists('SimplePie\Copyright');
+	/**
+	 * Attribution
+	 *
+	 * @var string
+	 * @see get_attribution()
+	 */
+	var $label;
 
-// @trigger_error(sprintf('Using the "SimplePie_Copyright" class is deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead.'), \E_USER_DEPRECATED);
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 */
+	public function __construct($url = null, $label = null)
+	{
+		$this->url = $url;
+		$this->label = $label;
+	}
 
-if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead */
-    class SimplePie_Copyright extends Copyright
-    {
-    }
+	/**
+	 * String-ified version
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		// There is no $this->data here
+		return md5(serialize($this));
+	}
+
+	/**
+	 * Get the copyright URL
+	 *
+	 * @return string|null URL to copyright information
+	 */
+	public function get_url()
+	{
+		if ($this->url !== null)
+		{
+			return $this->url;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the attribution text
+	 *
+	 * @return string|null
+	 */
+	public function get_attribution()
+	{
+		if ($this->label !== null)
+		{
+			return $this->label;
+		}
+
+		return null;
+	}
 }
+
+class_alias('SimplePie_Copyright', 'SimplePie\Copyright', false);

@@ -76,6 +76,7 @@
     "Packagist",
     "popperjs",
     "prebuild",
+    "precompiled",
     "prefersreducedmotion",
     "prepended",
     "printf",
