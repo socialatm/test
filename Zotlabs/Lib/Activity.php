@@ -2995,18 +2995,6 @@ class Activity {
 
 		set_iconfig($item, 'activitypub', 'recips', $act->raw_recips);
 
-		// TODO: inheritPrivacy should probably be set in encode activity. Zap does not do so yet - check what this is about
-		if (!(isset($act->data['inheritPrivacy']) && $act->data['inheritPrivacy'])) {
-			if ($item['item_private']) {
-				$item['item_restrict'] = $item['item_restrict'] & 1;
-				if ($is_child_node) {
-					$item['allow_cid'] = '<' . $channel['channel_hash'] . '>';
-					$item['allow_gid'] = $item['deny_cid'] = $item['deny_gid'] = '';
-				}
-				logger('restricted');
-			}
-		}
-
 		if (intval($act->sigok)) {
 			$item['item_verified'] = 1;
 		}
@@ -3054,7 +3042,24 @@ class Activity {
 				$item['thr_parent'] = $parent[0]['parent_mid'];
 			}
 			$item['parent_mid'] = $parent[0]['parent_mid'];
-			//$item['item_private'] = $parent[0]['item_private'];
+
+			/*
+			 *
+			 * Check for conversation privacy mismatches
+			 * We can only do this if we have a channel and we have fetched the parent
+			 *
+			 */
+
+			// public conversation, but this comment went rogue and was published privately
+			// hide it from everybody except the channel owner
+
+			if (intval($parent[0]['item_private']) === 0) {
+				if (intval($item['item_private'])) {
+					$item['item_restrict'] = $item['item_restrict'] | 1;
+					$item['allow_cid'] = '<' . $channel['channel_hash'] . '>';
+					$item['allow_gid'] = $item['deny_cid'] = $item['deny_gid'] = '';
+				}
+			}
 
 		}
 
