@@ -762,6 +762,8 @@ class Libsync {
 	static function sync_locations($sender, $arr, $absolute = false) {
 
 		$ret = [];
+		$what = '';
+		$changed = false;
 
 		// If a sender reports that the channel has been deleted, delete its hubloc
 		if (isset($arr['deleted_locally']) && intval($arr['deleted_locally'])) {

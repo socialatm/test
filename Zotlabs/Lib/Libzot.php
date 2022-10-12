@@ -710,11 +710,11 @@ class Libzot {
 
 			$hidden_changed = $adult_changed = $deleted_changed = $pubforum_changed = 0;
 
-			if (intval($r[0]['xchan_hidden']) != (1 - intval($arr['searchable'])))
+			if (isset($arr['searchable']) && intval($r[0]['xchan_hidden']) != (1 - intval($arr['searchable'])))
 				$hidden_changed = 1;
-			if (intval($r[0]['xchan_selfcensored']) != intval($arr['adult_content']))
+			if (isset($arr['adult_content']) && intval($r[0]['xchan_selfcensored']) != intval($arr['adult_content']))
 				$adult_changed = 1;
-			if (intval($r[0]['xchan_deleted']) != intval($arr['deleted']))
+			if (isset($arr['xchan_deleted']) && intval($r[0]['xchan_deleted']) != intval($arr['deleted']))
 				$deleted_changed = 1;
 
 			// new style 6-MAR-2019
@@ -733,7 +733,7 @@ class Libzot {
 
 			// old style
 
-			if (intval($r[0]['xchan_pubforum']) != intval($arr['public_forum']))
+			if (isset($arr['public_forum']) && intval($r[0]['xchan_pubforum']) != intval($arr['public_forum']))
 				$pubforum_changed = 1;
 
 
@@ -1027,7 +1027,7 @@ class Libzot {
 				// handle remote validation issues
 
 				$b = q("update dreport set dreport_result = '%s', dreport_time = '%s' where dreport_queue = '%s'",
-					dbesc(($x['message']) ? $x['message'] : 'unknown delivery error'),
+					dbesc($x['message'] ?? 'unknown delivery error'),
 					dbesc(datetime_convert()),
 					dbesc($outq['outq_hash'])
 				);
@@ -1437,7 +1437,7 @@ class Libzot {
 		if ($check_mentions) {
 			// It's a top level post. Look at the tags. See if any of them are mentions and are on this hub.
 			if ($act && $act->obj) {
-				if (is_array($act->obj['tag']) && $act->obj['tag']) {
+				if (isset($act->obj['tag']) && is_array($act->obj['tag']) && $act->obj['tag']) {
 					foreach ($act->obj['tag'] as $tag) {
 						if ($tag['type'] === 'Mention' && (strpos($tag['href'], z_root()) !== false)) {
 							$address = basename($tag['href']);

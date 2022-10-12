@@ -206,7 +206,7 @@ function nav($template = 'default') {
 	$url          = '';
 	$settings_url = '';
 
-	if (App::$profile_uid && App::$nav_sel['raw_name']) {
+	if (App::$profile_uid && isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name']) {
 		$active_app = q("SELECT app_url FROM app WHERE app_channel = %d AND app_name = '%s' LIMIT 1",
 			intval(App::$profile_uid),
 			dbesc(App::$nav_sel['raw_name'])

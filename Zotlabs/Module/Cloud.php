@@ -70,7 +70,7 @@ class Cloud extends Controller {
 			$_SESSION['cloud_sort'] = 'name';
 		}
 
-		$_SESSION['cloud_sort'] = (($_REQUEST['sort']) ? trim(notags($_REQUEST['sort'])) : $_SESSION['cloud_sort']);
+		$_SESSION['cloud_sort'] = ((isset($_REQUEST['sort']) && $_REQUEST['sort']) ? trim(notags($_REQUEST['sort'])) : $_SESSION['cloud_sort']);
 
 		$x = clean_query_string();
 		if($x !== \App::$query_string)

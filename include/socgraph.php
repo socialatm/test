@@ -342,6 +342,7 @@ function poco() {
 	}
 
 	$observer = App::get_observer();
+	$user = '';
 
 	if(argc() > 1) {
 		$user = notags(trim(argv(1)));
@@ -355,7 +356,7 @@ function poco() {
 		$system_mode = true;
 	}
 
-	$format = (($_REQUEST['format']) ? $_REQUEST['format'] : 'json');
+	$format = $_REQUEST['format'] ?? 'json';
 
 	$justme = false;
 

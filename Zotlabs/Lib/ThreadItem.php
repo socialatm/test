@@ -298,7 +298,7 @@ class ThreadItem {
 		}
 
 		$has_bookmarks = false;
-		if(Apps::system_app_installed(local_channel(), 'Bookmarks') && is_array($item['term'])) {
+		if(Apps::system_app_installed(local_channel(), 'Bookmarks') && isset($item['term']) && is_array($item['term'])) {
 			foreach($item['term'] as $t) {
 				if(($t['ttype'] == TERM_BOOKMARK))
 					$has_bookmarks = true;

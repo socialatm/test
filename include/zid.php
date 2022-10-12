@@ -359,10 +359,12 @@ function owt_init($token) {
 
 	$_SESSION['authenticated'] = 1;
 
+	$delegate = $_REQUEST['delegate'] ?? '';
 	$delegate_success = false;
-	if($_REQUEST['delegate']) {
+
+	if($delegate) {
 		$r = q("select * from channel left join xchan on channel_hash = xchan_hash where xchan_addr = '%s' limit 1",
-			dbesc($_REQUEST['delegate'])
+			dbesc($delegate)
 		);
 		if ($r && intval($r[0]['channel_id'])) {
 			$allowed = perm_is_allowed($r[0]['channel_id'],$hubloc['xchan_hash'],'delegate');
