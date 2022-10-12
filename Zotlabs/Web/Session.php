@@ -203,7 +203,7 @@ class Session {
 		// first check if we're enforcing that sessions can't change IP address
 		// @todo what to do with IPv6 addresses
 
-		if($_SESSION['addr'] && $_SESSION['addr'] != $_SERVER['REMOTE_ADDR']) {
+		if(isset($_SESSION['addr']) && $_SESSION['addr'] != $_SERVER['REMOTE_ADDR']) {
 			logger('SECURITY: Session IP address changed: ' . $_SESSION['addr'] . ' != ' . $_SERVER['REMOTE_ADDR']);
 
 			$partial1 = substr($_SESSION['addr'], 0, strrpos($_SESSION['addr'], '.'));

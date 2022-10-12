@@ -312,6 +312,21 @@ class Item extends Controller {
 		$observer = null;
 		$datarray = [];
 
+		$item_starred = false;
+		$item_uplink = false;
+		$item_notshown = false;
+		$item_nsfw = false;
+		$item_relay = false;
+		$item_mentionsme = false;
+		$item_verified = false;
+		$item_retained = false;
+		$item_rss = false;
+		$item_deleted = false;
+		$item_hidden = false;
+		$item_unpublished = false;
+		$item_delayed = false;
+		$item_pending_remove = false;
+		$item_blocked = false;
 
 		/**
 		 * Is this a reply to something?
@@ -319,7 +334,7 @@ class Item extends Controller {
 
 		$parent     = ((x($_REQUEST, 'parent')) ? intval($_REQUEST['parent']) : 0);
 		$parent_mid = ((x($_REQUEST, 'parent_mid')) ? trim($_REQUEST['parent_mid']) : '');
-		$mode       = (($_REQUEST['conv_mode'] === 'channel') ? 'channel' : 'network');
+		$mode       = ((isset($_REQUEST['conv_mode']) && $_REQUEST['conv_mode'] === 'channel') ? 'channel' : 'network');
 
 		$remote_xchan = ((x($_REQUEST, 'remote_xchan')) ? trim($_REQUEST['remote_xchan']) : false);
 		$r            = q("select * from xchan where xchan_hash = '%s' limit 1",
@@ -355,10 +370,10 @@ class Item extends Controller {
 
 		$api_source = ((x($_REQUEST, 'api_source') && $_REQUEST['api_source']) ? true : false);
 
-		$consensus = intval($_REQUEST['consensus']);
-		$nocomment = intval($_REQUEST['nocomment']);
+		$consensus = $_REQUEST['consensus'] ?? 0;
+		$nocomment = $_REQUEST['nocomment'] ?? 0;
 
-		$is_poll = ((trim((string)$_REQUEST['poll_answers'][0]) != '' && trim((string)$_REQUEST['poll_answers'][1]) != '') ? true : false);
+		$is_poll = ((isset($_REQUEST['poll_answers'][0]) && $_REQUEST['poll_answers'][0]) && (isset($_REQUEST['poll_answers'][1]) && $_REQUEST['poll_answers'][1]));
 
 		// 'origin' (if non-zero) indicates that this network is where the message originated,
 		// for the purpose of relaying comments to other conversation members.
@@ -720,18 +735,18 @@ class Item extends Controller {
 			}
 
 
-			$location = notags(trim((string)$_REQUEST['location']));
-			$coord    = notags(trim((string)$_REQUEST['coord']));
-			$verb     = notags(trim((string)$_REQUEST['verb']));
-			$title    = escape_tags(trim((string)$_REQUEST['title']));
-			$summary  = trim((string)$_REQUEST['summary']);
-			$body     = trim((string)$_REQUEST['body']);
-			$body     .= trim((string)$_REQUEST['attachment']);
+			$location = ((isset($_REQUEST['location'])) ? notags(trim($_REQUEST['location'])) : '');
+			$coord    = ((isset($_REQUEST['coord'])) ? notags(trim($_REQUEST['coord'])) : '');
+			$verb     = ((isset($_REQUEST['verb'])) ? notags(trim($_REQUEST['verb'])) : '');
+			$title    = ((isset($_REQUEST['title'])) ? escape_tags(trim($_REQUEST['title'])) : '');
+			$summary  = ((isset($_REQUEST['summary'])) ? trim($_REQUEST['summary']) : '');
+			$body     = ((isset($_REQUEST['body'])) ? trim($_REQUEST['body']) : '');
+			$body     .= ((isset($_REQUEST['attachment'])) ? trim($_REQUEST['attachment']) : '');
 			$postopts = '';
 
 			$allow_empty = ((array_key_exists('allow_empty', $_REQUEST)) ? intval($_REQUEST['allow_empty']) : 0);
 
-			$private = (($private) ? $private : intval($acl->is_private() || ($public_policy)));
+			$private = ((isset($private) && $private) ? $private : intval($acl->is_private() || ($public_policy)));
 
 			// If this is a comment, set the permissions from the parent.
 
@@ -767,7 +782,8 @@ class Item extends Controller {
 		}
 
 
-		$mimetype = notags(trim((string)$_REQUEST['mimetype']));
+		$mimetype = ((isset($_REQUEST['mimetype'])) ? notags(trim($_REQUEST['mimetype'])) : '');
+
 		if (!$mimetype)
 			$mimetype = 'text/bbcode';
 
@@ -957,7 +973,7 @@ class Item extends Controller {
 
 
 		$item_unseen    = ((local_channel() != $profile_uid) ? 1 : 0);
-		$item_wall      = (($_REQUEST['type'] === 'wall' || $_REQUEST['type'] === 'wall-comment') ? 1 : 0);
+		$item_wall      = ((isset($_REQUEST['type']) && ($_REQUEST['type'] === 'wall' || $_REQUEST['type'] === 'wall-comment')) ? 1 : 0);
 		$item_origin    = (($origin) ? 1 : 0);
 		$item_consensus = (($consensus) ? 1 : 0);
 		$item_nocomment = (($nocomment) ? 1 : 0);
@@ -986,9 +1002,7 @@ class Item extends Controller {
 
 		$uuid = (($message_id) ? $message_id : item_message_id());
 
-		if (!$mid) {
-			$mid  = z_root() . '/item/' . $uuid;
-		}
+		$mid  = $mid ?? z_root() . '/item/' . $uuid;
 
 
 		if ($is_poll) {
@@ -1045,7 +1059,7 @@ class Item extends Controller {
 			$plink = $mid;
 		}
 
-		if ($datarray['obj']) {
+		if (isset($datarray['obj']) && $datarray['obj']) {
 			$datarray['obj']['id'] = $mid;
 		}
 
@@ -1285,7 +1299,7 @@ class Item extends Controller {
 			// This way we don't see every picture in your new photo album posted to your wall at once.
 			// They will show up as people comment on them.
 
-			if (intval($parent_item['item_hidden'])) {
+			if ($parent_item && intval($parent_item['item_hidden'])) {
 				$r = q("UPDATE item SET item_hidden = 0 WHERE id = %d",
 					intval($parent_item['id'])
 				);
@@ -1437,7 +1451,11 @@ class Item extends Controller {
 				if ($complex) {
 					tag_deliver($i[0]['uid'], $i[0]['id']);
 				}
+
 			}
+
+			killme();
+
 		}
 	}
 

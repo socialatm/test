@@ -38,6 +38,7 @@ class File extends DAV\Node implements DAV\IFile {
 	 */
 	private $name;
 
+
 	/**
 	 * Sets up the node, expects a full path name.
 	 *
@@ -49,7 +50,8 @@ class File extends DAV\Node implements DAV\IFile {
 		$this->name = $name;
 		$this->data = $data;
 		$this->auth = $auth;
-
+		$this->os_path = null;
+		$this->folder_hash = null;
 		// logger(print_r($this->data, true), LOGGER_DATA);
 	}
 

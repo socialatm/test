@@ -262,7 +262,7 @@ class Browser extends DAV\Browser\Plugin {
 
 			// put the array for this file together
 			$ft['attach_id'] = $id;
-			$ft['icon'] = $icon;
+			// $ft['icon'] = $icon;
 			$ft['photo_icon'] = $photo_icon;
 			$ft['is_creator'] = $is_creator;
 			$ft['rel_path'] = (($data) ? '/cloud/' . $nick .'/' . $data['display_path'] : $href);
@@ -454,6 +454,9 @@ class Browser extends DAV\Browser\Plugin {
 		$lockstate = '';
 		$limit = 0;
 
+		$cat = $_REQUEST['cat'] ?? '';
+		$cloud_tiles = $_SESSION['cloud_tiles'] ?? 0;
+
 		if($this->auth->owner_id) {
 			$channel = channelx_by_n($this->auth->owner_id);
 			if($channel) {
@@ -507,7 +510,7 @@ class Browser extends DAV\Browser\Plugin {
 
 		$breadcrumbs_html = '';
 
-		if($display_path && ! $_REQUEST['cat'] && ! $_SESSION['cloud_tiles']){
+		if ($display_path && !$cat && !$cloud_tiles) {
 			$breadcrumbs = [];
 			$folders = explode('/', $display_path);
 			$folder_hashes = explode('/', $node->os_path);

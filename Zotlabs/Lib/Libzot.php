@@ -668,7 +668,7 @@ class Libzot {
 		$verified    = false;
 
 		if (!self::verify($arr['id'], $arr['id_sig'], $arr['public_key'])) {
-			logger('Unable to verify channel signature for ' . $arr['address']);
+			logger('Unable to verify channel signature for ' . $arr['primary_location']['address']);
 			return $ret;
 		}
 		else {
@@ -914,7 +914,7 @@ class Libzot {
 
 		// Which entries in the update table are we interested in updating?
 
-		$address = (($ud_arr && $ud_arr['ud_addr']) ? $ud_arr['ud_addr'] : $arr['address']);
+		$address = (($ud_arr && $ud_arr['ud_addr']) ? $ud_arr['ud_addr'] : $arr['primary_location']['address']);
 
 
 		// Are we a directory server of some kind?
@@ -1298,7 +1298,7 @@ class Libzot {
 					}
 				}
 
-				if ($AS->meta['hubloc']) {
+				if (isset($AS->meta['hubloc']) && $AS->meta['hubloc']) {
 					$arr['item_verified'] = true;
 				}
 
@@ -1306,7 +1306,7 @@ class Libzot {
 					$arr['comment_policy'] = 'authenticated';
 				}
 
-				if ($AS->meta['signed_data']) {
+				if (isset($AS->meta['signed_data']) && $AS->meta['signed_data']) {
 					IConfig::Set($arr, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
 				}
 
@@ -1516,6 +1516,7 @@ class Libzot {
 		foreach ($deliveries as $d) {
 
 			$local_public = $public;
+			$item_result = null;
 
 			$DR = new DReport(z_root(), $sender, $d, $arr['mid']);
 

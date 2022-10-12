@@ -101,7 +101,7 @@ class Lockview extends Controller {
 			killme();
 		}
 
-		if (intval($item['item_private']) && (!strlen($item['allow_cid'])) && (!strlen($item['allow_gid']))
+		if ((isset($item['item_private']) && intval($item['item_private'])) && (!strlen($item['allow_cid'])) && (!strlen($item['allow_gid']))
 			&& (!strlen($item['deny_cid'])) && (!strlen($item['deny_gid']))) {
 
 			// if the post is private, but public_policy is blank ("visible to the internet"), and there aren't any

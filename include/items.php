@@ -2966,18 +2966,20 @@ function tgroup_check($uid, $item) {
 	if(! $u)
 		return false;
 
-
-	$terms = array_merge(get_terms_oftype($item['term'],TERM_MENTION),get_terms_oftype($item['term'],TERM_FORUM));
-
-	if($terms)
-		logger('tgroup_check: post mentions: ' . print_r($terms,true), LOGGER_DATA);
-
 	$max_forums = get_config('system','max_tagged_forums',2);
 	$matched_forums = 0;
 
 	$link = normalise_link($u[0]['xchan_url']);
 
+	$terms = [];
+
+	if (isset($item['terms']) && $item['terms']) {
+		$terms = array_merge(get_terms_oftype($item['term'],TERM_MENTION),get_terms_oftype($item['term'],TERM_FORUM));
+	}
+
 	if($terms) {
+		logger('tgroup_check: post mentions: ' . print_r($terms,true), LOGGER_DATA);
+
 		foreach($terms as $term) {
 			if(! link_compare($term['url'],$link)) {
 				continue;
@@ -4715,7 +4717,7 @@ function set_linkified_perms($linkified, &$str_contact_allow, &$str_group_allow,
 	foreach($linkified as $x) {
 		$access_tag = $x['success']['access_tag'];
 		if(($access_tag) && (! $parent_item)) {
-			logger('access_tag: ' . $tag . ' ' . print_r($access_tag,true), LOGGER_DATA);
+			logger('access_tag: ' . print_r($access_tag,true), LOGGER_DATA);
 			if ($first_access_tag && (! get_pconfig($profile_uid,'system','no_private_mention_acl_override'))) {
 
 				// This is a tough call, hence configurable. The issue is that one can type in a @!privacy mention

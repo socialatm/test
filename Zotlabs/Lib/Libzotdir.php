@@ -145,8 +145,8 @@ class Libzotdir {
 		if(! $directory_sort_order)
 			$directory_sort_order = 'date';
 
-		$current_order = (($_REQUEST['order']) ? $_REQUEST['order'] : $directory_sort_order);
-		$suggest = (($_REQUEST['suggest']) ? '&suggest=' . $_REQUEST['suggest'] : '');
+		$current_order = $_REQUEST['order'] ?? $directory_sort_order;
+		$suggest = ((isset($_REQUEST['suggest'])) ? '&suggest=' . $_REQUEST['suggest'] : '');
 
 		$url = 'directory?f=';
 

@@ -617,7 +617,7 @@ class Directory extends DAV\Node implements DAV\ICollection, DAV\IQuota, DAV\IMo
 		$file = trim($file, '/');
 		$path_arr = explode('/', $file);
 
-		$cat = $_REQUEST['cat'];
+		$cat = $_REQUEST['cat'] ?? '';
 
 
 		if (! $path_arr)

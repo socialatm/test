@@ -1138,7 +1138,7 @@ App::$strings["This website expires after %d days."] = "Срок хранени�
 App::$strings["This website does not expire imported content."] = "Срок хранения импортированного содержимого этого сайта не ограничен.";
 App::$strings["The website limit takes precedence if lower than your limit."] = "Ограничение сайта имеет приоритет если ниже вашего значения.";
 App::$strings["Do not import posts with this text"] = "Не импортировать публикации с этим текстом";
-App::$strings["Words one per line or #tags, \$categories, /patterns/, lang=xx, lang!=xx - leave blank to import all posts"] = "Слова, по одному на строку, или #теги, $категории, /шаблоны/, lang=xx, lang!=xx - оставьте пустым для импорта всех публикаций";
+App::$strings["Words one per line or #tags, \$categories, /patterns/, lang=xx, lang!=xx - leave blank to import all posts"] = "Слова, по одному на строку, или #теги, \$категории, /шаблоны/, lang=xx, lang!=xx - оставьте пустым для импорта всех публикаций";
 App::$strings["Only import posts with this text"] = "Импортировать публикации только с этим текстом";
 App::$strings["Connections Settings"] = "Настройки контактов";
 App::$strings["No feature settings configured"] = "Параметры функций не настроены";

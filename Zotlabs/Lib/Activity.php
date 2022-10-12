@@ -415,7 +415,7 @@ class Activity {
 			$objtype = self::activity_obj_mapper($i['obj_type']);
 		}
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			$ret = Activity::encode_object($i['obj']);
 		}
 
@@ -430,7 +430,7 @@ class Activity {
 			return $ret;
 		}
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			if (is_array($i['obj'])) {
 				$ret = $i['obj'];
 			}
@@ -851,7 +851,7 @@ class Activity {
 		else
 			return [];
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			if (!is_array($i['obj'])) {
 				$i['obj'] = json_decode($i['obj'], true);
 			}
@@ -879,7 +879,7 @@ class Activity {
 			$ret['type'] = 'Invite';
 		}
 
-		if ($i['target']) {
+		if (isset($i['target']) && $i['target']) {
 			if (!is_array($i['target'])) {
 				$i['target'] = json_decode($i['target'], true);
 			}

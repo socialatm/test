@@ -83,7 +83,7 @@ class Directory extends Controller {
 		$globaldir = Libzotdir::get_directory_setting($observer, 'globaldir');
 
 		// override your personal global search pref if we're doing a navbar search of the directory
-		if(intval($_REQUEST['navsearch']))
+		if(isset($_REQUEST['navsearch']) && intval($_REQUEST['navsearch']))
 			$globaldir = 1;
 
 		$safe_mode = Libzotdir::get_directory_setting($observer, 'safemode');
@@ -98,14 +98,17 @@ class Directory extends Controller {
 		else
 			$search = ((x($_GET,'search')) ? notags(trim(rawurldecode($_GET['search']))) : '');
 
-
+		$advanced = '';
 		if(strpos($search,'=') && local_channel() && feature_enabled(local_channel(), 'advanced_dirsearch'))
 			$advanced = $search;
 
-		$keywords = (($_GET['keywords']) ? $_GET['keywords'] : '');
+		$keywords = $_GET['keywords'] ?? '';
 
 		// Suggest channels if no search terms or keywords are given
 		$suggest = (local_channel() && x($_REQUEST,'suggest')) ? $_REQUEST['suggest'] : '';
+
+		$addresses = [];
+		$common = [];
 
 		if($suggest) {
 
@@ -123,8 +126,7 @@ class Directory extends Controller {
 			}
 
 			// Remember in which order the suggestions were
-			$addresses = array();
-			$common = array();
+
 			$index = 0;
 			foreach($r as $rr) {
 				$common[$rr['xchan_addr']] = ((intval($rr['total']) > 0) ? intval($rr['total']) - 1 : 0);
@@ -132,7 +134,7 @@ class Directory extends Controller {
 			}
 
 			// Build query to get info about suggested people
-			$advanced = '';
+
 			foreach(array_keys($addresses) as $address) {
 				$advanced .= "address=\"$address\" ";
 			}
@@ -146,6 +148,8 @@ class Directory extends Controller {
 		$dirmode = intval(get_config('system','directory_mode'));
 
 		$directory_admin = false;
+
+		$url = '';
 
 		if(($dirmode == DIRECTORY_MODE_PRIMARY) || ($dirmode == DIRECTORY_MODE_STANDALONE)) {
 			$url = z_root() . '/dirsearch';
@@ -275,19 +279,12 @@ class Directory extends Controller {
 
 							$page_type = '';
 
-							$rating_enabled = get_config('system','rating_enabled');
-
-							if($rr['total_ratings'] && $rating_enabled)
-								$total_ratings = sprintf( tt("%d rating", "%d ratings", $rr['total_ratings']), $rr['total_ratings']);
-							else
-								$total_ratings = '';
-
 							$profile = $rr;
 
-							if ((x($profile,'locale') == 1)
-								|| (x($profile,'region') == 1)
-								|| (x($profile,'postcode') == 1)
-								|| (x($profile,'country') == 1))
+					//		if ((x($profile,'locale') == 1)
+					//			|| (x($profile,'region') == 1)
+					//			|| (x($profile,'postcode') == 1)
+					//			|| (x($profile,'country') == 1))
 
 							$gender = ((x($profile,'gender') == 1) ? t('Gender: ') . $profile['gender']: False);
 
@@ -352,9 +349,6 @@ class Directory extends Controller {
 								'location' => $location,
 								'location_label' => t('Location:'),
 								'gender'   => $gender,
-								'total_ratings' => $total_ratings,
-								'viewrate' => true,
-								'canrate' => (($rating_enabled && local_channel()) ? true : false),
 								'pdesc'	=> $pdesc,
 								'pdesc_label' => t('Description:'),
 								'censor' => (($directory_admin) ? 'dircensor/' . $rr['hash'] : ''),
@@ -374,9 +368,9 @@ class Directory extends Controller {
 								'keywords' => $out,
 								'ignlink' => $suggest ? z_root() . '/directory?ignore=' . $rr['hash'] : '',
 								'ignore_label' => t('Don\'t suggest'),
-								'common_friends' => (($common[$rr['address']]) ? intval($common[$rr['address']]) : ''),
+								'common_friends' => $common[$rr['address']] ?? '',
 								'common_label' => t('Common connections (estimated):'),
-								'common_count' => intval($common[$rr['address']]),
+								'common_count' => $common[$rr['address']] ?? '',
 								'safe' => $safe_mode
 							);
 
@@ -408,8 +402,9 @@ class Directory extends Controller {
 
 						logger('mod_directory: entries: ' . print_r($entries,true), LOGGER_DATA);
 
+						$aj = $_REQUEST['aj'] ?? '';
 
-						if($_REQUEST['aj']) {
+						if($aj) {
 							if($entries) {
 								$o = replace_macros(get_markup_template('directajax.tpl'),array(
 									'$entries' => $entries
