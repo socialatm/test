@@ -85,8 +85,8 @@ class ComposerStaticInit7b34d7e50a62201ec5d5e526a5b8b35d
     public static $prefixDirsPsr4 = array (
         'voku\\' => 
         array (
-            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
-            1 => __DIR__ . '/..' . '/voku/stop-words/src/voku',
+            0 => __DIR__ . '/..' . '/voku/stop-words/src/voku',
+            1 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
         ),
         'phpseclib\\' => 
         array (
