@@ -491,7 +491,7 @@ function attach_by_hash_nodata($hash, $observer_hash, $rev = 0) {
 function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	require_once('include/photos.php');
-hz_syslog(print_r($channel,true));
+
 	/**
 	 * @hooks photo_upload_begin
 	 *   Called when attempting to upload a photo.
