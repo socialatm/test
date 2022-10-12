@@ -31,7 +31,7 @@
         "ext-json": "*",
         "ext-posix": "*",
         "sabre/dav": "^4.0",
-        "michelf/php-markdown": "^1.7",
+        "michelf/php-markdown": "^2.0",
         "bshaffer/oauth2-server-php": "^1.9",
         "ezyang/htmlpurifier": "^4.9",
         "simplepie/simplepie": "~1.5",
