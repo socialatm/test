@@ -3,7 +3,7 @@
         'name' => 'zotlabs/hubzilla',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '2291fcdf11fe3e03cc84ca8171cd7dcf03015e17',
+        'reference' => 'c36bb17475b3dd5925cefc32752f1fb8a63df154',
         'type' => 'application',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -137,9 +137,9 @@
             'dev_requirement' => false,
         ),
         'ramsey/uuid' => array(
-            'pretty_version' => '4.3.1',
-            'version' => '4.3.1.0',
-            'reference' => '8505afd4fea63b81a85d3b7b53ac3cb8dc347c28',
+            'pretty_version' => '4.5.1',
+            'version' => '4.5.1.0',
+            'reference' => 'a161a26d917604dc6d3aa25100fddf2556e9f35d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ramsey/uuid',
             'aliases' => array(),
@@ -148,7 +148,7 @@
         'rhumsaa/uuid' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '4.3.1',
+                0 => '4.5.1',
             ),
         ),
         'sabre/dav' => array(
@@ -268,7 +268,7 @@
         'zotlabs/hubzilla' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '2291fcdf11fe3e03cc84ca8171cd7dcf03015e17',
+            'reference' => 'c36bb17475b3dd5925cefc32752f1fb8a63df154',
             'type' => 'application',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
