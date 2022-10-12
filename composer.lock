@@ -133,16 +133,16 @@
         },
         {
             "name": "bshaffer/oauth2-server-php",
-            "version": "v1.12.0",
+            "version": "v1.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bshaffer/oauth2-server-php.git",
-                "reference": "60254fc7fbb08ce56164faae9e075068adf914ef"
+                "reference": "2bfaf9d7bbebe2ba1c1deb48e756ba0b3af4e985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/60254fc7fbb08ce56164faae9e075068adf914ef",
-                "reference": "60254fc7fbb08ce56164faae9e075068adf914ef",
+                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/2bfaf9d7bbebe2ba1c1deb48e756ba0b3af4e985",
+                "reference": "2bfaf9d7bbebe2ba1c1deb48e756ba0b3af4e985",
                 "shasum": ""
             },
             "require": {
@@ -190,9 +190,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bshaffer/oauth2-server-php/issues",
-                "source": "https://github.com/bshaffer/oauth2-server-php/tree/v1.12.0"
+                "source": "https://github.com/bshaffer/oauth2-server-php/tree/v1.12.1"
             },
-            "time": "2022-04-19T17:09:11+00:00"
+            "time": "2022-05-31T16:12:58+00:00"
         },
         {
             "name": "commerceguys/intl",
