@@ -12,7 +12,7 @@ class Fullprofile {
 
 	function widget($arr) {
 
-		if(! \App::$profile['profile_uid'])
+		if(!(isset(\App::$profile['profile_uid']) && \App::$profile['profile_uid']))
 			return;
 
 		$block = observer_prohibited();

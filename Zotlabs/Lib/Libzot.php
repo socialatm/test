@@ -804,7 +804,7 @@ class Libzot {
 					'xchan_name_date'      => $arr['name_updated'],
 					'xchan_hidden'         => intval(1 - intval($arr['searchable'])),
 					'xchan_selfcensored'   => $arr['adult_content'],
-					'xchan_deleted'        => $arr['deleted'],
+					'xchan_deleted'        => $arr['deleted'] ?? 0,
 					'xchan_pubforum'       => $arr['public_forum']
 				]
 			);
@@ -885,7 +885,7 @@ class Libzot {
 				else {
 					$r = q("update xchan set xchan_photo_date = '%s', xchan_photo_l = '%s', xchan_photo_m = '%s', xchan_photo_s = '%s', xchan_photo_mimetype = '%s'
 						where xchan_hash = '%s'",
-						dbescdate(datetime_convert('UTC', 'UTC', $arr['photo_updated'])),
+						dbescdate(datetime_convert('UTC', 'UTC', $arr['photo']['updated'])),
 						dbesc($photos[0]),
 						dbesc($photos[1]),
 						dbesc($photos[2]),
