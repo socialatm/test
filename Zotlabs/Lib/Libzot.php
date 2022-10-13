@@ -473,7 +473,7 @@ class Libzot {
 						unset($new_connection[0]['abook_account']);
 						unset($new_connection[0]['abook_channel']);
 
-						$abconfig = load_abconfig($channel['channel_id'], $new_connection['abook_xchan']);
+						$abconfig = load_abconfig($channel['channel_id'], $new_connection[0]['abook_xchan']);
 
 						if ($abconfig) {
 							$new_connection['abconfig'] = $abconfig;
@@ -1979,13 +1979,18 @@ class Libzot {
 				logger('FOF Activity rejected: ' . print_r($activity, true));
 				continue;
 			}
-			$arr = Activity::decode_note($AS);
 
 			// logger($AS->debug());
+
+			if(empty($AS->actor['id'])) {
+				logger('No actor id!');
+				continue;
+			}
 
 			$r = q("select hubloc_hash, hubloc_network from hubloc where hubloc_id_url = '%s'",
 				dbesc($AS->actor['id'])
 			);
+
 			$r = self::zot_record_preferred($r);
 
 			if (!$r) {
@@ -2009,6 +2014,8 @@ class Libzot {
 					continue;
 				}
 			}
+
+			$arr = Activity::decode_note($AS);
 
 			if ($r) {
 				$arr['author_xchan'] = $r['hubloc_hash'];

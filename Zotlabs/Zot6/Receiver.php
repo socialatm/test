@@ -34,6 +34,7 @@ class Receiver {
 		$this->rawdata     = null;
 		$this->site_id     = null;
 		$this->prvkey      = Config::get('system','prvkey');
+		$this->hub         = null;
 
 		if($localdata) {
 			$this->rawdata = $localdata;

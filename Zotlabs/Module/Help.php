@@ -17,7 +17,7 @@ class Help extends \Zotlabs\Web\Controller {
 	function get() {
 		nav_set_selected('Help');
 
-		if($_REQUEST['search']) {
+		if(isset($_REQUEST['search']) && $_REQUEST['search']) {
 			$o .= '<div id="help-content" class="generic-content-wrapper">';
 			$o .= '<div class="section-title-wrapper">';
 			$o .= '<h2>' . t('Documentation Search') . ' - ' . htmlspecialchars($_REQUEST['search']) . '</h2>';
@@ -44,8 +44,8 @@ class Help extends \Zotlabs\Web\Controller {
 
 			return $o;
 		}
-				
-				
+
+
 		if(argc() > 2 && argv(argc()-2) === 'assets') {
 			$path = '';
 			for($x = 1; $x < argc(); $x ++) {
@@ -87,11 +87,12 @@ class Help extends \Zotlabs\Web\Controller {
 			'tutorials' => t('Tutorials')
 		];
 
+		$heading = '';
 		if(array_key_exists(argv(1), $headings))
 			$heading = $headings[argv(1)];
 
 		$content =  get_help_content();
-		
+
 		$language = determine_help_language()['language'];
 
 		return replace_macros(get_markup_template('help.tpl'), array(
