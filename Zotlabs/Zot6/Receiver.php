@@ -72,7 +72,11 @@ class Receiver {
 
 			if ($this->encrypted && $this->prvkey) {
 				$uncrypted = Crypto::unencapsulate($this->data,$this->prvkey);
-				if ($uncrypted) {
+
+				// openssl_decrypt() will sometimes return garbage instead of false when
+				// a wrong key is used. This can happen in case of hub re-installs.
+				// Hence also check with str_starts_with().
+				if ($uncrypted && str_starts_with($uncrypted, '{')) {
 					$this->data = json_decode($uncrypted,true);
 				}
 				else {
