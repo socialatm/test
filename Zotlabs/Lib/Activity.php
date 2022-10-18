@@ -68,6 +68,10 @@ class Activity {
 		else {
 			$m = parse_url($url);
 
+			if (!$m) {
+				return null;
+			}
+
 			// handle bearcaps
 			if ($m['scheme'] === 'bear') {
 				$params = explode('&', $m['query']);
@@ -2261,6 +2265,10 @@ class Activity {
 			}
 
 			$obj_actor = ((isset($act->obj['actor'])) ? $act->obj['actor'] : $act->get_actor('attributedTo', $act->obj));
+
+			if (!isset($obj_actor['id'])) {
+				return false;
+			}
 
 			// ensure we store the original actor
 			self::actor_store($obj_actor['id'], $obj_actor);

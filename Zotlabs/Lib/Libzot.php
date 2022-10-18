@@ -1945,7 +1945,7 @@ class Libzot {
 			return false;
 		}
 
-		if ($a['data']['type'] !== 'OrderedCollection') {
+		if (isset($a['data']['type']) && $a['data']['type'] !== 'OrderedCollection') {
 			return false;
 		}
 

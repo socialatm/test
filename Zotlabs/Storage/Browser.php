@@ -351,6 +351,9 @@ class Browser extends DAV\Browser\Plugin {
 		$header = (($cat) ? t('File category') . ": " . $this->escapeHTML($cat) : t('Files'));
 
 		$channel = channelx_by_n($channel_id);
+		$lockstate = null;
+		$channel_acl = null;
+
 		if($channel) {
 			$acl = new \Zotlabs\Access\AccessList($channel);
 			$channel_acl = $acl->get();
@@ -391,10 +394,10 @@ class Browser extends DAV\Browser\Plugin {
 				'$copy' => ['copy', t('Copy to target location'), 0, '', [t('No'), t('Yes')]],
 				'$return_path' => $path,
 				'$lockstate' => $lockstate,
-				'$allow_cid' => acl2json($channel_acl['allow_cid']),
-				'$allow_gid' => acl2json($channel_acl['allow_gid']),
-				'$deny_cid' => acl2json($channel_acl['deny_cid']),
-				'$deny_gid' => acl2json($channel_acl['deny_gid']),
+				'$allow_cid' => ((isset($channel_acl['allow_cid'])) ? acl2json($channel_acl['allow_cid']) : ''),
+				'$allow_gid' => ((isset($channel_acl['allow_gid'])) ? acl2json($channel_acl['allow_gid']) : ''),
+				'$deny_cid' => ((isset($channel_acl['deny_cid'])) ? acl2json($channel_acl['deny_cid']) : ''),
+				'$deny_gid' => ((isset($channel_acl['deny_gid'])) ? acl2json($channel_acl['deny_gid']) : ''),
 				'$is_owner' => $is_owner,
 				'$select_all_label' => t('Select All'),
 				'$bulk_actions_label' => t('Bulk Actions'),

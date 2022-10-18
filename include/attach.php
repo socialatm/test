@@ -962,32 +962,33 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 	if($is_photo && $r) {
 
 		$args = array( 'source' => $source, 'visible' => $visible, 'resource_id' => $hash, 'album' => $pathname, 'os_syspath' => $os_basepath . $os_relpath, 'os_path' => $os_path, 'display_path' => $display_path, 'filename' => $filename, 'getimagesize' => $gis, 'directory' => $direct, 'options' => $options );
-		if($arr['contact_allow'])
+		if (array_key_exists('contact_allow', $arr))
 			$args['contact_allow'] = $arr['contact_allow'];
-		if($arr['group_allow'])
+		if (array_key_exists('contact_deny', $arr))
 			$args['group_allow'] = $arr['group_allow'];
-		if($arr['contact_deny'])
+		if (array_key_exists('contact_deny', $arr))
 			$args['contact_deny'] = $arr['contact_deny'];
-		if($arr['group_deny'])
+		if (array_key_exists('group_deny', $arr))
 			$args['group_deny'] = $arr['group_deny'];
-		if(array_key_exists('allow_cid',$arr))
+		if (array_key_exists('allow_cid', $arr))
 			$args['allow_cid'] = $arr['allow_cid'];
-		if(array_key_exists('allow_gid',$arr))
+		if (array_key_exists('allow_gid', $arr))
 			$args['allow_gid'] = $arr['allow_gid'];
-		if(array_key_exists('deny_cid',$arr))
+		if (array_key_exists('deny_cid', $arr))
 			$args['deny_cid'] = $arr['deny_cid'];
-		if(array_key_exists('deny_gid',$arr))
+		if (array_key_exists('deny_gid', $arr))
 			$args['deny_gid'] = $arr['deny_gid'];
 
 		$args['created'] = $created;
 		$args['edited'] = $edited;
-		if($arr['item'])
+
+		if (array_key_exists('item', $arr))
 			$args['item'] = $arr['item'];
 
-		if($arr['body'])
+		if (array_key_exists('body', $arr))
 			$args['body'] = $arr['body'];
 
-		if($arr['description'])
+		if (array_key_exists('description', $arr))
 			$args['description'] = $arr['description'];
 
 		$args['deliver'] = $dosync;

@@ -40,7 +40,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 			head_set_icon(\App::$data['channel']['xchan_photo_s']);
 
-			\App::$page['htmlhead'] .= "<script> var profile_uid = " . ((\App::$data['channel']) ? \App::$data['channel']['channel_id'] : 0) . "; </script>" ;
+			\App::$page['htmlhead'] = "<script> var profile_uid = " . ((\App::$data['channel']) ? \App::$data['channel']['channel_id'] : 0) . "; </script>" ;
 
 		}
 
@@ -73,18 +73,6 @@ class Photos extends \Zotlabs\Web\Controller {
 				killme();
 			return;
 		}
-
-		$s = abook_self($page_owner_uid);
-
-		if(! $s) {
-			notice( t('Page owner information could not be retrieved.') . EOL);
-			logger('mod_photos: post: unable to locate contact record for page owner. uid=' . $page_owner_uid);
-			if(is_ajax())
-				killme();
-			return;
-		}
-
-		$owner_record = $s[0];
 
 		$acl = new \Zotlabs\Access\AccessList(\App::$data['channel']);
 
@@ -467,7 +455,7 @@ class Photos extends \Zotlabs\Web\Controller {
 		if($partial) {
 			$x = save_chunk($channel,$matches[1],$matches[2],$matches[3]);
 
-			if($x['partial']) {
+			if(isset($x['partial']) && $x['partial']) {
 				header('Range: bytes=0-' . (($x['length']) ? $x['length'] - 1 : 0));
 				json_return_and_die($x);
 			}
@@ -545,6 +533,7 @@ class Photos extends \Zotlabs\Web\Controller {
 		//
 
 		$can_comment = perm_is_allowed(\App::$profile['profile_uid'],get_observer_hash(),'post_comments');
+		$datum = '';
 
 		if(argc() > 3) {
 			$datatype = argv(2);
@@ -552,7 +541,6 @@ class Photos extends \Zotlabs\Web\Controller {
 		} else {
 			if(argc() > 2) {
 				$datatype = argv(2);
-				$datum = '';
 			}
 			else
 				$datatype = 'summary';
@@ -576,8 +564,8 @@ class Photos extends \Zotlabs\Web\Controller {
 
 		$observer = \App::get_observer();
 
-		$can_post = perm_is_allowed($owner_uid,$observer['xchan_hash'],'write_storage');
-		$can_view = perm_is_allowed($owner_uid,$observer['xchan_hash'],'view_storage');
+		$can_post = perm_is_allowed($owner_uid,get_observer_hash(),'write_storage');
+		$can_view = perm_is_allowed($owner_uid,get_observer_hash(),'view_storage');
 
 		if(! $can_view) {
 			notice( t('Access to this item is restricted.') . EOL);
@@ -604,7 +592,9 @@ class Photos extends \Zotlabs\Web\Controller {
 		 * Display upload form
 		 */
 
-		if( $can_post) {
+		$upload_form = '';
+
+		if($can_post) {
 
 			$uploader = '';
 
@@ -620,14 +610,12 @@ class Photos extends \Zotlabs\Web\Controller {
 				intval(\App::$data['channel']['channel_account_id'])
 			);
 
-
+			$usage_message = sprintf( t('%1$.2f MB photo storage used.'), $r[0]['total'] / 1024000 );
 			$limit = engr_units_to_bytes(service_class_fetch(\App::$data['channel']['channel_id'],'photo_upload_limit'));
+
 			if($limit !== false) {
 				$usage_message = sprintf( t("%1$.2f MB of %2$.2f MB photo storage used."), $r[0]['total'] / 1024000, $limit / 1024000 );
 			}
-			else {
-				$usage_message = sprintf( t('%1$.2f MB photo storage used.'), $r[0]['total'] / 1024000 );
-	 		}
 
 			if($_is_owner) {
 				$channel = \App::get_channel();
@@ -712,17 +700,17 @@ class Photos extends \Zotlabs\Web\Controller {
 				'title' => 'oembed'
 			]);
 
+			$folder_hash = '';
+			$album = '/';
+
 			if($x = photos_album_exists($owner_uid, get_observer_hash(), $datum)) {
 				$album = $x['display_path'];
-			}
-			else {
-				$album = '/';
-				//goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
+				$folder_hash = $x['hash'];
 			}
 
 			\App::set_pager_itemspage(30);
 
-			if($_GET['order'] === 'posted')
+			if(isset($_GET['order']) && $_GET['order'] === 'posted')
 				$order = 'ASC';
 			else
 				$order = 'DESC';
@@ -731,7 +719,7 @@ class Photos extends \Zotlabs\Web\Controller {
 					(SELECT resource_id, max(imgscale) imgscale FROM photo left join attach on folder = '%s' and photo.resource_id = attach.hash WHERE attach.uid = %d AND imgscale <= 4 AND photo_usage IN ( %d, %d ) and is_nsfw = %d $sql_extra GROUP BY resource_id) ph
 					ON (p.resource_id = ph.resource_id AND p.imgscale = ph.imgscale)
 				ORDER BY created $order LIMIT %d OFFSET %d",
-				dbesc($x['hash']),
+				dbesc($folder_hash),
 				intval($owner_uid),
 				intval(PHOTO_NORMAL),
 				intval(PHOTO_PROFILE),
@@ -763,7 +751,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 			}
 
-			if($_GET['order'] === 'posted')
+			if(isset($_GET['order']) && $_GET['order'] === 'posted')
 				$order =  array(t('Show Newest First'), z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/album/' . $datum);
 			else
 				$order = array(t('Show Oldest First'), z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/album/' . $datum . '?f=&order=posted');
@@ -784,7 +772,7 @@ class Photos extends \Zotlabs\Web\Controller {
 					$desc_e = $rr['description'];
 
 					$imagelink = (z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/image/' . $rr['resource_id']
-					. (($_GET['order'] === 'posted') ? '?f=&order=posted' : ''));
+					. ((isset($_GET['order']) && $_GET['order'] === 'posted') ? '?f=&order=posted' : ''));
 
 					$photos[] = array(
 						'id' => $rr['id'],
@@ -801,7 +789,7 @@ class Photos extends \Zotlabs\Web\Controller {
 				}
 			}
 
-			if($_REQUEST['aj']) {
+			if(isset($_REQUEST['aj']) && $_REQUEST['aj']) {
 				if($photos) {
 					$o = replace_macros(get_markup_template('photosajax.tpl'),array(
 						'$photos' => $photos,
@@ -831,7 +819,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 			}
 
-			if((! $photos) && ($_REQUEST['aj'])) {
+			if((! $photos) && (isset($_REQUEST['aj']) && $_REQUEST['aj'])) {
 				$o .= '<div id="content-complete"></div>';
 				echo $o;
 				killme();
@@ -1021,7 +1009,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 			// FIXME - remove this when we move to conversation module
 
-			$r = $r[0]['children'];
+			$r = $r[0]['children'] ?? [];
 
 			$edit = null;
 			if($can_post) {
@@ -1120,9 +1108,6 @@ class Photos extends \Zotlabs\Web\Controller {
 					'agree' => array('title' => t('Agree','title')),'disagree' => array('title' => t('Disagree','title')), 'abstain' => array('title' => t('Abstain','title')),
 					'attendyes' => array('title' => t('Attending','title')), 'attendno' => array('title' => t('Not attending','title')), 'attendmaybe' => array('title' => t('Might attend','title'))
 				);
-
-
-
 
 				if($r) {
 
@@ -1266,19 +1251,19 @@ class Photos extends \Zotlabs\Web\Controller {
 				'$likebuttons' => $likebuttons,
 				'$like' => $like_e,
 				'$dislike' => $dislike_e,
-				'$like_count' => $like_count,
-				'$like_list' => $like_list,
-				'$like_list_part' => $like_list_part,
-				'$like_button_label' => $like_button_label,
+				'$like_count' => $like_count ?? '',
+				'$like_list' => $like_list ?? '',
+				'$like_list_part' => $like_list_part ?? '',
+				'$like_button_label' => $like_button_label ?? '',
 				'$like_modal_title' => t('Likes','noun'),
 				'$dislike_modal_title' => t('Dislikes','noun'),
-				'$dislike_count' => $dislike_count,  //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_count : ''),
-				'$dislike_list' => $dislike_list, //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_list : ''),
-				'$dislike_list_part' => $dislike_list_part, //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_list_part : ''),
-				'$dislike_button_label' => $dislike_button_label, //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_button_label : ''),
+				'$dislike_count' => $dislike_count ?? '',  //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_count : ''),
+				'$dislike_list' => $dislike_list ?? '', //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_list : ''),
+				'$dislike_list_part' => $dislike_list_part ?? '', //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_list_part : ''),
+				'$dislike_button_label' => $dislike_button_label ?? '', //((feature_enabled($conv->get_profile_owner(),'dislike')) ? $dislike_button_label : ''),
 				'$modal_dismiss' => t('Close'),
 				'$comments' => $comments,
-				'$commentbox' => $commentbox,
+				'$commentbox' => $commentbox ?? '',
 				'$paginate' => $paginate,
 				'$onclick' => $hookdata['onclick']
 			));
@@ -1345,7 +1330,7 @@ class Photos extends \Zotlabs\Web\Controller {
 			}
 		}
 
-		if($_REQUEST['aj']) {
+		if(isset($_REQUEST['aj']) && $_REQUEST['aj']) {
 			if($photos) {
 				$o = replace_macros(get_markup_template('photosajax.tpl'),array(
 					'$photos' => $photos,
@@ -1373,7 +1358,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 		}
 
-		if((! $photos) && ($_REQUEST['aj'])) {
+		if((! $photos) && (isset($_REQUEST['aj']) && $_REQUEST['aj'])) {
 			$o .= '<div id="content-complete"></div>';
 			echo $o;
 			killme();
