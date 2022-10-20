@@ -33,7 +33,7 @@ class Search extends Controller {
 		require_once('include/security.php');
 
 
-		$format = (($_REQUEST['format']) ? $_REQUEST['format'] : '');
+		$format = $_REQUEST['format'] ?? '';
 		if ($format !== '') {
 			$update = $load = 1;
 		}

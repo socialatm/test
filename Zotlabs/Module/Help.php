@@ -17,6 +17,8 @@ class Help extends \Zotlabs\Web\Controller {
 	function get() {
 		nav_set_selected('Help');
 
+		$o = '';
+
 		if(isset($_REQUEST['search']) && $_REQUEST['search']) {
 			$o .= '<div id="help-content" class="generic-content-wrapper">';
 			$o .= '<div class="section-title-wrapper">';
