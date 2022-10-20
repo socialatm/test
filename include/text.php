@@ -2206,6 +2206,8 @@ function mimetype_select($channel_id, $current = 'text/bbcode', $choices = null,
 		$x['application/x-php'] = t('PHP');
 	}
 
+	$options = '';
+
 	foreach($x as $y => $z) {
 		$selected = (($y == $current) ? ' selected="selected" ' : '');
 		$options .= '<option value="' . $y . '"' . $selected . '>' . $z . '</option>';

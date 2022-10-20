@@ -113,8 +113,8 @@ class Notifier {
 		$normal_mode = true;
 		$upstream = false;
 		$uplink = false;
-		$target_item = [];
-		$parent_item = [];
+		$target_item = null;
+		$parent_item = null;
 		$top_level_post = false;
 		$relay_to_owner = false;
 
@@ -651,7 +651,7 @@ class Notifier {
 			// This shouldn't produce false positives on comment boosts that were generated on other platforms
 			// because we won't be delivering them.
 
-			if (isset($target_item) && isset($target_item['verb']) && $target_item['verb'] === 'Announce' && $target_item['author_xchan'] === $target_item['owner_xchan'] && ! intval($target_item['item_thread_top'])) {
+			if (isset($target_item['verb']) && $target_item['verb'] === 'Announce' && $target_item['author_xchan'] === $target_item['owner_xchan'] && ! intval($target_item['item_thread_top'])) {
 				continue;
 			}
 
@@ -694,7 +694,7 @@ class Notifier {
 
 		}
 
-		if ($normal_mode) {
+		if ($normal_mode && is_array($target_item)) {
 			// This wastes a process if there are no delivery hooks configured, so check this before launching the new process
 			$x = q("select * from hook where hook = 'notifier_normal'");
 			if ($x) {

@@ -396,7 +396,7 @@ class Directory extends Controller {
 
 						ksort($entries); // Sort array by key so that foreach-constructs work as expected
 
-						if($j['keywords']) {
+						if(isset($j['keywords']) && $j['keywords']) {
 							App::$data['directory_keywords'] = $j['keywords'];
 						}
 

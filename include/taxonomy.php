@@ -555,7 +555,7 @@ function dir_tagblock($link,$r) {
 	$o = '';
 
 	if(! $r)
-		$r = App::$data['directory_keywords'];
+		$r = App::$data['directory_keywords'] ?? [];
 
 	if($r) {
 		$o = '<div class="dirtagblock widget"><h3>' . t('Keywords') . '</h3><div class="tags" align="center">';

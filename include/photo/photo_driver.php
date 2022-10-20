@@ -77,6 +77,7 @@ function guess_image_type($filename, $data = '') {
 
 	$type = null;
 	$m = null;
+	$headers = '';
 
 	$ph = photo_factory('');
 	$types = $ph->supportedTypes();
