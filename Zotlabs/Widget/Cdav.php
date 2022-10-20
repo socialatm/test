@@ -38,13 +38,16 @@ class Cdav {
 				intval($channel['channel_id'])
 			);
 
-			$sharee_options .= '<option value="">' . t('Select Channel') . '</option>' . "\r\n";
+			$sharee_options = '<option value="">' . t('Select Channel') . '</option>' . "\r\n";
 			foreach($local_channels as $local_channel) {
 				$sharee_options .= '<option value="' . $local_channel['channel_hash'] . '">' . $local_channel['channel_name'] . '</option>' . "\r\n";
 			}
 
 			$access_options = '<option value="3">' . t('Read-write') . '</option>' . "\r\n";
 			$access_options .= '<option value="2">' . t('Read-only') . '</option>' . "\r\n";
+
+			$shared_calendars = [];
+			$my_calendars = [];
 
 			//list calendars
 			foreach($sabrecals as $sabrecal) {

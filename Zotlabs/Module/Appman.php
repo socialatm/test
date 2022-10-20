@@ -13,7 +13,7 @@ class Appman extends \Zotlabs\Web\Controller {
 		if(! local_channel())
 			return;
 
-		if($_POST['url']) {
+		if(isset($_POST['url']) && $_POST['url']) {
 			$arr = array(
 				'uid' => intval($_REQUEST['uid']),
 				'url' => escape_tags($_REQUEST['url']),
@@ -50,7 +50,7 @@ class Appman extends \Zotlabs\Web\Controller {
 			return;
 		}
 
-		if($_POST['install']) {
+		if(isset($_POST['install']) && $_POST['install']) {
 			Apps::app_install(local_channel(),$papp);
 			if(Apps::app_installed(local_channel(),$papp))
 				info( t('App installed.') . EOL);
@@ -73,7 +73,7 @@ class Appman extends \Zotlabs\Web\Controller {
 
 		}
 
-		if($_POST['delete']) {
+		if(isset($_POST['deleted']) && $_POST['deleted']) {
 
 			// Fetch the app for sync before it is deleted (if it is deletable))
 			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",

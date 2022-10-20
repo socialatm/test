@@ -914,12 +914,15 @@ class Cdav extends Controller {
 			head_add_js('/library/fullcalendar/packages/timegrid/main.min.js');
 			head_add_js('/library/fullcalendar/packages/list/main.min.js');
 
+			$o = '';
 			$sources = '';
 			$resource_id = '';
 			$resource = null;
 
 			if(argc() == 3)
 				$resource_id = argv(2);
+
+			$categories = '';
 
 			if($resource_id) {
 				$r = q("SELECT event.*, item.author_xchan, item.owner_xchan, item.plink, item.id as item_id FROM event LEFT JOIN item ON event.event_hash = item.resource_id
@@ -944,7 +947,6 @@ class Cdav extends Controller {
 					$resource = $r[0];
 
 					$catsenabled = feature_enabled(local_channel(),'categories');
-					$categories = '';
 					if($catsenabled){
 						if($r[0]['term']) {
 							$cats = get_terms_oftype($r[0]['term'], TERM_CATEGORY);

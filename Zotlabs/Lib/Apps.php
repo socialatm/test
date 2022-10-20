@@ -236,6 +236,7 @@ class Apps {
 			$ret['photo'] = $baseurl . '/' . get_default_profile_photo(80);
 
 		$ret['type'] = 'system';
+		$ret['plugin'] = '';
 
 		foreach($ret as $k => $v) {
 			if(strpos($v,'http') === 0) {
@@ -600,12 +601,12 @@ class Apps {
 			'$edit' => ((local_channel() && $installed && $mode == 'edit') ? t('Edit') : ''),
 			'$delete' => ((local_channel() && $mode == 'edit') ? t('Delete') : ''),
 			'$undelete' => ((local_channel() && $mode == 'edit') ? t('Undelete') : ''),
-			'$settings_url' => ((local_channel() && $installed && $mode == 'list') ? $papp['settings_url'] : ''),
-			'$deleted' => $papp['deleted'],
+			'$settings_url' => ((local_channel() && $installed && $mode == 'list' && isset($papp['settings_url'])) ? $papp['settings_url'] : ''),
+			'$deleted' => $papp['deleted'] ?? false,
 			'$feature' => ((isset($papp['embed']) || $mode == 'edit') ? false : true),
 			'$pin' => ((isset($papp['embed']) || $mode == 'edit') ? false : true),
-			'$featured' => ((strpos($papp['categories'], 'nav_featured_app') === false) ? false : true),
-			'$pinned' => ((strpos($papp['categories'], 'nav_pinned_app') === false) ? false : true),
+			'$featured' => ((isset($papp['categories']) && strpos($papp['categories'], 'nav_featured_app') === false) ? false : true),
+			'$pinned' => ((isset($papp['categories']) && strpos($papp['categories'], 'nav_pinned_app') === false) ? false : true),
 			'$mode' => $mode,
 			'$add' => t('Add to app-tray'),
 			'$remove' => t('Remove from app-tray'),
