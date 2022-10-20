@@ -110,12 +110,12 @@ function nav($template = 'default') {
 		$nav['logout'] = ['logout', t('Logout'), "", t('End this session'), 'logout_nav_btn'];
 
 		// user menu
-		$nav['usermenu'][] = ['profile/' . $channel['channel_address'], t('View Profile'), ((App::$nav_sel['raw_name'] == 'Profile') ? 'active' : ''), t('Your profile page'), 'profile_nav_btn'];
+		$nav['usermenu'][] = ['profile/' . $channel['channel_address'], t('View Profile'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profile') ? 'active' : ''), t('Your profile page'), 'profile_nav_btn'];
 
 		if (feature_enabled(local_channel(), 'multi_profiles'))
-			$nav['usermenu'][] = ['profiles', t('Edit Profiles'), ((App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Manage/Edit profiles'), 'profiles_nav_btn'];
+			$nav['usermenu'][] = ['profiles', t('Edit Profiles'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Manage/Edit profiles'), 'profiles_nav_btn'];
 		else
-			$nav['usermenu'][] = ['profiles/' . $prof[0]['id'], t('Edit Profile'), ((App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Edit your profile'), 'profiles_nav_btn'];
+			$nav['usermenu'][] = ['profiles/' . $prof[0]['id'], t('Edit Profile'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Edit your profile'), 'profiles_nav_btn'];
 
 	}
 	else {
@@ -276,7 +276,7 @@ function nav($template = 'default') {
 
 	if ($pinned_list) {
 		foreach ($pinned_list as $app) {
-			if (App::$nav_sel['name'] == $app['name'])
+			if (isset(App::$nav_sel['name']) && App::$nav_sel['name'] == $app['name'])
 				$app['active'] = true;
 
 			if ($is_owner) {

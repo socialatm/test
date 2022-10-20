@@ -121,7 +121,7 @@ class Activity {
 			$y = json_decode($x['body'], true);
 			logger('returned: ' . json_encode($y, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOGGER_DEBUG);
 
-			if (ActivityStreams::is_an_actor($y['type'])) {
+			if (isset($y['type']) && ActivityStreams::is_an_actor($y['type'])) {
 				XConfig::Set($y['id'], 'system', 'actor_record', $y);
 			}
 

@@ -45,7 +45,7 @@ class Connections extends \Zotlabs\Web\Controller {
 		$unconnected = false;
 		$all         = false;
 
-		if(! $_REQUEST['aj'])
+		if(!(isset($_REQUEST['aj']) && $_REQUEST['aj']))
 			$_SESSION['return_url'] = App::$query_string;
 
 		$search_flags = "";
@@ -128,7 +128,9 @@ class Connections extends \Zotlabs\Web\Controller {
 			$unblocked = true;
 		}
 
-		switch($_REQUEST['order']) {
+		$order = $_REQUEST['order'] ?? '';
+
+		switch($order) {
 			case 'name_desc':
 				$sql_order = 'xchan_name DESC';
 				break;
@@ -227,6 +229,8 @@ class Connections extends \Zotlabs\Web\Controller {
 		//$t = replace_macros($tab_tpl, array('$tabs'=>$tabs));
 
 		$searching = false;
+		$search_hdr = '';
+
 		if($search) {
 			$search_hdr = $search;
 			$search_txt = dbesc(protect_sprintf(preg_quote($search)));
@@ -234,7 +238,7 @@ class Connections extends \Zotlabs\Web\Controller {
 		}
 		$sql_extra .= (($searching) ? protect_sprintf(" AND xchan_name like '%$search_txt%' ") : "");
 
-		if($_REQUEST['gid']) {
+		if(isset($_REQUEST['gid']) && $_REQUEST['gid']) {
 			$sql_extra .= " and xchan_hash in ( select xchan from pgrp_member where gid = " . intval($_REQUEST['gid']) . " and uid = " . intval(local_channel()) . " ) ";
 		}
 
@@ -272,14 +276,13 @@ class Connections extends \Zotlabs\Web\Controller {
 			foreach($r as $rr) {
 				if($rr['xchan_url']) {
 
-					if(($rr['vcard']) && is_array($rr['vcard']['tels']) && $rr['vcard']['tels'][0]['nr'])
+					if((isset($rr['vcard'])) && is_array($rr['vcard']['tels']) && $rr['vcard']['tels'][0]['nr'])
 						$phone = $rr['vcard']['tels'][0]['nr'];
 					else
 						$phone = '';
 
 					$status_str = '';
 					$status = array(
-						((intval($rr['abook_active'])) ? t('Active') : ''),
 						((intval($rr['abook_pending'])) ? t('Pending approval') : ''),
 						((intval($rr['abook_archived'])) ? t('Archived') : ''),
 						((intval($rr['abook_hidden'])) ? t('Hidden') : ''),
@@ -356,7 +359,7 @@ class Connections extends \Zotlabs\Web\Controller {
 						'connect' => (intval($rr['abook_not_here']) ? t('Connect') : ''),
 						'follow' => z_root() . '/follow/?f=&url=' . urlencode($rr['xchan_hash']) . '&interactive=0',
 						'connect_hover' => t('Connect at this location'),
-						'role' => $roles_dict[$rr['abook_role']],
+						'role' => $roles_dict[$rr['abook_role']] ?? '',
 						'pending' => intval($rr['abook_pending'])
 					);
 				}
@@ -371,7 +374,7 @@ class Connections extends \Zotlabs\Web\Controller {
 			$abook_usage_message = '';
  		}
 
-		if($_REQUEST['aj']) {
+		if(isset($_REQUEST['aj']) && $_REQUEST['aj']) {
 			if($contacts) {
 				$o = replace_macros(get_markup_template('contactsajax.tpl'),array(
 					'$contacts' => $contacts,

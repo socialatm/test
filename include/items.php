@@ -3757,8 +3757,7 @@ function item_expire($uid,$days,$comment_days = 7) {
 
 		// don't expire filed items
 
-		$terms = get_terms_oftype($item['term'],TERM_FILE);
-		if($terms) {
+		if (isset($item['term']) && get_terms_oftype($item['term'], TERM_FILE)) {
 			retain_item($item['id']);
 			continue;
 		}

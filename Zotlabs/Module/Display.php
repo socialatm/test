@@ -36,7 +36,7 @@ class Display extends \Zotlabs\Web\Controller {
 			}
 		}
 
-		if($_REQUEST['mid']) {
+		if(isset($_REQUEST['mid']) && $_REQUEST['mid']) {
 			$item_hash = $_REQUEST['mid'];
 		}
 
@@ -55,6 +55,8 @@ class Display extends \Zotlabs\Web\Controller {
 		}
 
 		$observer_is_owner = false;
+
+		$o = '';
 
 		if(local_channel() && (! $update)) {
 
@@ -87,7 +89,7 @@ class Display extends \Zotlabs\Web\Controller {
 				'reset'               => t('Reset form')
 			);
 
-			$o = '<div id="jot-popup">';
+			$o .= '<div id="jot-popup">';
 			$o .= status_editor($a,$x,false,'Display');
 			$o .= '</div>';
 		}
@@ -107,17 +109,21 @@ class Display extends \Zotlabs\Web\Controller {
 			dbesc($item_hash)
 		);
 
-		if($r) {
-			$target_item = $r[0];
+		if (!$r) {
+			notice( t('Item not found.') . EOL);
+			return '';
 		}
 
+		$target_item = $r[0];
+
+		/* not yet ready for prime time
 		$x = q("select * from xchan where xchan_hash = '%s' limit 1",
 			dbesc($target_item['author_xchan'])
 		);
 		if($x) {
-// not yet ready for prime time
-//			App::$poi = $x[0];
+			App::$poi = $x[0];
 		}
+		*/
 
 		//if the item is to be moderated redirect to /moderate
 		if($target_item['item_blocked'] == ITEM_MODERATED) {

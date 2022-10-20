@@ -137,11 +137,11 @@ function remove_obsolete_hublocs() {
 
 	// Do we have any invalid ones?
 
-	$r = q("select hubloc_id from hubloc where hubloc_sitekey = '%s' and hubloc_url != '%s'",
+	$r = q("select hubloc_id, hubloc_hash from hubloc where hubloc_sitekey = '%s' and hubloc_url != '%s'",
 		dbesc(get_config('system', 'pubkey')),
 		dbesc(z_root())
 	);
-	$p = q("select hubloc_id from hubloc where hubloc_sitekey != '%s' and hubloc_url = '%s'",
+	$p = q("select hubloc_id, hubloc_hash from hubloc where hubloc_sitekey != '%s' and hubloc_url = '%s'",
 		dbesc(get_config('system', 'pubkey')),
 		dbesc(z_root())
 	);

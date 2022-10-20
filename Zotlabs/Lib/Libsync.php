@@ -774,7 +774,7 @@ class Libsync {
 			);
 		}
 
-		if ($arr['locations']) {
+		if (isset($arr['locations']) && $arr['locations']) {
 
 			if ($absolute)
 				Libzot::check_location_move($sender['hash'], $arr['locations']);

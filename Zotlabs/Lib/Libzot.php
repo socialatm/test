@@ -2017,6 +2017,10 @@ class Libzot {
 
 			$arr = Activity::decode_note($AS);
 
+			if (!$arr) {
+				continue;
+			}
+
 			if ($r) {
 				$arr['author_xchan'] = $r['hubloc_hash'];
 			}
