@@ -1328,7 +1328,7 @@ function hz_status_editor($a, $x, $popup = false) {
 	if(x($x, 'hide_future'))
 		$feature_future = false;
 
-	$geotag = (($x['allow_location']) ? replace_macros(get_markup_template('jot_geotag.tpl'), array()) : '');
+	$geotag = ((isset($x['allow_location']) && $x['allow_location']) ? replace_macros(get_markup_template('jot_geotag.tpl'), array()) : '');
 	$setloc = t('Set your location');
 	$clearloc = ((get_pconfig($x['profile_uid'], 'system', 'use_browser_location')) ? t('Clear browser location') : '');
 	if(x($x, 'hide_location'))
@@ -1491,10 +1491,10 @@ function hz_status_editor($a, $x, $popup = false) {
 		'$content' => ((x($x,'body')) ? htmlspecialchars($x['body'], ENT_COMPAT,'UTF-8') : ''),
 		'$attachment' => ((x($x, 'attachment')) ? $x['attachment'] : ''),
 		'$post_id' => ((x($x, 'post_id')) ? $x['post_id'] : ''),
-		'$defloc' => $x['default_location'],
+		'$defloc' => $x['default_location'] ?? '',
 		'$visitor' => $x['visitor'],
-		'$lockstate' => $x['lockstate'],
-		'$acl' => $x['acl'],
+		'$lockstate' => $x['lockstate'] ?? '',
+		'$acl' => $x['acl'] ?? '',
 		'$allow_cid' => acl2json($x['permissions']['allow_cid']),
 		'$allow_gid' => acl2json($x['permissions']['allow_gid']),
 		'$deny_cid' => acl2json($x['permissions']['deny_cid']),
@@ -1502,7 +1502,7 @@ function hz_status_editor($a, $x, $popup = false) {
 		'$mimeselect' => $mimeselect,
 		'$layoutselect' => $layoutselect,
 		'$showacl' => ((array_key_exists('showacl', $x)) ? $x['showacl'] : true),
-		'$bang' => $x['bang'],
+		'$bang' => $x['bang'] ?? '',
 		'$profile_uid' => $x['profile_uid'],
 		'$preview' => $preview,
 		'$source' => ((x($x, 'source')) ? $x['source'] : ''),

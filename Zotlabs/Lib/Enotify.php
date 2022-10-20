@@ -499,6 +499,7 @@ class Enotify {
 	$datarray['verb']   = $params['verb'];
 	$datarray['otype']  = $params['otype'];
  	$datarray['abort']  = false;
+	$datarray['seen'] = 0;
 
 	$datarray['item'] = $params['item'];
 
@@ -511,7 +512,6 @@ class Enotify {
 
 
 	// create notification entry in DB
-	$seen = 0;
 
 	// Mark some notifications as seen right away
 	// Note! The notification have to be created, because they are used to send emails
@@ -521,7 +521,7 @@ class Enotify {
 
 	if (!$always_show_in_notices) {
 		if (($params['type'] === NOTIFY_WALL) || ($params['type'] === NOTIFY_MAIL) || ($params['type'] === NOTIFY_INTRO)) {
-			$seen = 1;
+			$datarray['seen'] = 1;
 		}
 	}
 
@@ -537,7 +537,7 @@ class Enotify {
 		intval($datarray['uid']),
 		dbesc($datarray['link']),
 		dbesc($datarray['parent']),
-		intval($seen),
+		intval($datarray['seen']),
 		intval($datarray['ntype']),
 		dbesc($datarray['verb']),
 		dbesc($datarray['otype'])

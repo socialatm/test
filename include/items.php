@@ -2409,6 +2409,7 @@ function send_status_notifications($post_id,$item) {
 
 	$parent = 0;
 	$is_reaction = false;
+	$thr_parent_id = 0;
 
 	$type =  ((intval($item['item_private']) === 2) ? NOTIFY_MAIL : NOTIFY_COMMENT);
 

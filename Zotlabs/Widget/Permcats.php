@@ -24,6 +24,7 @@ class Permcats {
 
 		$roles = [];
 		$active_role = '';
+		$members = [];
 
 		foreach($pcatlist as $pc) {
 			if (!$active_role) {
@@ -76,8 +77,6 @@ class Permcats {
 				dbesc($active_role)
 			);
 
-			$members = [];
-
 			foreach ($r as $rr) {
 				$members[] = [
 					'name' => $rr['xchan_name'],
@@ -89,7 +88,7 @@ class Permcats {
 		}
 
 		$tpl = get_markup_template("permcats_widget.tpl");
-		$o .= replace_macros($tpl, [
+		$o = replace_macros($tpl, [
 			'$roles_label' => t('Contact roles'),
 			'$members_label' => t('Role members'),
 			'$roles' => $roles,

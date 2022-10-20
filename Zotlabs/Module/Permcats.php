@@ -213,7 +213,7 @@ class Permcats extends Controller {
 			$thisperm       = Permcat::find_permcat($existing, $k);
 			$checkinherited = PermissionLimits::Get(local_channel(), $k);
 
-			if ($existing[$k])
+			if (isset($existing[$k]) && $existing[$k])
 				$thisperm = 1;
 
 			$perms[] = [

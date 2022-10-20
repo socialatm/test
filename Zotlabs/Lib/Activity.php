@@ -1600,9 +1600,9 @@ class Activity {
 		// we already store this in Activity::fetch()
 		// XConfig::Set($url, 'system', 'actor_record', $person_obj);
 
-		$name = $person_obj['name'];
+		$name = $person_obj['name'] ?? '';
 		if (!$name) {
-			$name = $person_obj['preferredUsername'];
+			$name = $person_obj['preferredUsername'] ?? '';
 		}
 		if (!$name) {
 			$name = t('Unknown');
@@ -1644,7 +1644,7 @@ class Activity {
 		$links   = false;
 		$profile = false;
 
-		if (is_array($person_obj['url'])) {
+		if (isset($person_obj['url']) && is_array($person_obj['url'])) {
 			if (!array_key_exists(0, $person_obj['url'])) {
 				$links = [$person_obj['url']];
 			}
@@ -1653,7 +1653,7 @@ class Activity {
 			}
 		}
 
-		if ($links) {
+		if (is_array($links) && $links) {
 			foreach ($links as $link) {
 				if (is_array($link) && array_key_exists('mediaType', $link) && $link['mediaType'] === 'text/html') {
 					$profile = $link['href'];

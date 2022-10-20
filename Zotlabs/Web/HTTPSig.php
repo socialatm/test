@@ -207,7 +207,7 @@ class HTTPSig {
 
 		$key = (($fetched_key) ? $fetched_key : $cached_key);
 
-		$result['portable_id']  = $key['portable_id'];
+		$result['portable_id']  = $key['portable_id'] ?? '';
 		$result['header_valid'] = true;
 
 		if (in_array('digest', $signed_headers)) {

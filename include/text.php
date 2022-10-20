@@ -3977,7 +3977,7 @@ function new_token($minlen = 36, $maxlen = 48) {
     $len   = (($minlen === $maxlen) ? $minlen : mt_rand($minlen, $maxlen));
 
     for ($a = 0; $a < $len; $a++) {
-        $str .= $chars[mt_rand(0, 62)];
+        $str .= $chars[mt_rand(0, 61)];
     }
 
     return $str;

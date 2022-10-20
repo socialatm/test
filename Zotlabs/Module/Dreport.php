@@ -94,6 +94,7 @@ class Dreport extends \Zotlabs\Web\Controller {
 				case 'updated':
 					$r[$x]['gravity'] = 5;
 					$r[$x]['dreport_result'] = t('updated');
+					break;
 				case 'update ignored':
 					$r[$x]['gravity'] = 6;
 					$r[$x]['dreport_result'] = t('update ignored');

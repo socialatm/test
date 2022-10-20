@@ -81,7 +81,7 @@ class Receiver {
 				}
 				else {
 					$this->error = true;
-					$this->response['message'] = 'no data';
+					$this->response['message'] = 'no data (decryption failed)';
 				}
 			}
 		}

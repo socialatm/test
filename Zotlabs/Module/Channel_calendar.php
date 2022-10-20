@@ -30,7 +30,7 @@ class Channel_calendar extends Controller {
 
 		$xchan = ((x($_POST, 'xchan')) ? dbesc($_POST['xchan']) : '');
 
-		// only allow editing your own events. 
+		// only allow editing your own events.
 		if (($xchan) && ($xchan !== get_observer_hash()))
 			return;
 
@@ -55,8 +55,8 @@ class Channel_calendar extends Controller {
 
 		// Don't allow the event to finish before it begins.
 		// It won't hurt anything, but somebody will file a bug report
-		// and we'll waste a bunch of time responding to it. Time that 
-		// could've been spent doing something else. 
+		// and we'll waste a bunch of time responding to it. Time that
+		// could've been spent doing something else.
 
 		if (strcmp($finish, $start) < 0) {
 			notice(t('Event can not end before it has started.') . EOL);
@@ -319,12 +319,12 @@ class Channel_calendar extends Controller {
 				// fixed an issue with "nofinish" events not showing up in the calendar.
 				// There's still an issue if the finish date crosses the end of month.
 				// Noting this for now - it will need to be fixed here and in Friendica.
-				// Ultimately the finish date shouldn't be involved in the query. 
+				// Ultimately the finish date shouldn't be involved in the query.
 
 				$r = q("SELECT event.*, item.plink, item.item_flags, item.author_xchan, item.owner_xchan, item.id as item_id
-					from event left join item on event.event_hash = item.resource_id 
-					where item.resource_type = 'event' and event.uid = %d and event.uid = item.uid $ignored 
-					AND (( event.adjust = 0 AND ( event.dtend >= '%s' or event.nofinish = 1 ) AND event.dtstart <= '%s' ) 
+					from event left join item on event.event_hash = item.resource_id
+					where item.resource_type = 'event' and event.uid = %d and event.uid = item.uid $ignored
+					AND (( event.adjust = 0 AND ( event.dtend >= '%s' or event.nofinish = 1 ) AND event.dtstart <= '%s' )
 					OR  (  event.adjust = 1 AND ( event.dtend >= '%s' or event.nofinish = 1 ) AND event.dtstart <= '%s' )) ",
 					intval(local_channel()),
 					dbesc($start),
@@ -357,7 +357,7 @@ class Channel_calendar extends Controller {
 					$catsenabled = feature_enabled(local_channel(), 'categories');
 					$categories  = '';
 					if ($catsenabled) {
-						if ($rr['term']) {
+						if (isset($rr['term']) && $rr['term']) {
 							$cats = get_terms_oftype($rr['term'], TERM_CATEGORY);
 							foreach ($cats as $cat) {
 								if (strlen($categories))
@@ -449,7 +449,7 @@ class Channel_calendar extends Controller {
 						}
 
 						// The site admin can delete any post/item on the site.
-						// If the item originated on this site+channel the deletion will propagate downstream. 
+						// If the item originated on this site+channel the deletion will propagate downstream.
 						// Otherwise just the local copy is removed.
 
 						if (is_site_admin()) {
