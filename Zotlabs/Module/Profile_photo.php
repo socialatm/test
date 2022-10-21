@@ -587,7 +587,6 @@ class Profile_photo extends Controller {
 			return $o;
 		}
 
-		return; // NOTREACHED
 	}
 
 	/* @brief Generate the UI for photo-cropping

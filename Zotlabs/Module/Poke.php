@@ -121,7 +121,6 @@ class Poke extends Controller {
 		$arr['obj_type']      = ACTIVITY_OBJ_NOTE;
 		$arr['body']          = '[zrl=' . $channel['xchan_url'] . ']' . $channel['xchan_name'] . '[/zrl]' . ' ' . t($verbs[$verb][0]) . ' ' . '[zrl=' . $target['xchan_url'] . ']' . $target['xchan_name'] . '[/zrl]';
 		$arr['item_origin']   = 1;
-		$arr['item_wall']     = 1;
 		$arr['item_unseen']   = 1;
 		if(! $parent_item)
 			$arr['item_thread_top'] = 1;

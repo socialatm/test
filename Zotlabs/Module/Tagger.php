@@ -12,11 +12,11 @@ require_once('include/items.php');
 class Tagger extends \Zotlabs\Web\Controller {
 
 	function get() {
-	
+
 		if(! local_channel()) {
 			return;
 		}
-	
+
 		$sys = get_sys_channel();
 
 		$observer_hash = get_observer_hash();
@@ -25,23 +25,23 @@ class Tagger extends \Zotlabs\Web\Controller {
 		//check if empty
 		if(! $term)
 			return;
-	
+
 		$item_id = ((argc() > 1) ? notags(trim(argv(1))) : 0);
-	
+
 		logger('tagger: tag ' . $term . ' item ' . $item_id);
-	
+
 		$r = q("select * from item where id = %d and uid = %d limit 1",
 			intval($item_id),
 			intval(local_channel())
-		);	
+		);
 
 		if(! $r) {
 			$r = q("select * from item where id = %d and uid = %d limit 1",
 				intval($item_id),
 				intval($sys['channel_id'])
-			);	
+			);
 			if($r) {
-				$r = [ copy_of_pubitem($channel, $i[0]['mid']) ];
+				$r = [ copy_of_pubitem($channel, $r[0]['mid']) ];
                 $item_id = (($r) ? $r[0]['id'] : 0);
 			}
 		}
@@ -55,16 +55,16 @@ class Tagger extends \Zotlabs\Web\Controller {
 			intval($item_id),
 			intval(local_channel())
 		);
-	
+
 		if((! $item_id) || (! $r)) {
 			logger('tagger: no item ' . $item_id);
 			return;
 		}
-	
+
 		$item = $r[0];
-	
+
 		$owner_uid = $item['uid'];
-	
+
 		switch($item['resource_type']) {
 			case 'photo':
 				$targettype = ACTIVITY_OBJ_PHOTO;
@@ -81,13 +81,13 @@ class Tagger extends \Zotlabs\Web\Controller {
 					$post_type = t('comment');
 				break;
 		}
-	
+
 
 		$clean_term = trim($term,'"\' ');
-	
-		$links = array(array('rel' => 'alternate','type' => 'text/html', 
+
+		$links = array(array('rel' => 'alternate','type' => 'text/html',
 			'href' => z_root() . '/display/' . gen_link_id($item['mid'])));
-	
+
 		$target = json_encode(array(
 			'type'    => $targettype,
 			'id'      => $item['mid'],
@@ -106,10 +106,10 @@ class Tagger extends \Zotlabs\Web\Controller {
 					array('rel' => 'photo', 'type' => $item['xchan_photo_mimetype'], 'href' => $item['xchan_photo_m'])),
 				),
 		));
-	
+
 		$tagid = z_root() . '/search?tag=' . $clean_term;
 		$objtype = ACTIVITY_OBJ_TAGTERM;
-	
+
 		$obj = json_encode(array(
 			'type'    => $objtype,
 			'id'      => $tagid,
@@ -117,30 +117,30 @@ class Tagger extends \Zotlabs\Web\Controller {
 			'title'   => $clean_term,
 			'content' => $clean_term
 		));
-	
+
 		$bodyverb = t('%1$s tagged %2$s\'s %3$s with %4$s');
-	
+
 		// saving here for reference
 		// also check out x22d5 and x2317 and x0d6b and x0db8 and x24d0 and xff20 !!!
-	
+
 		$termlink = html_entity_decode('&#x22d5;') . '[zrl=' . z_root() . '/search?tag=' . urlencode($clean_term) . ']'. $clean_term . '[/zrl]';
-	
+
 		$channel = \App::get_channel();
-	
+
 		$arr = array();
-	
+
 		$arr['owner_xchan'] = $item['owner_xchan'];
 		$arr['author_xchan'] = $channel['channel_hash'];
-	
+
 		$arr['item_origin'] = 1;
 		$arr['item_wall'] = ((intval($item['item_wall'])) ? 1 : 0);
-	
+
 		$ulink = '[zrl=' . $channel['xchan_url'] . ']' . $channel['channel_name'] . '[/zrl]';
 		$alink = '[zrl=' . $item['xchan_url'] . ']' . $item['xchan_name'] . '[/zrl]';
 		$plink = '[zrl=' . $item['plink'] . ']' . $post_type . '[/zrl]';
-	
+
 		$arr['body'] =  sprintf( $bodyverb, $ulink, $alink, $plink, $termlink );
-	
+
 		$arr['verb'] = ACTIVITY_TAG;
 		$arr['tgt_type'] = $targettype;
 		$arr['target'] = $target;
@@ -152,14 +152,14 @@ class Tagger extends \Zotlabs\Web\Controller {
 
 		if($ret['success']) {
 			Libsync::build_sync_packet(local_channel(),
-				[ 
+				[
 					'item' => [ encode_item($ret['activity'],true) ]
 				]
 			);
 		}
-	
+
 		killme();
-	
+
 	}
-	
+
 }

@@ -258,7 +258,6 @@ class Defperms extends Controller {
 				'$sections'       => $sections,
 				'$autolbl'        => t('The permissions indicated on this page will be applied to all new connections.'),
 				'$autoapprove'    => t('Automatic approval settings'),
-				'$unapproved'     => $unapproved,
 				'$inherited'      => t('inherited'),
 				'$submit'         => t('Submit'),
 				'$me'             => t('My Settings'),

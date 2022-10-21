@@ -90,8 +90,8 @@ class Tokens extends Controller {
 				$r = q("select count(atoken_id) as total where atoken_uid = %d",
 					intval($channel['channel_id'])
 				);
-				if($r && intval($r[0]['total']) >= $max_tokens) {
-					notice( sprintf( t('This channel is limited to %d tokens'), $max_tokens) . EOL);
+				if($r && intval($r[0]['total']) >= $max_atokens) {
+					notice( sprintf( t('This channel is limited to %d tokens'), $max_atokens) . EOL);
 					return;
 				}
 			}

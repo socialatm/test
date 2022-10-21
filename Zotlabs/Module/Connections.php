@@ -368,7 +368,7 @@ class Connections extends \Zotlabs\Web\Controller {
 
 		$limit = service_class_fetch(local_channel(),'total_channels');
 		if($limit !== false) {
-			$abook_usage_message = sprintf( t("You have %1$.0f of %2$.0f allowed connections."), $$total, $limit);
+			$abook_usage_message = sprintf( t("You have %1$.0f of %2$.0f allowed connections."), $total, $limit);
 		}
 		else {
 			$abook_usage_message = '';

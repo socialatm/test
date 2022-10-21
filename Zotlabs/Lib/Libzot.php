@@ -1911,7 +1911,7 @@ class Libzot {
 
 			$stored = (($item_result && $item_result['item']) ? $item_result['item'] : false);
 			if ((is_array($stored)) && ($stored['id'] != $stored['parent'])
-				&& ($stored['author_xchan'] === $channel['channel_hash'] || $stored['author_xchan'] === $channel['channel_hash'])) {
+				&& ($stored['author_xchan'] === $channel['channel_hash'])) {
 				retain_item($stored['item']['parent']);
 			}
 

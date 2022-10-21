@@ -1609,6 +1609,9 @@ class Activity {
 		}
 
 		$webfinger_addr = '';
+		$hostname = '';
+		$baseurl  = '';
+		$site_url = '';
 
 		$m = parse_url($url);
 		if ($m) {
@@ -1617,7 +1620,7 @@ class Activity {
 			$site_url = $m['scheme'] . '://' . $m['host'];
 		}
 
-		if (!empty($person_obj['preferredUsername']) && isset($parsed_url['host'])) {
+		if (!empty($person_obj['preferredUsername']) && $hostname) {
 			$webfinger_addr = escape_tags($person_obj['preferredUsername']) . '@' . $hostname;
 		}
 
@@ -2330,9 +2333,6 @@ class Activity {
 				$remainder = substr($act->obj['commentPolicy'], 0, (($until) ? $until : strlen($act->obj['commentPolicy'])));
 				if ($remainder) {
 					$s['comment_policy'] = $remainder;
-				}
-				if (!(isset($item['comment_policy']) && strlen($item['comment_policy']))) {
-					$s['comment_policy'] = 'contacts';
 				}
 			}
 		}

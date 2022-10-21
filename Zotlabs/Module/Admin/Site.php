@@ -129,7 +129,7 @@ class Site {
 					set_config('system', 'register_duty', $this->register_duty);
 					set_config('system', 'register_duty_jso', $this->joo);
 				} else {
-					notice('ZAR0130E,'.t('Errors') . ': ' . $this->error) . EOL . $this->msgfg;
+					notice('ZAR0130E,' . t('Errors') . ': ' . $this->error . EOL . $this->msgfg . EOL);
 				}
 			}
 		}

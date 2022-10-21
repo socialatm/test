@@ -34,7 +34,6 @@ class Well_known extends \Zotlabs\Web\Controller {
 					$module = new \Zotlabs\Module\Wfinger();
 					$module->init();
 					break;
-
 				case 'host-meta':
 					\App::$argc -= 1;
 					array_shift(\App::$argv);
@@ -42,7 +41,6 @@ class Well_known extends \Zotlabs\Web\Controller {
 					$module = new \Zotlabs\Module\Hostxrd();
 					$module->init();
 					break;
-
 				case 'oauth-authorization-server':
 				case 'openid-configuration':
 					\App::$argc -= 1;
@@ -51,18 +49,17 @@ class Well_known extends \Zotlabs\Web\Controller {
 					$module = new \Zotlabs\Module\Oauthinfo();
 					$module->init();
 					break;
-
 				case 'dnt-policy.txt':
 					echo file_get_contents('doc/dnt-policy.txt');
 					killme();
-
+					break;
 				case 'caldav':
 				case 'carddav':
-				    if ($_SERVER['REQUEST_METHOD'] == 'PROPFIND') {
-				        http_status('301', 'moved permanently');
-				        goaway(z_root() . '/cdav');
-				    };
-
+					if ($_SERVER['REQUEST_METHOD'] == 'PROPFIND') {
+						http_status('301', 'moved permanently');
+						goaway(z_root() . '/cdav');
+					};
+					break;
 				default:
 					if(file_exists(\App::$cmd)) {
 						echo file_get_contents(\App::$cmd);
@@ -71,10 +68,8 @@ class Well_known extends \Zotlabs\Web\Controller {
 					elseif(file_exists(\App::$cmd . '.php'))
 						require_once(\App::$cmd . '.php');
 					break;
-
 			}
 		}
-
 		http_status_exit(404);
 	}
 }

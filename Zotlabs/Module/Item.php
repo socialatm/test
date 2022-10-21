@@ -1099,7 +1099,6 @@ class Item extends Controller {
 		$datarray['item_type']           = $webpage;
 		$datarray['item_private']        = intval($private);
 		$datarray['item_thread_top']     = intval($item_thread_top);
-		$datarray['item_unseen']         = intval($item_unseen);
 		$datarray['item_starred']        = intval($item_starred);
 		$datarray['item_uplink']         = intval($item_uplink);
 		$datarray['item_consensus']      = intval($item_consensus);
