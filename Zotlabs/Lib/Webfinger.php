@@ -53,7 +53,7 @@ class Webfinger {
 		if(strpos($resource,'http') === 0) {
 			$m = parse_url($resource);
 			if($m) {
-				if($m['scheme'] !== 'https') {
+				if(isset($m['scheme']) && $m['scheme'] !== 'https') {
 					return false;
 				}
 				self::$server = $m['host'] . ((isset($m['port'])) ? ':' . $m['port'] : '');

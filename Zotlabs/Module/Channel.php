@@ -294,7 +294,7 @@ class Channel extends Controller {
 		$abook_uids = " and abook.abook_channel = " . intval(App::$profile['profile_uid']) . " ";
 
 		$simple_update = '';
-		if ($update && $_SESSION['loadtime'])
+		if ($update && isset($_SESSION['loadtime']))
 			$simple_update = " AND (( item_unseen = 1 AND item.changed > '" . datetime_convert('UTC', 'UTC', $_SESSION['loadtime']) . "' )  OR item.changed > '" . datetime_convert('UTC', 'UTC', $_SESSION['loadtime']) . "' ) ";
 
 		if ($search) {

@@ -90,8 +90,8 @@ class Display {
 			$default_theme = 'redbasic';
 
 		$themespec = explode(':', \App::$channel['channel_theme']);
-		$existing_theme  = $themespec[0];
-		$existing_schema = $themespec[1];
+		$existing_theme  = $themespec[0] ?? '';
+		$existing_schema = $themespec[1] ?? '';
 
 		$theme = (($existing_theme) ? $existing_theme : $default_theme);
 
@@ -207,12 +207,12 @@ class Display {
 
 	function get_theme_config_file($theme){
 
-		$base_theme = \App::$theme_info['extends'];
+		$base_theme = \App::$theme_info['extends'] ?? '';
 
-		if (file_exists("view/theme/$theme/php/config.php")){
+		if ($theme && file_exists("view/theme/$theme/php/config.php")){
 			return "view/theme/$theme/php/config.php";
 		}
-		if (file_exists("view/theme/$base_theme/php/config.php")){
+		if ($base_theme && file_exists("view/theme/$base_theme/php/config.php")){
 			return "view/theme/$base_theme/php/config.php";
 		}
 		return null;

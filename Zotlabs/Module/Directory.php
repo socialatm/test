@@ -309,7 +309,7 @@ class Directory extends Controller {
 								$keywords = str_replace(',',' ', $keywords);
 								$keywords = str_replace('  ',' ', $keywords);
 								$karr = explode(' ', $keywords);
-
+								$marr = [];
 								if($karr) {
 									if(local_channel()) {
 										$r = q("select keywords from profile where uid = %d and is_default = 1 limit 1",

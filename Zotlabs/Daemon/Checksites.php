@@ -10,6 +10,9 @@ class Checksites {
 
 		logger('checksites: start');
 
+		$site_id = '';
+		$sql_options = '';
+
 		if (($argc > 1) && ($argv[1]))
 			$site_id = $argv[1];
 

@@ -11,8 +11,9 @@ class Settings extends \Zotlabs\Web\Controller {
 		if(! local_channel())
 			return;
 
-		if($_SESSION['delegate'])
+		if (isset($_SESSION['delegate']) && $_SESSION['delegate']) {
 			return;
+		}
 
 		\App::$profile_uid = local_channel();
 
@@ -33,7 +34,7 @@ class Settings extends \Zotlabs\Web\Controller {
 		if(! local_channel())
 			return;
 
-		if($_SESSION['delegate'])
+		if(isset($_SESSION['delegate']) && $_SESSION['delegate'])
 			return;
 
 		// logger('mod_settings: ' . print_r($_REQUEST,true));
@@ -54,7 +55,7 @@ class Settings extends \Zotlabs\Web\Controller {
 
 		nav_set_selected('Settings');
 
-		if((! local_channel()) || ($_SESSION['delegate'])) {
+		if((! local_channel()) || (isset($_SESSION['delegate']) && $_SESSION['delegate'])) {
 			notice( t('Permission denied.') . EOL );
 			return login();
 		}

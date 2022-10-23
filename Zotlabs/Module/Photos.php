@@ -593,6 +593,7 @@ class Photos extends \Zotlabs\Web\Controller {
 		 */
 
 		$upload_form = '';
+		$usage_message = '';
 
 		if($can_post) {
 

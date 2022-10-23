@@ -87,7 +87,7 @@ class Lostpass extends \Zotlabs\Web\Controller {
 
 			if($r) {
 				$tpl = get_markup_template('pwdreset.tpl');
-				$o .= replace_macros($tpl,array(
+				$o = replace_macros($tpl,array(
 					'$lbl1' => t('Password Reset'),
 					'$lbl2' => t('Your password has been reset as requested.'),
 					'$lbl3' => t('Your new password is'),
@@ -126,7 +126,7 @@ class Lostpass extends \Zotlabs\Web\Controller {
 		else {
 			$tpl = get_markup_template('lostpass.tpl');
 
-			$o .= replace_macros($tpl,array(
+			$o = replace_macros($tpl,array(
 				'$title' => t('Forgot your Password?'),
 				'$desc' => t('Enter your email address and submit to have your password reset. Then check your email for further instructions.'),
 				'$name' => t('Email Address'),

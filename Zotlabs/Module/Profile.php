@@ -110,7 +110,7 @@ class Profile extends Controller {
 
 		$is_owner = ((local_channel()) && (local_channel() == App::$profile['profile_uid']) ? true : false);
 
-		if (App::$profile['hidewall'] && (!$is_owner) && (!remote_channel())) {
+		if ((isset(App::$profile['hidewall']) && App::$profile['hidewall']) && (!$is_owner) && (!remote_channel())) {
 			notice(t('Permission denied.') . EOL);
 			return;
 		}

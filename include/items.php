@@ -2108,8 +2108,8 @@ function item_store_update($arr, $allow_exec = false, $deliver = true) {
 
 	// apply the input filter here
 
-	$arr['summary'] = trim(z_input_filter($arr['summary'],$arr['mimetype'],$allow_exec));
-	$arr['body'] = trim(z_input_filter($arr['body'],$arr['mimetype'],$allow_exec));
+	$arr['summary'] = ((isset($arr['summary'])) ? trim(z_input_filter($arr['summary'],$arr['mimetype'],$allow_exec)) : '');
+	$arr['body'] = ((isset($arr['body'])) ? trim(z_input_filter($arr['body'],$arr['mimetype'],$allow_exec)) : '');
 
 	item_sign($arr);
 

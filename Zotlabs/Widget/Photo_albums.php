@@ -14,8 +14,9 @@ class Photo_albums {
 
 	function widget($arr) {
 
-		if(! \App::$profile['profile_uid'])
+		if (!(isset(\App::$profile['profile_uid']) && \App::$profile['profile_uid'])) {
 			return '';
+		}
 
 		$channelx = channelx_by_n(\App::$profile['profile_uid']);
 

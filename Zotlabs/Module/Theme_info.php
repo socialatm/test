@@ -9,7 +9,7 @@ class Theme_info extends \Zotlabs\Web\Controller {
 		$theme = argv(1);
 		if(! $theme)
 			killme();
-		
+
 		$schemalist = array();
 
 		$theme_config = "";
@@ -40,28 +40,28 @@ class Theme_info extends \Zotlabs\Web\Controller {
 			$credits = '';
 		}
 
-		$ret = [ 
-			'theme' => $theme, 
-			'img' => get_theme_screenshot($theme), 
-			'desc' => $desc, 
-			'version' => $version, 
-			'credits' => $credits, 
+		$ret = [
+			'theme' => $theme,
+			'img' => get_theme_screenshot($theme),
+			'desc' => $desc,
+			'version' => $version,
+			'credits' => $credits,
 			'schemas' => $schemalist,
 			'config' => $theme_config
 		];
 		json_return_and_die($ret);
-		
+
 	}
 
 
 	function get_theme_config_file($theme){
 
-		$base_theme = \App::$theme_info['extends'];
-	
-		if (file_exists("view/theme/$theme/php/config.php")){
+		$base_theme = \App::$theme_info['extends'] ?? '';
+
+		if ($theme && file_exists("view/theme/$theme/php/config.php")){
 			return "view/theme/$theme/php/config.php";
-		} 
-		if (file_exists("view/theme/$base_theme/php/config.php")){
+		}
+		if ($base_theme && file_exists("view/theme/$base_theme/php/config.php")){
 			return "view/theme/$base_theme/php/config.php";
 		}
 		return null;

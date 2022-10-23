@@ -589,8 +589,6 @@ class Libzot {
 	 */
 	static function register_hub($id) {
 
-		$hsig_valid = false;
-
 		$result = ['success' => false];
 
 		if (!$id) {
@@ -599,7 +597,13 @@ class Libzot {
 
 		$record = Zotfinger::exec($id);
 
+		if (!$record) {
+			return $result;
+		}
+
 		// Check the HTTP signature
+
+		$hsig_valid = false;
 
 		$hsig = $record['signature'];
 		if ($hsig['signer'] === $id && $hsig['header_valid'] === true && $hsig['content_valid'] === true) {
@@ -641,6 +645,12 @@ class Libzot {
 	 */
 
 	static function import_xchan($arr, $ud_flags = UPDATE_FLAGS_UPDATED, $ud_arr = null) {
+
+		if (!is_array($arr)) {
+			logger('Not an array: ' . print_r($arr, true), LOGGER_DEBUG);
+			return $ret;
+		}
+
 		/**
 		 * @hooks import_xchan
 		 *   Called when processing the result of zot_finger() to store the result

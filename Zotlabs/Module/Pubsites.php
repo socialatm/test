@@ -8,6 +8,8 @@ class Pubsites extends \Zotlabs\Web\Controller {
 	function get() {
 		$dirmode = intval(get_config('system','directory_mode'));
 
+		$url = '';
+
 		if(($dirmode == DIRECTORY_MODE_PRIMARY) || ($dirmode == DIRECTORY_MODE_STANDALONE)) {
 			$url = z_root() . '/dirsearch';
 		}
@@ -19,7 +21,7 @@ class Pubsites extends \Zotlabs\Web\Controller {
 
 		$rating_enabled = get_config('system','rating_enabled');
 
-		$o .= '<div class="generic-content-wrapper">';
+		$o = '<div class="generic-content-wrapper">';
 
 		$o .= '<div class="section-title-wrapper"><h2>' . t('Public Hubs') . '</h2></div>';
 

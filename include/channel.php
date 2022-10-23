@@ -1581,6 +1581,8 @@ function profile_sidebar($profile, $block = 0, $show_connect = true, $details = 
 	$location = false;
 	$pdesc = true;
 	$reddress = true;
+	$connect_url = '';
+	$connect = '';
 
 	if(! perm_is_allowed($profile['uid'], $observer_hash, 'view_profile')) {
 		$block = true;
@@ -1792,7 +1794,7 @@ function advanced_profile() {
 			$profile['birthday'] = array( t('Birthday:'), $val);
 		}
 
-		if($age = age(App::$profile['dob'],App::$profile['timezone'],''))
+		if($age = age(App::$profile['dob'], App::$profile['timezone'] ?? '',''))
 			$profile['age'] = array( t('Age:'), $age );
 
 		if(App::$profile['marital'])
@@ -1874,7 +1876,7 @@ function advanced_profile() {
 
 		return replace_macros($tpl, array(
 			'$title' => t('Profile'),
-			'$canlike' => (($profile['canlike'])? true : false),
+			'$canlike' => ((isset($profile['canlike']) && $profile['canlike'])? true : false),
 			'$likethis' => t('Like this thing'),
 			'$export'   => t('Export'),
 			'$exportlink' => $exportlink,

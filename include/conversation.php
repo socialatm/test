@@ -643,10 +643,9 @@ function conversation($items, $mode, $update, $page_mode = 'traditional', $prepa
 	$channel = App::get_channel();
 	$observer = App::get_observer();
 
-	if($update)
-		$return_url = $_SESSION['return_url'];
-	else
-		$return_url = $_SESSION['return_url'] = App::$query_string;
+	if (!$update) {
+		$_SESSION['return_url'] = App::$query_string;
+	}
 
 	load_contact_links(local_channel());
 
