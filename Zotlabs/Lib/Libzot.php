@@ -646,6 +646,8 @@ class Libzot {
 
 	static function import_xchan($arr, $ud_flags = UPDATE_FLAGS_UPDATED, $ud_arr = null) {
 
+		$ret     = ['success' => false];
+
 		if (!is_array($arr)) {
 			logger('Not an array: ' . print_r($arr, true), LOGGER_DEBUG);
 			return $ret;
@@ -658,7 +660,6 @@ class Libzot {
 		 */
 		call_hooks('import_xchan', $arr);
 
-		$ret     = ['success' => false];
 		$dirmode = intval(get_config('system', 'directory_mode'));
 
 		$changed = false;
@@ -771,10 +772,10 @@ class Libzot {
 					dbesc($arr['name_updated']),
 					dbesc($arr['primary_location']['connections_url']),
 					dbesc($arr['primary_location']['follow_url']),
-					dbesc($arr['primary_location']['connect_url']),
+					dbesc($arr['connect_url']),
 					intval(1 - intval($arr['searchable'])),
 					intval($arr['adult_content']),
-					intval($arr['deleted']),
+					intval($arr['deleted'] ?? 0),
 					intval($arr['public_forum']),
 					dbesc(escape_tags($arr['primary_location']['address'])),
 					dbesc(escape_tags($arr['primary_location']['url'])),
@@ -2500,32 +2501,32 @@ class Libzot {
 		}
 
 		$site_directory = 0;
-		if ($arr['directory_mode'] == 'normal')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'normal')
 			$site_directory = DIRECTORY_MODE_NORMAL;
-		if ($arr['directory_mode'] == 'primary')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'primary')
 			$site_directory = DIRECTORY_MODE_PRIMARY;
-		if ($arr['directory_mode'] == 'secondary')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'secondary')
 			$site_directory = DIRECTORY_MODE_SECONDARY;
-		if ($arr['directory_mode'] == 'standalone')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'standalone')
 			$site_directory = DIRECTORY_MODE_STANDALONE;
 
 		$register_policy = 0;
-		if ($arr['register_policy'] == 'closed')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'closed')
 			$register_policy = REGISTER_CLOSED;
-		if ($arr['register_policy'] == 'open')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'open')
 			$register_policy = REGISTER_OPEN;
-		if ($arr['register_policy'] == 'approve')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'approve')
 			$register_policy = REGISTER_APPROVE;
 
 		$access_policy = 0;
 		if (array_key_exists('access_policy', $arr)) {
-			if ($arr['access_policy'] === 'private')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'private')
 				$access_policy = ACCESS_PRIVATE;
-			if ($arr['access_policy'] === 'paid')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'paid')
 				$access_policy = ACCESS_PAID;
-			if ($arr['access_policy'] === 'free')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'free')
 				$access_policy = ACCESS_FREE;
-			if ($arr['access_policy'] === 'tiered')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'tiered')
 				$access_policy = ACCESS_TIERED;
 		}
 
@@ -2938,7 +2939,7 @@ class Libzot {
 		$ret['mail']     = map_scope(PermissionLimits::Get($e['channel_id'], 'post_mail'));
 
 		if ($deleted)
-			$ret['deleted'] = $deleted;
+			$ret['deleted'] = true;
 
 		if (intval($e['channel_removed'])) {
 			$ret['deleted_locally'] = true;
@@ -3010,18 +3011,17 @@ class Libzot {
 		$signing_key = get_config('system', 'prvkey');
 		$sig_method  = get_config('system', 'signature_algorithm', 'sha256');
 
-		$ret                         = [];
-		$ret['site']                 = [];
-		$ret['site']['url']          = z_root();
-		$ret['site']['site_sig']     = self::sign(z_root(), $signing_key);
-		$ret['site']['post']         = z_root() . '/zot';
-		$ret['site']['openWebAuth']  = z_root() . '/owa';
-		$ret['site']['authRedirect'] = z_root() . '/magic';
-		$ret['site']['sitekey']      = get_config('system', 'pubkey');
+		$ret                           = [];
+		$ret['site']                   = [];
+		$ret['site']['url']            = z_root();
+		$ret['site']['site_sig']       = self::sign(z_root(), $signing_key);
+		$ret['site']['post']           = z_root() . '/zot';
+		$ret['site']['openWebAuth']    = z_root() . '/owa';
+		$ret['site']['authRedirect']   = z_root() . '/magic';
+		$ret['site']['sitekey']        = get_config('system', 'pubkey');
+		$ret['site']['directory_mode'] = 'normal';
 
 		$dirmode = get_config('system', 'directory_mode');
-		if (($dirmode === false) || ($dirmode == DIRECTORY_MODE_NORMAL))
-			$ret['site']['directory_mode'] = 'normal';
 
 		if ($dirmode == DIRECTORY_MODE_PRIMARY)
 			$ret['site']['directory_mode'] = 'primary';

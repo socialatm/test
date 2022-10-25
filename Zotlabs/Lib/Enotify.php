@@ -122,8 +122,11 @@ class Enotify {
 	// e.g. "your post", "David's photo", etc.
 	$possess_desc = t('%s <!item_type!>');
 
+	$parent_mid = '';
+	$parent_item = [];
+
 // @@TODO: consider using switch instead of those elseif
-	if ($params['type'] == NOTIFY_MAIL) {
+	if (isset($params['type']) && $params['type'] == NOTIFY_MAIL) {
 		logger('notification: mail');
 		$subject = 	sprintf( t('[$Projectname:Notify] New direct message received at %s'), $sitename);
 
@@ -135,7 +138,7 @@ class Enotify {
 		$itemlink = $siteurl . '/hq/' . gen_link_id($params['item']['mid']);
 	}
 
-	elseif ($params['type'] === NOTIFY_COMMENT) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_COMMENT) {
 		//logger("notification: params = " . print_r($params, true), LOGGER_DEBUG);
 
 		$moderated = (($params['item']['item_blocked'] == ITEM_MODERATED) ? true : false);
@@ -167,7 +170,7 @@ class Enotify {
 
 		}
 
-		$parent_mid = $params['parent_mid'];
+		$parent_mid = $params['parent_mid'] ?? '';
 
 		// Check to see if there was already a notify for this post.
 		// If so don't create a second notification
@@ -251,7 +254,7 @@ class Enotify {
 
 	}
 
-	elseif ($params['type'] === NOTIFY_LIKE) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_LIKE) {
 //		logger("notification: params = " . print_r($params, true), LOGGER_DEBUG);
 
 		$itemlink =  $params['link'];
@@ -264,7 +267,7 @@ class Enotify {
 			}
 		}
 
-		$parent_mid = $params['parent_mid'];
+		$parent_mid = $params['parent_mid'] ?? '';
 
 		// Check to see if there was already a notify for this post.
 		// If so don't create a second notification
@@ -335,7 +338,7 @@ class Enotify {
 
 
 
-	elseif($params['type'] === NOTIFY_WALL) {
+	elseif(isset($params['type']) && $params['type'] === NOTIFY_WALL) {
 		$subject = sprintf( t('[$Projectname:Notify] %s posted to your profile wall') , $sender['xchan_name']);
 
 		$preamble = sprintf( t('%1$s posted to your profile wall at %2$s') , $sender['xchan_name'], $sitename);
@@ -350,7 +353,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_TAGSELF) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_TAGSELF) {
 
 		$p = q("select id from notify where link = '%s' and uid = %d limit 1",
 			dbesc($params['link']),
@@ -374,7 +377,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_POKE) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_POKE) {
 		$subject =	sprintf( t('[$Projectname:Notify] %1$s poked you') , $sender['xchan_name']);
 		$preamble = sprintf( t('%1$s poked you at %2$s') , $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('%1$s [zrl=%2$s]poked you[/zrl].') ,
@@ -391,7 +394,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_TAGSHARE) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_TAGSHARE) {
 		$subject =	sprintf( t('[$Projectname:Notify] %s tagged your post') , $sender['xchan_name']);
 		$preamble = sprintf( t('%1$s tagged your post at %2$s'),$sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('%1$s tagged [zrl=%2$s]your post[/zrl]') ,
@@ -404,7 +407,7 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_INTRO) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_INTRO) {
 		$subject = sprintf( t('[$Projectname:Notify] Introduction received'));
 		$preamble = sprintf( t('You\'ve received an new connection request from \'%1$s\' at %2$s'), $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('You\'ve received [zrl=%1$s]a new connection request[/zrl] from %2$s.'),
@@ -418,7 +421,7 @@ class Enotify {
 		$itemlink = $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_SUGGEST) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_SUGGEST) {
 		$subject = sprintf( t('[$Projectname:Notify] Friend suggestion received'));
 		$preamble = sprintf( t('You\'ve received a friend suggestion from \'%1$s\' at %2$s'), $sender['xchan_name'], $sitename);
 		$epreamble = sprintf( t('You\'ve received [zrl=%1$s]a friend suggestion[/zrl] for %2$s from %3$s.'),
@@ -436,11 +439,11 @@ class Enotify {
 		$itemlink =  $params['link'];
 	}
 
-	elseif ($params['type'] === NOTIFY_CONFIRM) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_CONFIRM) {
 		// ?
 	}
 
-	elseif ($params['type'] === NOTIFY_SYSTEM) {
+	elseif (isset($params['type']) && $params['type'] === NOTIFY_SYSTEM) {
 		// ?
 	}
 
@@ -495,13 +498,13 @@ class Enotify {
 	$datarray['link']   = $itemlink;
 	$datarray['parent'] = $parent_mid;
 	$datarray['parent_item'] = $parent_item;
-	$datarray['ntype']   = $params['type'];
-	$datarray['verb']   = $params['verb'];
-	$datarray['otype']  = $params['otype'];
+	$datarray['ntype']   = $params['type'] ?? '';
+	$datarray['verb']   = $params['verb'] ?? '';
+	$datarray['otype']  = $params['otype'] ?? '';
  	$datarray['abort']  = false;
 	$datarray['seen'] = 0;
 
-	$datarray['item'] = $params['item'];
+	$datarray['item'] = $params['item'] ?? [];
 
 	call_hooks('enotify_store', $datarray);
 
@@ -613,8 +616,8 @@ class Enotify {
 		$datarray['preamble']     = $preamble;
 		$datarray['sitename']     = $sitename;
 		$datarray['siteurl']      = $siteurl;
-		$datarray['type']         = $params['type'];
-		$datarray['parent']       = $params['parent_mid'];
+		$datarray['type']         = $params['type'] ?? '';
+		$datarray['parent']       = $params['parent_mid'] ?? '';
 		$datarray['source_name']  = $sender['xchan_name'];
 		$datarray['source_link']  = $sender['xchan_url'];
 		$datarray['source_photo'] = $sender['xchan_photo_s'];
@@ -681,7 +684,6 @@ class Enotify {
 			'$source_name'  => $datarray['source_name'],
 			'$source_link'  => $datarray['source_link'],
 			'$source_photo' => $datarray['source_photo'],
-			'$username'     => $datarray['to_name'],
 			'$hsitelink'    => $datarray['hsitelink'],
 			'$hitemlink'    => $datarray['hitemlink'],
 			'$thanks'       => $datarray['thanks'],
@@ -703,7 +705,6 @@ class Enotify {
 			'$source_name'  => $datarray['source_name'],
 			'$source_link'  => $datarray['source_link'],
 			'$source_photo' => $datarray['source_photo'],
-			'$username'     => $datarray['to_name'],
 			'$tsitelink'    => $datarray['tsitelink'],
 			'$titemlink'    => $datarray['titemlink'],
 			'$thanks'       => $datarray['thanks'],

@@ -453,9 +453,15 @@ class Libzotdir {
 		if (! $hash)
 			return false;
 
-		$arr = array();
+		$arr = [];
 
-		$arr['xprof_hash']         = $hash;
+		$arr['xprof_hash'] = $hash;
+		$arr['xprof_dob'] = '0000-00-00';
+		if (isset($profile['birthday'])) {
+			$arr['xprof_dob'] = (($profile['birthday'] === '0000-00-00')
+			? $profile['birthday']
+			: datetime_convert('', '', $profile['birthday'], 'Y-m-d')); // !!!! check this for 0000 year
+		}
 		$arr['xprof_dob']          = ((isset($profile['birthday']) && $profile['birthday'] === '0000-00-00') ? $profile['birthday'] : datetime_convert('','',$profile['birthday'],'Y-m-d')); // !!!! check this for 0000 year
 		$arr['xprof_age']          = ((isset($profile['age']) && $profile['age']) ? intval($profile['age']) : 0);
 		$arr['xprof_desc']         = ((isset($profile['description']) && $profile['description']) ? htmlspecialchars($profile['description'], ENT_COMPAT,'UTF-8',false) : '');

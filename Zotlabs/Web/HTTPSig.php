@@ -631,7 +631,7 @@ class HTTPSig {
 		if (preg_match('/signature="(.*?)"/ism', $header, $matches))
 			$ret['signature'] = base64_decode(preg_replace('/\s+/', '', $matches[1]));
 
-		if (($ret['signature']) && ($ret['algorithm']) && (!$ret['headers']))
+		if (isset($ret['signature']) && isset($ret['algorithm']) && !isset($ret['headers']))
 			$ret['headers'] = ['date'];
 
 		return $ret;

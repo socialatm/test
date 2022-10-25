@@ -232,7 +232,7 @@ class Directory extends Controller {
 				$j = json_decode($x['body'],true);
 				if($j) {
 
-					if($j['results']) {
+					if(isset($j['results']) && $j['results']) {
 
 						$results = $j['results'];
 						if($suggest) {
@@ -444,12 +444,12 @@ class Directory extends Controller {
 
 					}
 					else {
-						if($_REQUEST['aj']) {
+						if(isset($_REQUEST['aj']) && $_REQUEST['aj']) {
 							$o = '<div id="content-complete"></div>';
 							echo $o;
 							killme();
 						}
-						if(App::$pager['page'] == 1 && $j['records'] == 0 && strpos($search,'@')) {
+						if(App::$pager['page'] == 1 && (isset($j['records']) && $j['records'] == 0) && strpos($search,'@')) {
 							goaway(z_root() . '/chanview/?f=&address=' . $search);
 						}
 						info( t("No entries (some entries may be hidden).") . EOL);
