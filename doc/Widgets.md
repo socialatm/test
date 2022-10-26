@@ -83,7 +83,7 @@ Some/many of these widgets have restrictions which may restrict the type of page
 
 * photo - display a single photo
     * args: 
-    * url - URL of photo, must be http or https
+    * src - URL of photo, must be http or https
     * zrl - use zid authenticated link
     * style - CSS style string
 <br />&nbsp;<br />
