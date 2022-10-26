@@ -6,7 +6,7 @@ class Cloud_tiles extends \Zotlabs\Web\Controller {
 
 	function init() {
 
-		if(intval($_SESSION['cloud_tiles']))
+		if(isset($_SESSION['cloud_tiles']) && intval($_SESSION['cloud_tiles']))
 			$_SESSION['cloud_tiles'] = 0;
 		else
 			$_SESSION['cloud_tiles'] = 1;

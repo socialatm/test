@@ -159,7 +159,7 @@ class Apps {
 		foreach(self::$available_apps as $iapp) {
 			if($iapp['app_id'] == hash('whirlpool',$app['name'])) {
 				$notfound = false;
-				if(($iapp['app_version'] !== $app['version'])
+				if((isset($app['version']) && $iapp['app_version'] !== $app['version'])
 					|| ($app['plugin'] && (! $iapp['app_plugin']))) {
 					return intval($iapp['app_id']);
 				}
@@ -236,6 +236,7 @@ class Apps {
 			$ret['photo'] = $baseurl . '/' . get_default_profile_photo(80);
 
 		$ret['type'] = 'system';
+		$ret['plugin'] = '';
 
 		foreach($ret as $k => $v) {
 			if(strpos($v,'http') === 0) {
@@ -600,12 +601,12 @@ class Apps {
 			'$edit' => ((local_channel() && $installed && $mode == 'edit') ? t('Edit') : ''),
 			'$delete' => ((local_channel() && $mode == 'edit') ? t('Delete') : ''),
 			'$undelete' => ((local_channel() && $mode == 'edit') ? t('Undelete') : ''),
-			'$settings_url' => ((local_channel() && $installed && $mode == 'list') ? $papp['settings_url'] : ''),
-			'$deleted' => $papp['deleted'],
+			'$settings_url' => ((local_channel() && $installed && $mode == 'list' && isset($papp['settings_url'])) ? $papp['settings_url'] : ''),
+			'$deleted' => $papp['deleted'] ?? false,
 			'$feature' => ((isset($papp['embed']) || $mode == 'edit') ? false : true),
 			'$pin' => ((isset($papp['embed']) || $mode == 'edit') ? false : true),
-			'$featured' => ((strpos($papp['categories'], 'nav_featured_app') === false) ? false : true),
-			'$pinned' => ((strpos($papp['categories'], 'nav_pinned_app') === false) ? false : true),
+			'$featured' => ((isset($papp['categories']) && strpos($papp['categories'], 'nav_featured_app') === false) ? false : true),
+			'$pinned' => ((isset($papp['categories']) && strpos($papp['categories'], 'nav_pinned_app') === false) ? false : true),
 			'$mode' => $mode,
 			'$add' => t('Add to app-tray'),
 			'$remove' => t('Remove from app-tray'),
@@ -644,7 +645,7 @@ class Apps {
 			);
 			if($r) {
 				if($app['uid']) {
-					if($app['categories'] && (! $app['term'])) {
+					if((isset($app['categories']) && $app['categories']) && !(isset($app['term']) && $app['term'])) {
 						$r[0]['term'] = q("select * from term where otype = %d and oid = %d",
 							intval(TERM_OBJ_APP),
 							intval($r[0]['id'])
@@ -1189,7 +1190,7 @@ class Apps {
 			$ret['success'] = true;
 			$ret['app_id'] = $darray['app_id'];
 		}
-		if($arr['categories']) {
+		if(isset($arr['categories']) && $arr['categories']) {
 			$x = q("select id from app where app_id = '%s' and app_channel = %d limit 1",
 				dbesc($darray['app_id']),
 				intval($darray['app_channel'])
@@ -1287,7 +1288,7 @@ class Apps {
 				intval(TERM_OBJ_APP),
 				intval($x[0]['id'])
 			);
-			if($arr['categories']) {
+			if(isset($arr['categories']) && $arr['categories']) {
 				$y = explode(',',$arr['categories']);
 				if($y) {
 					foreach($y as $t) {

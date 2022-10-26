@@ -151,7 +151,7 @@ class Rpost extends \Zotlabs\Web\Controller {
 			}
 		}
 
-		if($_REQUEST['remote_return']) {
+		if(isset($_REQUEST['remote_return']) && $_REQUEST['remote_return']) {
 			$_SESSION['remote_return'] = $_REQUEST['remote_return'];
 		}
 		if(argc() > 1 && argv(1) === 'return') {
@@ -162,14 +162,14 @@ class Rpost extends \Zotlabs\Web\Controller {
 
 		$plaintext = true;
 
-		if(array_key_exists('type', $_REQUEST) && $_REQUEST['type'] === 'html') {
+		if(isset($_REQUEST['type']) && $_REQUEST['type'] === 'html') {
 			require_once('include/html2bbcode.php');
 			$_REQUEST['body'] = html2bbcode($_REQUEST['body']);
 		}
 
 		$channel = \App::get_channel();
 
-		if($_REQUEST['acl']) {
+		if(isset($_REQUEST['acl']) && $_REQUEST['acl']) {
 				$acl = new \Zotlabs\Access\AccessList([]);
 				$acl->set($_REQUEST['acl']);
 				$channel_acl = $acl->get();
@@ -180,13 +180,13 @@ class Rpost extends \Zotlabs\Web\Controller {
 		}
 
 
-		if($_REQUEST['url']) {
+		if(isset($_REQUEST['url']) && $_REQUEST['url']) {
 			$x = z_fetch_url(z_root() . '/linkinfo?f=&url=' . urlencode($_REQUEST['url']));
 			if($x['success'])
 				$_REQUEST['body'] = $_REQUEST['body'] . $x['body'];
 		}
 
-		if($_REQUEST['post_id']) {
+		if(isset($_REQUEST['post_id']) && $_REQUEST['post_id']) {
 			$_REQUEST['body'] .= '[share=' . intval($_REQUEST['post_id']) . '][/share]';
 		}
 
@@ -201,9 +201,9 @@ class Rpost extends \Zotlabs\Web\Controller {
 			'bang'                => '',
 			'visitor'             => true,
 			'profile_uid'         => local_channel(),
-			'title'               => $_REQUEST['title'],
-			'body'                => $_REQUEST['body'],
-			'attachment'          => $_REQUEST['attachment'],
+			'title'               => $_REQUEST['title'] ?? '',
+			'body'                => $_REQUEST['body'] ?? '',
+			'attachment'          => $_REQUEST['attachment'] ?? '',
 			'source'              => ((x($_REQUEST,'source')) ? strip_tags($_REQUEST['source']) : ''),
 			'return_path'         => 'rpost/return',
 			'bbco_autocomplete'   => 'bbcode',
@@ -212,6 +212,7 @@ class Rpost extends \Zotlabs\Web\Controller {
 			'jotnets'             => true
 		);
 
+		$a = '';
 		$editor = status_editor($a,$x,false,'Rpost');
 
 		$o .= replace_macros(get_markup_template('edpost_head.tpl'), array(

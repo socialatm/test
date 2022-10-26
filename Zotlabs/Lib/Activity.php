@@ -68,6 +68,10 @@ class Activity {
 		else {
 			$m = parse_url($url);
 
+			if (!$m) {
+				return null;
+			}
+
 			// handle bearcaps
 			if ($m['scheme'] === 'bear') {
 				$params = explode('&', $m['query']);
@@ -117,7 +121,7 @@ class Activity {
 			$y = json_decode($x['body'], true);
 			logger('returned: ' . json_encode($y, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOGGER_DEBUG);
 
-			if (ActivityStreams::is_an_actor($y['type'])) {
+			if (isset($y['type']) && ActivityStreams::is_an_actor($y['type'])) {
 				XConfig::Set($y['id'], 'system', 'actor_record', $y);
 			}
 
@@ -415,7 +419,7 @@ class Activity {
 			$objtype = self::activity_obj_mapper($i['obj_type']);
 		}
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			$ret = Activity::encode_object($i['obj']);
 		}
 
@@ -430,7 +434,7 @@ class Activity {
 			return $ret;
 		}
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			if (is_array($i['obj'])) {
 				$ret = $i['obj'];
 			}
@@ -717,7 +721,7 @@ class Activity {
 
 		$ret['type'] = self::activity_mapper($i['verb']);
 
-		if (intval($i['item_deleted']) && !$recurse) {
+		if ((isset($i['item_deleted']) && intval($i['item_deleted'])) && !$recurse) {
 			$is_response = false;
 
 			if (ActivityStreams::is_response_activity($ret['type'])) {
@@ -801,10 +805,10 @@ class Activity {
 
 		$ret['diaspora:guid'] = $i['uuid'];
 
-		if ($i['title'])
+		if (isset($i['title']) && $i['title'])
 			$ret['name'] = html2plain(bbcode($i['title'], ['cache' => true]));
 
-		if ($i['summary'])
+		if (isset($i['summary']) && $i['summary'])
 			$ret['summary'] = bbcode($i['summary'], ['cache' => true]);
 
 		if ($ret['type'] === 'Announce') {
@@ -816,13 +820,14 @@ class Activity {
 			];
 		}
 
-		$ret['published'] = datetime_convert('UTC', 'UTC', $i['created'], ATOM_TIME);
-		if ($i['created'] !== $i['edited'])
+		$ret['published'] = ((isset($i['created'])) ? datetime_convert('UTC', 'UTC', $i['created'], ATOM_TIME) : datetime_convert());
+		if (isset($i['created'], $i['edited']) && $i['created'] !== $i['edited'])
 			$ret['updated'] = datetime_convert('UTC', 'UTC', $i['edited'], ATOM_TIME);
-		if ($i['app']) {
+
+		if (isset($i['app']) && $i['app']) {
 			$ret['generator'] = ['type' => 'Application', 'name' => $i['app']];
 		}
-		if ($i['location'] || $i['coord']) {
+		if (isset($i['location']) || isset($i['coord'])) {
 			$ret['location'] = ['type' => 'Place'];
 			if ($i['location']) {
 				$ret['location']['name'] = $i['location'];
@@ -851,7 +856,7 @@ class Activity {
 		else
 			return [];
 
-		if ($i['obj']) {
+		if (isset($i['obj']) && $i['obj']) {
 			if (!is_array($i['obj'])) {
 				$i['obj'] = json_decode($i['obj'], true);
 			}
@@ -879,7 +884,7 @@ class Activity {
 			$ret['type'] = 'Invite';
 		}
 
-		if ($i['target']) {
+		if (isset($i['target']) && $i['target']) {
 			if (!is_array($i['target'])) {
 				$i['target'] = json_decode($i['target'], true);
 			}
@@ -1596,15 +1601,18 @@ class Activity {
 		// we already store this in Activity::fetch()
 		// XConfig::Set($url, 'system', 'actor_record', $person_obj);
 
-		$name = $person_obj['name'];
+		$name = $person_obj['name'] ?? '';
 		if (!$name) {
-			$name = $person_obj['preferredUsername'];
+			$name = $person_obj['preferredUsername'] ?? '';
 		}
 		if (!$name) {
 			$name = t('Unknown');
 		}
 
 		$webfinger_addr = '';
+		$hostname = '';
+		$baseurl  = '';
+		$site_url = '';
 
 		$m = parse_url($url);
 		if ($m) {
@@ -1613,7 +1621,7 @@ class Activity {
 			$site_url = $m['scheme'] . '://' . $m['host'];
 		}
 
-		if (!empty($person_obj['preferredUsername']) && isset($parsed_url['host'])) {
+		if (!empty($person_obj['preferredUsername']) && $hostname) {
 			$webfinger_addr = escape_tags($person_obj['preferredUsername']) . '@' . $hostname;
 		}
 
@@ -1640,7 +1648,7 @@ class Activity {
 		$links   = false;
 		$profile = false;
 
-		if (is_array($person_obj['url'])) {
+		if (isset($person_obj['url']) && is_array($person_obj['url'])) {
 			if (!array_key_exists(0, $person_obj['url'])) {
 				$links = [$person_obj['url']];
 			}
@@ -1649,7 +1657,7 @@ class Activity {
 			}
 		}
 
-		if ($links) {
+		if (is_array($links) && $links) {
 			foreach ($links as $link) {
 				if (is_array($link) && array_key_exists('mediaType', $link) && $link['mediaType'] === 'text/html') {
 					$profile = $link['href'];
@@ -2262,6 +2270,10 @@ class Activity {
 
 			$obj_actor = ((isset($act->obj['actor'])) ? $act->obj['actor'] : $act->get_actor('attributedTo', $act->obj));
 
+			if (!isset($obj_actor['id'])) {
+				return false;
+			}
+
 			// ensure we store the original actor
 			self::actor_store($obj_actor['id'], $obj_actor);
 
@@ -2322,9 +2334,6 @@ class Activity {
 				$remainder = substr($act->obj['commentPolicy'], 0, (($until) ? $until : strlen($act->obj['commentPolicy'])));
 				if ($remainder) {
 					$s['comment_policy'] = $remainder;
-				}
-				if (!(isset($item['comment_policy']) && strlen($item['comment_policy']))) {
-					$s['comment_policy'] = 'contacts';
 				}
 			}
 		}
@@ -2995,18 +3004,6 @@ class Activity {
 
 		set_iconfig($item, 'activitypub', 'recips', $act->raw_recips);
 
-		// TODO: inheritPrivacy should probably be set in encode activity. Zap does not do so yet - check what this is about
-		if (!(isset($act->data['inheritPrivacy']) && $act->data['inheritPrivacy'])) {
-			if ($item['item_private']) {
-				$item['item_restrict'] = $item['item_restrict'] & 1;
-				if ($is_child_node) {
-					$item['allow_cid'] = '<' . $channel['channel_hash'] . '>';
-					$item['allow_gid'] = $item['deny_cid'] = $item['deny_gid'] = '';
-				}
-				logger('restricted');
-			}
-		}
-
 		if (intval($act->sigok)) {
 			$item['item_verified'] = 1;
 		}
@@ -3054,7 +3051,24 @@ class Activity {
 				$item['thr_parent'] = $parent[0]['parent_mid'];
 			}
 			$item['parent_mid'] = $parent[0]['parent_mid'];
-			//$item['item_private'] = $parent[0]['item_private'];
+
+			/*
+			 *
+			 * Check for conversation privacy mismatches
+			 * We can only do this if we have a channel and we have fetched the parent
+			 *
+			 */
+
+			// public conversation, but this comment went rogue and was published privately
+			// hide it from everybody except the channel owner
+
+			if (intval($parent[0]['item_private']) === 0) {
+				if (intval($item['item_private'])) {
+					$item['item_restrict'] = $item['item_restrict'] | 1;
+					$item['allow_cid'] = '<' . $channel['channel_hash'] . '>';
+					$item['allow_gid'] = $item['deny_cid'] = $item['deny_gid'] = '';
+				}
+			}
 
 		}
 

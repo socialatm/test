@@ -270,7 +270,7 @@ class Directory extends DAV\Node implements DAV\ICollection, DAV\IQuota, DAV\IMo
 			dbesc($mimetype),
 			intval($filesize),
 			intval(0),
-			intval($is_photo),
+			intval(0),
 			dbesc($f),
 			dbesc(datetime_convert()),
 			dbesc(datetime_convert()),
@@ -319,8 +319,9 @@ class Directory extends DAV\Node implements DAV\ICollection, DAV\IQuota, DAV\IMo
 		// If we know it's a photo, over-ride the type in case the source system could not determine what it was
 
 		if($is_photo) {
-			q("update attach set filetype = '%s' where hash = '%s' and uid = %d",
+			q("update attach set filetype = '%s', is_photo = %d where hash = '%s' and uid = %d",
 				dbesc($gis['mime']),
+				intval($is_photo),
 				dbesc($hash),
 				intval($c[0]['channel_id'])
 			);
@@ -617,7 +618,7 @@ class Directory extends DAV\Node implements DAV\ICollection, DAV\IQuota, DAV\IMo
 		$file = trim($file, '/');
 		$path_arr = explode('/', $file);
 
-		$cat = $_REQUEST['cat'];
+		$cat = $_REQUEST['cat'] ?? '';
 
 
 		if (! $path_arr)

@@ -90,8 +90,8 @@ class Tokens extends Controller {
 				$r = q("select count(atoken_id) as total where atoken_uid = %d",
 					intval($channel['channel_id'])
 				);
-				if($r && intval($r[0]['total']) >= $max_tokens) {
-					notice( sprintf( t('This channel is limited to %d tokens'), $max_tokens) . EOL);
+				if($r && intval($r[0]['total']) >= $max_atokens) {
+					notice( sprintf( t('This channel is limited to %d tokens'), $max_atokens) . EOL);
 					return;
 				}
 			}
@@ -282,15 +282,15 @@ class Tokens extends Controller {
 		}
 
 		$tpl = get_markup_template("tokens.tpl");
-		$o .= replace_macros($tpl, array(
+		$o = replace_macros($tpl, array(
 			'$form_security_token' => get_form_security_token('tokens'),
 			'$permcat' => ['permcat', t('Select a role for this guest'), $current_permcat, '', $permcats],
 			'$title' => t('Guest Access'),
 			'$desc' => $desc,
 			'$atoken' => $atoken,
-			'$name' => array('name', t('Login Name') . ' <span class="required">*</span>', (($atoken) ? $atoken['atoken_name'] : ''),''),
-			'$token'=> array('token', t('Login Password') . ' <span class="required">*</span>',(($atoken) ? $atoken['atoken_token'] : new_token()), ''),
-			'$expires'=> array('expires', t('Expires (yyyy-mm-dd)'), (($atoken['atoken_expires'] && $atoken['atoken_expires'] > NULL_DATE) ? datetime_convert('UTC',date_default_timezone_get(),$atoken['atoken_expires']) : ''), ''),
+			'$name' => array('name', t('Login Name') . ' <span class="required">*</span>', $atoken['atoken_name'] ?? '',''),
+			'$token'=> array('token', t('Login Password') . ' <span class="required">*</span>', $atoken['atoken_token'] ?? new_token(), ''),
+			'$expires'=> array('expires', t('Expires (yyyy-mm-dd)'), ((isset($atoken['atoken_expires']) && $atoken['atoken_expires'] > NULL_DATE) ? datetime_convert('UTC',date_default_timezone_get(),$atoken['atoken_expires']) : ''), ''),
 			'$submit' => t('Submit'),
 			'$delete' => t('Delete')
 		));

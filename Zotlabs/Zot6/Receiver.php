@@ -34,6 +34,7 @@ class Receiver {
 		$this->rawdata     = null;
 		$this->site_id     = null;
 		$this->prvkey      = Config::get('system','prvkey');
+		$this->hub         = null;
 
 		if($localdata) {
 			$this->rawdata = $localdata;
@@ -71,12 +72,16 @@ class Receiver {
 
 			if ($this->encrypted && $this->prvkey) {
 				$uncrypted = Crypto::unencapsulate($this->data,$this->prvkey);
-				if ($uncrypted) {
+
+				// openssl_decrypt() will sometimes return garbage instead of false when
+				// a wrong key is used. This can happen in case of hub re-installs.
+				// Hence also check with str_starts_with().
+				if ($uncrypted && str_starts_with($uncrypted, '{')) {
 					$this->data = json_decode($uncrypted,true);
 				}
 				else {
 					$this->error = true;
-					$this->response['message'] = 'no data';
+					$this->response['message'] = 'no data (decryption failed)';
 				}
 			}
 		}

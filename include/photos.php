@@ -247,13 +247,13 @@ function photo_upload($channel, $observer, $args) {
 		  'os_storage' => $os_storage, 'os_syspath' => $args['os_syspath'],
 		  'os_path'    => $args['os_path'], 'display_path' => $args['display_path']
 	];
-	if ($args['created'])
+	if (isset($args['created']))
 		$p['created'] = $args['created'];
-	if ($args['edited'])
+	if (isset($args['edited']))
 		$p['edited'] = $args['edited'];
-	if ($args['title'])
+	if (isset($args['title']))
 		$p['title'] = $args['title'];
-	if ($args['description'])
+	if (isset($args['description']))
 		$p['description'] = $args['description'];
 
 	$url = [];
@@ -446,7 +446,7 @@ function photo_upload($channel, $observer, $args) {
 	];
 
 	// Create item container
-	if ($args['item']) {
+	if (isset($args['item'])) {
 		foreach ($args['item'] as $i) {
 
 			$item  = get_item_elements($i);

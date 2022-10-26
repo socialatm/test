@@ -27,10 +27,10 @@ class Channel {
 		$photo_path         = ((x($_POST, 'photo_path')) ? escape_tags(trim($_POST['photo_path'])) : '');
 		$attach_path        = ((x($_POST, 'attach_path')) ? escape_tags(trim($_POST['attach_path'])) : '');
 		$allow_location     = (((x($_POST, 'allow_location')) && (intval($_POST['allow_location']) == 1)) ? 1 : 0);
-		$post_newfriend     = (($_POST['post_newfriend'] == 1) ? 1 : 0);
-		$post_joingroup     = (($_POST['post_joingroup'] == 1) ? 1 : 0);
-		$post_profilechange = (($_POST['post_profilechange'] == 1) ? 1 : 0);
-		$adult              = (($_POST['adult'] == 1) ? 1 : 0);
+		$post_newfriend     = ((isset($_POST['post_newfriend']) && $_POST['post_newfriend'] == 1) ? 1 : 0);
+		$post_joingroup     = ((isset($_POST['post_joingroup']) && $_POST['post_joingroup'] == 1) ? 1 : 0);
+		$post_profilechange = ((isset($_POST['post_profilechange']) && $_POST['post_profilechange'] == 1) ? 1 : 0);
+		$adult              = ((isset($_POST['adult']) && $_POST['adult'] == 1) ? 1 : 0);
 		$mailhost           = ((array_key_exists('mailhost', $_POST)) ? notags(trim($_POST['mailhost'])) : '');
 		$pageflags          = $channel['channel_pageflags'];
 		$existing_adult     = (($pageflags & PAGE_ADULT) ? 1 : 0);
@@ -152,6 +152,7 @@ class Channel {
 		Master::Summon(['Directory', local_channel()]);
 		Libsync::build_sync_packet();
 
+		$email_changed = false;
 		if ($email_changed && App::$config['system']['register_policy'] == REGISTER_VERIFY) {
 
 			// FIXME - set to un-verified, blocked and redirect to logout

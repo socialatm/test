@@ -243,8 +243,8 @@ class Hq extends \Zotlabs\Web\Controller {
 		if (!local_channel())
 			return;
 
-		$options['offset'] = $_REQUEST['offset'];
-		$options['type'] = $_REQUEST['type'];
+		$options['offset'] = $_REQUEST['offset'] ?? 0;
+		$options['type'] = $_REQUEST['type'] ?? '';
 
 		$ret = Messages::get_messages_page($options);
 

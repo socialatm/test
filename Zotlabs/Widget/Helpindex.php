@@ -13,7 +13,7 @@ class Helpindex {
 
 		require_once('include/help.php');
 
-		$o .= '<div class="widget">';
+		$o = '<div class="widget">';
 
 		$level_0 = get_help_content('sitetoc');
 		if(! $level_0) {

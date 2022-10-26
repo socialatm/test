@@ -24,6 +24,8 @@ class ASCollection {
 		$this->direction = $direction;
 		$this->limit     = $limit;
 
+		$data = null;
+
 		if (is_array($obj)) {
 			$data = $obj;
 		}

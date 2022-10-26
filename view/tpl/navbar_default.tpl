@@ -181,12 +181,12 @@
 		</div>
 		<div class="nav d-lg-flex"></div>
 		{{else}}
-		<div class="lh-1" id="app-bin-label">
+		<div class="lh-sm w-100" id="app-bin-label">
 			{{if $name}}
-			<img src="{{$thumb}}" class="menu-img-2">
-			<div class="float-start pe-2">
-				<div class="fw-bold">{{$name}}</div>
-				<div class="text-muted">{{$sitelocation}}</div>
+			<img src="{{$thumb}}" class="menu-img-3">
+			<div class="p-1">
+				<div class="fn text-truncate">{{$name}}</div>
+				<div class="text-muted text-truncate">{{$sitelocation}}</div>
 			</div>
 			{{/if}}
 		</div>

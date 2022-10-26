@@ -139,6 +139,11 @@ class AccessList {
 	 * @param boolean $explicit (optional) default true
 	 */
 	function set_from_array($arr, $explicit = true) {
+		$arr['contact_allow'] = $arr['contact_allow'] ?? [];
+		$arr['group_allow'] = $arr['group_allow'] ?? [];
+		$arr['contact_deny'] = $arr['contact_deny'] ?? [];
+		$arr['group_deny'] = $arr['group_deny'] ?? [];
+
 		$this->allow_cid = perms2str((is_array($arr['contact_allow']))
 			? $arr['contact_allow'] : explode(',', $arr['contact_allow']));
 		$this->allow_gid = perms2str((is_array($arr['group_allow']))

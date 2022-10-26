@@ -2174,6 +2174,9 @@ function layout_select($channel_id, $current = '') {
 		intval(ITEM_TYPE_PDL)
 	);
 
+	$selected = '';
+	$options = '';
+
 	if($r) {
 		$empty_selected = (($current === false) ? ' selected="selected" ' : '');
 		$options .= '<option value="" ' . $empty_selected . '>' . t('default') . '</option>';
@@ -2205,6 +2208,9 @@ function mimetype_select($channel_id, $current = 'text/bbcode', $choices = null,
 	if((App::$is_sys) || (channel_codeallowed($channel_id) && $channel_id == local_channel())){
 		$x['application/x-php'] = t('PHP');
 	}
+
+	$selected = '';
+	$options = '';
 
 	foreach($x as $y => $z) {
 		$selected = (($y == $current) ? ' selected="selected" ' : '');
@@ -3977,7 +3983,7 @@ function new_token($minlen = 36, $maxlen = 48) {
     $len   = (($minlen === $maxlen) ? $minlen : mt_rand($minlen, $maxlen));
 
     for ($a = 0; $a < $len; $a++) {
-        $str .= $chars[mt_rand(0, 62)];
+        $str .= $chars[mt_rand(0, 61)];
     }
 
     return $str;

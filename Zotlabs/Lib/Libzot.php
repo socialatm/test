@@ -473,7 +473,7 @@ class Libzot {
 						unset($new_connection[0]['abook_account']);
 						unset($new_connection[0]['abook_channel']);
 
-						$abconfig = load_abconfig($channel['channel_id'], $new_connection['abook_xchan']);
+						$abconfig = load_abconfig($channel['channel_id'], $new_connection[0]['abook_xchan']);
 
 						if ($abconfig) {
 							$new_connection['abconfig'] = $abconfig;
@@ -589,8 +589,6 @@ class Libzot {
 	 */
 	static function register_hub($id) {
 
-		$hsig_valid = false;
-
 		$result = ['success' => false];
 
 		if (!$id) {
@@ -599,7 +597,13 @@ class Libzot {
 
 		$record = Zotfinger::exec($id);
 
+		if (!$record) {
+			return $result;
+		}
+
 		// Check the HTTP signature
+
+		$hsig_valid = false;
 
 		$hsig = $record['signature'];
 		if ($hsig['signer'] === $id && $hsig['header_valid'] === true && $hsig['content_valid'] === true) {
@@ -641,6 +645,14 @@ class Libzot {
 	 */
 
 	static function import_xchan($arr, $ud_flags = UPDATE_FLAGS_UPDATED, $ud_arr = null) {
+
+		$ret     = ['success' => false];
+
+		if (!is_array($arr)) {
+			logger('Not an array: ' . print_r($arr, true), LOGGER_DEBUG);
+			return $ret;
+		}
+
 		/**
 		 * @hooks import_xchan
 		 *   Called when processing the result of zot_finger() to store the result
@@ -648,7 +660,6 @@ class Libzot {
 		 */
 		call_hooks('import_xchan', $arr);
 
-		$ret     = ['success' => false];
 		$dirmode = intval(get_config('system', 'directory_mode'));
 
 		$changed = false;
@@ -668,7 +679,7 @@ class Libzot {
 		$verified    = false;
 
 		if (!self::verify($arr['id'], $arr['id_sig'], $arr['public_key'])) {
-			logger('Unable to verify channel signature for ' . $arr['address']);
+			logger('Unable to verify channel signature for ' . $arr['primary_location']['address']);
 			return $ret;
 		}
 		else {
@@ -703,18 +714,18 @@ class Libzot {
 
 			$dirmode = get_config('system', 'directory_mode');
 
-			if ((($arr['site']['directory_mode'] === 'standalone') || ($dirmode & DIRECTORY_MODE_STANDALONE)) && ($arr['site']['url'] != z_root()))
+			if (((isset($arr['site']['directory_mode']) && $arr['site']['directory_mode'] === 'standalone') || ($dirmode & DIRECTORY_MODE_STANDALONE)) && ($arr['site']['url'] != z_root()))
 				$arr['searchable'] = false;
 
 			$hidden = (1 - intval($arr['searchable']));
 
 			$hidden_changed = $adult_changed = $deleted_changed = $pubforum_changed = 0;
 
-			if (intval($r[0]['xchan_hidden']) != (1 - intval($arr['searchable'])))
+			if (isset($arr['searchable']) && intval($r[0]['xchan_hidden']) != (1 - intval($arr['searchable'])))
 				$hidden_changed = 1;
-			if (intval($r[0]['xchan_selfcensored']) != intval($arr['adult_content']))
+			if (isset($arr['adult_content']) && intval($r[0]['xchan_selfcensored']) != intval($arr['adult_content']))
 				$adult_changed = 1;
-			if (intval($r[0]['xchan_deleted']) != intval($arr['deleted']))
+			if (isset($arr['xchan_deleted']) && intval($r[0]['xchan_deleted']) != intval($arr['deleted']))
 				$deleted_changed = 1;
 
 			// new style 6-MAR-2019
@@ -733,7 +744,7 @@ class Libzot {
 
 			// old style
 
-			if (intval($r[0]['xchan_pubforum']) != intval($arr['public_forum']))
+			if (isset($arr['public_forum']) && intval($r[0]['xchan_pubforum']) != intval($arr['public_forum']))
 				$pubforum_changed = 1;
 
 
@@ -761,10 +772,10 @@ class Libzot {
 					dbesc($arr['name_updated']),
 					dbesc($arr['primary_location']['connections_url']),
 					dbesc($arr['primary_location']['follow_url']),
-					dbesc($arr['primary_location']['connect_url']),
+					dbesc($arr['connect_url']),
 					intval(1 - intval($arr['searchable'])),
 					intval($arr['adult_content']),
-					intval($arr['deleted']),
+					intval($arr['deleted'] ?? 0),
 					intval($arr['public_forum']),
 					dbesc(escape_tags($arr['primary_location']['address'])),
 					dbesc(escape_tags($arr['primary_location']['url'])),
@@ -804,7 +815,7 @@ class Libzot {
 					'xchan_name_date'      => $arr['name_updated'],
 					'xchan_hidden'         => intval(1 - intval($arr['searchable'])),
 					'xchan_selfcensored'   => $arr['adult_content'],
-					'xchan_deleted'        => $arr['deleted'],
+					'xchan_deleted'        => $arr['deleted'] ?? 0,
 					'xchan_pubforum'       => $arr['public_forum']
 				]
 			);
@@ -885,7 +896,7 @@ class Libzot {
 				else {
 					$r = q("update xchan set xchan_photo_date = '%s', xchan_photo_l = '%s', xchan_photo_m = '%s', xchan_photo_s = '%s', xchan_photo_mimetype = '%s'
 						where xchan_hash = '%s'",
-						dbescdate(datetime_convert('UTC', 'UTC', $arr['photo_updated'])),
+						dbescdate(datetime_convert('UTC', 'UTC', $arr['photo']['updated'])),
 						dbesc($photos[0]),
 						dbesc($photos[1]),
 						dbesc($photos[2]),
@@ -914,7 +925,7 @@ class Libzot {
 
 		// Which entries in the update table are we interested in updating?
 
-		$address = (($ud_arr && $ud_arr['ud_addr']) ? $ud_arr['ud_addr'] : $arr['address']);
+		$address = (($ud_arr && $ud_arr['ud_addr']) ? $ud_arr['ud_addr'] : $arr['primary_location']['address']);
 
 
 		// Are we a directory server of some kind?
@@ -1027,7 +1038,7 @@ class Libzot {
 				// handle remote validation issues
 
 				$b = q("update dreport set dreport_result = '%s', dreport_time = '%s' where dreport_queue = '%s'",
-					dbesc(($x['message']) ? $x['message'] : 'unknown delivery error'),
+					dbesc($x['message'] ?? 'unknown delivery error'),
 					dbesc(datetime_convert()),
 					dbesc($outq['outq_hash'])
 				);
@@ -1298,7 +1309,7 @@ class Libzot {
 					}
 				}
 
-				if ($AS->meta['hubloc']) {
+				if (isset($AS->meta['hubloc']) && $AS->meta['hubloc']) {
 					$arr['item_verified'] = true;
 				}
 
@@ -1306,7 +1317,7 @@ class Libzot {
 					$arr['comment_policy'] = 'authenticated';
 				}
 
-				if ($AS->meta['signed_data']) {
+				if (isset($AS->meta['signed_data']) && $AS->meta['signed_data']) {
 					IConfig::Set($arr, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
 				}
 
@@ -1437,7 +1448,7 @@ class Libzot {
 		if ($check_mentions) {
 			// It's a top level post. Look at the tags. See if any of them are mentions and are on this hub.
 			if ($act && $act->obj) {
-				if (is_array($act->obj['tag']) && $act->obj['tag']) {
+				if (isset($act->obj['tag']) && is_array($act->obj['tag']) && $act->obj['tag']) {
 					foreach ($act->obj['tag'] as $tag) {
 						if ($tag['type'] === 'Mention' && (strpos($tag['href'], z_root()) !== false)) {
 							$address = basename($tag['href']);
@@ -1516,6 +1527,7 @@ class Libzot {
 		foreach ($deliveries as $d) {
 
 			$local_public = $public;
+			$item_result = null;
 
 			$DR = new DReport(z_root(), $sender, $d, $arr['mid']);
 
@@ -1910,7 +1922,7 @@ class Libzot {
 
 			$stored = (($item_result && $item_result['item']) ? $item_result['item'] : false);
 			if ((is_array($stored)) && ($stored['id'] != $stored['parent'])
-				&& ($stored['author_xchan'] === $channel['channel_hash'] || $stored['author_xchan'] === $channel['channel_hash'])) {
+				&& ($stored['author_xchan'] === $channel['channel_hash'])) {
 				retain_item($stored['item']['parent']);
 			}
 
@@ -1944,7 +1956,7 @@ class Libzot {
 			return false;
 		}
 
-		if ($a['data']['type'] !== 'OrderedCollection') {
+		if (isset($a['data']['type']) && $a['data']['type'] !== 'OrderedCollection') {
 			return false;
 		}
 
@@ -1978,13 +1990,18 @@ class Libzot {
 				logger('FOF Activity rejected: ' . print_r($activity, true));
 				continue;
 			}
-			$arr = Activity::decode_note($AS);
 
 			// logger($AS->debug());
+
+			if(empty($AS->actor['id'])) {
+				logger('No actor id!');
+				continue;
+			}
 
 			$r = q("select hubloc_hash, hubloc_network from hubloc where hubloc_id_url = '%s'",
 				dbesc($AS->actor['id'])
 			);
+
 			$r = self::zot_record_preferred($r);
 
 			if (!$r) {
@@ -2001,12 +2018,18 @@ class Libzot {
 				}
 			}
 
-			if ($AS->obj['actor'] && $AS->obj['actor']['id'] && $AS->obj['actor']['id'] !== $AS->actor['id']) {
+			if (isset($AS->obj['actor']['id']) && $AS->obj['actor']['id'] !== $AS->actor['id']) {
 				$y = import_author_xchan(['url' => $AS->obj['actor']['id']]);
 				if (!$y) {
 					logger('FOF Activity: no object actor');
 					continue;
 				}
+			}
+
+			$arr = Activity::decode_note($AS);
+
+			if (!$arr) {
+				continue;
 			}
 
 			if ($r) {
@@ -2478,32 +2501,32 @@ class Libzot {
 		}
 
 		$site_directory = 0;
-		if ($arr['directory_mode'] == 'normal')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'normal')
 			$site_directory = DIRECTORY_MODE_NORMAL;
-		if ($arr['directory_mode'] == 'primary')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'primary')
 			$site_directory = DIRECTORY_MODE_PRIMARY;
-		if ($arr['directory_mode'] == 'secondary')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'secondary')
 			$site_directory = DIRECTORY_MODE_SECONDARY;
-		if ($arr['directory_mode'] == 'standalone')
+		if (isset($arr['directory_mode']) && $arr['directory_mode'] == 'standalone')
 			$site_directory = DIRECTORY_MODE_STANDALONE;
 
 		$register_policy = 0;
-		if ($arr['register_policy'] == 'closed')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'closed')
 			$register_policy = REGISTER_CLOSED;
-		if ($arr['register_policy'] == 'open')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'open')
 			$register_policy = REGISTER_OPEN;
-		if ($arr['register_policy'] == 'approve')
+		if (isset($arr['register_policy']) && $arr['register_policy'] == 'approve')
 			$register_policy = REGISTER_APPROVE;
 
 		$access_policy = 0;
 		if (array_key_exists('access_policy', $arr)) {
-			if ($arr['access_policy'] === 'private')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'private')
 				$access_policy = ACCESS_PRIVATE;
-			if ($arr['access_policy'] === 'paid')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'paid')
 				$access_policy = ACCESS_PAID;
-			if ($arr['access_policy'] === 'free')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'free')
 				$access_policy = ACCESS_FREE;
-			if ($arr['access_policy'] === 'tiered')
+			if (isset($arr['access_policy']) && $arr['access_policy'] === 'tiered')
 				$access_policy = ACCESS_TIERED;
 		}
 
@@ -2916,7 +2939,7 @@ class Libzot {
 		$ret['mail']     = map_scope(PermissionLimits::Get($e['channel_id'], 'post_mail'));
 
 		if ($deleted)
-			$ret['deleted'] = $deleted;
+			$ret['deleted'] = true;
 
 		if (intval($e['channel_removed'])) {
 			$ret['deleted_locally'] = true;
@@ -2988,18 +3011,17 @@ class Libzot {
 		$signing_key = get_config('system', 'prvkey');
 		$sig_method  = get_config('system', 'signature_algorithm', 'sha256');
 
-		$ret                         = [];
-		$ret['site']                 = [];
-		$ret['site']['url']          = z_root();
-		$ret['site']['site_sig']     = self::sign(z_root(), $signing_key);
-		$ret['site']['post']         = z_root() . '/zot';
-		$ret['site']['openWebAuth']  = z_root() . '/owa';
-		$ret['site']['authRedirect'] = z_root() . '/magic';
-		$ret['site']['sitekey']      = get_config('system', 'pubkey');
+		$ret                           = [];
+		$ret['site']                   = [];
+		$ret['site']['url']            = z_root();
+		$ret['site']['site_sig']       = self::sign(z_root(), $signing_key);
+		$ret['site']['post']           = z_root() . '/zot';
+		$ret['site']['openWebAuth']    = z_root() . '/owa';
+		$ret['site']['authRedirect']   = z_root() . '/magic';
+		$ret['site']['sitekey']        = get_config('system', 'pubkey');
+		$ret['site']['directory_mode'] = 'normal';
 
 		$dirmode = get_config('system', 'directory_mode');
-		if (($dirmode === false) || ($dirmode == DIRECTORY_MODE_NORMAL))
-			$ret['site']['directory_mode'] = 'normal';
 
 		if ($dirmode == DIRECTORY_MODE_PRIMARY)
 			$ret['site']['directory_mode'] = 'primary';

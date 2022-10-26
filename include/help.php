@@ -248,7 +248,7 @@ function search_doc_files($s) {
 		$r[$x]['text'] = substr($r[$x]['body'], $start, $dislen);
 
 		$r[$x]['rank'] = 0;
-		if($r[$x]['term']) {
+		if(isset($r[$x]['term'])) {
 			foreach($r[$x]['term'] as $t) {
 				if(stristr($t['term'],$s)) {
 					$r[$x]['rank'] ++;

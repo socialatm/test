@@ -87,7 +87,7 @@ class Register extends Controller {
 			$name_error = validate_channelname($name);
 			if($name_error) {
 				notice($name_error . EOL);
-				return $ret;
+				return;
 			}
 
 			$nick = mb_strtolower(escape_tags(trim($arr['nickname'])));
@@ -166,7 +166,7 @@ class Register extends Controller {
 		if(!empty($password_result['error'])) {
 			$msg = $password_result['message'];
 			notice($msg);
-			zar_log($msg . ' ' . $did2);
+			zar_log($msg);
 			return;
 		}
 
@@ -239,7 +239,7 @@ class Register extends Controller {
 							);
 
 							$msg = t('Invitation code succesfully applied');
-							zar_log('ZAR0237I ' . $msg) . ', ' . $email;
+							zar_log('ZAR0237I ' . $msg . ', ' . $email);
 							// msg!
 							info($msg . EOL);
 

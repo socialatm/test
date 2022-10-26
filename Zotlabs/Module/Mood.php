@@ -24,7 +24,7 @@ class Mood extends Controller {
 
 		$uid = local_channel();
 		$channel = App::get_channel();
-		$verb = notags(trim($_GET['verb']));
+		$verb = ((isset($_GET['verb'])) ? notags(trim($_GET['verb'])) : '');
 
 		if(! $verb)
 			return;

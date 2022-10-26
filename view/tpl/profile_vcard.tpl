@@ -23,14 +23,14 @@
 				<a class="profile-edit-side-link float-end" href="{{$editmenu.edit.0}}" ><i class="fa fa-pencil" title="{{$editmenu.edit.1}}"></i></a>
 				{{/if}}
 
-				<div class="text-truncate">
+				<div class="text-truncate lh-sm">
 					<strong class="fn p-name">{{$profile.fullname}}{{if $profile.online}}<i class="fa fa-fw fa-asterisk text-danger ps-2" title="{{$profile.online}}"></i>{{/if}}</strong>
 				</div>
 				<div class="text-truncate">
-					<small class="text-muted p-adr">{{$profile.reddress}}</small>
+					<span class="text-muted p-adr">{{$profile.reddress}}</span>
 				</div>
 				{{if $connect}}
-				<div class="mt-1">
+				<div class="mt-2">
 					<a href="{{$connect_url}}" class="btn btn-success btn-sm" rel="nofollow">
 						<i class="fa fa-plus"></i> {{$connect}}
 					</a>

@@ -77,6 +77,7 @@ class Addons {
 					} catch (\PHPGit\Exception\GitException $e) {
 						json_return_and_die(array('message' => 'Error updating addon repo.', 'success' => false));
 					}
+					break;
 				case 'removerepo':
 					if (array_key_exists('repoName', $_REQUEST)) {
 						$repoName = $_REQUEST['repoName'];
@@ -111,6 +112,7 @@ class Addons {
 					} else {
 						json_return_and_die(array('message' => 'Error deleting addon repo.', 'success' => false));
 					}
+					break;
 				case 'installrepo':
 					if (array_key_exists('repoURL', $_REQUEST)) {
 						require_once('library/PHPGit.autoload.php');			// Load PHPGit dependencies
@@ -172,6 +174,7 @@ class Addons {
 						$repo = $git->probeRepo();
 						json_return_and_die(array('repo' => $repo, 'message' => '', 'success' => true));
 					}
+					break;
 				case 'addrepo':
 					if (array_key_exists('repoURL', $_REQUEST)) {
 						require_once('library/PHPGit.autoload.php');	 // Load PHPGit dependencies

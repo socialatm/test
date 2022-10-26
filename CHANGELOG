@@ -1,3 +1,13 @@
+Hubzilla 7.8.1 (2022-10-26)
+	- Silence tons of PHP warnings in core
+	- Catch decryption failure edgecase in receiver
+	- Deal with conversation privacy mismatches in Activity::store()
+	- Composer libs updates
+	- Fix timeago strings not always translated
+	- Fix edit link regression in cards addon
+	- Fix edit link regression in article addon
+
+
 Hubzilla 7.8 (2022-10-10)
 	- Updated spanish translations
 	- Always update hubloc_updated timestamp if a hubloc is updated

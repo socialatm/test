@@ -30,12 +30,12 @@ class File_upload extends \Zotlabs\Web\Controller {
 			$_REQUEST['group_deny']    = expand_acl($channel['channel_deny_gid']);
 		}
 
-		$_REQUEST['allow_cid'] = perms2str($_REQUEST['contact_allow']);
-		$_REQUEST['allow_gid'] = perms2str($_REQUEST['group_allow']);
-		$_REQUEST['deny_cid']  = perms2str($_REQUEST['contact_deny']);
-		$_REQUEST['deny_gid']  = perms2str($_REQUEST['group_deny']);
+		$_REQUEST['allow_cid'] = ((isset($_REQUEST['contact_allow'])) ? perms2str($_REQUEST['contact_allow']) : '');
+		$_REQUEST['allow_gid'] = ((isset($_REQUEST['group_allow'])) ? perms2str($_REQUEST['group_allow']) : '');
+		$_REQUEST['deny_cid']  = ((isset($_REQUEST['contact_deny'])) ? perms2str($_REQUEST['contact_deny']) : '');
+		$_REQUEST['deny_gid']  = ((isset($_REQUEST['group_deny'])) ? perms2str($_REQUEST['group_deny']) : '');
 
-		if($_REQUEST['filename']) {
+		if(isset($_REQUEST['filename']) && $_REQUEST['filename']) {
 			$r = attach_mkdir($channel, get_observer_hash(), $_REQUEST);
 			if($r['success']) {
 				$hash = $r['data']['hash'];

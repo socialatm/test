@@ -207,7 +207,7 @@ class HTTPSig {
 
 		$key = (($fetched_key) ? $fetched_key : $cached_key);
 
-		$result['portable_id']  = $key['portable_id'];
+		$result['portable_id']  = $key['portable_id'] ?? '';
 		$result['header_valid'] = true;
 
 		if (in_array('digest', $signed_headers)) {
@@ -303,7 +303,7 @@ class HTTPSig {
 
 		// $force is used to ignore the local cache and only use the remote data; for instance the cached key might be stale
 		if (!$force) {
-			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where (hubloc_id_url = '%s' or hubloc_hash = '%s') and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
+			$x = q("select * from xchan join hubloc on xchan_hash = hubloc_hash where (hubloc_id_url = '%s' or hubloc_hash = '%s') and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
 				dbesc($url),
 				dbesc($url)
 			);
@@ -378,7 +378,7 @@ class HTTPSig {
 		$best = [];
 
 		if (!$force) {
-			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
+			$x = q("select * from xchan join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network in ('zot6', 'activitypub') order by hubloc_id desc",
 				dbesc($id)
 			);
 
@@ -427,7 +427,7 @@ class HTTPSig {
 		$best = [];
 
 		if (!$force) {
-			$x = q("select * from xchan left join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc",
+			$x = q("select * from xchan join hubloc on xchan_hash = hubloc_hash where hubloc_id_url = '%s' and hubloc_network = 'zot6' order by hubloc_id desc",
 				dbesc($id)
 			);
 
@@ -631,7 +631,7 @@ class HTTPSig {
 		if (preg_match('/signature="(.*?)"/ism', $header, $matches))
 			$ret['signature'] = base64_decode(preg_replace('/\s+/', '', $matches[1]));
 
-		if (($ret['signature']) && ($ret['algorithm']) && (!$ret['headers']))
+		if (isset($ret['signature']) && isset($ret['algorithm']) && !isset($ret['headers']))
 			$ret['headers'] = ['date'];
 
 		return $ret;

@@ -26,7 +26,7 @@ class Dirsearch extends Controller {
 		}
 
 
-		$access_token = $_REQUEST['t'];
+		$access_token = $_REQUEST['t'] ?? '';
 
 		$token = get_config('system','realm_token');
 		if($token && $access_token != $token) {
@@ -45,7 +45,7 @@ class Dirsearch extends Controller {
 
 		$tables = array('name','address','locale','region','postcode','country','gender','marital','sexual','keywords');
 
-		if($_REQUEST['query']) {
+		if(isset($_REQUEST['query']) && $_REQUEST['query']) {
 			$advanced = $this->dir_parse_query($_REQUEST['query']);
 			if($advanced) {
 				foreach($advanced as $adv) {
@@ -61,22 +61,23 @@ class Dirsearch extends Controller {
 			}
 		}
 
-		$hash     = ((x($_REQUEST['hash']))    ? $_REQUEST['hash']     : '');
+		$hash     = $_REQUEST['hash'] ?? '';
 
-		$name     = ((x($_REQUEST,'name'))     ? $_REQUEST['name']     : '');
-		$hub      = ((x($_REQUEST,'hub'))      ? $_REQUEST['hub']      : '');
-		$address  = ((x($_REQUEST,'address'))  ? $_REQUEST['address']  : '');
-		$locale   = ((x($_REQUEST,'locale'))   ? $_REQUEST['locale']   : '');
-		$region   = ((x($_REQUEST,'region'))   ? $_REQUEST['region']   : '');
-		$postcode = ((x($_REQUEST,'postcode')) ? $_REQUEST['postcode'] : '');
-		$country  = ((x($_REQUEST,'country'))  ? $_REQUEST['country']  : '');
-		$gender   = ((x($_REQUEST,'gender'))   ? $_REQUEST['gender']   : '');
-		$marital  = ((x($_REQUEST,'marital'))  ? $_REQUEST['marital']  : '');
-		$sexual   = ((x($_REQUEST,'sexual'))   ? $_REQUEST['sexual']   : '');
-		$keywords = ((x($_REQUEST,'keywords')) ? $_REQUEST['keywords'] : '');
-		$agege    = ((x($_REQUEST,'agege'))    ? intval($_REQUEST['agege']) : 0 );
-		$agele    = ((x($_REQUEST,'agele'))    ? intval($_REQUEST['agele']) : 0 );
-		$kw       = ((x($_REQUEST,'kw'))       ? intval($_REQUEST['kw'])    : 0 );
+		$name     = $_REQUEST['name'] ?? '';
+		$hub      = $_REQUEST['hub'] ?? '';
+		$address  = $_REQUEST['address'] ?? '';
+		$locale   = $_REQUEST['locale'] ?? '';
+		$region   = $_REQUEST['region'] ?? '';
+		$postcode = $_REQUEST['postcode'] ?? '';
+		$country  = $_REQUEST['country'] ?? '';
+		$gender   = $_REQUEST['gender'] ?? '';
+		$marital  = $_REQUEST['marital'] ?? '';
+		$sexual   = $_REQUEST['sexual'] ?? '';
+		$keywords = $_REQUEST['keywords'] ?? '';
+		$agege    = $_REQUEST['agege'] ?? 0;
+		$agele    = $_REQUEST['agele'] ?? 0;
+		$kw       = $_REQUEST['kw'] ?? 0;
+
 		$forums   = ((array_key_exists('pubforums',$_REQUEST)) ? intval($_REQUEST['pubforums']) : 0);
 
 		if(get_config('system','disable_directory_keywords'))
@@ -109,7 +110,7 @@ class Dirsearch extends Controller {
 		$sort_order  = ((x($_REQUEST,'order')) ? $_REQUEST['order'] : '');
 
 		$joiner = ' OR ';
-		if($_REQUEST['and'])
+		if(isset($_REQUEST['and']) && $_REQUEST['and'])
 			$joiner = ' AND ';
 
 		if($name)
@@ -148,11 +149,11 @@ class Dirsearch extends Controller {
 		}
 
 
-	    $perpage      = (($_REQUEST['n'])              ? $_REQUEST['n']                    : 60);
-	    $page         = (($_REQUEST['p'])              ? intval($_REQUEST['p'] - 1)        : 0);
+	    $perpage      = $_REQUEST['n'] ?? 60;
+	    $page         = ((isset($_REQUEST['p']) && $_REQUEST['p']) ? intval($_REQUEST['p'] - 1) : 0);
 	    $startrec     = (($page+1) * $perpage) - $perpage;
-		$limit        = (($_REQUEST['limit'])          ? intval($_REQUEST['limit'])        : 0);
-		$return_total = ((x($_REQUEST,'return_total')) ? intval($_REQUEST['return_total']) : 0);
+		$limit        = $_REQUEST['limit'] ?? 0;
+		$return_total = $_REQUEST['return_total'] ?? 0;
 
 		// mtime is not currently working
 

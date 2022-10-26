@@ -240,6 +240,7 @@ class ThreadItem {
 		}
 		$like_button_label = tt('Like','Likes',$like_count,'noun');
 
+		$showdislike = '';
 		if (feature_enabled($conv->get_profile_owner(),'dislike')) {
 			$dislike_count = ((x($conv_responses['dislike'],$item['mid'])) ? $conv_responses['dislike'][$item['mid']] : '');
 			$dislike_list = ((x($conv_responses['dislike'],$item['mid'])) ? $conv_responses['dislike'][$item['mid'] . '-l'] : '');
@@ -250,11 +251,11 @@ class ThreadItem {
 			} else {
 				$dislike_list_part = '';
 			}
+
+			$showdislike = ((x($conv_responses['dislike'],$item['mid'])) ? format_like($conv_responses['dislike'][$item['mid']],$conv_responses['dislike'][$item['mid'] . '-l'],'dislike',$item['mid']) : '');
 		}
 
 		$showlike    = ((x($conv_responses['like'],$item['mid'])) ? format_like($conv_responses['like'][$item['mid']],$conv_responses['like'][$item['mid'] . '-l'],'like',$item['mid']) : '');
-		$showdislike = ((x($conv_responses['dislike'],$item['mid']) && feature_enabled($conv->get_profile_owner(),'dislike'))
-				? format_like($conv_responses['dislike'][$item['mid']],$conv_responses['dislike'][$item['mid'] . '-l'],'dislike',$item['mid']) : '');
 
 		/*
 		 * We should avoid doing this all the time, but it depends on the conversation mode
@@ -298,7 +299,7 @@ class ThreadItem {
 		}
 
 		$has_bookmarks = false;
-		if(Apps::system_app_installed(local_channel(), 'Bookmarks') && is_array($item['term'])) {
+		if(Apps::system_app_installed(local_channel(), 'Bookmarks') && isset($item['term']) && is_array($item['term'])) {
 			foreach($item['term'] as $t) {
 				if(($t['ttype'] == TERM_BOOKMARK))
 					$has_bookmarks = true;

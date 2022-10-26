@@ -162,7 +162,7 @@ class XConfig {
 	 */
 	static public function Delete($xchan, $family, $key) {
 
-		if(x(\App::$config[$xchan][$family], $key))
+		if(isset(\App::$config[$xchan][$family][$key]))
 			unset(\App::$config[$xchan][$family][$key]);
 
 		$ret = q("DELETE FROM xconfig WHERE xchan = '%s' AND cat = '%s' AND k = '%s'",

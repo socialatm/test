@@ -384,7 +384,7 @@ function contact_remove($channel_id, $abook_id) {
 		dbesc($abook['abook_xchan'])
 	);
 
-	if (strpos($xchan['xchan_addr'],'guest:') === 0 && strpos($abook['abook_xchan'],'.')){
+	if ($xchan && strpos($xchan['xchan_addr'],'guest:') === 0 && strpos($abook['abook_xchan'],'.')){
 		$atoken_guid = substr($abook['abook_xchan'],strrpos($abook['abook_xchan'],'.') + 1);
 		if ($atoken_guid) {
 			atoken_delete_and_sync($channel_id,$atoken_guid);
@@ -424,7 +424,7 @@ function contact_remove($channel_id, $abook_id) {
 
 function remove_abook_items($channel_id, $xchan_hash) {
 
-	$r = q("select id from item where (owner_xchan = '%s' or author_xchan = '%s') and uid = %d and item_retained = 0 and item_starred = 0",
+	$r = q("select id, parent from item where (owner_xchan = '%s' or author_xchan = '%s') and uid = %d and item_retained = 0 and item_starred = 0",
 		dbesc($xchan_hash),
 		dbesc($xchan_hash),
 		intval($channel_id)

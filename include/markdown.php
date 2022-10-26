@@ -66,7 +66,10 @@ function markdown_to_bb($s, $use_zrl = false, $options = []) {
 
 	$s = MarkdownExtra::defaultTransform($s);
 
-	if($options && $options['preserve_lf']) {
+
+	$preserve_lf = $options['preserve_lf'] ?? false;
+
+	if($preserve_lf) {
 		$s = str_replace(["\r","\n"],["",'<br>'],$s);
 	}
 	else {

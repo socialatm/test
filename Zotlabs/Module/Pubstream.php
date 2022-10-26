@@ -75,7 +75,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				'allow_location'      => ((intval(get_pconfig($channel['channel_id'],'system','use_browser_location'))) ? '1' : ''),
 				'default_location'    => $channel['channel_location'],
 				'nickname'            => $channel['channel_address'],
-				'lockstate'           => (($group || $cid || $channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
+				'lockstate'           => (($channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
 				'acl'                 => populate_acl($channel_acl,true, \Zotlabs\Lib\PermissionDescription::fromGlobalPermission('view_stream'), get_post_aclDialogDescription(), 'acl_dialog_post'),
 				'permissions'         => $channel_acl,
 				'bang'                => '',
@@ -91,6 +91,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 			);
 
 			$o .= '<div id="jot-popup">';
+			$a = '';
 			$o .= status_editor($a,$x,false,'Pubstream');
 			$o .= '</div>';
 		}
@@ -158,11 +159,13 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		require_once('include/channel.php');
 		require_once('include/security.php');
 
+		$sys = get_sys_channel();
+		$abook_uids = " and abook.abook_channel = " . intval($sys['channel_id']) . " ";
+
 		if($site_firehose) {
 			$uids = " and item.uid in ( " . stream_perms_api_uids(PERMS_PUBLIC) . " ) and item_private = 0  and item_wall = 1 ";
 		}
 		else {
-			$sys = get_sys_channel();
 			$uids = " and item.uid  = " . intval($sys['channel_id']) . " ";
 			$sql_extra = item_permissions_sql($sys['channel_id']);
 			\App::$data['firehose'] = intval($sys['channel_id']);
@@ -181,13 +184,12 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		$net_query = (($net) ? " left join xchan on xchan_hash = author_xchan " : '');
 		$net_query2 = (($net) ? " and xchan_network = '" . protect_sprintf(dbesc($net)) . "' " : '');
 
-		$abook_uids = " and abook.abook_channel = " . intval(\App::$profile['profile_uid']) . " ";
-
-		$simple_update = '';
 		if($update && $_SESSION['loadtime'])
 			$simple_update = " AND (( item_unseen = 1 AND item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' )  OR item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' ) ";
 
 		//logger('update: ' . $update . ' load: ' . $load);
+
+		$items = [];
 
 		if($update) {
 
@@ -200,7 +202,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 						$net_query
 						WHERE mid = '%s' $uids $item_normal
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)
-						$sql_extra3 $sql_extra $sql_nets $net_query2",
+						$sql_extra $net_query2",
 						dbesc($mid)
 					);
 				}
@@ -211,7 +213,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 						$net_query
 						WHERE true $uids and item.item_thread_top = 1 $item_normal
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)
-						$sql_extra3 $sql_extra $sql_nets $net_query2
+						$sql_extra $net_query2
 						ORDER BY $ordering DESC $pager_sql "
 					);
 				}
@@ -223,7 +225,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 						$net_query
 						WHERE mid = '%s' $uids $item_normal_update $simple_update
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)
-						$sql_extra3 $sql_extra $sql_nets $net_query2",
+						$sql_extra $net_query2",
 						dbesc($mid)
 					);
 				}
@@ -234,7 +236,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 						WHERE true $uids $item_normal_update
 						$simple_update
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)
-						$sql_extra3 $sql_extra $sql_nets $net_query2"
+						$sql_extra $net_query2"
 					);
 				}
 			}
@@ -258,9 +260,6 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				xchan_query($items,true,(($sys) ? local_channel() : 0));
 				$items = fetch_post_tags($items,true);
 				$items = conv_sort($items,$ordering);
-			}
-			else {
-				$items = array();
 			}
 
 		}

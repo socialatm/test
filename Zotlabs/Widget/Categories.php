@@ -19,7 +19,7 @@ class Categories {
 
 		$files = ((array_key_exists('files',$arr) && $arr['files']) ? true : false);
 
-		if(!App::$profile['profile_uid'] || !perm_is_allowed(App::$profile['profile_uid'], get_observer_hash(), 'view_stream')) {
+		if(!isset(App::$profile['profile_uid']) || !perm_is_allowed(App::$profile['profile_uid'], get_observer_hash(), 'view_stream')) {
 			return '';
 		}
 

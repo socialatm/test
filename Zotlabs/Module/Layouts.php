@@ -72,7 +72,7 @@ class Layouts extends \Zotlabs\Web\Controller {
 			return;
 		}
 
-		// Block design features from visitors 
+		// Block design features from visitors
 
 		if((! $uid) || ($uid != $owner)) {
 			notice( t('Permission denied.') . EOL);
@@ -95,8 +95,8 @@ class Layouts extends \Zotlabs\Web\Controller {
 		// Use the buildin share/install feature instead.
 
 		if((argc() > 3) && (argv(2) === 'share') && (argv(3))) {
-			$r = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig 
-				left join item on item.id = iconfig.iid 
+			$r = q("select iconfig.v, iconfig.k, mimetype, title, body from iconfig
+				left join item on item.id = iconfig.iid
 				where uid = %d and mid = '%s' and iconfig.cat = 'system' and iconfig.k = 'PDL' order by iconfig.v asc",
 				intval($owner),
 				dbesc(argv(3))
@@ -110,7 +110,7 @@ class Layouts extends \Zotlabs\Web\Controller {
 		}
 
 		// Create a status editor (for now - we'll need a WYSIWYG eventually) to create pages
-		// Nickname is set to the observers xchan, and profile_uid to the owners.  
+		// Nickname is set to the observers xchan, and profile_uid to the owners.
 		// This lets you post pages at other people's channels.
 
 		$x = array(
@@ -134,16 +134,14 @@ class Layouts extends \Zotlabs\Web\Controller {
 			'bbco_autocomplete' => 'comanche'
 		);
 
-		if($_REQUEST['title'])
-			$x['title'] = $_REQUEST['title'];
-		if($_REQUEST['body'])
-			$x['body'] = $_REQUEST['body'];
-		if($_REQUEST['pagetitle'])
-			$x['pagetitle'] = $_REQUEST['pagetitle'];
+		$x['title'] = $_REQUEST['title'] ?? '';
+		$x['body'] = $_REQUEST['body'] ?? '';
+		$x['pagetitle'] = $_REQUEST['pagetitle'] ?? '';
 
+		$a = '';
 		$editor = status_editor($a,$x,false,'Layouts');
 
-		$r = q("select iconfig.iid, iconfig.v, mid, title, body, mimetype, created, edited, item_type from iconfig 
+		$r = q("select iconfig.iid, iconfig.v, mid, title, body, mimetype, created, edited, item_type from iconfig
 			left join item on iconfig.iid = item.id
 			where uid = %d and iconfig.cat = 'system' and iconfig.k = 'PDL' and item_type = %d order by item.created desc",
 			intval($owner),
@@ -178,9 +176,9 @@ class Layouts extends \Zotlabs\Web\Controller {
 		}
 
 		//Build the base URL for edit links
-		$url = z_root() . '/editlayout/' . $which; 
+		$url = z_root() . '/editlayout/' . $which;
 
-		$o .= replace_macros(get_markup_template('layoutlist.tpl'), array(
+		$o = replace_macros(get_markup_template('layoutlist.tpl'), array(
 			'$title'   => t('Layouts'),
 			'$create'  => t('Create'),
 			'$help'    => array('text' => t('Help'), 'url' => 'help/comanche', 'title' => t('Comanche page description language help')),

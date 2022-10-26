@@ -38,10 +38,9 @@ class Gprobe {
 
 			if ($url) {
 				$zf = Zotfinger::exec($url, null);
-			}
-
-			if (is_array($zf) && array_path_exists('signature/signer', $zf) && $zf['signature']['signer'] === $href && intval($zf['signature']['header_valid'])) {
-				Libzot::import_xchan($zf['data']);
+				if (is_array($zf) && array_path_exists('signature/signer', $zf) && $zf['signature']['signer'] === $url && intval($zf['signature']['header_valid'])) {
+					Libzot::import_xchan($zf['data']);
+				}
 			}
 		}
 

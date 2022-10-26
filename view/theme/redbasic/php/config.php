@@ -89,10 +89,12 @@ class RedbasicConfig {
 
 	function form($arr) {
 
-		if(get_pconfig(local_channel(), 'redbasic', 'advanced_theming'))
-			$expert = 1;
+		$expert = false;
+		if(get_pconfig(local_channel(), 'redbasic', 'advanced_theming')) {
+			$expert = true;
+		}
 
-	  	$o .= replace_macros(get_markup_template('theme_settings.tpl'), array(
+	  	$o = replace_macros(get_markup_template('theme_settings.tpl'), array(
 			'$submit' => t('Submit'),
 			'$baseurl' => z_root(),
 			'$theme' => \App::$channel['channel_theme'],
@@ -102,8 +104,8 @@ class RedbasicConfig {
 			'$nav_bg' => array('redbasic_nav_bg', t('Navigation bar background color'), $arr['nav_bg']),
 			'$nav_icon_colour' => array('redbasic_nav_icon_colour', t('Navigation bar icon color '), $arr['nav_icon_colour']),
 			'$nav_active_icon_colour' => array('redbasic_nav_active_icon_colour', t('Navigation bar active icon color '), $arr['nav_active_icon_colour']),
-			'$link_colour' => array('redbasic_link_colour', t('Link color'), $arr['link_colour'], '', $link_colour),
-			'$link_hover_colour' => array('redbasic_link_hover_colour', t('Link hover color'), $arr['link_hover_colour'], '', $link_hover_colour),
+			'$link_colour' => array('redbasic_link_colour', t('Link color'), $arr['link_colour']),
+			'$link_hover_colour' => array('redbasic_link_hover_colour', t('Link hover color'), $arr['link_hover_colour']),
 			'$banner_colour' => array('redbasic_banner_colour', t('Set font-color for banner'), $arr['banner_colour']),
 			'$bgcolour' => array('redbasic_background_colour', t('Set the background color'), $arr['bgcolour']),
 			'$background_image' => array('redbasic_background_image', t('Set the background image'), $arr['background_image']),

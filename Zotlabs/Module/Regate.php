@@ -443,7 +443,7 @@ class Regate extends \Zotlabs\Web\Controller {
 				$msg = t('Unknown or expired ID');
 				zar_log('ZAR1132E ' . $msg . ':' . $did2 . ',' . $didx);
 				$o = replace_macros(get_markup_template('plain.tpl'), [
-					'$title'	=> $title,
+					'$title'	=> $msg,
 					'$now'		=> $nowfmt,
 					'$infos'	=> $msg
 				]);

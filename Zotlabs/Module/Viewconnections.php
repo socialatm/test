@@ -37,7 +37,7 @@ class Viewconnections extends \Zotlabs\Web\Controller {
 		if(! $_REQUEST['aj'])
 			$_SESSION['return_url'] = \App::$query_string;
 
-
+		$o = '';
 		$is_owner = ((local_channel() && local_channel() == \App::$profile['uid']) ? true : false);
 
 		$abook_flags = " and abook_pending = 0 and abook_self = 0 and abook_blocked = 0 and abook_ignored = 0 ";
@@ -118,12 +118,12 @@ class Viewconnections extends \Zotlabs\Web\Controller {
 
 		if($_REQUEST['aj']) {
 			if($contacts) {
-				$o = replace_macros(get_markup_template('viewcontactsajax.tpl'),array(
+				$o .= replace_macros(get_markup_template('viewcontactsajax.tpl'),array(
 					'$contacts' => $contacts
 				));
 			}
 			else {
-				$o = '<div id="content-complete"></div>';
+				$o .= '<div id="content-complete"></div>';
 			}
 			echo $o;
 			killme();

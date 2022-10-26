@@ -19,7 +19,8 @@ class Apps extends \Zotlabs\Web\Controller {
 
 		$_SESSION['return_url'] = \App::$query_string;
 
-		$apps = array();
+		$apps = [];
+		$cat = [];
 
 		if(local_channel()) {
 			Zlib\Apps::import_system_apps();

@@ -501,13 +501,13 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 	$ret = array('success' => false);
 	$channel_id = $channel['channel_id'];
 	$sql_options = '';
-	$source = (($arr) ? $arr['source'] : '');
-	$album = (($arr) ? $arr['album'] : '');
-	$newalbum = (($arr) ? $arr['newalbum'] : '');
-	$hash = (($arr && $arr['hash']) ? $arr['hash'] : null);
-	$upload_path = (($arr && $arr['directory']) ? $arr['directory'] : '');
-	$visible = (($arr && $arr['visible']) ? $arr['visible'] : '');
-	$notify = (($arr && $arr['notify']) ? $arr['notify'] : '');
+	$source = $arr['source'] ?? '';
+	$album = $arr['album'] ?? '';
+	$newalbum = $arr['newalbum'] ?? '';
+	$hash = $arr['hash'] ?? null;
+	$upload_path = $arr['directory'] ?? '';
+	$visible = $arr['visible'] ?? 0;
+	$notify = $arr['notify'] ?? 0;
 
 	$observer = array();
 
@@ -528,10 +528,10 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 		return $ret;
 	}
 
-	$str_group_allow   = perms2str($arr['group_allow']);
-	$str_contact_allow = perms2str($arr['contact_allow']);
-	$str_group_deny    = perms2str($arr['group_deny']);
-	$str_contact_deny  = perms2str($arr['contact_deny']);
+	$str_group_allow   = ((isset($arr['group_allow'])) ? perms2str($arr['group_allow']) : '');
+	$str_contact_allow = ((isset($arr['contact_allow'])) ? perms2str($arr['contact_allow']) : '');
+	$str_group_deny    = ((isset($arr['group_deny'])) ? perms2str($arr['group_deny']) : '');
+	$str_contact_deny  = ((isset($arr['contact_deny'])) ? perms2str($arr['contact_deny']) : '');
 
 
 	// The 'update' option sets db values without uploading a new attachment
@@ -545,6 +545,8 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	$remove_when_processed = true;
 	$import_replace = false;
+
+	$type = '';
 
 	if($options === 'import') {
 		$src      = $arr['src'];
@@ -707,10 +709,10 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	// if we need to create a directory, use the channel default permissions.
 
-	$darr['allow_cid'] = $channel['allow_cid'];
-	$darr['allow_gid'] = $channel['allow_gid'];
-	$darr['deny_cid']  = $channel['deny_cid'];
-	$darr['deny_gid']  = $channel['deny_gid'];
+	$darr['allow_cid'] = $channel['channel_allow_cid'];
+	$darr['allow_gid'] = $channel['channel_allow_gid'];
+	$darr['deny_cid']  = $channel['channel_deny_cid'];
+	$darr['deny_gid']  = $channel['channel_deny_gid'];
 
 
 	$direct = null;
@@ -960,32 +962,33 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 	if($is_photo && $r) {
 
 		$args = array( 'source' => $source, 'visible' => $visible, 'resource_id' => $hash, 'album' => $pathname, 'os_syspath' => $os_basepath . $os_relpath, 'os_path' => $os_path, 'display_path' => $display_path, 'filename' => $filename, 'getimagesize' => $gis, 'directory' => $direct, 'options' => $options );
-		if($arr['contact_allow'])
+		if (array_key_exists('contact_allow', $arr))
 			$args['contact_allow'] = $arr['contact_allow'];
-		if($arr['group_allow'])
+		if (array_key_exists('contact_deny', $arr))
 			$args['group_allow'] = $arr['group_allow'];
-		if($arr['contact_deny'])
+		if (array_key_exists('contact_deny', $arr))
 			$args['contact_deny'] = $arr['contact_deny'];
-		if($arr['group_deny'])
+		if (array_key_exists('group_deny', $arr))
 			$args['group_deny'] = $arr['group_deny'];
-		if(array_key_exists('allow_cid',$arr))
+		if (array_key_exists('allow_cid', $arr))
 			$args['allow_cid'] = $arr['allow_cid'];
-		if(array_key_exists('allow_gid',$arr))
+		if (array_key_exists('allow_gid', $arr))
 			$args['allow_gid'] = $arr['allow_gid'];
-		if(array_key_exists('deny_cid',$arr))
+		if (array_key_exists('deny_cid', $arr))
 			$args['deny_cid'] = $arr['deny_cid'];
-		if(array_key_exists('deny_gid',$arr))
+		if (array_key_exists('deny_gid', $arr))
 			$args['deny_gid'] = $arr['deny_gid'];
 
 		$args['created'] = $created;
 		$args['edited'] = $edited;
-		if($arr['item'])
+
+		if (array_key_exists('item', $arr))
 			$args['item'] = $arr['item'];
 
-		if($arr['body'])
+		if (array_key_exists('body', $arr))
 			$args['body'] = $arr['body'];
 
-		if($arr['description'])
+		if (array_key_exists('description', $arr))
 			$args['description'] = $arr['description'];
 
 		$args['deliver'] = $dosync;
@@ -1175,7 +1178,7 @@ function attach_mkdir($channel, $observer_hash, $arr = null) {
 		return $ret;
 	}
 
-	$arr['hash'] = (($arr['hash']) ? $arr['hash'] : new_uuid());
+	$arr['hash'] = $arr['hash'] ?? new_uuid();
 
 	// Check for duplicate name.
 	// Check both the filename and the hash as we will be making use of both.
@@ -1200,6 +1203,9 @@ function attach_mkdir($channel, $observer_hash, $arr = null) {
 		$ret['message'] = t('duplicate filename or path');
 		return $ret;
 	}
+
+	$path = '';
+	$dpath = '';
 
 	if($arr['folder']) {
 
@@ -1237,8 +1243,7 @@ function attach_mkdir($channel, $observer_hash, $arr = null) {
 
 		$path = $lpath;
 	}
-	else
-		$path = '';
+
 
 	$created = datetime_convert();
 

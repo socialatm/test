@@ -1030,20 +1030,20 @@ function import_author_unknown($x) {
 		return $r[0]['xchan_hash'];
 	}
 
-	$name = trim($x['name']);
+	$name = ((isset($x['name'])) ? trim($x['name']) : 'Unknown');
 
 	$r = xchan_store_lowlevel(
 		[
 			'xchan_hash'         => $x['url'],
 			'xchan_guid'         => $x['url'],
 			'xchan_url'          => $x['url'],
-			'xchan_name'         => (($name) ? $name : t('(Unknown)')),
+			'xchan_name'         => $name,
 			'xchan_name_date'    => datetime_convert(),
 			'xchan_network'      => 'unknown'
 		]
 	);
 
-	if($r && $x['photo']) {
+	if($r && isset($x['photo']) && $x['photo']) {
 
 		$photos = import_xchan_photo($x['photo']['src'],$x['url']);
 
@@ -2108,8 +2108,8 @@ function item_store_update($arr, $allow_exec = false, $deliver = true) {
 
 	// apply the input filter here
 
-	$arr['summary'] = trim(z_input_filter($arr['summary'],$arr['mimetype'],$allow_exec));
-	$arr['body'] = trim(z_input_filter($arr['body'],$arr['mimetype'],$allow_exec));
+	$arr['summary'] = ((isset($arr['summary'])) ? trim(z_input_filter($arr['summary'],$arr['mimetype'],$allow_exec)) : '');
+	$arr['body'] = ((isset($arr['body'])) ? trim(z_input_filter($arr['body'],$arr['mimetype'],$allow_exec)) : '');
 
 	item_sign($arr);
 
@@ -2409,6 +2409,7 @@ function send_status_notifications($post_id,$item) {
 
 	$parent = 0;
 	$is_reaction = false;
+	$thr_parent_id = 0;
 
 	$type =  ((intval($item['item_private']) === 2) ? NOTIFY_MAIL : NOTIFY_COMMENT);
 
@@ -2966,18 +2967,20 @@ function tgroup_check($uid, $item) {
 	if(! $u)
 		return false;
 
-
-	$terms = array_merge(get_terms_oftype($item['term'],TERM_MENTION),get_terms_oftype($item['term'],TERM_FORUM));
-
-	if($terms)
-		logger('tgroup_check: post mentions: ' . print_r($terms,true), LOGGER_DATA);
-
 	$max_forums = get_config('system','max_tagged_forums',2);
 	$matched_forums = 0;
 
 	$link = normalise_link($u[0]['xchan_url']);
 
+	$terms = [];
+
+	if (isset($item['terms']) && $item['terms']) {
+		$terms = array_merge(get_terms_oftype($item['term'],TERM_MENTION),get_terms_oftype($item['term'],TERM_FORUM));
+	}
+
 	if($terms) {
+		logger('tgroup_check: post mentions: ' . print_r($terms,true), LOGGER_DATA);
+
 		foreach($terms as $term) {
 			if(! link_compare($term['url'],$link)) {
 				continue;
@@ -3755,8 +3758,7 @@ function item_expire($uid,$days,$comment_days = 7) {
 
 		// don't expire filed items
 
-		$terms = get_terms_oftype($item['term'],TERM_FILE);
-		if($terms) {
+		if (isset($item['term']) && get_terms_oftype($item['term'], TERM_FILE)) {
 			retain_item($item['id']);
 			continue;
 		}
@@ -4715,7 +4717,7 @@ function set_linkified_perms($linkified, &$str_contact_allow, &$str_group_allow,
 	foreach($linkified as $x) {
 		$access_tag = $x['success']['access_tag'];
 		if(($access_tag) && (! $parent_item)) {
-			logger('access_tag: ' . $tag . ' ' . print_r($access_tag,true), LOGGER_DATA);
+			logger('access_tag: ' . print_r($access_tag,true), LOGGER_DATA);
 			if ($first_access_tag && (! get_pconfig($profile_uid,'system','no_private_mention_acl_override'))) {
 
 				// This is a tough call, hence configurable. The issue is that one can type in a @!privacy mention

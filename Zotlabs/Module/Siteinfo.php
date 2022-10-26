@@ -5,7 +5,7 @@ namespace Zotlabs\Module;
 class Siteinfo extends \Zotlabs\Web\Controller {
 
 	function init() {
-		if (argv(1) === 'json' || $_REQUEST['module_format'] === 'json') {
+		if (argv(1) === 'json' || (isset($_REQUEST['module_format']) && $_REQUEST['module_format'] === 'json')) {
 			$data = get_site_info();
 			json_return_and_die($data);
 		}

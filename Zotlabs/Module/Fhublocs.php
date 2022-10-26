@@ -78,7 +78,7 @@ class Fhublocs extends \Zotlabs\Web\Controller {
 				);
 
 				if($h)
-					$o . 'local hubloc created for ' . $rr['channel_name'] . EOL;
+					$o .= 'local hubloc created for ' . $rr['channel_name'] . EOL;
 				else
 					$o .= 'DB update failed for ' . $rr['channel_name'] . EOL;
 

@@ -37,7 +37,7 @@ class Poke extends Controller {
 		$uid = local_channel();
 		$channel = App::get_channel();
 
-		$verb = notags(trim($_REQUEST['verb']));
+		$verb = ((isset($_GET['verb'])) ? notags(trim($_GET['verb'])) : '');
 
 		if(! $verb)
 			return;
@@ -121,7 +121,6 @@ class Poke extends Controller {
 		$arr['obj_type']      = ACTIVITY_OBJ_NOTE;
 		$arr['body']          = '[zrl=' . $channel['xchan_url'] . ']' . $channel['xchan_name'] . '[/zrl]' . ' ' . t($verbs[$verb][0]) . ' ' . '[zrl=' . $target['xchan_url'] . ']' . $target['xchan_name'] . '[/zrl]';
 		$arr['item_origin']   = 1;
-		$arr['item_wall']     = 1;
 		$arr['item_unseen']   = 1;
 		if(! $parent_item)
 			$arr['item_thread_top'] = 1;
@@ -155,7 +154,7 @@ class Poke extends Controller {
 		$name = '';
 		$id = '';
 
-		if(intval($_REQUEST['c'])) {
+		if(isset($_REQUEST['c']) && intval($_REQUEST['c'])) {
 			$r = q("select abook_id, xchan_name from abook left join xchan on abook_xchan = xchan_hash
 				where abook_id = %d and abook_channel = %d limit 1",
 				intval($_REQUEST['c']),

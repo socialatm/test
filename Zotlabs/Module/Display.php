@@ -36,7 +36,7 @@ class Display extends \Zotlabs\Web\Controller {
 			}
 		}
 
-		if($_REQUEST['mid']) {
+		if(isset($_REQUEST['mid']) && $_REQUEST['mid']) {
 			$item_hash = $_REQUEST['mid'];
 		}
 
@@ -56,6 +56,8 @@ class Display extends \Zotlabs\Web\Controller {
 
 		$observer_is_owner = false;
 
+		$o = '';
+
 		if(local_channel() && (! $update)) {
 
 			$channel = App::get_channel();
@@ -72,7 +74,7 @@ class Display extends \Zotlabs\Web\Controller {
 				'allow_location'      => ((intval(get_pconfig($channel['channel_id'],'system','use_browser_location'))) ? '1' : ''),
 				'default_location'    => $channel['channel_location'],
 				'nickname'            => $channel['channel_address'],
-				'lockstate'           => (($group || $cid || $channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
+				'lockstate'           => (($channel['channel_allow_cid'] || $channel['channel_allow_gid'] || $channel['channel_deny_cid'] || $channel['channel_deny_gid']) ? 'lock' : 'unlock'),
 				'acl'                 => populate_acl($channel_acl,true, \Zotlabs\Lib\PermissionDescription::fromGlobalPermission('view_stream'), get_post_aclDialogDescription(), 'acl_dialog_post'),
 				'permissions'         => $channel_acl,
 				'bang'                => '',
@@ -87,7 +89,7 @@ class Display extends \Zotlabs\Web\Controller {
 				'reset'               => t('Reset form')
 			);
 
-			$o = '<div id="jot-popup">';
+			$o .= '<div id="jot-popup">';
 			$o .= status_editor($a,$x,false,'Display');
 			$o .= '</div>';
 		}
@@ -107,17 +109,21 @@ class Display extends \Zotlabs\Web\Controller {
 			dbesc($item_hash)
 		);
 
-		if($r) {
-			$target_item = $r[0];
+		if (!$r) {
+			notice( t('Item not found.') . EOL);
+			return '';
 		}
 
+		$target_item = $r[0];
+
+		/* not yet ready for prime time
 		$x = q("select * from xchan where xchan_hash = '%s' limit 1",
 			dbesc($target_item['author_xchan'])
 		);
 		if($x) {
-// not yet ready for prime time
-//			App::$poi = $x[0];
+			App::$poi = $x[0];
 		}
+		*/
 
 		//if the item is to be moderated redirect to /moderate
 		if($target_item['item_blocked'] == ITEM_MODERATED) {

@@ -38,13 +38,16 @@ class Cdav {
 				intval($channel['channel_id'])
 			);
 
-			$sharee_options .= '<option value="">' . t('Select Channel') . '</option>' . "\r\n";
+			$sharee_options = '<option value="">' . t('Select Channel') . '</option>' . "\r\n";
 			foreach($local_channels as $local_channel) {
 				$sharee_options .= '<option value="' . $local_channel['channel_hash'] . '">' . $local_channel['channel_name'] . '</option>' . "\r\n";
 			}
 
 			$access_options = '<option value="3">' . t('Read-write') . '</option>' . "\r\n";
 			$access_options .= '<option value="2">' . t('Read-only') . '</option>' . "\r\n";
+
+			$shared_calendars = [];
+			$my_calendars = [];
 
 			//list calendars
 			foreach($sabrecals as $sabrecal) {
@@ -66,7 +69,6 @@ class Cdav {
 				$editable = (($sabrecal['share-access'] == 2) ? 'false' : 'true'); // false/true must be string since we're passing it to javascript
 
 				$sharees = [];
-				$share_displayname = [];
 
 				foreach($invites as $invite) {
 					if(strpos($invite->href, 'mailto:') !== false) {
@@ -111,7 +113,7 @@ class Cdav {
 
 				if(!$access || $access === 'read-write') {
 					$writable_calendars[] = [
-						'displayname' => ((!$access) ? $sabrecal['{DAV:}displayname'] : $share_displayname[0]),
+						'displayname' => $sabrecal['{DAV:}displayname'],
 						'id' => $sabrecal['id']
 					];
 				}

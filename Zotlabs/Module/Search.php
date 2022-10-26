@@ -33,7 +33,7 @@ class Search extends Controller {
 		require_once('include/security.php');
 
 
-		$format = (($_REQUEST['format']) ? $_REQUEST['format'] : '');
+		$format = $_REQUEST['format'] ?? '';
 		if ($format !== '') {
 			$update = $load = 1;
 		}
@@ -146,10 +146,10 @@ class Search extends Controller {
 			$o .= "<script> var profile_uid = " . ((intval(local_channel())) ? local_channel() : (-1))
 				. "; var netargs = '?f='; var profile_page = " . App::$pager['page'] . "; </script>\r\n";
 
-			App::$page['htmlhead'] .= replace_macros(get_markup_template("build_query.tpl"), [
+			App::$page['htmlhead'] = replace_macros(get_markup_template("build_query.tpl"), [
 				'$baseurl' => z_root(),
 				'$pgtype'  => 'search',
-				'$uid'     => ((App::$profile['profile_uid']) ? App::$profile['profile_uid'] : '0'),
+				'$uid'     => App::$profile['profile_uid'] ?? '0',
 				'$gid'     => '0',
 				'$cid'     => '0',
 				'$cmin'    => '(-1)',
@@ -180,6 +180,8 @@ class Search extends Controller {
 
 		}
 
+		$r = null;
+
 		if (($update) && ($load)) {
 			$itemspage = get_pconfig(local_channel(), 'system', 'itemspage');
 			App::set_pager_itemspage(((intval($itemspage)) ? $itemspage : 10));
@@ -195,8 +197,6 @@ class Search extends Controller {
 			$sys_id = perm_is_allowed($sys['channel_id'], $observer_hash, 'view_stream') ? $sys['channel_id'] : 0;
 
 			if ($load) {
-				$r = null;
-
 				if (local_channel()) {
 					$r = q("SELECT mid, MAX(id) AS item_id FROM item
 						WHERE (( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = '' AND item.deny_gid  = '' AND item.item_private = 0 )
@@ -208,7 +208,7 @@ class Search extends Controller {
 					);
 				}
 
-				if (!$r) {
+				if ($r === null) {
 					$r = q("SELECT mid, MAX(id) AS item_id FROM item
 						WHERE (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''	AND item.deny_gid  = '' AND item.item_private = 0 )
 						AND item.uid IN ( " . stream_perms_api_uids(($observer_hash) ? (PERMS_NETWORK | PERMS_PUBLIC) : PERMS_PUBLIC) . " ))
@@ -225,11 +225,6 @@ class Search extends Controller {
 					$r   = dbq("select *, id as item_id from item where id in ( " . $str . ") order by created desc");
 				}
 			}
-			else {
-				$r = [];
-			}
-
-
 		}
 
 		$items = [];

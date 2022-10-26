@@ -6,7 +6,7 @@ class Manage extends \Zotlabs\Web\Controller {
 
 	function get() {
 
-		if((! get_account_id()) || ($_SESSION['delegate'])) {
+		if((! get_account_id()) || (isset($_SESSION['delegate']) && $_SESSION['delegate'])) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}

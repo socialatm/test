@@ -198,6 +198,8 @@ class Messages {
 			}
 		}
 
+		$recipients = '';
+
 		if(is_array($recips)) {
 			stringify_array_elms($recips, true);
 

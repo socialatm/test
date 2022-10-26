@@ -106,7 +106,7 @@ class Like extends Controller {
 		$o           = EMPTY_STR;
 		$sys_channel = get_sys_channel();
 		$observer    = App::get_observer();
-		$interactive = $_REQUEST['interactive'];
+		$interactive = $_REQUEST['interactive'] ?? false;
 
 		if ((!$observer) || ($interactive)) {
 			$o .= '<h1>' . t('Like/Dislike') . '</h1>';
@@ -140,7 +140,7 @@ class Like extends Controller {
 		$extended_like = false;
 		$object        = $target = null;
 		$post_type     = EMPTY_STR;
-		$objtype       = EMPTY_STR;
+		$obj_type       = EMPTY_STR;
 
 		if (argc() == 3) {
 
@@ -182,7 +182,7 @@ class Like extends Controller {
 					}
 				}
 				$post_type = t('channel');
-				$objtype   = ACTIVITY_OBJ_PROFILE;
+				$obj_type   = ACTIVITY_OBJ_PROFILE;
 
 				$profile = $r[0];
 			}
@@ -211,7 +211,7 @@ class Like extends Controller {
 					$public = false;
 
 				$post_type = t('thing');
-				$objtype   = ACTIVITY_OBJ_PROFILE;
+				$obj_type   = ACTIVITY_OBJ_PROFILE;
 				$tgttype   = ACTIVITY_OBJ_THING;
 
 				$links   = array();
@@ -273,7 +273,7 @@ class Like extends Controller {
 				intval($ch[0]['channel_id']),
 				dbesc($observer['xchan_hash']),
 				dbesc($activity),
-				dbesc(($tgttype) ? $tgttype : $objtype),
+				dbesc(($tgttype) ? $tgttype : $obj_type),
 				dbesc($obj_id)
 			);
 
@@ -446,10 +446,10 @@ class Like extends Controller {
 			if ($item['obj_type'] === ACTIVITY_OBJ_EVENT)
 				$post_type = t('event');
 
-			$objtype = (($item['resource_type'] === 'photo') ? ACTIVITY_OBJ_PHOTO : ACTIVITY_OBJ_NOTE);
+			$obj_type = (($item['resource_type'] === 'photo') ? ACTIVITY_OBJ_PHOTO : ACTIVITY_OBJ_NOTE);
 
-			if ($objtype === ACTIVITY_OBJ_NOTE && (!intval($item['item_thread_top'])))
-				$objtype = ACTIVITY_OBJ_COMMENT;
+			if ($obj_type === ACTIVITY_OBJ_NOTE && (!intval($item['item_thread_top'])))
+				$obj_type = ACTIVITY_OBJ_COMMENT;
 
 			$object = json_encode(Activity::fetch_item(['id' => $item['mid']]));
 
@@ -508,7 +508,7 @@ class Like extends Controller {
 			$allow_gid         = $item['allow_gid'];
 			$deny_cid          = $item['deny_cid'];
 			$deny_gid          = $item['deny_gid'];
-			$private           = $item['private'];
+			$private           = $item['item_private'];
 
 		}
 
@@ -533,7 +533,7 @@ class Like extends Controller {
 		}
 
 		$arr['verb']     = $activity;
-		$arr['obj_type'] = $objtype;
+		$arr['obj_type'] = $obj_type;
 		$arr['obj']      = $object;
 
 		if ($target) {
@@ -569,7 +569,7 @@ class Like extends Controller {
 				intval($post_id),
 				dbesc($arr['mid']),
 				dbesc($activity),
-				dbesc(($tgttype) ? $tgttype : $objtype),
+				dbesc(($tgttype) ? $tgttype : $obj_type),
 				dbesc($obj_id),
 				dbesc(($target) ? $target : $object)
 			);
@@ -578,7 +578,7 @@ class Like extends Controller {
 				dbesc($ch[0]['channel_hash']),
 				dbesc($arr['mid']),
 				dbesc($activity),
-				dbesc(($tgttype) ? $tgttype : $objtype),
+				dbesc(($tgttype) ? $tgttype : $obj_type),
 				dbesc($obj_id)
 			);
 			if ($r)
