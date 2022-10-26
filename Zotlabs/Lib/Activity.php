@@ -721,7 +721,7 @@ class Activity {
 
 		$ret['type'] = self::activity_mapper($i['verb']);
 
-		if (intval($i['item_deleted']) && !$recurse) {
+		if ((isset($i['item_deleted']) && intval($i['item_deleted'])) && !$recurse) {
 			$is_response = false;
 
 			if (ActivityStreams::is_response_activity($ret['type'])) {
@@ -805,10 +805,10 @@ class Activity {
 
 		$ret['diaspora:guid'] = $i['uuid'];
 
-		if ($i['title'])
+		if (isset($i['title']) && $i['title'])
 			$ret['name'] = html2plain(bbcode($i['title'], ['cache' => true]));
 
-		if ($i['summary'])
+		if (isset($i['summary']) && $i['summary'])
 			$ret['summary'] = bbcode($i['summary'], ['cache' => true]);
 
 		if ($ret['type'] === 'Announce') {
@@ -820,13 +820,14 @@ class Activity {
 			];
 		}
 
-		$ret['published'] = datetime_convert('UTC', 'UTC', $i['created'], ATOM_TIME);
-		if ($i['created'] !== $i['edited'])
+		$ret['published'] = ((isset($i['created'])) ? datetime_convert('UTC', 'UTC', $i['created'], ATOM_TIME) : datetime_convert());
+		if (isset($i['created'], $i['edited']) && $i['created'] !== $i['edited'])
 			$ret['updated'] = datetime_convert('UTC', 'UTC', $i['edited'], ATOM_TIME);
-		if ($i['app']) {
+
+		if (isset($i['app']) && $i['app']) {
 			$ret['generator'] = ['type' => 'Application', 'name' => $i['app']];
 		}
-		if ($i['location'] || $i['coord']) {
+		if (isset($i['location']) || isset($i['coord'])) {
 			$ret['location'] = ['type' => 'Place'];
 			if ($i['location']) {
 				$ret['location']['name'] = $i['location'];
