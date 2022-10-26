@@ -384,7 +384,7 @@ function contact_remove($channel_id, $abook_id) {
 		dbesc($abook['abook_xchan'])
 	);
 
-	if (strpos($xchan['xchan_addr'],'guest:') === 0 && strpos($abook['abook_xchan'],'.')){
+	if ($xchan && strpos($xchan['xchan_addr'],'guest:') === 0 && strpos($abook['abook_xchan'],'.')){
 		$atoken_guid = substr($abook['abook_xchan'],strrpos($abook['abook_xchan'],'.') + 1);
 		if ($atoken_guid) {
 			atoken_delete_and_sync($channel_id,$atoken_guid);

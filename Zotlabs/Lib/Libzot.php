@@ -714,7 +714,7 @@ class Libzot {
 
 			$dirmode = get_config('system', 'directory_mode');
 
-			if ((($arr['site']['directory_mode'] === 'standalone') || ($dirmode & DIRECTORY_MODE_STANDALONE)) && ($arr['site']['url'] != z_root()))
+			if (((isset($arr['site']['directory_mode']) && $arr['site']['directory_mode'] === 'standalone') || ($dirmode & DIRECTORY_MODE_STANDALONE)) && ($arr['site']['url'] != z_root()))
 				$arr['searchable'] = false;
 
 			$hidden = (1 - intval($arr['searchable']));

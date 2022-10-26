@@ -69,7 +69,6 @@ class Cdav {
 				$editable = (($sabrecal['share-access'] == 2) ? 'false' : 'true'); // false/true must be string since we're passing it to javascript
 
 				$sharees = [];
-				$share_displayname = [];
 
 				foreach($invites as $invite) {
 					if(strpos($invite->href, 'mailto:') !== false) {
@@ -114,7 +113,7 @@ class Cdav {
 
 				if(!$access || $access === 'read-write') {
 					$writable_calendars[] = [
-						'displayname' => ((!$access) ? $sabrecal['{DAV:}displayname'] : $share_displayname[0]),
+						'displayname' => $sabrecal['{DAV:}displayname'],
 						'id' => $sabrecal['id']
 					];
 				}
