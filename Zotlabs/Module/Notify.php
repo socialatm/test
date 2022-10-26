@@ -10,7 +10,7 @@ class Notify extends Controller {
 		if(! local_channel())
 			return;
 
-		if($_REQUEST['notify_id']) {
+		if(isset($_REQUEST['notify_id']) && $_REQUEST['notify_id']) {
 			$update_notices_per_parent = PConfig::Get(local_channel(), 'system', 'update_notices_per_parent', 1);
 
 			if($update_notices_per_parent) {
