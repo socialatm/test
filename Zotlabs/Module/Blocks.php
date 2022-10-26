@@ -9,43 +9,43 @@ require_once('include/acl_selectors.php');
 class Blocks extends \Zotlabs\Web\Controller {
 
 	function init() {
-	
+
 		if(argc() > 1 && argv(1) === 'sys' && is_site_admin()) {
 			$sys = get_sys_channel();
 			if($sys && intval($sys['channel_id'])) {
 				\App::$is_sys = true;
 			}
 		}
-	
+
 		if(argc() > 1)
 			$which = argv(1);
 		else
 			return;
-	
+
 		profile_load($which);
-	
+
 	}
-	
-	
+
+
 	function get() {
-	
+
 		if(! \App::$profile) {
 			notice( t('Requested profile is not available.') . EOL );
 			\App::$error = 404;
 			return;
 		}
-	
+
 		$which = argv(1);
-	
+
 		$_SESSION['return_url'] = \App::$query_string;
-	
+
 		$uid = local_channel();
 		$owner = 0;
 		$channel = null;
 		$observer = \App::get_observer();
-	
+
 		$channel = \App::get_channel();
-	
+
 		if(\App::$is_sys && is_site_admin()) {
 			$sys = get_sys_channel();
 			if($sys && intval($sys['channel_id'])) {
@@ -54,7 +54,7 @@ class Blocks extends \Zotlabs\Web\Controller {
 				$observer = $sys;
 			}
 		}
-	
+
 		if(! $owner) {
 			// Figure out who the page owner is.
 			$r = q("select channel_id from channel where channel_address = '%s'",
@@ -64,24 +64,24 @@ class Blocks extends \Zotlabs\Web\Controller {
 				$owner = intval($r[0]['channel_id']);
 			}
 		}
-	
+
 		$ob_hash = (($observer) ? $observer['xchan_hash'] : '');
-	
+
 		$perms = get_all_perms($owner,$ob_hash);
-	
+
 		if(! $perms['write_pages']) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
-	
-		// Block design features from visitors 
-	
+
+		// Block design features from visitors
+
 		if((! $uid) || ($uid != $owner)) {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
-	
-		$mimetype = (($_REQUEST['mimetype']) ? $_REQUEST['mimetype'] : get_pconfig($owner,'system','page_mimetype'));
+
+		$mimetype = ((isset($_REQUEST['mimetype']) && $_REQUEST['mimetype']) ? $_REQUEST['mimetype'] : get_pconfig($owner,'system','page_mimetype'));
 
 		$x = array(
 			'webpage' => ITEM_TYPE_BLOCK,
@@ -101,27 +101,25 @@ class Blocks extends \Zotlabs\Web\Controller {
 			'bbco_autocomplete' => 'bbcode',
 			'bbcode' => true
 		);
-	
-		if($_REQUEST['title'])
-			$x['title'] = $_REQUEST['title'];
-		if($_REQUEST['body'])
-			$x['body'] = $_REQUEST['body'];
-		if($_REQUEST['pagetitle'])
-			$x['pagetitle'] = $_REQUEST['pagetitle'];
-	
-		$editor = status_editor($a,$x,false,'Blocks');
-	
 
-		$r = q("select iconfig.iid, iconfig.k, iconfig.v, mid, title, body, mimetype, created, edited from iconfig 
+		$x['title'] = $_REQUEST['title'] ?? '';
+		$x['body'] = $_REQUEST['body'] ?? '';
+		$x['pagetitle'] = $_REQUEST['pagetitle'] ?? '';
+
+		$a = '';
+		$editor = status_editor($a,$x,false,'Blocks');
+
+
+		$r = q("select iconfig.iid, iconfig.k, iconfig.v, mid, title, body, mimetype, created, edited from iconfig
 			left join item on iconfig.iid = item.id
-			where uid = %d and iconfig.cat = 'system' and iconfig.k = 'BUILDBLOCK' 
+			where uid = %d and iconfig.cat = 'system' and iconfig.k = 'BUILDBLOCK'
 			and item_type = %d order by item.created desc",
 			intval($owner),
 			intval(ITEM_TYPE_BLOCK)
 		);
-	
+
 		$pages = null;
-	
+
 		if($r) {
 			$pages = array();
 			foreach($r as $rr) {
@@ -143,13 +141,13 @@ class Blocks extends \Zotlabs\Web\Controller {
 					'edited' => $rr['edited'],
 					'bb_element' => '[element]' . base64url_encode(json_encode($element_arr)) . '[/element]'
 				);
-			} 
+			}
 		}
-	
+
 		//Build the base URL for edit links
-		$url = z_root() . '/editblock/' . $which; 
-	
-		$o .= replace_macros(get_markup_template('blocklist.tpl'), array(
+		$url = z_root() . '/editblock/' . $which;
+
+		$o = replace_macros(get_markup_template('blocklist.tpl'), array(
 			'$baseurl'    => $url,
 			'$title'      => t('Blocks'),
 			'$name'       => t('Block Name'),
@@ -166,8 +164,8 @@ class Blocks extends \Zotlabs\Web\Controller {
 			'$view'       => t('View'),
 			'$preview'    => '1',
 		));
-	    
+
 		return $o;
 	}
-	
+
 }

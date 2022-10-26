@@ -2174,6 +2174,9 @@ function layout_select($channel_id, $current = '') {
 		intval(ITEM_TYPE_PDL)
 	);
 
+	$selected = '';
+	$options = '';
+
 	if($r) {
 		$empty_selected = (($current === false) ? ' selected="selected" ' : '');
 		$options .= '<option value="" ' . $empty_selected . '>' . t('default') . '</option>';
@@ -2206,6 +2209,7 @@ function mimetype_select($channel_id, $current = 'text/bbcode', $choices = null,
 		$x['application/x-php'] = t('PHP');
 	}
 
+	$selected = '';
 	$options = '';
 
 	foreach($x as $y => $z) {

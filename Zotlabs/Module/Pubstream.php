@@ -159,11 +159,13 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		require_once('include/channel.php');
 		require_once('include/security.php');
 
+		$sys = get_sys_channel();
+		$abook_uids = " and abook.abook_channel = " . intval($sys['channel_id']) . " ";
+
 		if($site_firehose) {
 			$uids = " and item.uid in ( " . stream_perms_api_uids(PERMS_PUBLIC) . " ) and item_private = 0  and item_wall = 1 ";
 		}
 		else {
-			$sys = get_sys_channel();
 			$uids = " and item.uid  = " . intval($sys['channel_id']) . " ";
 			$sql_extra = item_permissions_sql($sys['channel_id']);
 			\App::$data['firehose'] = intval($sys['channel_id']);
@@ -182,7 +184,6 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		$net_query = (($net) ? " left join xchan on xchan_hash = author_xchan " : '');
 		$net_query2 = (($net) ? " and xchan_network = '" . protect_sprintf(dbesc($net)) . "' " : '');
 
-		$simple_update = '';
 		if($update && $_SESSION['loadtime'])
 			$simple_update = " AND (( item_unseen = 1 AND item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' )  OR item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' ) ";
 
@@ -208,7 +209,7 @@ class Pubstream extends \Zotlabs\Web\Controller {
 				else {
 					// Fetch a page full of parent items for this page
 					$r = dbq("SELECT item.id AS item_id FROM item
-						left join abook on ( item.author_xchan = abook.abook_xchan )
+						left join abook on ( item.author_xchan = abook.abook_xchan $abook_uids )
 						$net_query
 						WHERE true $uids and item.item_thread_top = 1 $item_normal
 						and (abook.abook_blocked = 0 or abook.abook_flags is null)

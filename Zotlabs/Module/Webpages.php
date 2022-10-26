@@ -132,9 +132,9 @@ class Webpages extends Controller {
 			return;
 		}
 
-		$mimetype = (($_REQUEST['mimetype']) ? $_REQUEST['mimetype'] : get_pconfig($owner,'system','page_mimetype'));
+		$mimetype = ((isset($_REQUEST['mimetype']) && $_REQUEST['mimetype']) ? $_REQUEST['mimetype'] : get_pconfig($owner,'system','page_mimetype'));
 
-		$layout = (($_REQUEST['layout']) ? $_REQUEST['layout'] : get_pconfig($owner,'system','page_layout'));
+		$layout = ((isset($_REQUEST['layout']) && $_REQUEST['layout']) ? $_REQUEST['layout'] : get_pconfig($owner,'system','page_layout'));
 
 		// Create a status editor (for now - we'll need a WYSIWYG eventually) to create pages
 		// Nickname is set to the observers xchan, and profile_uid to the owner's.
@@ -182,12 +182,9 @@ class Webpages extends Controller {
 			'bbcode' => true
 		);
 
-		if($_REQUEST['title'])
-			$x['title'] = $_REQUEST['title'];
-		if($_REQUEST['body'])
-			$x['body'] = $_REQUEST['body'];
-		if($_REQUEST['pagetitle'])
-			$x['pagetitle'] = $_REQUEST['pagetitle'];
+		$x['title'] = $_REQUEST['title'] ?? '';
+		$x['body'] = $_REQUEST['body'] ?? '';
+		$x['pagetitle'] = $_REQUEST['pagetitle'] ?? '';
 
 
 		// Get a list of webpages.  We can't display all them because endless scroll makes that unusable,
@@ -206,6 +203,7 @@ class Webpages extends Controller {
 		if(! $r)
 			$x['pagetitle'] = 'home';
 
+		$a = '';
 		$editor = status_editor($a,$x,false,'Webpages');
 
 		$pages = null;

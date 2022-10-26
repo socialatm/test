@@ -159,7 +159,7 @@ class Apps {
 		foreach(self::$available_apps as $iapp) {
 			if($iapp['app_id'] == hash('whirlpool',$app['name'])) {
 				$notfound = false;
-				if(($iapp['app_version'] !== $app['version'])
+				if((isset($app['version']) && $iapp['app_version'] !== $app['version'])
 					|| ($app['plugin'] && (! $iapp['app_plugin']))) {
 					return intval($iapp['app_id']);
 				}
@@ -645,7 +645,7 @@ class Apps {
 			);
 			if($r) {
 				if($app['uid']) {
-					if($app['categories'] && (! $app['term'])) {
+					if((isset($app['categories']) && $app['categories']) && !(isset($app['term']) && $app['term'])) {
 						$r[0]['term'] = q("select * from term where otype = %d and oid = %d",
 							intval(TERM_OBJ_APP),
 							intval($r[0]['id'])
@@ -1190,7 +1190,7 @@ class Apps {
 			$ret['success'] = true;
 			$ret['app_id'] = $darray['app_id'];
 		}
-		if($arr['categories']) {
+		if(isset($arr['categories']) && $arr['categories']) {
 			$x = q("select id from app where app_id = '%s' and app_channel = %d limit 1",
 				dbesc($darray['app_id']),
 				intval($darray['app_channel'])
@@ -1288,7 +1288,7 @@ class Apps {
 				intval(TERM_OBJ_APP),
 				intval($x[0]['id'])
 			);
-			if($arr['categories']) {
+			if(isset($arr['categories']) && $arr['categories']) {
 				$y = explode(',',$arr['categories']);
 				if($y) {
 					foreach($y as $t) {

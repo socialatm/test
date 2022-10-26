@@ -851,6 +851,10 @@ function get_template_info($template){
 		foreach( $ll as $l ) {
 			$l = trim($l, "\t\n\r */");
 			if ($l != ""){
+				if (strpos($l, ':') === false) {
+					continue;
+				}
+
 				list($k, $v) = array_map("trim", explode(":", $l, 2));
 				$k = strtolower($k);
 				if ($k == 'author' || $k == 'maintainer'){

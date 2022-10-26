@@ -174,7 +174,8 @@ class Chat extends Controller {
 			$x = Chatroom::enter($observer,$room_id,'online',$_SERVER['REMOTE_ADDR']);
 			if(! $x)
 				return;
-			$x = q("select * from chatroom where cr_id = %d and cr_uid = %d $sql_extra limit 1",
+
+			$x = q("select * from chatroom where cr_id = %d and cr_uid = %d limit 1",
 				intval($room_id),
 				intval(App::$profile['profile_uid'])
 			);

@@ -26,9 +26,9 @@ class Menu extends \Zotlabs\Web\Controller {
 
 	}
 
-	
+
 	function post() {
-	
+
 		if(! \App::$profile) {
 			return;
 		}
@@ -37,23 +37,23 @@ class Menu extends \Zotlabs\Web\Controller {
 
 
 		$uid = \App::$profile['channel_id'];
-	
+
 		if(array_key_exists('sys', $_REQUEST) && $_REQUEST['sys'] && is_site_admin()) {
 			$sys = get_sys_channel();
 			$uid = intval($sys['channel_id']);
 			\App::$is_sys = true;
 		}
-	
+
 		if(! $uid)
 			return;
-	
+
 		$_REQUEST['menu_channel_id'] = $uid;
-	
+
 		if($_REQUEST['menu_bookmark'])
 			$_REQUEST['menu_flags'] |= MENU_BOOKMARK;
 		if($_REQUEST['menu_system'])
 			$_REQUEST['menu_flags'] |= MENU_SYSTEM;
-	
+
 		$menu_id = ((argc() > 2) ? intval(argv(2)) : 0);
 
 		if($menu_id) {
@@ -62,7 +62,7 @@ class Menu extends \Zotlabs\Web\Controller {
 			if($r) {
 				menu_sync_packet($uid,get_observer_hash(),$menu_id);
 				//info( t('Menu updated.') . EOL);
-				goaway(z_root() . '/mitem/' . $which . '/' . $menu_id . ((\App::$is_sys) ? '?f=&sys=1' : '')); 
+				goaway(z_root() . '/mitem/' . $which . '/' . $menu_id . ((\App::$is_sys) ? '?f=&sys=1' : ''));
 			}
 			else
 				notice( t('Unable to update menu.'). EOL);
@@ -71,21 +71,21 @@ class Menu extends \Zotlabs\Web\Controller {
 			$r = menu_create($_REQUEST);
 			if($r) {
 				menu_sync_packet($uid,get_observer_hash(),$r);
-	
+
 				//info( t('Menu created.') . EOL);
-				goaway(z_root() . '/mitem/' . $which . '/' . $r . ((\App::$is_sys) ? '?f=&sys=1' : '')); 
+				goaway(z_root() . '/mitem/' . $which . '/' . $r . ((\App::$is_sys) ? '?f=&sys=1' : ''));
 			}
 			else
 				notice( t('Unable to create menu.'). EOL);
-	
+
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	function get() {
-	
+
 
 
 		if(! \App::$profile) {
@@ -101,8 +101,8 @@ class Menu extends \Zotlabs\Web\Controller {
 		$uid = local_channel();
 		$owner = 0;
 		$channel = null;
+		$sys = [];
 		$observer = \App::get_observer();
-
 		$channel = \App::get_channel();
 
 		if(\App::$is_sys && is_site_admin()) {
@@ -143,9 +143,9 @@ class Menu extends \Zotlabs\Web\Controller {
 		}
 
 		if(argc() == 2) {
-	
+
 			$channel = (($sys) ? $sys : channelx_by_n($owner));
-	
+
 			// list menus
 			$x = menu_list($owner);
 			if($x) {
@@ -156,7 +156,7 @@ class Menu extends \Zotlabs\Web\Controller {
 					$x[$y]['bookmark'] = (($x[$y]['menu_flags'] & MENU_BOOKMARK) ? true : false);
 				}
 			}
-	
+
 			$create = replace_macros(get_markup_template('menuedit.tpl'), array(
 				'$menu_name' => array('menu_name', t('Menu Name'), '', t('Unique name (not visible on webpage) - required'), '*'),
 				'$menu_desc' => array('menu_desc', t('Menu Title'), '', t('Visible on webpage - leave empty for no title'), ''),
@@ -166,7 +166,7 @@ class Menu extends \Zotlabs\Web\Controller {
 				'$nick' => $which,
 				'$display' => 'none'
 			));
-	
+
 			$o = replace_macros(get_markup_template('menulist.tpl'),array(
 				'$title' => t('Menus'),
 				'$create' => $create,
@@ -186,30 +186,30 @@ class Menu extends \Zotlabs\Web\Controller {
 				'$nick' => $which,
 				'$sys' => \App::$is_sys
 			));
-	
+
 			return $o;
-	
+
 		}
-	
+
 		if(argc() > 2) {
 			if(intval(argv(2))) {
-	
+
 				if(argc() == 4 && argv(3) == 'drop') {
 					menu_sync_packet($owner,get_observer_hash(),intval(argv(1)),true);
 					$r = menu_delete_id(intval(argv(2)),$owner);
 					if(!$r)
 						notice( t('Menu could not be deleted.'). EOL);
-	
+
 					goaway(z_root() . '/menu/' . $which . ((\App::$is_sys) ? '?f=&sys=1' : ''));
 				}
-	
+
 				$m = menu_fetch_id(intval(argv(2)),$owner);
-	
+
 				if(! $m) {
 					notice( t('Menu not found.') . EOL);
 					return '';
 				}
-	
+
 				$o = replace_macros(get_markup_template('menuedit.tpl'), array(
 					'$header' => t('Edit Menu'),
 					'$sys' => \App::$is_sys,
@@ -224,16 +224,16 @@ class Menu extends \Zotlabs\Web\Controller {
 					'$nick' => $which,
 					'$submit' => t('Submit and proceed')
 				));
-	
+
 				return $o;
-	
+
 			}
 			else {
 				notice( t('Not found.') . EOL);
 				return;
 			}
 		}
-	
+
 	}
-	
+
 }

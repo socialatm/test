@@ -65,15 +65,15 @@ class Appman extends \Zotlabs\Web\Controller {
 			}
 
 			if (intval($sync[0]['app_system'])) {
-				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['sysapp' => $sync]);
 			}
 			else {
-				Libsync::build_sync_packet($uid, ['app' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['app' => $sync]);
 			}
 
 		}
 
-		if(isset($_POST['deleted']) && $_POST['deleted']) {
+		if(isset($_POST['delete']) && $_POST['delete']) {
 
 			// Fetch the app for sync before it is deleted (if it is deletable))
 			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
@@ -91,18 +91,18 @@ class Appman extends \Zotlabs\Web\Controller {
 			$sync[0]['app_deleted'] = 1;
 
 			if (intval($sync[0]['app_system'])) {
-				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['sysapp' => $sync]);
 			}
 			else {
-				Libsync::build_sync_packet($uid, ['app' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['app' => $sync]);
 			}
 		}
 
-		if($_POST['edit']) {
+		if(isset($_POST['edit']) && $_POST['edit']) {
 			return;
 		}
 
-		if($_POST['feature']) {
+		if(isset($_POST['feature']) && $_POST['feature']) {
 			Apps::app_feature(local_channel(), $papp, $_POST['feature']);
 
 			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
@@ -111,14 +111,14 @@ class Appman extends \Zotlabs\Web\Controller {
 			);
 
 			if (intval($sync[0]['app_system'])) {
-				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['sysapp' => $sync]);
 			}
 			else {
-				Libsync::build_sync_packet($uid, ['app' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['app' => $sync]);
 			}
 		}
 
-		if($_POST['pin']) {
+		if(isset($_POST['pin']) && $_POST['pin']) {
 			Apps::app_feature(local_channel(), $papp, $_POST['pin']);
 
 			$sync = q("SELECT * FROM app WHERE app_channel = %d AND app_id = '%s' LIMIT 1",
@@ -127,14 +127,14 @@ class Appman extends \Zotlabs\Web\Controller {
 			);
 
 			if (intval($sync[0]['app_system'])) {
-				Libsync::build_sync_packet($uid, ['sysapp' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['sysapp' => $sync]);
 			}
 			else {
-				Libsync::build_sync_packet($uid, ['app' => $sync]);
+				Libsync::build_sync_packet(local_channel(), ['app' => $sync]);
 			}
 		}
 
-		if($_POST['aj']) {
+		if(isset($_POST['aj']) && $_POST['aj']) {
 			killme();
 		}
 
@@ -171,7 +171,7 @@ class Appman extends \Zotlabs\Web\Controller {
 
 		$app = null;
 		$embed = null;
-		if($_REQUEST['appid']) {
+		if(isset($_REQUEST['appid']) && $_REQUEST['appid']) {
 			$r = q("select * from app where app_id = '%s' and app_channel = %d limit 1",
 				dbesc($_REQUEST['appid']),
 				dbesc(local_channel())
@@ -200,27 +200,25 @@ class Appman extends \Zotlabs\Web\Controller {
 		}
 
 		return replace_macros(get_markup_template('app_create.tpl'), array(
-
 			'$banner' => (($app) ? t('Edit App') : t('Create App')),
 			'$app' => $app,
-			'$guid' => (($app) ? $app['app_id'] : ''),
-			'$author' => (($app) ? $app['app_author'] : $channel['channel_hash']),
-			'$addr' => (($app) ? $app['app_addr'] : $channel['xchan_addr']),
-			'$name' => array('name', t('Name of app'),(($app) ? $app['app_name'] : ''), t('Required')),
-			'$url' => array('url', t('Location (URL) of app'),(($app) ? $app['app_url'] : ''), t('Required')),
-	 		'$desc' => array('desc', t('Description'),(($app) ? $app['app_desc'] : ''), ''),
-			'$photo' => array('photo', t('Photo icon URL'),(($app) ? $app['app_photo'] : ''), t('80 x 80 pixels - optional')),
-			'$categories' => array('categories',t('Categories (optional, comma separated list)'),(($app) ? $app['categories'] : ''),''),
-			'$version' => array('version', t('Version ID'),(($app) ? $app['app_version'] : ''), ''),
-			'$price' => array('price', t('Price of app'),(($app) ? $app['app_price'] : ''), ''),
-			'$page' => array('page', t('Location (URL) to purchase app'),(($app) ? $app['app_page'] : ''), ''),
-			'$system' => (($app) ? intval($app['app_system']) : 0),
-			'$plugin' => (($app) ? $app['app_plugin'] : ''),
-			'$requires' => (($app) ? $app['app_requires'] : ''),
+			'$guid' => $app['app_id'] ?? '',
+			'$author' => $app['app_author'] ?? $channel['channel_hash'],
+			'$addr' => $app['app_addr'] ?? $channel['xchan_addr'],
+			'$name' => array('name', t('Name of app'), $app['app_name'] ?? '', t('Required')),
+			'$url' => array('url', t('Location (URL) of app'), $app['app_url'] ?? '', t('Required')),
+	 		'$desc' => array('desc', t('Description'), $app['app_desc'] ?? '', ''),
+			'$photo' => array('photo', t('Photo icon URL'),$app['app_photo'] ?? '', t('80 x 80 pixels - optional')),
+			'$categories' => array('categories',t('Categories (optional, comma separated list)'), $app['categories'] ?? '',''),
+			'$version' => array('version', t('Version ID'), $app['app_version'] ?? '', ''),
+			'$price' => array('price', t('Price of app'), $app['app_price'] ?? '', ''),
+			'$page' => array('page', t('Location (URL) to purchase app'), $app['app_page'] ?? '', ''),
+			'$system' => $app['app_system'] ?? 0,
+			'$plugin' => $app['app_plugin'] ?? '',
+			'$requires' => $app['app_requires'] ?? '',
 			'$embed' => $embed,
 			'$submit' => t('Submit')
 		));
-
 	}
 
 }

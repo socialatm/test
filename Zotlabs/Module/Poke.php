@@ -37,7 +37,7 @@ class Poke extends Controller {
 		$uid = local_channel();
 		$channel = App::get_channel();
 
-		$verb = notags(trim($_REQUEST['verb']));
+		$verb = ((isset($_GET['verb'])) ? notags(trim($_GET['verb'])) : '');
 
 		if(! $verb)
 			return;
@@ -154,7 +154,7 @@ class Poke extends Controller {
 		$name = '';
 		$id = '';
 
-		if(intval($_REQUEST['c'])) {
+		if(isset($_REQUEST['c']) && intval($_REQUEST['c'])) {
 			$r = q("select abook_id, xchan_name from abook left join xchan on abook_xchan = xchan_hash
 				where abook_id = %d and abook_channel = %d limit 1",
 				intval($_REQUEST['c']),

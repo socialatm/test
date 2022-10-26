@@ -201,9 +201,9 @@ class Rpost extends \Zotlabs\Web\Controller {
 			'bang'                => '',
 			'visitor'             => true,
 			'profile_uid'         => local_channel(),
-			'title'               => $_REQUEST['title'],
-			'body'                => $_REQUEST['body'],
-			'attachment'          => $_REQUEST['attachment'],
+			'title'               => $_REQUEST['title'] ?? '',
+			'body'                => $_REQUEST['body'] ?? '',
+			'attachment'          => $_REQUEST['attachment'] ?? '',
 			'source'              => ((x($_REQUEST,'source')) ? strip_tags($_REQUEST['source']) : ''),
 			'return_path'         => 'rpost/return',
 			'bbco_autocomplete'   => 'bbcode',
@@ -212,6 +212,7 @@ class Rpost extends \Zotlabs\Web\Controller {
 			'jotnets'             => true
 		);
 
+		$a = '';
 		$editor = status_editor($a,$x,false,'Rpost');
 
 		$o .= replace_macros(get_markup_template('edpost_head.tpl'), array(
