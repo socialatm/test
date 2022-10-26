@@ -200,7 +200,7 @@ class Cdav extends Controller {
 						$etag = (isset($_SERVER['HTTP_IF_MATCH']) ? $_SERVER['HTTP_IF_MATCH'] : false);
 
 						// delete
-						if($httpmethod === 'DELETE' && $cdavdata['etag'] == $etag) {
+						if($httpmethod === 'DELETE' && $etag && isset($cdavdata['etag']) && $cdavdata['etag'] == $etag) {
 							Libsync::build_sync_packet($channel['channel_id'], [
 								$sync => [
 									'action' => 'delete_card',
@@ -210,7 +210,7 @@ class Cdav extends Controller {
 							]);
 						}
 						else {
-							if($etag && $cdavdata['etag'] !== $etag) {
+							if($etag && isset($cdavdata['etag']) && $cdavdata['etag'] !== $etag) {
 								// update
 								Libsync::build_sync_packet($channel['channel_id'], [
 									$sync => [
@@ -317,7 +317,7 @@ class Cdav extends Controller {
 			$calendars = $caldavBackend->getCalendarsForUser($principalUri);
 
 			//create new calendar
-			if($_REQUEST['{DAV:}displayname'] && $_REQUEST['create']) {
+			if((isset($_REQUEST['{DAV:}displayname']) && $_REQUEST['{DAV:}displayname']) && (isset($_REQUEST['create']) && $_REQUEST['create'])) {
 				do {
 					$duplicate = false;
 					$calendarUri = random_string(40);
@@ -352,7 +352,7 @@ class Cdav extends Controller {
 			}
 
 			//create new calendar object via ajax request
-			if($_REQUEST['submit'] === 'create_event' && $_REQUEST['title'] && $_REQUEST['target'] && $_REQUEST['dtstart']) {
+			if((isset($_REQUEST['submit']) && $_REQUEST['submit'] === 'create_event') && $_REQUEST['title'] && $_REQUEST['target'] && $_REQUEST['dtstart']) {
 
 				$id = explode(':', $_REQUEST['target']);
 
@@ -431,7 +431,7 @@ class Cdav extends Controller {
 			}
 
 			//edit calendar name and color
-			if($_REQUEST['{DAV:}displayname'] && $_REQUEST['edit'] && $_REQUEST['id']) {
+			if((isset($_REQUEST['{DAV:}displayname']) && $_REQUEST['{DAV:}displayname']) && $_REQUEST['edit'] && $_REQUEST['id']) {
 
 				$id = explode(':', $_REQUEST['id']);
 
@@ -459,7 +459,7 @@ class Cdav extends Controller {
 			}
 
 			//edit calendar object via ajax request
-			if($_REQUEST['submit'] === 'update_event' && $_REQUEST['uri'] && $_REQUEST['title'] && $_REQUEST['target'] && $_REQUEST['dtstart']) {
+			if((isset($_REQUEST['submit']) && $_REQUEST['submit'] === 'update_event') && $_REQUEST['uri'] && $_REQUEST['title'] && $_REQUEST['target'] && $_REQUEST['dtstart']) {
 
 				$id = explode(':', $_REQUEST['target']);
 
