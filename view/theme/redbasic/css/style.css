@@ -12,6 +12,7 @@
 	--bs-border-radius: $radius;
 	--bs-link-color: $link_colour;
 	--bs-link-hover-color: $link_hover_colour;
+	--bs-body-bg: $bgcolour;
 }
 
 .nav-tabs {
@@ -39,7 +40,7 @@ html {
 
 body {
 	font-size: 0.9rem;
-	background-color: $bgcolour;
+	background-color: var(--bs-body-bg);
 	background-image: url('$background_image');
 	background-attachment: fixed;
 	background-size: cover;
@@ -1263,7 +1264,7 @@ img.mail-conv-sender-photo {
 }
 
 .generic-content-wrapper-styled {
-	background-color: $bgcolour;
+	background-color: var(--bs-body-bg);
 	padding: 10px;
 	border-radius: var(--bs-border-radius);
 }
