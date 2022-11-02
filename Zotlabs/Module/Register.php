@@ -26,7 +26,7 @@ class Register extends Controller {
 		// created a channel, we'll try to revive the connection request
 		// and process it.
 
-		if($_REQUEST['connect'])
+		if(isset($_REQUEST['connect']))
 			$_SESSION['connect'] = $_REQUEST['connect'];
 
 		switch($cmd) {
