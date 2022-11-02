@@ -5,7 +5,7 @@
 	{{foreach $items as $i}}
 	<a href="{{$i.url}}" title="{{$i.alt}}">
 		<img src="{{$i.src}}" width="{{$i.width}}" height="{{$i.height}}" alt="{{$i.alt}}">
-		<div class='jg-caption autotime' title="{{$i.edited}}"></div>
+		<div class='jg-caption rounded text-truncate autotime' title="{{$i.edited}}"></div>
 	</a>
 	{{/foreach}}
 </div>
