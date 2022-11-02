@@ -148,7 +148,7 @@ class Messages {
 			}
 
 			$entries[$i]['author_name'] = $item['author']['xchan_name'];
-			$entries[$i]['author_addr'] = (($item['author']['xchan_addr']) ? $item['author']['xchan_addr'] : $item['author']['xchan_url']);
+			$entries[$i]['author_addr'] = $item['author']['xchan_addr'] ?? $item['author']['xchan_url'];
 			$entries[$i]['info'] = $info;
 			$entries[$i]['created'] = datetime_convert('UTC', date_default_timezone_get(), $item['created']);
 			$entries[$i]['summary'] = $summary;

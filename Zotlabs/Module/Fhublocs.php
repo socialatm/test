@@ -60,20 +60,21 @@ class Fhublocs extends \Zotlabs\Web\Controller {
 
 				$h = hubloc_store_lowlevel(
 					[
-						'hubloc_guid'     => $rr['channel_guid'],
-						'hubloc_guid_sig' => $rr['channel_guid_sig'],
-						'hubloc_hash'     => $rr['channel_hash'],
-						'hubloc_id_url'   => channel_url($rr),
-						'hubloc_addr'     => channel_reddress($rr),
-						'hubloc_primary'  => intval($primary),
-						'hubloc_url'      => z_root(),
-						'hubloc_url_sig'  => Libzot::sign(z_root(), $rr['channel_prvkey']),
-						'hubloc_site_id'  => Libzot::make_xchan_hash(z_root(), $sitekey),
-						'hubloc_host'     => \App::get_hostname(),
-						'hubloc_callback' => z_root() . '/zot',
-						'hubloc_sitekey'  => $sitekey,
-						'hubloc_network'  => 'zot6',
-						'hubloc_updated'  => datetime_convert()
+						'hubloc_guid'      => $rr['channel_guid'],
+						'hubloc_guid_sig'  => $rr['channel_guid_sig'],
+						'hubloc_hash'      => $rr['channel_hash'],
+						'hubloc_id_url'    => channel_url($rr),
+						'hubloc_addr'      => channel_reddress($rr),
+						'hubloc_primary'   => intval($primary),
+						'hubloc_url'       => z_root(),
+						'hubloc_url_sig'   => Libzot::sign(z_root(), $rr['channel_prvkey']),
+						'hubloc_site_id'   => Libzot::make_xchan_hash(z_root(), $sitekey),
+						'hubloc_host'      => \App::get_hostname(),
+						'hubloc_callback'  => z_root() . '/zot',
+						'hubloc_sitekey'   => $sitekey,
+						'hubloc_network'   => 'zot6',
+						'hubloc_updated'   => datetime_convert(),
+						'hubloc_connected' => datetime_convert()
 					]
 				);
 
