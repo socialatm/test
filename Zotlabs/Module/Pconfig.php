@@ -13,8 +13,9 @@ class Pconfig extends \Zotlabs\Web\Controller {
 			return;
 
 
-		if(isset($_SESSION['delegate']))
+		if(isset($_SESSION['delegate'])) {
 			return;
+		}
 
 		check_form_security_token_redirectOnErr('/pconfig', 'pconfig');
 

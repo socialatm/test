@@ -2280,10 +2280,10 @@ class Activity {
 			$mention = self::get_actor_bbmention($obj_actor['id']);
 
 			if ($act->type === 'Like') {
-				$content['content'] = sprintf(t('Likes %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'];
+				$content['content'] = sprintf(t('Likes %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'] ?? '';
 			}
 			if ($act->type === 'Dislike') {
-				$content['content'] = sprintf(t('Doesn\'t like %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'];
+				$content['content'] = sprintf(t('Doesn\'t like %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'] ?? '';
 			}
 
 			// handle event RSVPs
@@ -2791,11 +2791,7 @@ class Activity {
 
 		call_hooks('decode_note', $hookinfo);
 
-		$s = $hookinfo['s'];
-
-
-
-		return $s;
+		return $hookinfo['s'];
 
 	}
 
