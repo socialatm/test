@@ -3819,7 +3819,7 @@ class Activity {
 		}
 
 		if (array_path_exists('source/mediaType', $act) && array_path_exists('source/content', $act)) {
-			if ($act['source']['mediaType'] === 'text/bbcode') {
+			if (in_array($act['source']['mediaType'], ['text/bbcode', 'text/x-multicode'])) {
 				$content['bbcode'] = purify_html($act['source']['content']);
 			}
 		}
