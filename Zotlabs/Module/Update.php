@@ -5,8 +5,8 @@ namespace Zotlabs\Module;
 class Update extends \Zotlabs\Web\Controller {
 
 	function get() {
-	
-		$profile_uid = intval($_GET['p']);
+
+		$profile_uid = $_GET['p'] ?? 0;
 
 		// it's probably safe to do this for all modules and not just a limited subset,
 		// but it needs to be verified.
@@ -23,7 +23,7 @@ class Update extends \Zotlabs\Web\Controller {
 		if(in_array(strtolower(argv(1)),['articles','cards']))
 			killme();
 
-		$module = "\\Zotlabs\\Module\\" . ucfirst(argv(1));		
+		$module = "\\Zotlabs\\Module\\" . ucfirst(argv(1));
 		$load = (((argc() > 2) && (argv(2) == 'load')) ? 1 : 0);
 
 		$mod = new $module;
@@ -38,6 +38,6 @@ class Update extends \Zotlabs\Web\Controller {
 		echo "</section></body></html>\r\n";
 
 		killme();
-	
+
 	}
 }
