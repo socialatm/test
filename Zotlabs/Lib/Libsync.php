@@ -202,6 +202,8 @@ class Libsync {
 
 			$channel = $r[0];
 
+			$mid = 'sync';
+
 			$DR->set_name($channel['channel_name'] . ' <' . channel_reddress($channel) . '>');
 
 			$max_friends = service_class_fetch($channel['channel_id'], 'total_channels');
@@ -293,8 +295,10 @@ class Libsync {
 			if (array_key_exists('event_item', $arr) && $arr['event_item'])
 				sync_items($channel, $arr['event_item'], ((array_key_exists('relocate', $arr)) ? $arr['relocate'] : null));
 
-			if (array_key_exists('item', $arr) && $arr['item'])
+			if (array_key_exists('item', $arr) && $arr['item']) {
 				sync_items($channel, $arr['item'], ((array_key_exists('relocate', $arr)) ? $arr['relocate'] : null));
+				$mid = $arr['item']['mid'] . '#sync';
+			}
 
 			// deprecated, maintaining for a few months for upward compatibility
 			// this should sync webpages, but the logic is a bit subtle
@@ -740,7 +744,7 @@ class Libsync {
 			 */
 			call_hooks('process_channel_sync_delivery', $addon);
 
-			$DR = new DReport(z_root(), $d, $d, 'sync', 'channel sync delivered');
+			$DR = new DReport(z_root(), $d, $d, $mid, 'channel sync processed');
 
 			$DR->set_name($channel['channel_name'] . ' <' . channel_reddress($channel) . '>');
 

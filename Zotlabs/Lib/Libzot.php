@@ -1148,7 +1148,7 @@ class Libzot {
 
 		$result = null;
 
-		hz_syslog('Notify: ' . print_r($env, true), LOGGER_DATA, LOG_DEBUG);
+		logger('Notify: ' . print_r($env, true), LOGGER_DATA, LOG_DEBUG);
 
 		if (!is_array($env)) {
 			logger('decode error');
