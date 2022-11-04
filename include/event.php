@@ -503,11 +503,22 @@ function ev_compare($a, $b) {
 
 function event_store_event($arr) {
 
-	$arr['created']        = (($arr['created'])        ? $arr['created']        : datetime_convert());
-	$arr['edited']         = (($arr['edited'])         ? $arr['edited']         : datetime_convert());
-	$arr['etype']          = (($arr['etype'])          ? $arr['etype']          : 'event' );
-	$arr['event_xchan']    = (($arr['event_xchan'])    ? $arr['event_xchan']    : '');
-	$arr['event_priority'] = (($arr['event_priority']) ? $arr['event_priority'] : 0);
+	$arr['created']        = $arr['created'] ?? datetime_convert();
+	$arr['edited']         = $arr['edited'] ?? datetime_convert();
+	$arr['etype']          = $arr['etype'] ?? 'event';
+	$arr['event_xchan']    = $arr['event_xchan'] ?? '';
+	$arr['event_priority'] = $arr['event_priority'] ?? 0;
+	$arr['location']       = $arr['location'] ?? '';
+	$arr['nofinish']       = $arr['nofinish'] ?? 0;
+	$arr['event_status']   = $arr['event_status'] ?? '';
+	$arr['event_percent']  = $arr['event_percent'] ?? 0;
+	$arr['event_repeat']   = $arr['event_repeat'] ?? '';
+	$arr['event_sequence'] = $arr['event_sequence'] ?? 0;
+	$arr['event_vdata']    = $arr['event_vdata'] ?? '';
+	$arr['allow_cid']      = $arr['allow_cid'] ?? '';
+	$arr['allow_gid']      = $arr['allow_gid'] ?? '';
+	$arr['deny_cid']       = $arr['deny_cid'] ?? '';
+	$arr['deny_gid']       = $arr['deny_gid'] ?? '';
 
 	if (! $arr['dtend']) {
 		$arr['dtend'] = NULL_DATE;
@@ -522,7 +533,7 @@ function event_store_event($arr) {
 
 	$existing_event = null;
 
-	if($arr['event_hash']) {
+	if(isset($arr['event_hash'])) {
 		$r = q("SELECT * FROM event WHERE event_hash = '%s' AND uid = %d LIMIT 1",
 			dbesc($arr['event_hash']),
 			intval($arr['uid'])
@@ -532,7 +543,7 @@ function event_store_event($arr) {
 		}
 	}
 
-	if($arr['id']) {
+	if(isset($arr['id'])) {
 		$r = q("SELECT * FROM event WHERE id = %d AND uid = %d LIMIT 1",
 			intval($arr['id']),
 			intval($arr['uid'])
@@ -1169,7 +1180,7 @@ function event_store_item($arr, $event) {
 
 	$item = null;
 
-	if($arr['mid'] && $arr['uid']) {
+	if(isset($arr['mid'], $arr['uid'])) {
 		$i = q("select * from item where mid = '%s' and uid = %d limit 1",
 			dbesc($arr['mid']),
 			intval($arr['uid'])

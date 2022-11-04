@@ -1702,9 +1702,8 @@ class Activity {
 			);
 
 			// update existing xchan record
-			q("update xchan set xchan_name = '%s', xchan_guid = '%s', xchan_pubkey = '%s', xchan_addr = '%s', xchan_network = 'activitypub', xchan_name_date = '%s' where xchan_hash = '%s'",
+			q("update xchan set xchan_name = '%s', xchan_pubkey = '%s', xchan_addr = '%s', xchan_network = 'activitypub', xchan_name_date = '%s' where xchan_hash = '%s'",
 				dbesc(escape_tags($name)),
-				dbesc($url),
 				dbesc(escape_tags($pubkey)),
 				dbesc(escape_tags($webfinger_addr)),
 				dbescdate(datetime_convert()),
@@ -1712,8 +1711,7 @@ class Activity {
 			);
 
 			// update existing hubloc record
-			q("update hubloc set hubloc_guid = '%s', hubloc_addr = '%s', hubloc_network = 'activitypub', hubloc_url = '%s', hubloc_host = '%s', hubloc_callback = '%s', hubloc_updated = '%s', hubloc_id_url = '%s' where hubloc_hash = '%s'",
-				dbesc($url),
+			q("update hubloc set hubloc_addr = '%s', hubloc_network = 'activitypub', hubloc_url = '%s', hubloc_host = '%s', hubloc_callback = '%s', hubloc_updated = '%s', hubloc_id_url = '%s' where hubloc_hash = '%s'",
 				dbesc(escape_tags($webfinger_addr)),
 				dbesc($baseurl),
 				dbesc($hostname),
@@ -2207,6 +2205,8 @@ class Activity {
 
 		$s['owner_xchan']  = $act->actor['id'];
 		$s['author_xchan'] = $act->actor['id'];
+
+		$content = [];
 
 		if (is_array($act->obj)) {
 			$content = self::get_content($act->obj);
