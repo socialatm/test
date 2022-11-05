@@ -304,7 +304,7 @@ class Acl extends \Zotlabs\Web\Controller {
 		}
 		elseif($type == 'a') {
 
-			$r = q("SELECT abook_id as id, xchan_name as name, xchan_network as net, xchan_hash as hash, xchan_addr as nick, xchan_photo_s as micro, xchan_url as url, xchan_addr as attag , abook_their_perms FROM abook left join xchan on abook_xchan = xchan_hash
+			$r = q("SELECT abook_id as id, xchan_name as name, xchan_network as net, xchan_hash as hash, xchan_addr as nick, xchan_photo_s as micro, xchan_url as url, xchan_addr as attag, abook_their_perms, abook_self FROM abook left join xchan on abook_xchan = xchan_hash
 				WHERE abook_channel = %d
 				and xchan_deleted = 0
 				$sql_extra3

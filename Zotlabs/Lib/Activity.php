@@ -1702,9 +1702,8 @@ class Activity {
 			);
 
 			// update existing xchan record
-			q("update xchan set xchan_name = '%s', xchan_guid = '%s', xchan_pubkey = '%s', xchan_addr = '%s', xchan_network = 'activitypub', xchan_name_date = '%s' where xchan_hash = '%s'",
+			q("update xchan set xchan_name = '%s', xchan_pubkey = '%s', xchan_addr = '%s', xchan_network = 'activitypub', xchan_name_date = '%s' where xchan_hash = '%s'",
 				dbesc(escape_tags($name)),
-				dbesc($url),
 				dbesc(escape_tags($pubkey)),
 				dbesc(escape_tags($webfinger_addr)),
 				dbescdate(datetime_convert()),
@@ -1712,8 +1711,7 @@ class Activity {
 			);
 
 			// update existing hubloc record
-			q("update hubloc set hubloc_guid = '%s', hubloc_addr = '%s', hubloc_network = 'activitypub', hubloc_url = '%s', hubloc_host = '%s', hubloc_callback = '%s', hubloc_updated = '%s', hubloc_id_url = '%s' where hubloc_hash = '%s'",
-				dbesc($url),
+			q("update hubloc set hubloc_addr = '%s', hubloc_network = 'activitypub', hubloc_url = '%s', hubloc_host = '%s', hubloc_callback = '%s', hubloc_updated = '%s', hubloc_id_url = '%s' where hubloc_hash = '%s'",
 				dbesc(escape_tags($webfinger_addr)),
 				dbesc($baseurl),
 				dbesc($hostname),
@@ -2208,6 +2206,8 @@ class Activity {
 		$s['owner_xchan']  = $act->actor['id'];
 		$s['author_xchan'] = $act->actor['id'];
 
+		$content = [];
+
 		if (is_array($act->obj)) {
 			$content = self::get_content($act->obj);
 		}
@@ -2280,10 +2280,10 @@ class Activity {
 			$mention = self::get_actor_bbmention($obj_actor['id']);
 
 			if ($act->type === 'Like') {
-				$content['content'] = sprintf(t('Likes %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'];
+				$content['content'] = sprintf(t('Likes %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'] ?? '';
 			}
 			if ($act->type === 'Dislike') {
-				$content['content'] = sprintf(t('Doesn\'t like %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'];
+				$content['content'] = sprintf(t('Doesn\'t like %1$s\'s %2$s'), $mention, $act->obj['type']) . "\n\n" . $content['content'] ?? '';
 			}
 
 			// handle event RSVPs
@@ -2791,11 +2791,7 @@ class Activity {
 
 		call_hooks('decode_note', $hookinfo);
 
-		$s = $hookinfo['s'];
-
-
-
-		return $s;
+		return $hookinfo['s'];
 
 	}
 
@@ -3823,7 +3819,7 @@ class Activity {
 		}
 
 		if (array_path_exists('source/mediaType', $act) && array_path_exists('source/content', $act)) {
-			if ($act['source']['mediaType'] === 'text/bbcode') {
+			if (in_array($act['source']['mediaType'], ['text/bbcode', 'text/x-multicode'])) {
 				$content['bbcode'] = purify_html($act['source']['content']);
 			}
 		}

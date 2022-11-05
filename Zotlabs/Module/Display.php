@@ -90,6 +90,7 @@ class Display extends \Zotlabs\Web\Controller {
 			);
 
 			$o .= '<div id="jot-popup">';
+			$a = '';
 			$o .= status_editor($a,$x,false,'Display');
 			$o .= '</div>';
 		}
@@ -307,71 +308,71 @@ class Display extends \Zotlabs\Web\Controller {
 			$items = array();
 		}
 
-
 		switch($module_format) {
 
-		case 'html':
+			case 'html':
 
-			if ($update) {
-				$o .= conversation($items, 'display', $update, 'client');
-			}
-			else {
-				$o .= '<noscript>';
-				if($noscript_content) {
-					$o .= conversation($items, 'display', $update, 'traditional');
+				if ($update) {
+					$o .= conversation($items, 'display', $update, 'client');
 				}
 				else {
-					$o .= '<div class="section-content-warning-wrapper">' . t('You must enable javascript for your browser to be able to view this content.') . '</div>';
+					$o .= '<noscript>';
+					if($noscript_content) {
+						$o .= conversation($items, 'display', $update, 'traditional');
+					}
+					else {
+						$o .= '<div class="section-content-warning-wrapper">' . t('You must enable javascript for your browser to be able to view this content.') . '</div>';
+					}
+					$o .= '</noscript>';
+
+					if (isset($items[0]['title'])) {
+						App::$page['title'] = $items[0]['title'] . ' - ' . App::$page['title'];
+					}
+
+					$o .= conversation($items, 'display', $update, 'client');
 				}
-				$o .= '</noscript>';
 
-				App::$page['title'] = (($items[0]['title']) ? $items[0]['title'] . " - " . App::$page['title'] : App::$page['title']);
+				break;
 
-				$o .= conversation($items, 'display', $update, 'client');
-			}
+			case 'atom':
 
-			break;
+				$atom = replace_macros(get_markup_template('atom_feed.tpl'), array(
+					'$version'       => xmlify(\Zotlabs\Lib\System::get_project_version()),
+					'$generator'     => xmlify(\Zotlabs\Lib\System::get_platform_name()),
+					'$generator_uri' => 'https://hubzilla.org',
+					'$feed_id'       => xmlify(App::$cmd),
+					'$feed_title'    => xmlify(t('Article')),
+					'$feed_updated'  => xmlify(datetime_convert('UTC', 'UTC', 'now', ATOM_TIME)),
+					'$author'        => '',
+					'$owner'         => '',
+					'$profile_page'  => xmlify(z_root() . '/display/' . gen_link_id($target_item['mid'])),
+				));
 
-		case 'atom':
+				$x = [ 'xml' => $atom, 'channel' => $channel, 'observer_hash' => $observer_hash, 'params' => $params ];
+				call_hooks('atom_feed_top',$x);
 
-			$atom = replace_macros(get_markup_template('atom_feed.tpl'), array(
-				'$version'       => xmlify(\Zotlabs\Lib\System::get_project_version()),
-				'$generator'     => xmlify(\Zotlabs\Lib\System::get_platform_name()),
-				'$generator_uri' => 'https://hubzilla.org',
-				'$feed_id'       => xmlify(App::$cmd),
-				'$feed_title'    => xmlify(t('Article')),
-				'$feed_updated'  => xmlify(datetime_convert('UTC', 'UTC', 'now', ATOM_TIME)),
-				'$author'        => '',
-				'$owner'         => '',
-				'$profile_page'  => xmlify(z_root() . '/display/' . gen_link_id($target_item['mid'])),
-			));
+				$atom = $x['xml'];
 
-			$x = [ 'xml' => $atom, 'channel' => $channel, 'observer_hash' => $observer_hash, 'params' => $params ];
-			call_hooks('atom_feed_top',$x);
-
-			$atom = $x['xml'];
-
-			// a much simpler interface
-			call_hooks('atom_feed', $atom);
+				// a much simpler interface
+				call_hooks('atom_feed', $atom);
 
 
-			if($items) {
-				$type = 'html';
-				foreach($items as $item) {
-					if($item['item_private'])
-						continue;
-					$atom .= atom_entry($item, $type, null, '', true, '', false);
+				if($items) {
+					$type = 'html';
+					foreach($items as $item) {
+						if($item['item_private'])
+							continue;
+						$atom .= atom_entry($item, $type, null, '', true, '', false);
+					}
 				}
-			}
 
-			call_hooks('atom_feed_end', $atom);
+				call_hooks('atom_feed_end', $atom);
 
-			$atom .= '</feed>' . "\r\n";
+				$atom .= '</feed>' . "\r\n";
 
-			header('Content-type: application/atom+xml');
-			echo $atom;
-			killme();
-
+				header('Content-type: application/atom+xml');
+				echo $atom;
+				killme();
 		}
 
 		$o .= '<div id="content-complete"></div>';

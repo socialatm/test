@@ -869,7 +869,7 @@ class Enotify {
 		$x = array(
 			'notify_link' => $item['llink'],
 			'name' => $item[$who]['xchan_name'],
-			'addr' => (($item[$who]['xchan_addr']) ? $item[$who]['xchan_addr'] : $item[$who]['xchan_url']),
+			'addr' => $item[$who]['xchan_addr'] ?? $item[$who]['xchan_url'],
 			'url' => $item[$who]['xchan_url'],
 			'photo' => $item[$who]['xchan_photo_s'],
 			'when' => (($edit) ? datetime_convert('UTC', date_default_timezone_get(), $item['edited']) : datetime_convert('UTC', date_default_timezone_get(), $item['created'])),

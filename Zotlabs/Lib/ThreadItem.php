@@ -84,10 +84,8 @@ class ThreadItem {
 
 	public function get_template_data($conv_responses, $thread_level=1, $conv_flags = []) {
 
-		$result = array();
-
-		$item     = $this->get_data();
-
+		$result = [];
+		$item = $this->get_data();
 		$commentww = '';
 		$sparkle = '';
 		$buttons = '';

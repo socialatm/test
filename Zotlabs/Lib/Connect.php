@@ -69,7 +69,7 @@ class Connect {
 		$xchan_hash = '';
 		$sql_options = (($protocol) ? " and xchan_network = '" . dbesc($protocol) . "' " : '');
 
-		$r = q("select * from xchan where ( xchan_hash = '%s' or xchan_url = '%s' or xchan_addr = '%s') $sql_options ",
+		$r = q("SELECT * FROM xchan LEFT JOIN hubloc ON xchan_hash = hubloc_hash WHERE ( xchan_hash = '%s' or xchan_url = '%s' or xchan_addr = '%s') $sql_options ORDER BY hubloc_id DESC",
 			dbesc($url),
 			dbesc($url),
 			dbesc($url)
@@ -80,7 +80,7 @@ class Connect {
 			// reset results to the best record or the first if we don't have the best
 			// note: this is a single record and not an array of results
 
-			$r = Libzot::zot_record_preferred($r,'xchan_network');
+			$r = Libzot::zot_record_preferred($r, 'xchan_network');
 
 		}
 
@@ -120,7 +120,7 @@ class Connect {
 			// convert to a single record (once again preferring a zot solution in the case of multiples)
 
 			if ($r) {
-				$r = Libzot::zot_record_preferred($r,'xchan_network');
+				$r = Libzot::zot_record_preferred($r, 'xchan_network');
 			}
 		}
 

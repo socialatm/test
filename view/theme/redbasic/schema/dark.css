@@ -2,6 +2,8 @@
 :root {
   color-scheme: dark;
   --bs-dark-rgb: #e1e1e1;
+  --bs-border-color: rgba(250, 250, 250, 0.125);
+  --bs-body-bg: #111;
 }
 
 .widget,
@@ -10,16 +12,16 @@
 }
 
 .comment-edit-text {
-	border: 1px solid rgba(250, 250, 250, 0.125);
+	border: 1px solid var(--bs-border-color);
 }
 
 .generic-content-wrapper {
-	border: 1px solid rgba(250, 250, 250, 0.125);
+	border: 1px solid var(--bs-border-color);
 }
 
 #profile-jot-wrapper {
 	background-color: unset;
-	border: 1px solid rgba(250, 250, 250, 0.125);
+	border: 1px solid var(--bs-border-color);
 }
 
 .bootstrap-tagsinput {
@@ -30,4 +32,3 @@ a,
 .fakelink {
 	color: var(--bs-link-color);
 }
-

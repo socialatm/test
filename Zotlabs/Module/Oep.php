@@ -15,7 +15,7 @@ class Oep extends \Zotlabs\Web\Controller {
 		logger('oep: ' . print_r($_REQUEST,true), LOGGER_DEBUG, LOG_INFO);
 
 		$html = ((argc() > 1 && argv(1) === 'html') ? true : false);
-		if($_REQUEST['url']) {
+		if(isset($_REQUEST['url'])) {
 			$_REQUEST['url'] = strip_zids($_REQUEST['url']);
 			$url = $_REQUEST['url'];
 		}
@@ -23,9 +23,9 @@ class Oep extends \Zotlabs\Web\Controller {
 		if(! $url)
 			http_status_exit(404, 'Not found');
 
-		$maxwidth  = $_REQUEST['maxwidth'];
-		$maxheight = $_REQUEST['maxheight'];
-		$format = $_REQUEST['format'];
+		$maxwidth  = $_REQUEST['maxwidth'] ?? 0;
+		$maxheight = $_REQUEST['maxheight'] ?? 0;
+		$format = $_REQUEST['format'] ?? '';
 		if($format && $format !== 'json')
 			http_status_exit(501, 'Not implemented');
 
@@ -70,8 +70,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = array();
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('#//(.*?)/display/(.*?)(&|\?|$)#',$url,$matches)) {
 			$res = $matches[2];
@@ -159,8 +159,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = [];
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('#//(.*?)/cards/(.*?)/(.*?)(&|\?|$)#',$url,$matches)) {
 			$nick = $matches[2];
@@ -246,8 +246,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = [];
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('#//(.*?)/articles/(.*?)/(.*?)(&|\?|$)#',$url,$matches)) {
 			$nick = $matches[2];
@@ -333,8 +333,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = array();
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('#//(.*?)/(.*?)/(.*?)/(.*?)mid\=(.*?)(&|$)#',$url,$matches)) {
 			$chn = $matches[3];
@@ -454,8 +454,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = array();
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('|//(.*?)/(.*?)/(.*?)/album/|',$url,$matches)) {
 			$chn = $matches[3];
@@ -519,8 +519,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = array();
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('|//(.*?)/(.*?)/(.*?)$|',$url,$matches)) {
 			$chn = $matches[3];
@@ -582,8 +582,8 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		$ret = array();
 		$url = $args['url'];
-		$maxwidth  = intval($args['maxwidth']);
-		$maxheight = intval($args['maxheight']);
+		$maxwidth  = ((isset($args['maxwidth'])) ? $args['maxwidth']  : 0);
+		$maxheight = ((isset($args['maxheight'])) ? $args['maxheight']  : 0);
 
 		if(preg_match('|//(.*?)/(.*?)/(.*?)/image/|',$url,$matches)) {
 			$chn = $matches[3];

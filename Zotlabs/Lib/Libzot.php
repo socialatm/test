@@ -1172,10 +1172,14 @@ class Libzot {
 				return;
 			}
 			if (is_array($AS->obj)) {
-				$arr = Activity::decode_note($AS);
+				$item = Activity::decode_note($AS);
+				if (!$item) {
+					logger('Could not decode activity: ' . print_r($AS, true));
+					return;
+				}
 			}
 			else {
-				$arr = [];
+				$item = [];
 			}
 
 			logger($AS->debug(), LOGGER_DATA);
@@ -1260,15 +1264,15 @@ class Libzot {
 
 				if ($r) {
 					$r = self::zot_record_preferred($r);
-					$arr['author_xchan'] = $r['hubloc_hash'];
+					$item['author_xchan'] = $r['hubloc_hash'];
 				}
 
-				if (! $arr['author_xchan']) {
+				if (! $item['author_xchan']) {
 					logger('No author!');
 					return;
 				}
 
-				$arr['owner_xchan'] = $env['sender'];
+				$item['owner_xchan'] = $env['sender'];
 
 				if(filter_var($env['sender'], FILTER_VALIDATE_URL)) {
 					// in individual delivery, change owner if needed
@@ -1277,67 +1281,67 @@ class Libzot {
 					);
 
 					if ($s) {
-						$arr['owner_xchan'] = $s[0]['hubloc_hash'];
+						$item['owner_xchan'] = $s[0]['hubloc_hash'];
 					}
 				}
 
-				if (! $arr['owner_xchan']) {
+				if (! $item['owner_xchan']) {
 					logger('No owner!');
 					return;
 				}
 
-				if ($private && (!intval($arr['item_private']))) {
-					$arr['item_private'] = 1;
+				if ($private && (!intval($item['item_private']))) {
+					$item['item_private'] = 1;
 				}
 
-				if ($arr['mid'] === $arr['parent_mid']) {
+				if ($item['mid'] === $item['parent_mid']) {
 					if (is_array($AS->obj) && array_key_exists('commentPolicy', $AS->obj)) {
 						$p = strstr($AS->obj['commentPolicy'], 'until=');
 						if ($p !== false) {
 							$comments_closed_at = datetime_convert('UTC', 'UTC', substr($p, 6));
-							if ($comments_closed_at === $arr['created']) {
-								$arr['item_nocomment'] = 1;
+							if ($comments_closed_at === $item['created']) {
+								$item['item_nocomment'] = 1;
 							}
 							else {
-								$arr['comments_closed'] = $comments_closed_at;
-								$arr['comment_policy']  = trim(str_replace($p, '', $AS->obj['commentPolicy']));
+								$item['comments_closed'] = $comments_closed_at;
+								$aritemr['comment_policy']  = trim(str_replace($p, '', $AS->obj['commentPolicy']));
 							}
 						}
 						else {
-							$arr['comment_policy'] = $AS->obj['commentPolicy'];
+							$item['comment_policy'] = $AS->obj['commentPolicy'];
 						}
 					}
 				}
 
 				if (isset($AS->meta['hubloc']) && $AS->meta['hubloc']) {
-					$arr['item_verified'] = true;
+					$item['item_verified'] = true;
 				}
 
-				if (!array_key_exists('comment_policy', $arr)) {
-					$arr['comment_policy'] = 'authenticated';
+				if (!array_key_exists('comment_policy', $item)) {
+					$item['comment_policy'] = 'authenticated';
 				}
 
 				if (isset($AS->meta['signed_data']) && $AS->meta['signed_data']) {
-					IConfig::Set($arr, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
+					IConfig::Set($item, 'activitypub', 'signed_data', $AS->meta['signed_data'], false);
 				}
 
-				logger('Activity received: ' . print_r($arr, true), LOGGER_DATA, LOG_DEBUG);
+				logger('Activity received: ' . print_r($item, true), LOGGER_DATA, LOG_DEBUG);
 				logger('Activity recipients: ' . print_r($deliveries, true), LOGGER_DATA, LOG_DEBUG);
 
 				$relay = (($env['type'] === 'response') ? true : false);
 
-				$result = self::process_delivery($env['sender'], $AS, $arr, $deliveries, $relay, false, $message_request);
+				$result = self::process_delivery($env['sender'], $AS, $item, $deliveries, $relay, false, $message_request);
 			}
 			elseif ($env['type'] === 'sync') {
-				// $arr = get_channelsync_elements($data);
+				// $item = get_channelsync_elements($data);
 
-				$arr = json_decode($data, true);
+				$item = json_decode($data, true);
 
-				logger('Channel sync received: ' . print_r($arr, true), LOGGER_DATA, LOG_DEBUG);
+				logger('Channel sync received: ' . print_r($item, true), LOGGER_DATA, LOG_DEBUG);
 				logger('Channel sync recipients: ' . print_r($deliveries, true), LOGGER_DATA, LOG_DEBUG);
 
 				if ($env['encoding'] === 'hz') {
-					$result = Libsync::process_channel_sync_delivery($env['sender'], $arr, $deliveries);
+					$result = Libsync::process_channel_sync_delivery($env['sender'], $item, $deliveries);
 				}
 				else {
 					logger('sync packet type not supported.');
@@ -1920,7 +1924,7 @@ class Libzot {
 
 			// preserve conversations with which you are involved from expiration
 
-			$stored = (($item_result && $item_result['item']) ? $item_result['item'] : false);
+			$stored = ((isset($item_result['item'])) ? $item_result['item'] : false);
 			if ((is_array($stored)) && ($stored['id'] != $stored['parent'])
 				&& ($stored['author_xchan'] === $channel['channel_hash'])) {
 				retain_item($stored['item']['parent']);

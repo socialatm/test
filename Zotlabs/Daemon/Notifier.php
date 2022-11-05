@@ -657,7 +657,8 @@ class Notifier {
 
 			$hash = new_uuid();
 
-			$env = (($hub_env && $hub_env[$hub['hubloc_site_id']]) ? $hub_env[$hub['hubloc_site_id']] : '');
+			$env = $hub_env[$hub['hubloc_site_id']] ?? '';
+
 			if ((self::$private) && (!$env)) {
 				continue;
 			}

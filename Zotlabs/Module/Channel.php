@@ -31,8 +31,10 @@ class Channel extends Controller {
 			goaway(z_root() . '/search?f=&search=' . $_GET['search']);
 
 		$which = null;
-		if (argc() > 1)
+		if (argc() > 1) {
 			$which = argv(1);
+		}
+
 		if (!$which) {
 			if (local_channel()) {
 				$channel = App::get_channel();
@@ -40,9 +42,9 @@ class Channel extends Controller {
 					$which = $channel['channel_address'];
 			}
 		}
+
 		if (!$which) {
-			notice(t('You must be logged in to see this page.') . EOL);
-			return;
+			http_status_exit(404, 'Not found');
 		}
 
 		$profile = 0;

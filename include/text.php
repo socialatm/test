@@ -1892,8 +1892,8 @@ function format_poll($item,$s,$opts) {
 		return EMPTY_STR;
 	}
 
+	$closed = false;
 	$commentable = can_comment_on_post(((local_channel()) ? get_observer_hash() : EMPTY_STR), $item);
-
 	$activated = ((local_channel() && local_channel() == $item['uid'] && get_observer_hash() !== $item['owner_xchan']) ? true : false);
 	$output = $s;
 

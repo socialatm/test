@@ -357,7 +357,7 @@ class Connections extends \Zotlabs\Web\Controller {
 						'oneway' => $oneway,
 						'perminfo' => $perminfo,
 						'connect' => (intval($rr['abook_not_here']) ? t('Connect') : ''),
-						'follow' => z_root() . '/follow/?f=&url=' . urlencode($rr['xchan_hash']) . '&interactive=0',
+						'follow' => z_root() . '/follow/?f=&url=' . urlencode($rr['xchan_hash']) . '&interactive=1',
 						'connect_hover' => t('Connect at this location'),
 						'role' => $roles_dict[$rr['abook_role']] ?? '',
 						'pending' => intval($rr['abook_pending'])
