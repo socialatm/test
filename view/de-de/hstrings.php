@@ -3432,11 +3432,11 @@ App::$strings["Reply on this comment"] = "Antworte auf diesen Kommentar";
 App::$strings["reply"] = "antworten";
 App::$strings["Reply to"] = "Antwort an";
 App::$strings["Delivery Report"] = "Zustellungsbericht";
-App::$strings["%d comment"] = array(
+App::$strings["%d Comment"] = array(
 	0 => "%d Kommentar",
 	1 => "%d Kommentare",
 );
-App::$strings["%d unseen"] = "1%d ungelesen";
+App::$strings["%d unseen"] = "%d ungelesen";
 App::$strings["Forum"] = "Forum";
 App::$strings["to"] = "an";
 App::$strings["Wall-to-Wall"] = "Wall-to-Wall";
