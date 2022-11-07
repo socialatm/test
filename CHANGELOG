@@ -1,3 +1,8 @@
+Hubzilla 7.8.3 (2022-11-07)
+	- Fix regression where auto created directories were not created with public permissions
+	- Fix regression where pinned/featured state of apps was not displayed correctly
+
+
 Hubzilla 7.8.2 (2022-11-05)
 	- Pubcrawl: fix regression in inbox
 	- Fix display issue of shares coming from streams

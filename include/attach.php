@@ -707,13 +707,12 @@ function attach_store($channel, $observer_hash, $options = '', $arr = null) {
 
 	$darr = array('pathname' => $pathname);
 
-	// if we need to create a directory, use the channel default permissions.
+	// if we need to create a directory at this point, make it public
 
-	$darr['allow_cid'] = $channel['channel_allow_cid'];
-	$darr['allow_gid'] = $channel['channel_allow_gid'];
-	$darr['deny_cid']  = $channel['channel_deny_cid'];
-	$darr['deny_gid']  = $channel['channel_deny_gid'];
-
+	$darr['allow_cid'] = '';
+	$darr['allow_gid'] = '';
+	$darr['deny_cid']  = '';
+	$darr['deny_gid']  = '';
 
 	$direct = null;
 
