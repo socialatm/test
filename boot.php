@@ -64,6 +64,7 @@ define('STD_VERSION', '7.8.3');
 define('ZOT_REVISION', '6.0');
 
 define('DB_UPDATE_VERSION', 1253);
+
 define('PROJECT_BASE', __DIR__);
 
 /**
