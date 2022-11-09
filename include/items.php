@@ -4336,7 +4336,6 @@ function zot_feed($uid, $observer_hash, $arr) {
 }
 
 function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = CLIENT_MODE_NORMAL,$module = 'network') {
-
 	$result      = ['success' => false];
 	$sql_extra   = '';
 	$sql_nets    = '';
@@ -4354,7 +4353,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		);
 	}
 
-	if(isset($arr['uid'])) {
+	if(isset($arr['uid']) && $arr['uid']) {
 		$uid = $arr['uid'];
 	}
 
@@ -4364,30 +4363,30 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$item_uids = " item.uid = " . intval($uid) . " ";
 	}
 
-	if(isset($arr['top']))
+	if(isset($arr['top']) && $arr['top'])
 		$sql_options .= " and item_thread_top = 1 ";
 
-	if(isset($arr['star']))
+	if(isset($arr['star']) && $arr['star'])
 		$sql_options .= " and item_starred = 1 ";
 
-	if(isset($arr['wall']))
+	if(isset($arr['wall']) && $arr['wall'])
 		$sql_options .= " and item_wall = 1 ";
 
-	if(isset($arr['item_id']))
+	if(isset($arr['item_id']) && $arr['item_id'])
 		$sql_options .= " and parent = " . intval($arr['item_id']) . " ";
 
-	if(isset($arr['mid']))
+	if(isset($arr['mid']) && $arr['mid'])
 		$sql_options .= " and parent_mid = '" . dbesc($arr['mid']) . "' ";
 
 	$sql_extra = " AND item.parent IN ( SELECT parent FROM item WHERE $item_uids and item_thread_top = 1 $sql_options $item_normal ) ";
 
-	if(isset($arr['since_id']))
+	if(isset($arr['since_id']) && $arr['since_id'])
 		$sql_extra .= " and item.id > " . intval($arr['since_id']) . " ";
 
-	if(isset($arr['cat']))
+	if(isset($arr['cat']) && $arr['cat'])
 		$sql_extra .= protect_sprintf(term_query('item', $arr['cat'], TERM_CATEGORY));
 
-	if(isset($arr['gid']) && $uid) {
+	if((isset($arr['gid']) && $arr['gid']) && $uid) {
 		$r = q("SELECT * FROM pgrp WHERE id = %d AND uid = %d LIMIT 1",
 			intval($arr['group']),
 			intval($uid)
@@ -4418,7 +4417,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$x = AccessList::by_hash($uid, $r[0]['hash']);
 		$result['headline'] = sprintf( t('Privacy group: %s'),$x['gname']);
 	}
-	elseif(isset($arr['cid']) && $uid) {
+	elseif((isset($arr['cid']) && $arr['cid']) && $uid) {
 
 		$r = q("SELECT abook.*, xchan.* from abook left join xchan on abook_xchan = xchan_hash where abook_id = %d and abook_channel = %d and abook_blocked = 0 limit 1",
 			intval($arr['cid']),
@@ -4437,14 +4436,14 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 		$sql_extra = " AND author_xchan = '" . $channel['channel_hash'] . "' and item_private = 0 $item_normal ";
 	}
 
-	if (isset($arr['datequery'])) {
+	if (isset($arr['datequery']) && $arr['datequery']) {
 		$sql_extra3 .= protect_sprintf(sprintf(" AND item.created <= '%s' ", dbesc(datetime_convert('UTC','UTC',$arr['datequery']))));
 	}
-	if (isset($arr['datequery2'])) {
+	if (isset($arr['datequery2']) && $arr['datequery2']) {
 		$sql_extra3 .= protect_sprintf(sprintf(" AND item.created >= '%s' ", dbesc(datetime_convert('UTC','UTC',$arr['datequery2']))));
 	}
 
-	if(isset($arr['search'])) {
+	if(isset($arr['search']) && $arr['search']) {
 		if(strpos($arr['search'],'#') === 0)
 			$sql_extra .= term_query('item',substr($arr['search'],1),TERM_HASHTAG,TERM_COMMUNITYTAG);
 		else
@@ -4453,11 +4452,11 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 			);
 	}
 
-	if(isset($arr['file'])) {
-		$sql_extra .= term_query('item',$arr['files'],TERM_FILE);
+	if(isset($arr['file']) && $arr['file']) {
+		$sql_extra .= term_query('item',$arr['file'],TERM_FILE);
 	}
 
-	if(isset($arr['conv']) && $channel) {
+	if((isset($arr['conv']) && $arr['conv']) && $channel) {
 		$sql_extra .= sprintf(" AND parent IN (SELECT distinct parent from item where ( author_xchan like '%s' or item_mentionsme = 1 )) ",
 			dbesc(protect_sprintf($uidhash))
 		);
@@ -4507,15 +4506,16 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 	require_once('include/security.php');
 	$sql_extra .= item_permissions_sql($channel['channel_id'],$observer_hash);
 
-	if(isset($arr['pages']))
+	if(isset($arr['pages']) && $arr['pages']) {
 		$item_restrict = " AND item_type = " . ITEM_TYPE_WEBPAGE . " ";
+	}
 	else
 		$item_restrict = " AND item_type = 0 ";
 
 	if(isset($arr['item_type']) && $arr['item_type'] === '*')
 		$item_restrict = '';
 
-	if (((isset($arr['compat'])) || (isset($arr['nouveau']) && ($client_mode & CLIENT_MODE_LOAD))) && $channel) {
+	if (((isset($arr['compat']) && $arr['compat']) || ((isset($arr['nouveau']) && $arr['nouveau']) && ($client_mode & CLIENT_MODE_LOAD))) && $channel) {
 
 		// "New Item View" - show all items unthreaded in reverse created date order
 
@@ -4552,9 +4552,7 @@ function items_fetch($arr,$channel = null,$observer_hash = null,$client_mode = C
 			$ordering = "commented";
 
 		if(($client_mode & CLIENT_MODE_LOAD) || ($client_mode == CLIENT_MODE_NORMAL)) {
-
 			// Fetch a page full of parent items for this page
-
 			$r = dbq("SELECT distinct item.id AS item_id, item.$ordering FROM item
 				left join abook on item.author_xchan = abook.abook_xchan
 				WHERE $item_uids $item_restrict
