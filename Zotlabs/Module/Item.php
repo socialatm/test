@@ -393,7 +393,7 @@ class Item extends Controller {
 
 		$owner_hash = null;
 
-		$message_id    = ((x($_REQUEST, 'message_id') && $api_source) ? strip_tags($_REQUEST['message_id']) : '');
+		$message_id    = ((x($_REQUEST, 'message_id') && $api_source) ? strip_tags($_REQUEST['message_id']) : null);
 		$created       = ((x($_REQUEST, 'created')) ? datetime_convert(date_default_timezone_get(), 'UTC', $_REQUEST['created']) : datetime_convert());
 		$post_id       = ((x($_REQUEST, 'post_id')) ? intval($_REQUEST['post_id']) : 0);
 		$app           = ((x($_REQUEST, 'source')) ? strip_tags($_REQUEST['source']) : '');
@@ -710,6 +710,7 @@ class Item extends Controller {
 			$expires             = $orig_post['expires'];
 			$comments_closed     = $orig_post['comments_closed'];
 			$mid                 = $orig_post['mid'];
+			$uuid                = $orig_post['uuid'];
 			$thr_parent          = $orig_post['thr_parent'];
 			$parent_mid          = $orig_post['parent_mid'];
 			$plink               = $orig_post['plink'];
@@ -1000,10 +1001,8 @@ class Item extends Controller {
 
 		$notify_type = (($parent) ? 'comment-new' : 'wall-new');
 
-		$uuid = (($message_id) ? $message_id : item_message_id());
-
-		$mid  = $mid ?? z_root() . '/item/' . $uuid;
-
+		$uuid = $uuid ?? $message_id ?? item_message_id();
+		$mid = $mid ?? z_root() . '/item/' . $uuid;
 
 		if ($is_poll) {
 			$poll = [
