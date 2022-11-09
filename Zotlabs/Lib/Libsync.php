@@ -184,6 +184,8 @@ class Libsync {
 
 		require_once('include/import.php');
 
+hz_syslog(print_r($arr, true));
+
 		$result = [];
 		$keychange = ((array_key_exists('keychange', $arr)) ? true : false);
 
@@ -192,7 +194,10 @@ class Libsync {
 				dbesc($sender)
 			);
 
-			$DR = new DReport(z_root(), $sender, $d, 'sync');
+			$mid = 'sync';
+
+
+			$DR = new DReport(z_root(), $sender, $d, $mid);
 
 			if (!$r) {
 				$DR->update('recipient not found');
@@ -202,7 +207,6 @@ class Libsync {
 
 			$channel = $r[0];
 
-			$mid = 'sync';
 
 			$DR->set_name($channel['channel_name'] . ' <' . channel_reddress($channel) . '>');
 
@@ -297,7 +301,7 @@ class Libsync {
 
 			if (array_key_exists('item', $arr) && $arr['item']) {
 				sync_items($channel, $arr['item'], ((array_key_exists('relocate', $arr)) ? $arr['relocate'] : null));
-				$mid = $arr['item']['mid'] . '#sync';
+				$mid = $arr['item'][0]['message_id'] . '#sync';
 			}
 
 			// deprecated, maintaining for a few months for upward compatibility
@@ -750,7 +754,6 @@ class Libsync {
 
 			$result[] = $DR->get();
 		}
-
 		return $result;
 	}
 
