@@ -343,6 +343,7 @@ class Oep extends \Zotlabs\Web\Controller {
 
 		if(! ($chn && $res))
 			return;
+
 		$c = q("select * from channel where channel_address = '%s' limit 1",
 			dbesc($chn)
 		);
