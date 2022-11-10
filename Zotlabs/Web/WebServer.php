@@ -50,7 +50,8 @@ class WebServer {
 			else
 				unset($_SESSION['language']);
 		}
-		if((x($_SESSION, 'language')) && ($_SESSION['language'] !== $lang)) {
+
+		if ((x($_SESSION, 'language')) && ($_SESSION['language'] !== \App::$language)) {
 			\App::$language = $_SESSION['language'];
 			load_translation_table(\App::$language);
 		}
