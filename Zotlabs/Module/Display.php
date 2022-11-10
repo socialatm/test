@@ -213,27 +213,27 @@ class Display extends \Zotlabs\Web\Controller {
 		$observer_hash = get_observer_hash();
 		$item_normal = item_normal();
 		$item_normal_update = item_normal_update();
-
-		$sql_extra = ((local_channel()) ? EMPTY_STR : item_permissions_sql(0, $observer_hash));
+		$sql_extra = '';
+		$r = [];
 
 		if($noscript_content || $load) {
-
 			require_once('include/channel.php');
 			$sys = get_sys_channel();
 			// in case somebody turned off public access to sys channel content using permissions
 			// make that content unsearchable by ensuring the owner uid can't match
 			$sys_id = perm_is_allowed($sys['channel_id'], $observer_hash, 'view_stream') ? $sys['channel_id'] : 0;
 
-			$r = null;
-
 			if(local_channel()) {
 				$r = q("SELECT item.id AS item_id FROM item WHERE uid = %d AND mid = '%s' $item_normal LIMIT 1",
 					intval(local_channel()),
 					dbesc($target_item['parent_mid'])
 				);
+
 			}
 
-			if($r === null) {
+			if(!$r) {
+				$sql_extra = item_permissions_sql(0, $observer_hash);
+
 				$r = q("SELECT item.id AS item_id FROM item
 					WHERE ((mid = '%s'
 					AND (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''
@@ -257,7 +257,6 @@ class Display extends \Zotlabs\Web\Controller {
 			// make that content unsearchable by ensuring the owner uid can't match
 			$sys_id = perm_is_allowed($sys['channel_id'], $observer_hash, 'view_stream') ? $sys['channel_id'] : 0;
 
-			$r = null;
 			if(local_channel()) {
 				$r = q("SELECT item.parent AS item_id from item
 					WHERE uid = %d
@@ -270,7 +269,9 @@ class Display extends \Zotlabs\Web\Controller {
 				);
 			}
 
-			if($r === null) {
+			if(!$r) {
+				$sql_extra = item_permissions_sql(0, $observer_hash);
+
 				$r = q("SELECT item.id as item_id from item
 					WHERE ((parent_mid = '%s'
 					AND (((( item.allow_cid = '' AND item.allow_gid = '' AND item.deny_cid  = ''
@@ -285,10 +286,6 @@ class Display extends \Zotlabs\Web\Controller {
 					dbesc($target_item['parent_mid'])
 				);
 			}
-		}
-
-		else {
-			$r = [];
 		}
 
 		if($r) {
