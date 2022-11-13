@@ -2,7 +2,7 @@ Hubzilla 7.8.5 (2022-11-13)
 	- Fix outbound edit activity not of type update
 	- Fix mod display not falling through to fetch public item
 	- Fix more PHP warnings
-	- Fix regression in items_fetch() which resulted in empty feed
+	- Fix regression in items_fetch() which resulted in empty atom feed
 	- Pubcrawl: cleanup and slightly restructre mod inbox
 
 
