@@ -332,9 +332,9 @@ class Cdav extends Controller {
 				} while ($duplicate == true);
 
 				$properties = [
-					'{DAV:}displayname' => $_REQUEST['{DAV:}displayname'],
-					'{http://apple.com/ns/ical/}calendar-color' => $_REQUEST['color'],
-					'{urn:ietf:params:xml:ns:caldav}calendar-description' => $channel['channel_name']
+					'{DAV:}displayname' => escape_tags($_REQUEST['{DAV:}displayname']),
+					'{http://apple.com/ns/ical/}calendar-color' => escape_tags($_REQUEST['color']),
+					'{urn:ietf:params:xml:ns:caldav}calendar-description' => escape_tags($channel['channel_name'])
 				];
 
 				$id = $caldavBackend->createCalendar($principalUri, $calendarUri, $properties);
@@ -366,7 +366,7 @@ class Cdav extends Controller {
 
 				$allday = $_REQUEST['allday'];
 
-				$title = $_REQUEST['title'];
+				$title = escape_tags($_REQUEST['title']);
 				$start = datetime_convert('UTC', 'UTC', $_REQUEST['dtstart']);
 				$dtstart = new \DateTime($start);
 
@@ -374,8 +374,8 @@ class Cdav extends Controller {
 					$end = datetime_convert('UTC', 'UTC', $_REQUEST['dtend']);
 					$dtend = new \DateTime($end);
 				}
-				$description = $_REQUEST['description'];
-				$location = $_REQUEST['location'];
+				$description = escape_tags($_REQUEST['description']);
+				$location = escape_tags($_REQUEST['location']);
 
 				do {
 					$duplicate = false;
@@ -441,8 +441,8 @@ class Cdav extends Controller {
 				$cdavdata = $this->get_cdav_data($id[0], 'calendarinstances');
 
 				$mutations = [
-					'{DAV:}displayname' => $_REQUEST['{DAV:}displayname'],
-					'{http://apple.com/ns/ical/}calendar-color' => $_REQUEST['color']
+					'{DAV:}displayname' => escape_tags($_REQUEST['{DAV:}displayname']),
+					'{http://apple.com/ns/ical/}calendar-color' => escape_tags($_REQUEST['color'])
 				];
 
 				$patch = new \Sabre\DAV\PropPatch($mutations);
@@ -471,18 +471,18 @@ class Cdav extends Controller {
 				$timezone = ((x($_POST,'timezone_select')) ? escape_tags(trim($_POST['timezone_select'])) : '');
 				$tz = (($timezone) ? $timezone : date_default_timezone_get());
 
-				$allday = $_REQUEST['allday'];
+				$allday = intval($_REQUEST['allday']);
 
-				$uri = $_REQUEST['uri'];
-				$title = $_REQUEST['title'];
+				$uri = escape_tags($_REQUEST['uri']);
+				$title = escape_tags($_REQUEST['title']);
 				$start = datetime_convert('UTC', 'UTC', $_REQUEST['dtstart']);
 				$dtstart = new \DateTime($start);
 				if($_REQUEST['dtend']) {
 					$end = datetime_convert('UTC', 'UTC', $_REQUEST['dtend']);
 					$dtend = new \DateTime($end);
 				}
-				$description = $_REQUEST['description'];
-				$location = $_REQUEST['location'];
+				$description = escape_tags($_REQUEST['description']);
+				$location = escape_tags($_REQUEST['location']);
 
 				$object = $caldavBackend->getCalendarObject($id, $uri);
 
@@ -654,7 +654,7 @@ class Cdav extends Controller {
 						$duplicate = true;
 				} while ($duplicate == true);
 
-				$properties = ['{DAV:}displayname' => $_REQUEST['{DAV:}displayname']];
+				$properties = ['{DAV:}displayname' => escape_tags($_REQUEST['{DAV:}displayname'])];
 
 				$carddavBackend->createAddressBook($principalUri, $addressbookUri, $properties);
 
@@ -668,9 +668,9 @@ class Cdav extends Controller {
 			}
 
 			//edit addressbook
-			if($_REQUEST['{DAV:}displayname'] && $_REQUEST['edit'] && intval($_REQUEST['id'])) {
+			if($_REQUEST['{DAV:}displayname'] && $_REQUEST['edit'] && $_REQUEST['id']) {
 
-				$id = $_REQUEST['id'];
+				$id = intval($_REQUEST['id']);
 
 				if(! cdav_perms($id,$addressbooks))
 					return;
@@ -678,7 +678,7 @@ class Cdav extends Controller {
 				$cdavdata = $this->get_cdav_data($id, 'addressbooks');
 
 				$mutations = [
-					'{DAV:}displayname' => $_REQUEST['{DAV:}displayname']
+					'{DAV:}displayname' => escape_tags($_REQUEST['{DAV:}displayname'])
 				];
 
 				$patch = new \Sabre\DAV\PropPatch($mutations);

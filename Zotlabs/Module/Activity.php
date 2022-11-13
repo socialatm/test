@@ -182,7 +182,7 @@ class Activity extends Controller {
 				return;
 			}
 
-			$ob_authorise = false;
+			$ob_authorize = false;
 			$item_uid = 0;
 
 			$bear = ZlibActivity::token_from_request();

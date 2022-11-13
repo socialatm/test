@@ -1904,7 +1904,7 @@ function atom_entry($item, $type, $author, $owner, $comment = false, $cid = 0, $
 	if(! $item['parent'])
 		return;
 
-	if($item['deleted'])
+	if($item['item_deleted'])
 		return '<at:deleted-entry ref="' . xmlify($item['mid']) . '" when="' . xmlify(datetime_convert('UTC','UTC',$item['edited'] . '+00:00',ATOM_TIME)) . '" />' . "\r\n";
 
 	create_export_photo_body($item);
@@ -2024,7 +2024,7 @@ function atom_entry($item, $type, $author, $owner, $comment = false, $cid = 0, $
 		}
 	}
 
-	if($item['term']) {
+	if (isset($item['term']) && $item['term']) {
 		foreach($item['term'] as $term) {
 			$scheme = '';
 			$label = '';
