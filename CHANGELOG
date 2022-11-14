@@ -1,3 +1,7 @@
+Hubzilla 7.8.6 (2022-11-14)
+	- Fix typo in boot.php
+
+
 Hubzilla 7.8.5 (2022-11-13)
 	- Fix outbound edit activity not of type update
 	- Fix mod display not falling through to fetch public item
