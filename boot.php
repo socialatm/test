@@ -1,4 +1,4 @@
-s<?php
+<?php
 /**
  * @file boot.php
  *
@@ -60,7 +60,7 @@ require_once('include/bbcode.php');
 require_once('include/items.php');
 
 define('PLATFORM_NAME', 'hubzilla');
-define('STD_VERSION', '7.8.5');
+define('STD_VERSION', '7.8.6');
 define('ZOT_REVISION', '6.0');
 
 define('DB_UPDATE_VERSION', 1253);
