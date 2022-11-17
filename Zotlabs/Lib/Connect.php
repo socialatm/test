@@ -109,10 +109,12 @@ class Connect {
 
 		if ($wf || $d) {
 
+			$xchan_hash = (($wf) ? $wf : $url);
+
 			// something was discovered - find the record which was just created.
 
 			$r = q("select * from xchan where ( xchan_hash = '%s' or xchan_url = '%s' or xchan_addr = '%s' ) $sql_options",
-				dbesc($wf ?? $url),
+				dbesc($xchan_hash),
 				dbesc($url),
 				dbesc($url)
 			);
