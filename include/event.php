@@ -502,7 +502,6 @@ function ev_compare($a, $b) {
 
 
 function event_store_event($arr) {
-
 	$arr['created']        = $arr['created'] ?? datetime_convert();
 	$arr['edited']         = $arr['edited'] ?? datetime_convert();
 	$arr['etype']          = $arr['etype'] ?? 'event';
@@ -533,7 +532,7 @@ function event_store_event($arr) {
 
 	$existing_event = null;
 
-	if(isset($arr['event_hash'])) {
+	if(isset($arr['event_hash']) && $arr['event_hash']) {
 		$r = q("SELECT * FROM event WHERE event_hash = '%s' AND uid = %d LIMIT 1",
 			dbesc($arr['event_hash']),
 			intval($arr['uid'])
@@ -543,7 +542,7 @@ function event_store_event($arr) {
 		}
 	}
 
-	if(isset($arr['id'])) {
+	if(isset($arr['id']) && $arr['id']) {
 		$r = q("SELECT * FROM event WHERE id = %d AND uid = %d LIMIT 1",
 			intval($arr['id']),
 			intval($arr['uid'])
@@ -647,7 +646,6 @@ function event_store_event($arr) {
 				$hash = random_string(48);
 			}
 		}
-
 		$r = q("INSERT INTO event ( uid,aid,event_xchan,event_hash,created,edited,dtstart,dtend,summary,description,location,etype,
 			adjust,nofinish, event_status, event_status_date, event_percent, event_repeat, event_sequence, event_priority, event_vdata, allow_cid,allow_gid,deny_cid,deny_gid)
 			VALUES ( %d, %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, '%s', %d, %d, '%s', '%s', '%s', '%s', '%s' ) ",
