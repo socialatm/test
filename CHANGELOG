@@ -1,3 +1,8 @@
+Hubzilla 7.8.7 (2022-12-03)
+	- Fix regression when adding feed contacts
+	- Fix regression new channel calendar event not created
+
+
 Hubzilla 7.8.6 (2022-11-14)
 	- Fix typo in boot.php
 
