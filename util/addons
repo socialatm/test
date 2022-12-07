@@ -20,6 +20,10 @@ require_once('include/cli_startup.php');
 cli_startup();
 
 	$plugs = get_config('system', 'addon');
+	    if(! $plugs) {
+			echo 'no addons are installed';
+			return;
+		}
 	$plugins_arr = array();
 
 	if($plugs)
@@ -57,7 +61,6 @@ if($argc == 1) {
 	killme();
 }
 
-
 if($argc == 2 && $argv[1] === 'list') {
 	if($plugins) {
 		foreach($plugins as $p) {
@@ -94,7 +97,6 @@ if($argc == 3 && $argv[1] === 'list' && $argv[2] === 'all') {
 	killme();
 }
 
-
 if($argc == 3 && $argv[1] === 'install') {
 
 	if($plugins) {
@@ -116,8 +118,6 @@ if($argc == 3 && $argv[1] === 'install') {
 
 	killme();
 }
-
-
 
 if($argc == 3 && $argv[1] === 'uninstall') {
 
@@ -156,5 +156,3 @@ if($argc == 3 && $argv[1] === 'uninstall') {
 
 	killme();
 }
-
-
