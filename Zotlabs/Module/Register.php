@@ -481,7 +481,7 @@ class Register extends Controller {
 		else {
 			$age = get_config('system','minimum_age');
 			if(!$age) {
-				$age = 13;
+				$age = 18;
 			}
 			$label_tos = sprintf( t('I am over %s years of age and accept the %s for this website'), $age, $toslink);
 		}
