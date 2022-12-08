@@ -54,10 +54,11 @@ App::$config['system']['register_policy'] = REGISTER_OPEN;
 App::$config['system']['register_text'] = '';
 App::$config['system']['admin_email'] = '{{$adminmail}}';
 
-// Il est recommandé de laisser cette valeur à 1. La valeur 0 permet aux personnes de s'inscrire sans avoir à prouver qu'elles possèdent une adresse électronique.
-// vérifier que cette adresse électronique leur appartient.
+// Leave this set at 0 until after you have registered as admin and logged in 
+// or you could get locked out of your site. You can turn this setting on from 
+// the /admin/site/ page under Require email address.
 
-App::$config['system']['verify_email'] = 1;
+App::$config['system']['verify_email'] = 0;
 
 // Restrictions d'accès au site. Par défaut, nous allons créer des sites privés.
 // Vous avez le choix entre ACCESS_PRIVATE, ACCESS_PAID, ACCESS_TIERED et ACCESS_FREE.

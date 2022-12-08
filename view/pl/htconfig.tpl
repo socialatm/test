@@ -55,11 +55,11 @@ App::$config['system']['register_policy'] = REGISTER_OPEN;
 App::$config['system']['register_text'] = '';
 App::$config['system']['admin_email'] = '{{$adminmail}}';
 
-// Zalecamy pozostawienie tego ustawienia na 1. Ustaw na 0, aby umożliwić osobom
-// rejestrowanie się bez udowadniania, że są właścicielami adresu e-mail, na który
-// się rejestrują.
+// Leave this set at 0 until after you have registered as admin and logged in 
+// or you could get locked out of your site. You can turn this setting on from 
+// the /admin/site/ page under Require email address.
 
-App::$config['system']['verify_email'] = 1;
+App::$config['system']['verify_email'] = 0;
 
 // Ograniczenia dostępu do portalu. Domyślnie tworzone są  portale prywatne.
 // Masz do wyboru ACCESS_PRIVATE, ACCESS_PAID, ACCESS_TIERED i ACCESS_FREE.
