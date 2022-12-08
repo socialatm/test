@@ -6,7 +6,7 @@ This is a modified version of Hubzilla.
 If you want the original please visit [Hubzilla Official](https://framagit.org/hubzilla)
 
 <p  markdown="1">
-<em><a  href="https://github.com/socialatm/core/wiki/Installing-Hubzilla">Installing Hubzilla</a></em>
+<em><a  href="https://github.com/socialatm/test/wiki/Installing-Hubzilla">Installing Hubzilla</a></em>
 </p>
 
 **What is Hubzilla?**
