@@ -627,6 +627,15 @@ function sys_boot() {
 
 	App::$install = ((file_exists('.htconfig.php') && filesize('.htconfig.php')) ? false : true);
 
+	// if .htconfig.php doesn't exist lets create it and set permissions
+
+	if(App::$install){
+        $tryit = fopen('.htconfig.php', 'w');
+        if($tryit) {fclose($tryit);}
+		unset($tryit);
+        chmod('.htconfig.php', 0644);
+    }
+
 	@include('.htconfig.php');
 
 	// allow somebody to set some initial settings just in case they can't
