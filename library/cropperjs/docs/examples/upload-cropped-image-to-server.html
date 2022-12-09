@@ -5,7 +5,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Cropper.js</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="../css/cropper.css">
   <style>
     .label {
@@ -29,6 +29,7 @@
 <body>
   <div class="container">
     <h1>Upload cropped image to server</h1>
+    <p>Please note that the image will be uploaded to a <a href="https://jsonplaceholder.typicode.com/">third-party fake API server</a>, which means that the upload process will sometimes fail.</p>
     <label class="label" data-toggle="tooltip" title="Change your avatar">
       <img class="rounded" id="avatar" src="https://avatars0.githubusercontent.com/u/3456749?s=160" alt="avatar">
       <input type="file" class="sr-only" id="input" name="image" accept="image/*">
@@ -59,8 +60,8 @@
       </div>
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/jquery@3/dist/jquery.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="../js/cropper.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
