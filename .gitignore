@@ -37,7 +37,7 @@ pageheader.html
 doc/SiteTOS.md
 doc/*/SiteTOS.md
 doc/*/gdpr.md
-# themes except for redbasic
+# themes except for redbasic and flex
 view/theme/*
 !view/theme/redbasic
 !view/theme/flex
