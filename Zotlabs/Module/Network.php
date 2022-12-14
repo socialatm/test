@@ -92,7 +92,6 @@ class Network extends \Zotlabs\Web\Controller {
 		if($datequery)
 			$order = 'post';
 
-
 		// filter by collection (e.g. group)
 
 		if($gid) {
@@ -130,7 +129,6 @@ class Network extends \Zotlabs\Web\Controller {
 		$unseen   = ((x($_GET, 'unseen'))    ? $_GET['unseen']            : '');
 
 		$status_editor = '';
-
 
 		if (Apps::system_app_installed(local_channel(), 'Affinity Tool')) {
 			$affinity_locked = intval(get_pconfig(local_channel(), 'affinity', 'lock', 1));
@@ -217,11 +215,9 @@ class Network extends \Zotlabs\Web\Controller {
 
 		}
 
-
 		// We don't have to deal with ACL's on this page. You're looking at everything
 		// that belongs to you, hence you can see all of it. We will filter by group if
 		// desired.
-
 
 		$sql_options  = (($star)
 			? ' and item_starred = 1 '
@@ -331,7 +327,6 @@ class Network extends \Zotlabs\Web\Controller {
 				notice( t('Invalid channel.') . EOL);
 				goaway(z_root() . '/network');
 			}
-
 		}
 
 		if(x($category)) {
@@ -397,7 +392,6 @@ class Network extends \Zotlabs\Web\Controller {
 			$sql_extra .= ' AND item_private IN (0, 1) ';
 		}
 
-
 		if($conv) {
 			$item_thread_top = '';
 			$sql_extra .= " AND ( author_xchan = '" . dbesc($channel['channel_hash']) . "' OR item_mentionsme = 1 ) ";
@@ -434,7 +428,6 @@ class Network extends \Zotlabs\Web\Controller {
 
 			if($cmax === 99)
 				$sql_nets .= ' OR abook.abook_closeness IS NULL ) ';
-
 		}
 
 		$net_query = (($net) ? ' left join xchan on xchan_hash = author_xchan ' : '');
@@ -539,7 +532,6 @@ class Network extends \Zotlabs\Web\Controller {
 			else {
 				$items = array();
 			}
-
 		}
 
 		$mode = (($nouveau) ? 'network-new' : 'network');
@@ -606,5 +598,4 @@ class Network extends \Zotlabs\Web\Controller {
 
 		return $o;
 	}
-
 }

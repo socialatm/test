@@ -165,7 +165,6 @@ class Themes {
 		));
 	}
 
-
 	/**
 	 * @brief Toggle a theme.
 	 *
