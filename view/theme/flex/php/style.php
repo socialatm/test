@@ -163,7 +163,8 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 }
 
-// Set the schema to the default schema in derived themes. See the documentation for creating derived themes how to override this.
+// Set the schema to the default schema in derived themes. 
+// See the documentation for creating derived themes how to override this.
 
 if(local_channel() && App::$channel && App::$channel['channel_theme'] != 'redbasic')
 	set_pconfig(local_channel(), 'redbasic', 'schema', '---');
