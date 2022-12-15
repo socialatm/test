@@ -75,8 +75,8 @@
           <div class="col-md-3">
             <div class="p-2 border bg-light ">.col-md-3</div>
         </div>
-          <div class="col-md-6">
-            <div class="p-2 border bg-light ">.col-md-6</div>
+          <div id="region_2" class="col-md-6">
+            <div class="p-2 border bg-light "><?php if(x($page,'content')) echo $page['content']; ?></div>
           </div>
           <div class="col-md-3">
             <div class=" p-2 border bg-light">.col-md-3</div>
