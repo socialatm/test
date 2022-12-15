@@ -71,29 +71,6 @@
 <main>
   <div class="container">
 
-    <h1>Bootstrap grid examples</h1>
-    <p class="lead">Basic grid layouts to get you familiar with building within the Bootstrap grid system.</p>
-    <p>In these examples the <code>.themed-grid-col</code> class is added to the columns to add some theming. This is not a class that is available in Bootstrap by default.</p>
-
-    <h2 class="mt-4">Five grid tiers</h2>
-    <p>There are five tiers to the Bootstrap grid system, one for each range of devices we support. Each tier starts at a minimum viewport size and automatically applies to the larger devices unless overridden.</p>
-
-    <h2 class="mt-4">Three equal columns</h2>
-    <p>Get three equal-width columns <strong>starting at desktops and scaling to large desktops</strong>. On mobile devices, tablets and below, the columns will automatically stack.</p>
-    <div class="row mb-3 text-center">
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-    </div>
-
-    <h2 class="mt-4">Three equal columns alternative</h2>
-    <p>By using the <code>.row-cols-*</code> classes, you can easily create a grid with equal columns.</p>
-    <div class="row row-cols-md-3 mb-3 text-center">
-      <div class="col themed-grid-col"><code>.col</code> child of <code>.row-cols-md-3</code></div>
-      <div class="col themed-grid-col"><code>.col</code> child of <code>.row-cols-md-3</code></div>
-      <div class="col themed-grid-col"><code>.col</code> child of <code>.row-cols-md-3</code></div>
-    </div>
-
     <h2 class="mt-4">Three unequal columns</h2>
     <p>Get three columns <strong>starting at desktops and scaling to large desktops</strong> of various widths. Remember, grid columns should add up to twelve for a single horizontal block. More than that, and columns start stacking no matter the viewport.</p>
     <div class="row mb-3 text-center">
