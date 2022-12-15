@@ -67,22 +67,20 @@
     <link href="./twbs_assets/grid.css" rel="stylesheet">
   </head>
   <body class="py-4">
-    
     <main>
       <div class="container">
-
         <div class="row gx-2">
           <div class="col-md-3">
-            <div class="p-2 border bg-light ">.col-md-3</div>
-        </div>
+            <div id="region_1" class="p-2 border bg-light "><?php if(x($page,'aside')) echo $page['aside']; ?></div>
+          </div>
           <div id="region_2" class="col-md-6">
             <div class="p-2 border bg-light "><?php if(x($page,'content')) echo $page['content']; ?></div>
           </div>
           <div class="col-md-3">
-            <div class=" p-2 border bg-light">.col-md-3</div>
+            <div id="region_3" class=" p-2 border bg-light"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
           </div>
+        </div>
       </div>
-
     </main>
   </body>
 </html>
