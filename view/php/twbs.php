@@ -8,8 +8,6 @@
     <meta name="generator" content="Hugo 0.104.2">
     <title>Grid Template · Bootstrap v5.2</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/grid/">
-
     <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -233,21 +231,7 @@
       <div class="col themed-grid-col"><code>.col</code> with <code>.g-3</code> gutters</div>
     </div>
   </div>
-
-  <div class="container" id="containers">
-    <hr class="my-4">
-
-    <h2 class="mt-4">Containers</h2>
-    <p>Additional classes added in Bootstrap v4.4 allow containers that are 100% wide until a particular breakpoint. v5 adds a new <code>xxl</code> breakpoint.</p>
-  </div>
-
-  <div class="container themed-container text-center">.container</div>
-  <div class="container-sm themed-container text-center">.container-sm</div>
-  <div class="container-md themed-container text-center">.container-md</div>
-  <div class="container-lg themed-container text-center">.container-lg</div>
-  <div class="container-xl themed-container text-center">.container-xl</div>
-  <div class="container-xxl themed-container text-center">.container-xxl</div>
-  <div class="container-fluid themed-container text-center">.container-fluid</div>
+  
 </main>
     
   </body>
