@@ -10,7 +10,7 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/grid/">
 
-    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
