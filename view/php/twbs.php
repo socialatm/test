@@ -152,56 +152,6 @@
 
     <hr class="my-4">
 
-    <h2 class="mt-4">Two columns with two nested columns</h2>
-    <p>Per the documentation, nesting is easy—just put a row of columns within an existing column. This gives you two columns <strong>starting at desktops and scaling to large desktops</strong>, with another two (equal widths) within the larger column.</p>
-    <p>At mobile device sizes, tablets and down, these columns and their nested columns will stack.</p>
-    <div class="row mb-3 text-center">
-      <div class="col-md-8 themed-grid-col">
-        <div class="pb-3">
-          .col-md-8
-        </div>
-        <div class="row">
-          <div class="col-md-6 themed-grid-col">.col-md-6</div>
-          <div class="col-md-6 themed-grid-col">.col-md-6</div>
-        </div>
-      </div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-    </div>
-
-    <hr class="my-4">
-
-    <h2 class="mt-4">Mixed: mobile and desktop</h2>
-    <p>The Bootstrap v5 grid system has six tiers of classes: xs (extra small, this class infix is not used), sm (small), md (medium), lg (large), xl (x-large), and xxl (xx-large). You can use nearly any combination of these classes to create more dynamic and flexible layouts.</p>
-    <p>Each tier of classes scales up, meaning if you plan on setting the same widths for md, lg, xl and xxl, you only need to specify md.</p>
-    <div class="row mb-3 text-center">
-      <div class="col-md-8 themed-grid-col">.col-md-8</div>
-      <div class="col-6 col-md-4 themed-grid-col">.col-6 .col-md-4</div>
-    </div>
-    <div class="row mb-3 text-center">
-      <div class="col-6 col-md-4 themed-grid-col">.col-6 .col-md-4</div>
-      <div class="col-6 col-md-4 themed-grid-col">.col-6 .col-md-4</div>
-      <div class="col-6 col-md-4 themed-grid-col">.col-6 .col-md-4</div>
-    </div>
-    <div class="row mb-3 text-center">
-      <div class="col-6 themed-grid-col">.col-6</div>
-      <div class="col-6 themed-grid-col">.col-6</div>
-    </div>
-
-    <hr class="my-4">
-
-    <h2 class="mt-4">Mixed: mobile, tablet, and desktop</h2>
-    <div class="row mb-3 text-center">
-      <div class="col-sm-6 col-lg-8 themed-grid-col">.col-sm-6 .col-lg-8</div>
-      <div class="col-6 col-lg-4 themed-grid-col">.col-6 .col-lg-4</div>
-    </div>
-    <div class="row mb-3 text-center">
-      <div class="col-6 col-sm-4 themed-grid-col">.col-6 .col-sm-4</div>
-      <div class="col-6 col-sm-4 themed-grid-col">.col-6 .col-sm-4</div>
-      <div class="col-6 col-sm-4 themed-grid-col">.col-6 .col-sm-4</div>
-    </div>
-
-    <hr class="my-4">
-
     <h2 class="mt-4">Gutters</h2>
     <p>With <code>.gx-*</code> classes, the horizontal gutters can be adjusted.</p>
     <div class="row row-cols-1 row-cols-md-3 gx-4 text-center">
