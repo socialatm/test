@@ -11,7 +11,7 @@ require_once('include/conversation.php');
 require_once('include/acl_selectors.php');
 
 
-class Network extends \Zotlabs\Web\Controller {
+class Network2 extends \Zotlabs\Web\Controller {
 
 	function init() {
 		if(! local_channel()) {
