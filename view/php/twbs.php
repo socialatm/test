@@ -77,8 +77,12 @@
       <div class=".m-1">
         <div class="col-md-3 .m-1 p-3 border bg-light ">.col-md-3</div>
       </div>
+      <div class=".m-1">
       <div class="col-md-6 p-3 border bg-light ">.col-md-6</div>
+      </div>
+      <div class=".m-1">
       <div class="col-md-3 p-3 border bg-light">.col-md-3</div>
+      </div>
     </div>
 
     <hr class="my-4">
