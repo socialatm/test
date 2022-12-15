@@ -405,7 +405,6 @@
 
 	});
 
-
 	$('#app-bin-trash').on('dragover', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
