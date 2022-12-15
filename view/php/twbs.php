@@ -78,42 +78,6 @@
     <h2 class="mt-4">Five grid tiers</h2>
     <p>There are five tiers to the Bootstrap grid system, one for each range of devices we support. Each tier starts at a minimum viewport size and automatically applies to the larger devices unless overridden.</p>
 
-    <div class="row mb-3 text-center">
-      <div class="col-4 themed-grid-col">.col-4</div>
-      <div class="col-4 themed-grid-col">.col-4</div>
-      <div class="col-4 themed-grid-col">.col-4</div>
-    </div>
-
-    <div class="row mb-3 text-center">
-      <div class="col-sm-4 themed-grid-col">.col-sm-4</div>
-      <div class="col-sm-4 themed-grid-col">.col-sm-4</div>
-      <div class="col-sm-4 themed-grid-col">.col-sm-4</div>
-    </div>
-
-    <div class="row mb-3 text-center">
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-    </div>
-
-    <div class="row mb-3 text-center">
-      <div class="col-lg-4 themed-grid-col">.col-lg-4</div>
-      <div class="col-lg-4 themed-grid-col">.col-lg-4</div>
-      <div class="col-lg-4 themed-grid-col">.col-lg-4</div>
-    </div>
-
-    <div class="row mb-3 text-center">
-      <div class="col-xl-4 themed-grid-col">.col-xl-4</div>
-      <div class="col-xl-4 themed-grid-col">.col-xl-4</div>
-      <div class="col-xl-4 themed-grid-col">.col-xl-4</div>
-    </div>
-
-    <div class="row mb-3 text-center">
-      <div class="col-xxl-4 themed-grid-col">.col-xxl-4</div>
-      <div class="col-xxl-4 themed-grid-col">.col-xxl-4</div>
-      <div class="col-xxl-4 themed-grid-col">.col-xxl-4</div>
-    </div>
-
     <h2 class="mt-4">Three equal columns</h2>
     <p>Get three equal-width columns <strong>starting at desktops and scaling to large desktops</strong>. On mobile devices, tablets and below, the columns will automatically stack.</p>
     <div class="row mb-3 text-center">
@@ -137,18 +101,6 @@
       <div class="col-md-6 themed-grid-col">.col-md-6</div>
       <div class="col-md-3 themed-grid-col">.col-md-3</div>
     </div>
-
-    <h2 class="mt-4">Two columns</h2>
-    <p>Get two columns <strong>starting at desktops and scaling to large desktops</strong>.</p>
-    <div class="row mb-3 text-center">
-      <div class="col-md-8 themed-grid-col">.col-md-8</div>
-      <div class="col-md-4 themed-grid-col">.col-md-4</div>
-    </div>
-
-    <h2 class="mt-4">Full width, single column</h2>
-    <p class="text-warning">
-      No grid classes are necessary for full-width elements.
-    </p>
 
     <hr class="my-4">
 
