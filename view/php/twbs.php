@@ -64,10 +64,9 @@
         -webkit-overflow-scrolling: touch;
       }
     </style>
-
     
     <!-- Custom styles for this template -->
-    <link href="twbs_grid.css" rel="stylesheet">
+    <link href="./twbs_assets/grid.css" rel="stylesheet">
   </head>
   <body class="py-4">
     
@@ -250,8 +249,6 @@
   <div class="container-xxl themed-container text-center">.container-xxl</div>
   <div class="container-fluid themed-container text-center">.container-fluid</div>
 </main>
-
-
     
   </body>
 </html>
