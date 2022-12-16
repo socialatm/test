@@ -60,7 +60,6 @@
 						{{include file="field_input.tpl" field=$itemspage}}
 						{{include file="field_checkbox.tpl" field=$nosmile}}
 						{{include file="field_checkbox.tpl" field=$title_tosource}}
-						{{include file="field_checkbox.tpl" field=$user_scalable}}
 						{{include file="field_checkbox.tpl" field=$preload_images}}
 						{{include file="field_checkbox.tpl" field=$start_menu}}
 						<div class="settings-submit-wrapper" >

@@ -1194,10 +1194,6 @@ class App {
 
 	public static function build_pagehead() {
 
-		$user_scalable = ((local_channel()) ? get_pconfig(local_channel(), 'system', 'user_scalable') : 0);
-		if ($user_scalable === false)
-			$user_scalable = 0;
-
 		$preload_images = ((local_channel()) ? get_pconfig(local_channel(), 'system', 'preload_images') : 0);
 		if ($preload_images === false)
 			$preload_images = 0;
@@ -1253,7 +1249,6 @@ class App {
 		self::$page['htmlhead'] = replace_macros(get_markup_template('head.tpl'),
 				[
 					'$preload_images'  => $preload_images,
-					'$user_scalable'   => $user_scalable,
 					'$query'           => urlencode(self::$query_string),
 					'$baseurl'         => self::get_baseurl(),
 					'$local_channel'   => local_channel(),

@@ -17,14 +17,13 @@ class Display {
 		$existing_theme  = $themespec[0];
 		$existing_schema = $themespec[1];
 
-		$theme             = ((x($_POST,'theme')) ? notags(trim($_POST['theme']))  : $existing_theme);
+		$theme = ((x($_POST,'theme')) ? notags(trim($_POST['theme']))  : $existing_theme);
 
 		if(! $theme)
 			$theme = 'redbasic';
 
 
 		$preload_images    = ((x($_POST,'preload_images')) ? intval($_POST['preload_images'])  : 0);
-		$user_scalable     = ((x($_POST,'user_scalable')) ? intval($_POST['user_scalable'])  : 0);
 		$nosmile           = ((x($_POST,'nosmile')) ? intval($_POST['nosmile'])  : 0);
 		$title_tosource    = ((x($_POST,'title_tosource')) ? intval($_POST['title_tosource'])  : 0);
 		$start_menu        = ((x($_POST,'start_menu')) ? intval($_POST['start_menu']) : 0);
@@ -40,7 +39,6 @@ class Display {
 
 
 		set_pconfig(local_channel(),'system','preload_images',$preload_images);
-		set_pconfig(local_channel(),'system','user_scalable',$user_scalable);
 		set_pconfig(local_channel(),'system','update_interval', $browser_update);
 		set_pconfig(local_channel(),'system','itemspage', $itemspage);
 		set_pconfig(local_channel(),'system','no_smilies',1-intval($nosmile));
@@ -148,9 +146,6 @@ class Display {
 		$preload_images = get_pconfig(local_channel(),'system','preload_images');
 		$preload_images = (($preload_images===false)? '0': $preload_images); // default if not set: 0
 
-		$user_scalable = get_pconfig(local_channel(),'system','user_scalable');
-		$user_scalable = (($user_scalable===false)? '0': $user_scalable); // default if not set: 0
-
 		$browser_update = intval(get_pconfig(local_channel(), 'system','update_interval'));
 		$browser_update = (($browser_update == 0) ? 80 : $browser_update / 1000); // default if not set: 40 seconds
 
@@ -191,7 +186,6 @@ class Display {
 			'$schema'   => array('schema', t('Select scheme'), $existing_schema, '' , $schemas),
 
 			'$preload_images' => array('preload_images', t("Preload images before rendering the page"), $preload_images, t("The subjective page load time will be longer but the page will be ready when displayed"), $yes_no),
-			'$user_scalable' => array('user_scalable', t("Enable user zoom on mobile devices"), $user_scalable, '', $yes_no),
 			'$ajaxint'   => array('browser_update',  t("Update browser every xx seconds"), $browser_update, t('Minimum of 10 seconds, no maximum')),
 			'$itemspage'   => array('itemspage',  t("Maximum number of conversations to load at any time:"), $itemspage, t('Maximum of 30 items')),
 			'$nosmile'	=> array('nosmile', t("Show emoticons (smilies) as images"), 1-intval($nosmile), '', $yes_no),
@@ -217,8 +211,4 @@ class Display {
 		}
 		return null;
 	}
-
-
-
-
 }
