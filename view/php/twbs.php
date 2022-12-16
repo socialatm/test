@@ -67,10 +67,10 @@
     <link href="./twbs_assets/grid.css" rel="stylesheet">
   </head>
   <body class="py-4" <?php if($page['direction']) echo 'dir="rtl"' ?> >
+      <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
-	    <?php if(x($page,'nav')) echo $page['nav']; ?>
-    <main>
+	  <main>
       <div class="container">
         <div class="row gx-2">
           <div class="col-md-3">
