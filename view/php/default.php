@@ -68,7 +68,7 @@
       <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
-	  <main class="mt-6">
+	  <main class="mt-5">
       <div class="container">
         <div class="row gx-2">
           <div class="col-md-3">
