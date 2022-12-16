@@ -64,7 +64,7 @@
     </style>
     
   </head>
-  <body class="py-4" <?php if($page['direction']) echo 'dir="rtl"' ?> >
+  <body class="py-4 mt-25" <?php if($page['direction']) echo 'dir="rtl"' ?> >
       <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
