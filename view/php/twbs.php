@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.104.2">
-    <title>Grid Template · Bootstrap v5.2</title>
+    <title><?php if(x($page,'title')) echo $page['title'] ?></title>
+    <script>var baseurl="<?php echo z_root() ?>";</script>
+    <?php if(x($page,'htmlhead')) echo $page['htmlhead'] ?>
 
     <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
