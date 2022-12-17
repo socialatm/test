@@ -93,8 +93,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 				$image_id = substr($image_id,0,-2);
 			}
 
-
-
 			$srcX = intval($_POST['xstart']);
 			$srcY = intval($_POST['ystart']);
 			$srcW = intval($_POST['xfinal']) - $srcX;
@@ -161,7 +159,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 						dbesc($image_id),
 						intval(local_channel())
 					);
-
 
 					$scaled_width = $g[0]['width'];
 					$scaled_height = $g[0]['height'];
@@ -245,7 +242,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 
 		}
 
-
 		$hash = photo_new_resource();
 		$smallest = 0;
 
@@ -323,9 +319,7 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 
 		post_activity_item($arr);
 
-
 	}
-
 
 	/**
 	 * @brief Generate content of profile-photo view
@@ -333,7 +327,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 	 * @return string
 	 *
 	 */
-
 
 	function get() {
 
@@ -407,7 +400,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 
 			$this->cover_photo_crop_ui_head($a, $ph, $hash, $smallest);
 		}
-
 
 		if(! x(\App::$data,'imagecrop')) {
 
@@ -492,6 +484,5 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 		\App::$page['htmlhead'] .= replace_macros(get_markup_template("crophead.tpl"), array());
 		return;
 	}
-
 
 }
