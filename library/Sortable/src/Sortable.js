@@ -298,7 +298,7 @@ let dragEl,
 
 
 // #1184 fix - Prevent click event on fallback if dragged but item not changed position
-if (documentExists) {
+if (documentExists && !ChromeForAndroid) {
 	document.addEventListener('click', function(evt) {
 		if (ignoreNextClick) {
 			evt.preventDefault();
@@ -924,7 +924,7 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 		pluginEvent('setupClone', this);
 		if (!Sortable.eventCanceled) {
 			cloneEl = clone(dragEl);
-
+			cloneEl.removeAttribute("id");
 			cloneEl.draggable = false;
 			cloneEl.style['will-change'] = '';
 
@@ -1188,7 +1188,12 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 
 				if (onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, !!target) !== false) {
 					capture();
-					el.appendChild(dragEl);
+					if (elLastChild && elLastChild.nextSibling) { // the last draggable element is not the last node
+						el.insertBefore(dragEl, elLastChild.nextSibling);
+					}
+					else {
+						el.appendChild(dragEl);
+					}
 					parentEl = el; // actualization
 
 					changed();
