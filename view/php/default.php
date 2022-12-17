@@ -11,6 +11,7 @@
     <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+      /*
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -61,6 +62,7 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
+      */
     </style>
     
   </head>
