@@ -8,7 +8,7 @@
     <script>var baseurl="<?php echo z_root() ?>";</script>
     <?php if(x($page,'htmlhead')) echo $page['htmlhead'] ?>
 
-    <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--  <link href="./twbs_assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
   </head>
   <body class="py-4" <?php if($page['direction']) echo 'dir="rtl"' ?> >
