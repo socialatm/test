@@ -52,7 +52,6 @@ class RedbasicConfig {
 		$arr['converse_width']=get_pconfig(local_channel(),"redbasic","converse_width");
 		$arr['top_photo']=get_pconfig(local_channel(),"redbasic","top_photo");
 		$arr['reply_photo']=get_pconfig(local_channel(),"redbasic","reply_photo");
-		$arr['advanced_theming'] = get_pconfig(local_channel(), 'redbasic', 'advanced_theming');
 		return $this->form($arr);
 	}
 
@@ -78,7 +77,6 @@ class RedbasicConfig {
 			set_pconfig(local_channel(), 'redbasic', 'converse_width', $_POST['redbasic_converse_width']);
 			set_pconfig(local_channel(), 'redbasic', 'top_photo', $_POST['redbasic_top_photo']);
 			set_pconfig(local_channel(), 'redbasic', 'reply_photo', $_POST['redbasic_reply_photo']);
-			set_pconfig(local_channel(), 'redbasic', 'advanced_theming', $_POST['redbasic_advanced_theming']);
 		}
 	}
 
@@ -109,11 +107,9 @@ class RedbasicConfig {
 			'$shadow' => array('redbasic_shadow', t('Set shadow depth of photos'), $arr['shadow']),
 			'$converse_width' => array('redbasic_converse_width',t('Set maximum width of content region in rem'),$arr['converse_width'], t('Leave empty for default width')),
 			'$top_photo' => array('redbasic_top_photo', t('Set size of conversation author photo'), $arr['top_photo']),
-			'$reply_photo' => array('redbasic_reply_photo', t('Set size of followup author photos'), $arr['reply_photo']),
-			'$advanced_theming' => ['redbasic_advanced_theming', t('Show advanced settings'), $arr['advanced_theming'], '', [t('No'), t('Yes')]]
+			'$reply_photo' => array('redbasic_reply_photo', t('Set size of followup author photos'), $arr['reply_photo'])
 			));
 
 		return $o;
 	}
-
 }
