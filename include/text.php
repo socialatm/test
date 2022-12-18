@@ -2969,7 +2969,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 			$newname = substr($name,1);
 			$newname = substr($newname,0,-1);
 
-			$r = q("SELECT * FROM xchan WHERE ( xchan_addr = '%s' OR xchan_url = '%s' ) AND xchan_deleted = 0",
+			$r = q("SELECT * FROM xchan WHERE ( xchan_addr = '%s' OR xchan_url = '%s' ) AND xchan_deleted = 0 AND NOT xchan_network  IN ('rss', 'anon', 'unknown')",
 				dbesc($newname),
 				dbesc($newname)
 			);
@@ -2995,7 +2995,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 			// select someone from this user's contacts by name
 
 			$r = q("SELECT * FROM abook LEFT JOIN xchan ON abook_xchan = xchan_hash
-				WHERE xchan_name = '%s' AND abook_channel = %d AND xchan_deleted = 0",
+				WHERE xchan_name = '%s' AND abook_channel = %d AND xchan_deleted = 0 AND NOT xchan_network  IN ('rss', 'anon', 'unknown')",
 				dbesc($newname),
 				intval($profile_uid)
 			);
@@ -3004,7 +3004,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 
 			if((! $r) && strpos($newname,'@')) {
 				$r = q("SELECT * FROM xchan LEFT JOIN hubloc ON xchan_hash = hubloc_hash
-					WHERE hubloc_addr = '%s' AND xchan_deleted = 0 ",
+					WHERE hubloc_addr = '%s' AND xchan_deleted = 0 AND NOT xchan_network  IN ('rss', 'anon', 'unknown')",
 					dbesc($newname)
 				);
 			}
@@ -3016,7 +3016,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 				$newname = str_replace('%','',$newname);
 
 				$r = q("SELECT * FROM abook LEFT JOIN xchan ON abook_xchan = xchan_hash
-					WHERE xchan_addr LIKE ('%s') AND abook_channel = %d AND xchan_deleted = 0",
+					WHERE xchan_addr LIKE ('%s') AND abook_channel = %d AND xchan_deleted = 0 AND NOT xchan_network  IN ('rss', 'anon', 'unknown')",
 					dbesc(((strpos($newname,'@')) ? $newname : $newname . '@%')),
 					intval($profile_uid)
 				);
