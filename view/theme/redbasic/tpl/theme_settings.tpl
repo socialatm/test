@@ -2,9 +2,6 @@
 {{include file="field_input.tpl" field=$converse_width}}
 {{include file="field_input.tpl" field=$font_size}}
 
-{{*if $expert*}}
-
-
 	{{include file="field_colorinput.tpl" field=$nav_bg}}
 	{{include file="field_colorinput.tpl" field=$nav_icon_colour}}
 	{{include file="field_colorinput.tpl" field=$nav_active_icon_colour}}
@@ -31,10 +28,3 @@
 		$('#id_redbasic_item_colour,#id_redbasic_comment_item_colour,#id_redbasic_comment_border_colour').colorpicker({format: 'rgba'});
 	});
 </script>
-
-{{*/if*}}
-
-
-<div class="settings-submit-wrapper" >
-	<button type="submit" name="redbasic-settings-submit" class="btn btn-primary">{{$submit}}</button>
-</div>
