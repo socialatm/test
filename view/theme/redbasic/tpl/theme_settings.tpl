@@ -3,7 +3,7 @@
 {{include file="field_input.tpl" field=$font_size}}
 {{include file="field_checkbox.tpl" field=$advanced_theming}}
 
-{* {{if $expert}} *}
+{{*if $expert*}}
 
 
 	{{include file="field_colorinput.tpl" field=$nav_bg}}
@@ -33,7 +33,7 @@
 	});
 </script>
 
-{* {{/if}} *}
+{{*/if*}}
 
 
 <div class="settings-submit-wrapper" >
