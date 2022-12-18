@@ -3,6 +3,7 @@ Hubzilla 7.8.8 (add date here)
 	- enabled zoom on mobile devices
 	- installer creates .htconfig file
 	- email verify defaults to false
+	- advanced theme settings removed from redbasic theme
 Hubzilla 7.8.7 (2022-12-03)
 	- Fix regression when adding feed contacts
 	- Fix regression new channel calendar event not created
