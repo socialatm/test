@@ -48,6 +48,7 @@ body {
 	margin: 0px;
 }
 
+/*
 aside#region_1 {
 	border-right: 1px solid transparent;
 	width: $left_aside_widthrem;
@@ -65,6 +66,7 @@ aside#left_aside_wrapper,
 aside#right_aside_wrapper {
 	margin-bottom: 10px;
 }
+*/
 
 main {
 	margin-left: auto;
