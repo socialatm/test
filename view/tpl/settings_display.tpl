@@ -31,25 +31,6 @@
 			</div>
 			{{/if}}
 
-<!--
-			<div class="panel">
-				<div class="section-subtitle-wrapper" role="tab" id="custom-settings-title">
-					<h3>
-						<a data-bs-toggle="collapse" data-bs-target="#custom-settings-content" href="" aria-expanded="true" aria-controls="custom-settings-content">
-							{{$d_ctset}}
-						</a>
-					</h3>
-				</div>
-				<div id="custom-settings-content" class="collapse{{if !$theme}} in{{/if}}" role="tabpanel" aria-labelledby="custom-settings" data-bs-parent="#settings" >
-					<div class="section-content-tools-wrapper">
-						{{if $theme_config}}
-							{{$theme_config}}
-						{{/if}}
-					</div>
-				</div>
-			</div>
--->
-
 			<div class="panel">
 				<div class="section-subtitle-wrapper" role="tab" id="content-settings-title">
 					<h3>

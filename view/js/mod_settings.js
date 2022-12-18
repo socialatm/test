@@ -56,11 +56,8 @@ function previewTheme(elm) {
 		else {
 			$('<option/>',{value:'',text:'No schemes available'}).appendTo('#id_schema');
 		}
-		$('#custom-settings-content .section-content-tools-wrapper').html(data.config);
 	});
 }
-
-
 
 /**
  * 0 nobody
@@ -72,7 +69,6 @@ function previewTheme(elm) {
  * 6 perms_authed
  * 7 perms_public
  */
-
 
 function channel_privacy_macro(n) {
 	if(n == 0) {
@@ -161,8 +157,6 @@ function channel_privacy_macro(n) {
 	}
 }
 
-
-
 function loadPermcat(name) {
 
 	if(! name)
@@ -181,4 +175,3 @@ function loadPermcat(name) {
 		$('.loading').toggleClass('invisible');
 	});
 }
-
