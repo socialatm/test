@@ -86,9 +86,10 @@ class RedbasicConfig {
 
 /*		$expert = false;
 		if(get_pconfig(local_channel(), 'redbasic', 'advanced_theming')) {
-			$expert = true;
-		}
 */
+			$expert = true;
+//		}
+
 	  	$o = replace_macros(get_markup_template('theme_settings.tpl'), array(
 			'$submit' => t('Submit'),
 			'$baseurl' => z_root(),
