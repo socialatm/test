@@ -30,6 +30,8 @@
 				</div>
 			</div>
 			{{/if}}
+
+{*
 			<div class="panel">
 				<div class="section-subtitle-wrapper" role="tab" id="custom-settings-title">
 					<h3>
@@ -46,6 +48,8 @@
 					</div>
 				</div>
 			</div>
+*}
+
 			<div class="panel">
 				<div class="section-subtitle-wrapper" role="tab" id="content-settings-title">
 					<h3>
