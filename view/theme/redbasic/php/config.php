@@ -6,7 +6,6 @@ class RedbasicConfig {
 
 	function get_schemas() {
 		$files = glob('view/theme/redbasic/schema/*.php');
-
 		$scheme_choices = [];
 
 		if($files) {
@@ -32,9 +31,7 @@ class RedbasicConfig {
 	}
 
 	function get() {
-		if(! local_channel()) {
-			return;
-		}
+		if(! local_channel()) { return; }
 
 		$arr = array();
 		$arr['narrow_navbar'] = get_pconfig(local_channel(),'redbasic', 'narrow_navbar' );
@@ -60,9 +57,7 @@ class RedbasicConfig {
 	}
 
 	function post() {
-		if(!local_channel()) {
-			return;
-		}
+		if(!local_channel()) { return; }
 
 		if (isset($_POST['redbasic-settings-submit'])) {
 			set_pconfig(local_channel(), 'redbasic', 'narrow_navbar', $_POST['redbasic_narrow_navbar']);
@@ -89,11 +84,11 @@ class RedbasicConfig {
 
 	function form($arr) {
 
-		$expert = false;
+/*		$expert = false;
 		if(get_pconfig(local_channel(), 'redbasic', 'advanced_theming')) {
 			$expert = true;
 		}
-
+*/
 	  	$o = replace_macros(get_markup_template('theme_settings.tpl'), array(
 			'$submit' => t('Submit'),
 			'$baseurl' => z_root(),
