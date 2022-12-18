@@ -918,7 +918,6 @@ function head_get_css() {
 		foreach($sources as $source)
 			$str .= format_css_if_exists($source);
 	}
-
 	return $str;
 }
 

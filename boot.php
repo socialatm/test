@@ -2197,7 +2197,6 @@ function build_querystring($params, $name = null) {
 	return $ret;
 }
 
-
 /**
  * @brief Much better way of dealing with c-style args.
  */
@@ -2325,13 +2324,11 @@ function load_pdl() {
 	}
 }
 
-
 function exec_pdl() {
 	if (App::$pdl) {
 		App::$comanche->parse(App::$pdl, 1);
 	}
 }
-
 
 /**
  * @brief build the page.
