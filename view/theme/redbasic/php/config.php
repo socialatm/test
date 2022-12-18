@@ -30,6 +30,8 @@ class RedbasicConfig {
 		return $scheme_choices;
 	}
 
+	/*
+
 	function get() {
 		if(! local_channel()) { return; }
 
@@ -113,3 +115,5 @@ class RedbasicConfig {
 		return $o;
 	}
 }
+
+*/
