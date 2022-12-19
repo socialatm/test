@@ -2364,7 +2364,6 @@ function construct_page() {
 		nav($navbar);
 	}
 
-
 	$current_theme = Zotlabs\Render\Theme::current();
 	// logger('current_theme: ' . print_r($current_theme,true));
 	// Zotlabs\Render\Theme::debug();
