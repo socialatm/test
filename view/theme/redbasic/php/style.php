@@ -23,7 +23,6 @@ if(! App::$install) {
 	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
 	$font_size = get_pconfig($uid, 'redbasic', 'font_size');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
-	$radius = get_pconfig($uid, 'redbasic', 'radius');
 	$shadow = get_pconfig($uid,'redbasic','photo_shadow');
 	$converse_width=get_pconfig($uid,'redbasic','converse_width');
 	$top_photo=get_pconfig($uid,'redbasic','top_photo');
@@ -98,8 +97,6 @@ if (! $font_size)
 	$font_size = '0.875rem';
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
-if (! $radius)
-	$radius = '0.375rem';
 if (! $shadow)
 	$shadow = '0';
 if (! $converse_width)
@@ -147,7 +144,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$comment_item_colour' => $comment_item_colour,
 		'$font_size' => $font_size,
 		'$font_colour' => $font_colour,
-		'$radius' => $radius,
 		'$shadow' => $shadow,
 		'$converse_width' => $converse_width,
 		'$top_photo' => $top_photo,

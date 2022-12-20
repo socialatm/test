@@ -1,35 +1,17 @@
 /**
  * Redbasic
- * Based on duepuntozero Friendica style
  * Originally by Fabio Comuni <fabrix.xm@gmail.com>
+ * Modified by Ray Peaslee
  */
 
 
 /* bootstrap variable */
 
 :root {
-	--bs-border-radius: $radius;
 	--bs-link-color: $link_colour;
 	--bs-link-hover-color: $link_hover_colour;
 	--bs-body-bg: $bgcolour;
 }
-
-.nav-tabs {
-	--bs-nav-tabs-border-radius: $radius;
-}
-
-.nav-pills {
-	--bs-nav-pills-border-radius: $radius;
-}
-
-.btn {
-	--bs-btn-border-radius: $radius;
-}
-
-.card {
-	--bs-card-border-radius: $radius;
-}
-
 
 /* generals */
 
@@ -473,7 +455,6 @@ footer {
 
 .photo,
 .contact-block-img {
-	border-radius: $radius;
 	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
 }
 
@@ -487,7 +468,6 @@ footer {
 
 .profile-match-photo img,
 .directory-photo-img {
-	border-radius: $radius;
 	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
 }
 
@@ -1423,10 +1403,6 @@ main.fullscreen .section-content-wrapper-np {
 }
 
 /* bootstrap overrides */
-
-.form-control {
-	border-radius: $radius;
-}
 
 blockquote {
 	font-size: 1rem;
