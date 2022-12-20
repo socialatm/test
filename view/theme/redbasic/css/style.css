@@ -176,11 +176,6 @@ input[type=text], textarea {
 	color: #FF0000;
 }
 
-nav {
-	opacity: $nav_float_min_opacity;
-	filter:alpha(opacity=$nav_percent_min_opacity);
-}
-
 #powered-by {
 	font-size: 0.5rem;
 	position: absolute;
