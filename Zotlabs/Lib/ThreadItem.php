@@ -137,13 +137,7 @@ class ThreadItem {
 			$shareable = false;
 		}
 
-		$privacy_warning = false;
-		if(intval($item['item_private']) && ($item['owner']['xchan_network'] === 'activitypub')) {
-			$recips = get_iconfig($item['parent'], 'activitypub', 'recips');
-
-			if(! is_array($recips['to']) || ! in_array($observer['xchan_url'], $recips['to']))
-				$privacy_warning = true;
-		}
+		$privacy_warning = ($item['owner']['xchan_network'] === 'activitypub' && intval($item['item_private']) === 1);
 
 		if ($lock) {
  			if (($item['mid'] == $item['parent_mid']) && isset($item['term']) && count(get_terms_oftype($item['term'], TERM_FORUM))) {
