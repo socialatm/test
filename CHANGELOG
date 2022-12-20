@@ -5,6 +5,8 @@ Hubzilla 7.8.8 (add date here)
 	- email verify defaults to false
 	- advanced theme settings removed from redbasic theme
 	- create php.out as part of the install process
+
+	
 Hubzilla 7.8.7 (2022-12-03)
 	- Fix regression when adding feed contacts
 	- Fix regression new channel calendar event not created

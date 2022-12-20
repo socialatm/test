@@ -165,7 +165,7 @@ class Display {
 				$clsname = '\\Zotlabs\\Theme\\' . ucfirst($theme) . 'Config';
 				$thm_config = new $clsname();
 				$schemas = $thm_config->get_schemas();
-				$theme_config = $thm_config->get();
+			//	$theme_config = $thm_config->get();
 			}
 		}
 
