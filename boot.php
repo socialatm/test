@@ -624,19 +624,24 @@ function sys_boot() {
 
 	$a = new miniApp;
 
-
 	App::$install = ((file_exists('.htconfig.php') && filesize('.htconfig.php')) ? false : true);
 
 	// if .htconfig.php doesn't exist lets create it and set permissions
+	// may as well do the same for php.out while we're here
 
 	if(App::$install){
         $tryit = fopen('.htconfig.php', 'w');
         if($tryit) {fclose($tryit);}
 		unset($tryit);
         chmod('.htconfig.php', 0644);
+
+		$tryit = fopen('php.out', 'w');
+        if($tryit) {fclose($tryit);}
+		unset($tryit);
+        chmod('php.out', 0644);
     }
 
-	@include('.htconfig.php');
+	include('.htconfig.php');
 
 	// allow somebody to set some initial settings just in case they can't
 	// install without special fiddling
@@ -654,7 +659,6 @@ function sys_boot() {
 
 	App::$timezone = ((App::$config['system']['timezone']) ? App::$config['system']['timezone'] : 'UTC');
 	date_default_timezone_set(App::$timezone);
-
 
 	if (!defined('DEFAULT_PLATFORM_ICON')) {
 		define('DEFAULT_PLATFORM_ICON', '/images/hz-32.png');
