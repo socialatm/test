@@ -5,9 +5,7 @@ if(! App::$install) {
 	// Get the UID of the channel owner
 	$uid = get_theme_uid();
 
-	if($uid) {
-		load_pconfig($uid,'redbasic');
-	}
+	if($uid) { load_pconfig($uid,'redbasic'); }
 
 	// Load the owners pconfig
 	$nav_bg = get_pconfig($uid, 'redbasic', 'nav_bg');
