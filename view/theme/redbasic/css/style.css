@@ -1674,8 +1674,9 @@ dl.bb-dl > dd > li {
 
 .onoffswitch.checkbox > div > input:disabled + label .onoffswitch-switch {
 	background-color: red;
-	opacity: 0.3;
+/*	opacity: 0.3;
 	filter:alpha(opacity=30);
+*/
 }
 
 
