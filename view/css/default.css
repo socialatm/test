@@ -1,8 +1,9 @@
+
 .row{
   overflow: hidden; 
 }
 
-[class*="col-"]{
+.row [class*="col-"]{
   margin-bottom: -99999px;
   padding-bottom: 99999px;
 }
