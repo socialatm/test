@@ -10,8 +10,6 @@
 		$nav_active_gradient_top = "#333";
 	if (! $nav_active_gradient_bottom)
 		$nav_active_gradient_bottom = "#111";
-	if (! $nav_bd)
-		$nav_bd = "#111";
 	if (! $nav_icon_colour)
 		$nav_icon_colour = "#999";
 	if (! $nav_active_icon_colour)
