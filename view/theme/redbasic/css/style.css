@@ -194,9 +194,6 @@ input[type=text], textarea {
 	padding: 1rem;
 	border-bottom: #e0e0e0 1px solid;
 	overflow: auto;
-	-moz-box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
-	-webkit-box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
-	box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
 }
 
 .contextual-help-content dd {

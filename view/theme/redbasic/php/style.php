@@ -12,7 +12,6 @@ if(! App::$install) {
 	$nav_icon_colour = get_pconfig($uid, 'redbasic', 'nav_icon_colour');
 	$nav_active_icon_colour = get_pconfig($uid, 'redbasic', 'nav_active_icon_colour');
 	$banner_colour = get_pconfig($uid,'redbasic','banner_colour');
-	$narrow_navbar = get_pconfig($uid,'redbasic','narrow_navbar');
 	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
 	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
@@ -110,10 +109,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	if($schema === 'dark' && file_exists('view/theme/redbasic/schema/bootstrap-nightfall.css')) {
 		$x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
-	}
-
-	if($narrow_navbar && file_exists('view/theme/redbasic/css/narrow_navbar.css')) {
-		$x .= file_get_contents('view/theme/redbasic/css/narrow_navbar.css');
 	}
 
 	if($schemecss) {
