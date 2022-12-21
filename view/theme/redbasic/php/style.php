@@ -19,7 +19,6 @@ if(! App::$install) {
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
 	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
-	$converse_width=get_pconfig($uid,'redbasic','converse_width');
 	$top_photo=get_pconfig($uid,'redbasic','top_photo');
 	$reply_photo=get_pconfig($uid,'redbasic','reply_photo');
 }
@@ -87,8 +86,6 @@ if (! $item_opacity)
 	$item_opacity = '1';
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
-if (! $converse_width)
-	$converse_width = '52'; //unit: rem
 if(! $top_photo)
 	$top_photo = '2.3rem';
 if(! $reply_photo)
@@ -105,14 +102,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	if($schemecss) { $x .= $schemecss; }
 
-	$left_aside_width = 21; //unit: rem
-	$right_aside_width = 21; //unit: rem
-
-	$main_width = $left_aside_width + $right_aside_width + intval($converse_width);
-
-	// prevent main_width smaller than 768px
-	$main_width = (($main_width < 30) ? 30 : $main_width);
-
 	$options = array (
 		'$nav_bg' => $nav_bg,
 		'$nav_icon_colour' => $nav_icon_colour,
@@ -123,12 +112,8 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,
 		'$font_colour' => $font_colour,
-		'$converse_width' => $converse_width,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
-		'$main_width' => $main_width,
-		'$left_aside_width' => $left_aside_width,
-		'$right_aside_width' => $right_aside_width
 	);
 
 	echo str_replace(array_keys($options), array_values($options), $x);

@@ -24,36 +24,9 @@ body {
 	margin: 0px;
 }
 
-/*
-aside#region_1 {
-	border-right: 1px solid transparent;
-	width: $left_aside_widthrem;
-	min-width: $left_aside_widthrem;
-	max-width: $left_aside_widthrem;
-}
-
-aside#region_3 {
-	width: $right_aside_widthrem;
-	min-width: $left_aside_widthrem;
-	max-width: $right_aside_widthrem;
-}
-
-aside#left_aside_wrapper,
-aside#right_aside_wrapper {
-	margin-bottom: 10px;
-}
-*/
-
-main {
-	margin-left: auto;
-	margin-right: auto;
-	max-width: $main_widthrem;
-}
-
 #overlay {
 	position: fixed;
 	top: 0;
-	left: $left_aside_widthrem;
 	width: 100vw;
 	height: 100vh;
 	background: rgba(0, 0, 0, .3);
@@ -1357,11 +1330,6 @@ blockquote {
 }
 
 @media screen and (max-width: 992px) {
-
-	main {
-		left: -$left_aside_widthrem;
-		width: calc( 100% + $left_aside_widthrem );
-	}
 
 	main.region_1-on {
 		left: 0px;
