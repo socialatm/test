@@ -13,11 +13,7 @@
 	--bs-body-bg: $bgcolour;
 }
 
-/* generals */
-
-html {
-	font-size: $font_size;
-}
+/* general */
 
 body {
 	font-size: 0.9rem;

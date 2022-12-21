@@ -21,7 +21,6 @@ if(! App::$install) {
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
 	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
-	$font_size = get_pconfig($uid, 'redbasic', 'font_size');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
 	$shadow = get_pconfig($uid,'redbasic','photo_shadow');
 	$converse_width=get_pconfig($uid,'redbasic','converse_width');
@@ -93,8 +92,6 @@ if (! $comment_item_colour)
 	$comment_item_colour = 'rgb(255,255,255)';
 if (! $item_opacity)
 	$item_opacity = '1';
-if (! $font_size)
-	$font_size = '0.875rem';
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
 if (! $shadow)
@@ -142,7 +139,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$background_image' => $background_image,
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,
-		'$font_size' => $font_size,
 		'$font_colour' => $font_colour,
 		'$shadow' => $shadow,
 		'$converse_width' => $converse_width,
@@ -157,7 +153,8 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 
 }
 
-// Set the schema to the default schema in derived themes. See the documentation for creating derived themes how to override this.
+// Set the schema to the default schema in derived themes. 
+// See the documentation for creating derived themes how to override this.
 
 if(local_channel() && App::$channel && App::$channel['channel_theme'] != 'redbasic')
 	set_pconfig(local_channel(), 'redbasic', 'schema', '---');
