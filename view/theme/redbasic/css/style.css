@@ -93,7 +93,6 @@ input, optgroup, select, textarea {
 
 input[type=text], textarea {
 	resize: vertical;
-	background-color: $comment_item_colour;
 }
 
 .selected-doco-nav {
@@ -150,7 +149,6 @@ input[type=text], textarea {
 	left: 0px;
 	width: 100%;
 	max-height: 50%;
-	background: $comment_item_colour;
 	padding: 1rem;
 	border-bottom: #e0e0e0 1px solid;
 	overflow: auto;
@@ -335,10 +333,6 @@ footer {
 	height: $top_photo !important;
 }
 
-#photo-view-wrapper {
-	background-color: $item_colour;
-}
-
 .pmenu.horizontal {
 	padding: 0 0 0 0;
 	border-bottom: none;
@@ -405,10 +399,6 @@ footer {
 
 #tagrm-cancel {
 	margin-left: 15px;
-}
-
-.wall-item-conv {
-	background-color: $comment_item_colour;
 }
 
 #nav-notifications-template,
@@ -896,19 +886,16 @@ img.mail-conv-sender-photo {
 }
 
 .wall-item-content-wrapper {
-	background-color: $item_colour;
 	border-top-right-radius: var(--bs-border-radius);
 	border-top-left-radius: var(--bs-border-radius);
 }
 
 .wall-item-content-wrapper.comment {
-	background-color: $comment_item_colour;
 	border-top-right-radius: 0px;
 	border-top-left-radius: 0px;
 }
 
 .hide-comments-outer {
-	background-color: $comment_item_colour;
 	border-top-color: #e0e0e0;
 	border-style: solid;
 	border-top-style: dashed;
@@ -923,17 +910,10 @@ img.mail-conv-sender-photo {
 
 .wall-item-comment-wrapper {
 	padding: 7px 10px;
-	background-color: $item_colour;
 	border-radius: 0px;
 	border-bottom-right-radius: var(--bs-border-radius);
 	border-bottom-left-radius: var(--bs-border-radius);
-	border-top: 3px solid $comment_item_colour;
 }
-
-.wall-item-comment-wrapper-wc {
-	border-top: 0px solid $comment_item_colour;
-}
-
 
 .wall-item-photo {
 	width: $top_photo;
@@ -973,10 +953,6 @@ img.mail-conv-sender-photo {
 
 .divgrow-showmore:hover {
 	border-top: 1px dashed #adadad;
-}
-
-.directory-item .divgrow-showmore {
-	background-color: $comment_item_colour;
 }
 
 /* widgets */
@@ -1030,7 +1006,6 @@ img.mail-conv-sender-photo {
 .chat-item-title,
 .chat-item-title-self {
 	border-radius: var(--bs-border-radius);
-	background-color: $item_colour;
 }
 
 #chatMembers img {
@@ -1093,10 +1068,8 @@ img.mail-conv-sender-photo {
 
 .section-title-wrapper {
 	padding: 7px 10px;
-	background-color: $item_colour;
 	border-top-left-radius: var(--bs-border-radius);
 	border-top-right-radius: var(--bs-border-radius);
-	border-bottom: 3px solid $comment_item_colour;
 }
 
 .section-title-wrapper h2,
@@ -1114,21 +1087,16 @@ img.mail-conv-sender-photo {
 
 .section-subtitle-wrapper {
 	padding: 4px 10px;
-	background-color: $item_colour;
-	border-bottom: 3px solid $comment_item_colour;
 }
 
 .section-content-tools-wrapper {
 	padding: 7px 10px;
-	background-color: $comment_item_colour;
-	border-bottom: 3px solid $comment_item_colour;
 }
 
 .section-content-success-wrapper {
 	padding: 21px 10px;
 	color: #155724;
 	background-color: #d4edda;
-	border-bottom: 3px solid $comment_item_colour;
 	text-align: center;
 }
 
@@ -1136,7 +1104,6 @@ img.mail-conv-sender-photo {
 	padding: 21px 10px;
 	color: #0c5460;
 	background-color: #d1ecf1;
-	border-bottom: 3px solid $comment_item_colour;
 	text-align: center;
 }
 
@@ -1144,7 +1111,6 @@ img.mail-conv-sender-photo {
 	padding: 21px 10px;
 	color: #856404;
 	background-color: #fff3cd;
-	border-bottom: 3px solid $comment_item_colour;
 	text-align: center;
 }
 
@@ -1152,7 +1118,6 @@ img.mail-conv-sender-photo {
 	padding: 21px 10px;
 	color: #721c24;
 	background-color: #f8d7da;
-	border-bottom: 3px solid $comment_item_colour;
 	text-align: center;
 }
 .section-content-tools-wrapper .section-content-success-wrapper,
@@ -1171,14 +1136,12 @@ img.mail-conv-sender-photo {
 
 .section-content-wrapper {
 	padding: 7px 10px;
-	background-color: $comment_item_colour;
 	border-bottom-left-radius: var(--bs-border-radius);
 	border-bottom-right-radius: var(--bs-border-radius);
 	word-wrap: break-word;
 }
 
 .section-content-wrapper-np {
-	background-color: $comment_item_colour;
 	border-bottom-left-radius: var(--bs-border-radius);
 	border-bottom-right-radius: var(--bs-border-radius);
 	word-wrap: break-word;
@@ -1216,32 +1179,6 @@ main.fullscreen .section-content-wrapper-np {
 	display: none;
 }
 
-.atoken-index-row:hover td,
-.chatroom-index-row:hover td,
-.group-index-row:hover td,
-.wikis-index-row:hover td,
-.locs-index-row:hover td,
-[id^="cloud-index-"]:hover td,
-.cloud-index-active {
-	background-color: $item_colour;
-}
-
-[id^="webpage-list-item-"]:hover td,
-[id^="block-list-item-"]:hover td,
-[id^="layout-list-item-"]:hover td,
-[id^="menu-list-item-"]:hover td,
-[id^="mitem-list-item-"]:hover td {
-	background-color: $item_colour;
-}
-
-#perms-tool-table .highlight:hover {
-	background-color: $item_colour;
-}
-
-.notify-seen {
-	background-color: $item_colour;
-}
-
 /* bootstrap overrides */
 
 blockquote {
@@ -1250,16 +1187,6 @@ blockquote {
 	border-left: 3px solid #e0e0e0;
 	padding: 1em 0px 1em 1.5em;
 	margin: 0px;
-}
-
-.dropdown-item:active,
-.dropdown-item:focus,
-.dropdown-item:hover,
-.textcomplete-item:focus .dropdown-item,
-.textcomplete-item:hover .dropdown-item,
-.textcomplete-item.active .dropdown-item,
-.textcomplete-item:active .dropdown-item {
-	background-color: $item_colour;
 }
 
 .textcomplete-dropdown {
@@ -1418,14 +1345,12 @@ dl.bb-dl > dd > li {
 .onoffswitch-inner:before {
     content: attr(data-on);
     padding-right: 21px;
-    background-color: $item_colour;
-	text-align: right;
+    text-align: right;
 }
 
 .onoffswitch-inner:after {
     content: attr(data-off);
     padding-left: 21px;
-    background-color: $item_colour; color: #e0e0e0;
     text-align: left;
 }
 

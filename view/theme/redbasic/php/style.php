@@ -9,9 +9,6 @@ if(! App::$install) {
 
 	// Load the owners pconfig
 	$schema = get_pconfig($uid,'redbasic','schema');
-	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
-	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
-	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
 	$top_photo=get_pconfig($uid,'redbasic','top_photo');
 	$reply_photo=get_pconfig($uid,'redbasic','reply_photo');
 }
@@ -59,12 +56,6 @@ if ((!$schema) || ($schema == '---')) {
 //Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
 //individually.  If we don't, we'll have problems if a user has set one, but not all options.
 
-if (! $bgcolour)
-	$bgcolour = 'rgb(254,254,254)';
-if (! $item_colour)
-	$item_colour = '#f6f6f6';
-if (! $comment_item_colour)
-	$comment_item_colour = 'rgb(255,255,255)';
 if(! $top_photo)
 	$top_photo = '2.3rem';
 if(! $reply_photo)
@@ -82,9 +73,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 	if($schemecss) { $x .= $schemecss; }
 
 	$options = array (
-		'$bgcolour' => $bgcolour,
-		'$item_colour' => $item_colour,
-		'$comment_item_colour' => $comment_item_colour,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
 	);
