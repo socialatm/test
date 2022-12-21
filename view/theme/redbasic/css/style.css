@@ -18,7 +18,6 @@
 body {
 	font-size: 0.9rem;
 	background-color: var(--bs-body-bg);
-	background-image: url('$background_image');
 	background-attachment: fixed;
 	background-size: cover;
 	color: $font_colour;
@@ -86,7 +85,6 @@ h6, .h6 {
 }
 
 #banner {
-	color: $banner_colour;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;

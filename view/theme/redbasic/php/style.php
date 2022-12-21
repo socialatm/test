@@ -11,12 +11,10 @@ if(! App::$install) {
 	$nav_bg = get_pconfig($uid, 'redbasic', 'nav_bg');
 	$nav_icon_colour = get_pconfig($uid, 'redbasic', 'nav_icon_colour');
 	$nav_active_icon_colour = get_pconfig($uid, 'redbasic', 'nav_active_icon_colour');
-	$banner_colour = get_pconfig($uid,'redbasic','banner_colour');
 	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
 	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
 	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
-	$background_image = get_pconfig($uid, 'redbasic', 'background_image');
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
 	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
@@ -79,12 +77,8 @@ if (! $link_colour)
 	$link_colour = '#0d6efd';
 if (! $link_hover_colour)
 	$link_hover_colour = '#0a58ca;';
-if (! $banner_colour)
-	$banner_colour = '#efefef';
 if (! $bgcolour)
 	$bgcolour = 'rgb(254,254,254)';
-if (! $background_image)
-	$background_image ='';
 if (! $item_colour)
 	$item_colour = '#f6f6f6';
 if (! $comment_item_colour)
@@ -125,9 +119,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$nav_active_icon_colour' => $nav_active_icon_colour,
 		'$link_colour' => $link_colour,
 		'$link_hover_colour' => $link_hover_colour,
-		'$banner_colour' => $banner_colour,
 		'$bgcolour' => $bgcolour,
-		'$background_image' => $background_image,
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,
 		'$font_colour' => $font_colour,
