@@ -8,8 +8,6 @@ if(! App::$install) {
 	if($uid) { load_pconfig($uid,'redbasic'); }
 
 	// Load the owners pconfig
-	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
-	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
 	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
@@ -61,10 +59,6 @@ if ((!$schema) || ($schema == '---')) {
 //Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
 //individually.  If we don't, we'll have problems if a user has set one, but not all options.
 
-if (! $link_colour)
-	$link_colour = '#0d6efd';
-if (! $link_hover_colour)
-	$link_hover_colour = '#0a58ca;';
 if (! $bgcolour)
 	$bgcolour = 'rgb(254,254,254)';
 if (! $item_colour)
@@ -88,8 +82,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 	if($schemecss) { $x .= $schemecss; }
 
 	$options = array (
-		'$link_colour' => $link_colour,
-		'$link_hover_colour' => $link_hover_colour,
 		'$bgcolour' => $bgcolour,
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,

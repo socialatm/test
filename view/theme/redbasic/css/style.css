@@ -4,15 +4,6 @@
  * Modified by Ray Peaslee
  */
 
-
-/* bootstrap variable */
-
-:root {
-	--bs-link-color: $link_colour;
-	--bs-link-hover-color: $link_hover_colour;
-	--bs-body-bg: $bgcolour;
-}
-
 /* general */
 
 body {

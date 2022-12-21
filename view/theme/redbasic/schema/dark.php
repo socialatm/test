@@ -8,10 +8,6 @@
 		$nav_active_gradient_top = "#333";
 	if (! $nav_active_gradient_bottom)
 		$nav_active_gradient_bottom = "#111";
-	if (! $link_colour)
-		$link_colour = "#5f7b99;";
-	if (! $link_hover_colour)
-		$link_hover_colour = "#4b6b8c";
 	if (! $banner_colour)
 		$banner_colour = "#999";
 	if (! $bgcolour)
