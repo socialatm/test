@@ -363,22 +363,12 @@ footer {
 	padding: 4px;
 }
 
-.photo,
-.contact-block-img {
-	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
-}
-
 #side-bar-photos-albums {
 	margin-top: 15px;
 }
 
 #side-bar-photos-albums ul {
 	list-style: none;
-}
-
-.profile-match-photo img,
-.directory-photo-img {
-	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
 }
 
 .profile-match-photo img {
@@ -1006,7 +996,6 @@ img.mail-conv-sender-photo {
 	height: $top_photo;
 	border: none;
 	border-radius: var(--bs-border-radius);
-	box-shadow: $shadowpx $shadowpx $shadowpx 0 #444444;
 }
 
 .comment .wall-item-photo {
@@ -1026,7 +1015,6 @@ img.mail-conv-sender-photo {
 .chat-item-text-self {
 	font-size: 1rem;
 }
-
 
 .comment-edit-text {
 	border: 1px solid #e0e0e0;

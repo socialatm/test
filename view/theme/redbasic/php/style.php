@@ -21,7 +21,6 @@ if(! App::$install) {
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
 	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
 	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
-	$shadow = get_pconfig($uid,'redbasic','photo_shadow');
 	$converse_width=get_pconfig($uid,'redbasic','converse_width');
 	$top_photo=get_pconfig($uid,'redbasic','top_photo');
 	$reply_photo=get_pconfig($uid,'redbasic','reply_photo');
@@ -69,6 +68,7 @@ if ((!$schema) || ($schema == '---')) {
 
 //Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
 //individually.  If we don't, we'll have problems if a user has set one, but not all options.
+
 if (! $nav_bg)
 	$nav_bg = '#343a40';
 if (! $nav_icon_colour)
@@ -93,8 +93,6 @@ if (! $item_opacity)
 	$item_opacity = '1';
 if (! $font_colour)
 	$font_colour = '#4d4d4d';
-if (! $shadow)
-	$shadow = '0';
 if (! $converse_width)
 	$converse_width = '52'; //unit: rem
 if(! $top_photo)
@@ -111,9 +109,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		$x .= file_get_contents('view/theme/redbasic/schema/bootstrap-nightfall.css');
 	}
 
-	if($schemecss) {
-		$x .= $schemecss;
-	}
+	if($schemecss) { $x .= $schemecss; }
 
 	$left_aside_width = 21; //unit: rem
 	$right_aside_width = 21; //unit: rem
@@ -135,7 +131,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,
 		'$font_colour' => $font_colour,
-		'$shadow' => $shadow,
 		'$converse_width' => $converse_width,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
