@@ -17,8 +17,6 @@ if(! App::$install) {
 	$bgcolour = get_pconfig($uid, 'redbasic', 'background_colour');
 	$item_colour = get_pconfig($uid, 'redbasic', 'item_colour');
 	$comment_item_colour = get_pconfig($uid, 'redbasic', 'comment_item_colour');
-	$item_opacity = get_pconfig($uid, 'redbasic', 'item_opacity');
-	$font_colour = get_pconfig($uid, 'redbasic', 'font_colour');
 	$top_photo=get_pconfig($uid,'redbasic','top_photo');
 	$reply_photo=get_pconfig($uid,'redbasic','reply_photo');
 }
@@ -82,10 +80,6 @@ if (! $item_colour)
 	$item_colour = '#f6f6f6';
 if (! $comment_item_colour)
 	$comment_item_colour = 'rgb(255,255,255)';
-if (! $item_opacity)
-	$item_opacity = '1';
-if (! $font_colour)
-	$font_colour = '#4d4d4d';
 if(! $top_photo)
 	$top_photo = '2.3rem';
 if(! $reply_photo)
@@ -111,7 +105,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 		'$bgcolour' => $bgcolour,
 		'$item_colour' => $item_colour,
 		'$comment_item_colour' => $comment_item_colour,
-		'$font_colour' => $font_colour,
 		'$top_photo' => $top_photo,
 		'$reply_photo' => $reply_photo,
 	);

@@ -32,10 +32,5 @@
 		$toolicon_colour = '#999';
 	if (! $toolicon_activecolour)
 		$toolicon_activecolour = '#fff';
-	if (! $font_colour)
-		$font_colour = "#ccc";
 	if (! $converse_width)
 		$converse_width = '52'; //unit: rem;
-
-
-

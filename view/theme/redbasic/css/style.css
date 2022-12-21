@@ -20,7 +20,6 @@ body {
 	background-color: var(--bs-body-bg);
 	background-attachment: fixed;
 	background-size: cover;
-	color: $font_colour;
 	margin: 0px;
 }
 
@@ -104,7 +103,6 @@ input, optgroup, select, textarea {
 input[type=text], textarea {
 	resize: vertical;
 	background-color: $comment_item_colour;
-	color: $font_colour;
 }
 
 .selected-doco-nav {
@@ -182,7 +180,6 @@ input[type=text], textarea {
 }
 
 .contextual-help-tool i {
-	color: $font_colour;
 	font-size: 1.05rem;
 }
 
@@ -620,10 +617,6 @@ div.jGrowl div.jGrowl-notification {
 	text-align: center;
 }
 
-.conv-participants {
-	color: $font_colour;
-}
-
 .contactname {
 	display: block;
 	overflow: hidden;
@@ -643,7 +636,6 @@ div.jGrowl div.jGrowl-notification {
 
 .notification.notification-forum {
 	font-size: 0.9rem;
-	color: $font_colour;
 }
 
 #acl-search::-webkit-input-placeholder {
@@ -764,20 +756,11 @@ margin-right: 50px;
 a .generic-icons {
 	font-size: 1rem;
 	margin-right: 0.5rem;
-	color: $font_colour;
 }
 
 .generic-icons-right {
 	font-size: 1rem;
 	margin-left: 0.5rem;
-	color: $font_colour;
-}
-
-.generic-icons:hover,
-a .generic-icons:hover,
-.generic-icons-right:hover,
-a .generic-icons-right:hover {
-	color: $font_colour;
 }
 
 .generic-icons-nav {
@@ -793,7 +776,6 @@ a .generic-icons-right:hover {
 .drop-icons,
 a .drop-icons {
 	font-size: 1rem;
-	color: $font_colour;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -1279,14 +1261,6 @@ blockquote {
 	margin: 0px;
 }
 
-.dropdown-menu {
-	color: $font_colour;
-}
-
-.dropdown-item {
-	color: $font_colour;
-}
-
 .dropdown-item:active,
 .dropdown-item:focus,
 .dropdown-item:hover,
@@ -1294,7 +1268,6 @@ blockquote {
 .textcomplete-item:hover .dropdown-item,
 .textcomplete-item.active .dropdown-item,
 .textcomplete-item:active .dropdown-item {
-	color: $font_colour;
 	background-color: $item_colour;
 }
 
@@ -1471,8 +1444,7 @@ dl.bb-dl > dd > li {
     content: attr(data-on);
     padding-right: 21px;
     background-color: $item_colour;
-	color: $font_colour;
-    text-align: right;
+	text-align: right;
 }
 
 .onoffswitch-inner:after {
