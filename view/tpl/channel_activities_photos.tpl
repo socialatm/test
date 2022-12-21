@@ -4,7 +4,8 @@
 <div id="photo-album" class="mb-4">
 	{{foreach $items as $i}}
 	<a href="{{$i.url}}" title="{{$i.alt}}">
-		<img src="{{$i.src}}" width="{{$i.width}}" height="{{$i.height}}" alt="{{$i.alt}}">
+<!--		<img src="{{$i.src}}" width="{{$i.width}}" height="{{$i.height}}" alt="{{$i.alt}}"> -->
+<img src="{{$i.src}}" alt="{{$i.alt}}">
 		<div class='jg-caption rounded text-truncate autotime' title="{{$i.edited}}"></div>
 	</a>
 	{{/foreach}}
