@@ -915,11 +915,6 @@ img.mail-conv-sender-photo {
 	border-radius: var(--bs-border-radius);
 }
 
-.comment .wall-item-photo {
-	width: $reply_photo;
-	height: $reply_photo;
-}
-
 .wall-item-ago,
 .dropdown-sub-text {
 	color: #777;
