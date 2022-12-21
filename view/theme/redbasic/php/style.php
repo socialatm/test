@@ -8,9 +8,6 @@ if(! App::$install) {
 	if($uid) { load_pconfig($uid,'redbasic'); }
 
 	// Load the owners pconfig
-	$nav_bg = get_pconfig($uid, 'redbasic', 'nav_bg');
-	$nav_icon_colour = get_pconfig($uid, 'redbasic', 'nav_icon_colour');
-	$nav_active_icon_colour = get_pconfig($uid, 'redbasic', 'nav_active_icon_colour');
 	$link_colour = get_pconfig($uid, 'redbasic', 'link_colour');
 	$link_hover_colour = get_pconfig($uid, 'redbasic', 'link_hover_colour');
 	$schema = get_pconfig($uid,'redbasic','schema');
@@ -64,12 +61,6 @@ if ((!$schema) || ($schema == '---')) {
 //Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
 //individually.  If we don't, we'll have problems if a user has set one, but not all options.
 
-if (! $nav_bg)
-	$nav_bg = '#343a40';
-if (! $nav_icon_colour)
-	$nav_icon_colour = 'rgba(255, 255, 255, 0.55)';
-if (! $nav_active_icon_colour)
-	$nav_active_icon_colour = 'rgba(255, 255, 255, 0.75)';
 if (! $link_colour)
 	$link_colour = '#0d6efd';
 if (! $link_hover_colour)
@@ -97,9 +88,6 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 	if($schemecss) { $x .= $schemecss; }
 
 	$options = array (
-		'$nav_bg' => $nav_bg,
-		'$nav_icon_colour' => $nav_icon_colour,
-		'$nav_active_icon_colour' => $nav_active_icon_colour,
 		'$link_colour' => $link_colour,
 		'$link_hover_colour' => $link_hover_colour,
 		'$bgcolour' => $bgcolour,
