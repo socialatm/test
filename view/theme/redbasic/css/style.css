@@ -205,12 +205,10 @@ input[type=text], textarea {
 
 .contextual-help-tool {
 	padding: 7px;
-	filter: alpha(opacity=20);
 	opacity: .5;
 }
 
 .contextual-help-tool:hover {
-	filter: alpha(opacity=50);
 	opacity: 1;
 	text-decoration: none;
 }
@@ -392,12 +390,10 @@ footer {
 
 .profile-edit-side-link {
 	opacity: 0;
-	filter:alpha(opacity=0);
 }
 
 .card:hover .profile-edit-side-link {
 	opacity: 1;
-	filter:alpha(opacity=100);
 }
 
 #hide-friends-yes-label,
@@ -812,9 +808,7 @@ div.jGrowl div.jGrowl-notification {
 .app-deleted,
 .dim {
 	opacity: 0.3;
-	filter:alpha(opacity=30);
 }
-
 
 .profile-match-connect {
 	margin-top: 5px;
@@ -1460,10 +1454,6 @@ blockquote {
 
 @media screen and (max-width: 992px) {
 
-	aside#region_1 {
-		border-right: 1px solid $nav_bd;
-	}
-
 	main {
 		left: -$left_aside_widthrem;
 		width: calc( 100% + $left_aside_widthrem );
@@ -1641,12 +1631,8 @@ dl.bb-dl > dd > li {
 
 .onoffswitch.checkbox > div > input:disabled + label .onoffswitch-switch {
 	background-color: red;
-/*	opacity: 0.3;
-	filter:alpha(opacity=30);
-*/
+	opacity: 0.3;
 }
-
-
 
 .help-searchlist {
 	list-style-type: none;
