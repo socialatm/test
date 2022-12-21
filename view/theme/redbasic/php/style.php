@@ -9,16 +9,12 @@ if(! App::$install) {
 
 	// Load the owners pconfig
 	$schema = get_pconfig($uid,'redbasic','schema');
-	$top_photo=get_pconfig($uid,'redbasic','top_photo');
-	$reply_photo=get_pconfig($uid,'redbasic','reply_photo');
 }
 
 // Now load the scheme.  If a value is changed above, we'll keep the settings
 // If not, we'll keep those defined by the schema
-// Setting $schema to '' wasn't working for some reason, so we'll check it's
-// not --- like the mobile theme does instead.
-
 // Allow layouts to over-ride the schema
+
 if (isset($_REQUEST['schema']) && preg_match('/^[\w_-]+$/i', $_REQUEST['schema'])) {
   $schema = $_REQUEST['schema'];
 }
@@ -53,15 +49,8 @@ if ((!$schema) || ($schema == '---')) {
 
 }
 
-//Set some defaults - we have to do this after pulling owner settings, and we have to check for each setting
-//individually.  If we don't, we'll have problems if a user has set one, but not all options.
-
-if(! $top_photo)
-	$top_photo = '2.3rem';
-if(! $reply_photo)
-	$reply_photo = '2.3rem';
-
 // Apply the settings
+
 if(file_exists('view/theme/redbasic/css/style.css')) {
 
 	$x = file_get_contents('view/theme/redbasic/css/style.css');
@@ -73,8 +62,7 @@ if(file_exists('view/theme/redbasic/css/style.css')) {
 	if($schemecss) { $x .= $schemecss; }
 
 	$options = array (
-		'$top_photo' => $top_photo,
-		'$reply_photo' => $reply_photo,
+		
 	);
 
 	echo str_replace(array_keys($options), array_values($options), $x);

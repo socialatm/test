@@ -328,11 +328,6 @@ footer {
 	list-style: none;
 }
 
-.profile-match-photo img {
-	width: $top_photo !important;
-	height: $top_photo !important;
-}
-
 .pmenu.horizontal {
 	padding: 0 0 0 0;
 	border-bottom: none;
@@ -916,8 +911,6 @@ img.mail-conv-sender-photo {
 }
 
 .wall-item-photo {
-	width: $top_photo;
-	height: $top_photo;
 	border: none;
 	border-radius: var(--bs-border-radius);
 }
