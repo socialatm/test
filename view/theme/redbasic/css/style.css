@@ -11,7 +11,6 @@ body {
 	background-color: var(--bs-body-bg);
 	background-attachment: fixed;
 	background-size: cover;
-	margin: 0px;
 }
 
 #overlay {
@@ -147,7 +146,6 @@ input[type=text], textarea {
 	display: block;
 	position: fixed;
 	top: 3.35rem;
-	left: 0px;
 	width: 100%;
 	max-height: 50%;
 	padding: 1rem;
@@ -178,7 +176,6 @@ input[type=text], textarea {
 /* jumping dots */
 .jumping-dots span {
 	position: relative;
-	bottom: 0px;
 	transition-timing-function: ease-in-out;
 	-webkit-animation: jump 1s infinite;
 	animation: jump 1s infinite;
@@ -442,7 +439,7 @@ nav .acpopup {
 
 #cboxContent {
 	padding: 3px;
-	border: 0px solid #fff;
+	border: solid #fff;
 	border-radius: var(--bs-border-radius);
 	background-color: #fff;
 	z-index: 1052;
@@ -873,18 +870,12 @@ img.mail-conv-sender-photo {
 	border-top-left-radius: var(--bs-border-radius);
 }
 
-.wall-item-content-wrapper.comment {
-	border-top-right-radius: 0px;
-	border-top-left-radius: 0px;
-}
-
 .hide-comments-outer {
 	border-top-color: #e0e0e0;
 	border-style: solid;
 	border-top-style: dashed;
 	border-width: 1px 0px 0px 0px;
 	text-align: center;
-	border-radius: 0px;
 }
 
 .hide-comments-outer:hover {
@@ -893,7 +884,6 @@ img.mail-conv-sender-photo {
 
 .wall-item-comment-wrapper {
 	padding: 7px 10px;
-	border-radius: 0px;
 	border-bottom-right-radius: var(--bs-border-radius);
 	border-bottom-left-radius: var(--bs-border-radius);
 }
@@ -1050,8 +1040,6 @@ img.mail-conv-sender-photo {
 
 .section-title-wrapper h2,
 .section-subtitle-wrapper h3 {
-	margin-top: 0px;
-	margin-bottom: 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1123,7 +1111,6 @@ img.mail-conv-sender-photo {
 }
 
 main.fullscreen {
-	left: 0px;
 	width: 100%;
 	height: 100vh;
 	max-width: none;
@@ -1132,22 +1119,11 @@ main.fullscreen {
 main.fullscreen .generic-content-wrapper {
 	position: absolute;
 	width: 100%;
-	top: 0px;
-	left: 0px;
-	border-radius: 0px;
-	border-width: 0px;
 }
 
 main.fullscreen .section-title-wrapper {
-	border-radius: 0px;
 	position: sticky;
-	top: 0;
 	z-index: 1020;
-}
-
-main.fullscreen .section-content-wrapper,
-main.fullscreen .section-content-wrapper-np {
-	border-radius: 0px;
 }
 
 #inline-btn {
@@ -1161,7 +1137,6 @@ blockquote {
 	font-style: italic;
 	border-left: 3px solid #e0e0e0;
 	padding: 1em 0px 1em 1.5em;
-	margin: 0px;
 }
 
 .textcomplete-dropdown {
@@ -1180,14 +1155,6 @@ blockquote {
 }
 
 @media screen and (max-width: 992px) {
-
-	main.region_1-on {
-		left: 0px;
-	}
-
-	#nav-app-link-wrapper {
-		min-width: 0;
-	}
 
 	#nav-app-link-wrapper {
 		margin-right: 0.5rem;
@@ -1251,8 +1218,7 @@ dl.bb-dl > dd > li {
 
 /* Modified original CSS to match input in Redbasic */
 .jothidden .bootstrap-tagsinput {
-	border: 0px solid transparent;
-	margin-bottom: 0px;
+	border: solid transparent;
 	box-shadow: none;
 	display: inline-block;
 	border-radius: var(--bs-border-radius);
@@ -1339,12 +1305,7 @@ dl.bb-dl > dd > li {
     -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
 }
 
-.onoffswitch.checkbox > div > input:checked + label .onoffswitch-inner {
-    margin-left: 0px;
-}
-
 .onoffswitch.checkbox > div > input:checked + label .onoffswitch-switch {
-    right: 0px;
     background-color: var(--bs-link-color);
 }
 
