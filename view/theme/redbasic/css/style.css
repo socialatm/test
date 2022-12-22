@@ -134,12 +134,13 @@ input[type=text], textarea {
 	padding: 10px;
 }
 
-.nav-channel-select { margin-left: 8px; }
+.nav-channel-select { 
+	margin-left: 8px;
+}
 
 /* contextual help */
 .contextual-help-content {
 	display: none;
-
 }
 
 .contextual-help-content-open {
@@ -240,9 +241,6 @@ footer {
 
 #noperm-msg {
 	margin-top: 15px;
-}
-
-.preview-indicator {
 }
 
 #theme-preview {
@@ -348,12 +346,6 @@ footer {
 
 .group-delete-wrapper {
 	float: right;
-}
-
-#pause {
-	position: fixed;
-	bottom: 5px;
-	right: 5px;
 }
 
 #contact-block {
@@ -556,7 +548,6 @@ nav .acpopup {
 .oauthapp a {
 	float: left;
 }
-
 
 .body-attach {
 	margin-top: 10px;
@@ -826,8 +817,6 @@ img.mail-conv-sender-photo {
 
 }
 
-
-
 #profile-jot-text::-webkit-input-placeholder {
 	font-size: 1.2rem;
 }
@@ -852,7 +841,6 @@ img.mail-conv-sender-photo {
 .jot-icons.jot-lock-warn {
 	color: darkorange;
 }
-
 
 /* conversation */
 
@@ -1121,7 +1109,6 @@ img.mail-conv-sender-photo {
 	border-radius: var(--bs-border-radius);
 }
 
-
 .section-content-wrapper {
 	padding: 7px 10px;
 	border-bottom-left-radius: var(--bs-border-radius);
@@ -1282,17 +1269,18 @@ dl.bb-dl > dd > li {
 	height: 2.5rem;
 }
 
-/* Abusing theme-green is less work than makeing a new new one */
+/* Abusing theme-green is less work than makeing a new one */
 .theme-green .back-bar .selected-bar {
 	background-color: #000000;
 	background-image: none !important;
 }
 
-
 /* Turn checkboxes into switches */
 .onoffswitch.checkbox > div {
     position: relative; width: 60px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    -webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
     display:inline-block;
 }
 
@@ -1359,7 +1347,6 @@ dl.bb-dl > dd > li {
     right: 0px;
     background-color: var(--bs-link-color);
 }
-
 
 .onoffswitch.checkbox > div > input:disabled + label .onoffswitch-switch {
 	background-color: red;
