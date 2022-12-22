@@ -1243,6 +1243,10 @@ dl.bb-dl > dd > li {
 
 /* Turn checkboxes into switches */
 
+.form-check-input {
+	transform: scale(1.5);
+}
+
 .onoffswitch.checkbox > div {
     position: relative; width: 60px;
     -webkit-user-select: none;
