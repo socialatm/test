@@ -15,7 +15,7 @@
 	  <main class="mt-5">
       <div class="container-fluid">
         <div class="row gx-2">
-          <div class="col-md-3">
+          <div class="col-md-3 rounded">
             <div id="region_1" class="p-2 border bg-light h-100"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
           <div id="region_2" class="col-md-6">
