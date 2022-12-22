@@ -4,9 +4,9 @@
 		<small class="form-text text-muted">{{$field.3}}</small>
 	</div>
 	{{*test the new one here*}}
-	<div class="mb-3 form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" unchecked>
-        <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+	<div class="mb-3 form-check">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" unchecked>
+        <label class="form-check-label" for="flexSwitchCheckChecked">unChecked switch checkbox input</label>
     </div>
 {{*
 	COMMENTS for this template:
