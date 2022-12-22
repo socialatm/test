@@ -1242,6 +1242,7 @@ dl.bb-dl > dd > li {
 }
 
 /* Turn checkboxes into switches */
+
 .onoffswitch.checkbox > div {
     position: relative; width: 60px;
     -webkit-user-select: none;
@@ -1313,6 +1314,8 @@ dl.bb-dl > dd > li {
 	background-color: red;
 	opacity: 0.3;
 }
+
+/* end Turn checkboxes into switches */
 
 .help-searchlist {
 	list-style-type: none;
