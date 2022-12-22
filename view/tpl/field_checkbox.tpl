@@ -5,7 +5,7 @@
 	</div>
 	{{*test the new one here*}}
 	<div class="mb-3 form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" unchecked>
         <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
     </div>
 {{*
