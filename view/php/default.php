@@ -32,10 +32,10 @@
       </div>
       <!-- end row -->
       <!-- new row -->
-      <div class="row gx-3 bg-light mb-3 footer" >
+      <div class="row gx-3 bg-light mb-3" >
           <div id="region_2" class="col-md-12">
             <div class="p-3 border border-primary rounded bg-white">
-              <?php if(x($page,'content')) echo $page['content']; ?>NEW
+              <?php if(x($page,'content')) echo $page['content']; ?>
 
               <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
 
