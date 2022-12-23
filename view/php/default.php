@@ -8,11 +8,11 @@
     <script>var baseurl="<?php echo z_root() ?>";</script>
     <?php if(x($page,'htmlhead')) echo $page['htmlhead'] ?>
   </head>
-  <body class="py-4 mt-5" <?php if($page['direction']) echo 'dir="rtl"' ?> >
+  <body class="py-4 mt-5 bg-light" <?php if($page['direction']) echo 'dir="rtl"' ?> >
       <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
-	  <div class="container-fluid bg-light">
+	  <div class="container-fluid">
       <div class="row gx-3">
           <div class="col-md-3">
             <div id="region_1" class="p-3 border border-primary h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
