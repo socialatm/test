@@ -13,7 +13,7 @@
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
 	  <div class="container-fluid bg-light">
-      <div class="row gx-2">
+      <div class="row gx-3">
           <div class="col-md-3">
             <div id="region_1" class="p-3 border border-primary h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
