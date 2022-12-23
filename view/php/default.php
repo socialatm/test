@@ -22,7 +22,6 @@
         <div id="region_2" class="col-md-6">
           <div class="p-3 border border-primary rounded bg-white">
             <?php if(x($page,'content')) echo $page['content']; ?>
-            <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
           </div>
         </div>
         <div class="col-md-3">
