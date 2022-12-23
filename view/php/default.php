@@ -12,22 +12,21 @@
       <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
-	  <main class="mt-5">
-      <div class="container-fluid bg-light">
-        <div class="row gx-2">
+	  <div class="container-fluid bg-light">
+      <div class="row gx-2">
           <div class="col-md-3">
-            <div id="region_1" class="p-3 border border-primary bg-light h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
+            <div id="region_1" class="p-3 border border-primary h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
           <div id="region_2" class="col-md-6">
             <div class="p-3 border border-primary h-100 rounded"><?php if(x($page,'content')) echo $page['content']; ?></div>
             <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
           </div>
           <div class="col-md-3">
-            <div id="region_3" class=" p-2 border border-primary bg-light h-100 rounded"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
+            <div id="region_3" class=" p-3 border border-primary h-100 rounded"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
           </div>
-        </div>
       </div>
-      <!-- end container -->
-    </main>
+      <!-- end row -->
+    </div>
+    <!-- end container -->
   </body>
 </html>
