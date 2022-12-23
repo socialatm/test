@@ -33,10 +33,7 @@
       <!-- end row -->
       <!-- new row -->
       <div class="row gx-3 bg-light mb-3" >
-          <div class="col-md-3">
-            <div id="region_1" class="p-3 border border-primary rounded bg-white"><?php if(x($page,'aside')) echo $page['aside']; ?>NEW</div>
-          </div>
-          <div id="region_2" class="col-md-6">
+          <div id="region_2" class="col-md-12">
             <div class="p-3 border border-primary rounded bg-white">
               <?php if(x($page,'content')) echo $page['content']; ?>NEW
 
@@ -45,9 +42,7 @@
             </div>
             
           </div>
-          <div class="col-md-3">
-            <div id="region_3" class=" p-3 border border-primary rounded bg-white"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?>NEW</div>
-          </div>
+          
       </div>
       <!-- end new row -->
     </div>
