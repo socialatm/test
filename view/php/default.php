@@ -13,42 +13,35 @@
       <?php if(x($page,'banner')) echo $page['banner']; ?>
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
 	  <div class="container-fluid">
+
+      <!-- start row -->
       <div class="row gx-3 bg-light mb-3" >
-          <div class="col-md-3">
-            <div id="region_1" class="p-3 border border-primary rounded bg-white"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
+        <div class="col-md-3">
+          <div id="region_1" class="p-3 border border-primary rounded bg-white"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
+        </div>
+        <div id="region_2" class="col-md-6">
+          <div class="p-3 border border-primary rounded bg-white">
+            <?php if(x($page,'content')) echo $page['content']; ?>
+            <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
           </div>
-          <div id="region_2" class="col-md-6">
-            <div class="p-3 border border-primary rounded bg-white">
-              <?php if(x($page,'content')) echo $page['content']; ?>
-
-              <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
-
-            </div>
-            
-          </div>
-          <div class="col-md-3">
-            <div id="region_3" class=" p-3 border border-primary rounded bg-white"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
-          </div>
+        </div>
+        <div class="col-md-3">
+          <div id="region_3" class=" p-3 border border-primary rounded bg-white"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
+        </div>
       </div>
       <!-- end row -->
-      <!-- new row -->
+
+      <!-- start footer -->
       <div class="row gx-3 bg-light mb-3" >
-          <div id="region_4" class="col-md-12">
-            <div class="p-3 border border-primary rounded bg-white">
+        <div id="region_4" class="col-md-12">
+          <div class="p-3 border border-primary rounded bg-white">
             <?php if(x($page,'footer')) echo $page['footer']; ?>
-
-              <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
-
-            </div>
-            
+            <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
           </div>
-          
+        </div>
       </div>
-      <!-- end new row -->
+      <!-- end footer -->
     </div>
     <!-- end container -->
-    <!-- start footer -->
-    
-    <!-- end footer -->
   </body>
 </html>
