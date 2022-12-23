@@ -14,7 +14,7 @@
 	    <header><?php if(x($page,'header')) echo $page['header']; ?></header>
 	  <div class="container-fluid">
       <div class="row gx-3 bg-light" >
-          <div class="col-md-3">
+          <div class="col-md-3 bg-white">
             <div id="region_1" class="p-3 border border-primary rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
           <div id="region_2" class="col-md-6">
