@@ -22,6 +22,7 @@ body {
 	cursor: pointer;
 }
 
+/* wht happens if we do this ?
 h1, .h1 {
 	font-size: 2rem;
 }
@@ -45,6 +46,8 @@ h5, .h5 {
 h6, .h6 {
 	font-size: 0.75rem;
 }
+
+*/
 
 #banner {
 	font-weight: bold;
