@@ -16,7 +16,7 @@
       <div class="container-fluid">
         <div class="row gx-2">
           <div class="col-md-3">
-            <div id="region_1" class="p-2 border-3 border-primary bg-light h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
+            <div id="region_1" class="p-2 border bg-light h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
           <div id="region_2" class="col-md-6">
             <div class="p-2 border bg-light h-100 rounded"><?php if(x($page,'content')) echo $page['content']; ?></div>
