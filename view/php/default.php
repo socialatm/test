@@ -31,6 +31,25 @@
           </div>
       </div>
       <!-- end row -->
+      <!-- new row -->
+      <div class="row gx-3 bg-light mb-3" >
+          <div class="col-md-3">
+            <div id="region_1" class="p-3 border border-primary rounded bg-white"><?php if(x($page,'aside')) echo $page['aside']; ?>NEW</div>
+          </div>
+          <div id="region_2" class="col-md-6">
+            <div class="p-3 border border-primary rounded bg-white">
+              <?php if(x($page,'content')) echo $page['content']; ?>NEW
+
+              <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
+
+            </div>
+            
+          </div>
+          <div class="col-md-3">
+            <div id="region_3" class=" p-3 border border-primary rounded bg-white"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?>NEW</div>
+          </div>
+      </div>
+      <!-- end new row -->
     </div>
     <!-- end container -->
     <!-- start footer -->
