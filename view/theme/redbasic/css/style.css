@@ -22,33 +22,6 @@ body {
 	cursor: pointer;
 }
 
-/* wht happens if we do this ?
-h1, .h1 {
-	font-size: 2rem;
-}
-
-h2, .h2 {
-	font-size: 1.6rem;
-}
-
-h3, .h3 {
-	font-size: 1.2rem;
-}
-
-h4, .h4 {
-	font-size: 1.05rem;
-}
-
-h5, .h5 {
-	font-size: 0.9rem;
-}
-
-h6, .h6 {
-	font-size: 0.75rem;
-}
-
-*/
-
 #banner {
 	font-weight: bold;
 	white-space: nowrap;
