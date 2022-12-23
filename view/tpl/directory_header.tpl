@@ -11,7 +11,7 @@
 				<a class="dropdown-item" href="directory?f=&order=reverse{{$suggest}}">{{$reverse}}</a>
 			</div>
 		</div>
-		<h2>{{$dirlbl}}{{if $search}}:&nbsp;{{$safetxt}}{{/if}}</h2>
+		<h3>{{$dirlbl}}{{if $search}}:&nbsp;{{$safetxt}}{{/if}}</h3>
 	</div>
 	{{foreach $entries as $entry}}
 		{{include file="direntry.tpl"}}
