@@ -18,7 +18,7 @@
 	{{/if}}
 	<li class="nav-item">
 		<a class="nav-link messages-type" href="#" title="{{$strings.notice_messages_title}}" data-messages_type="notification">
-			<i class="fa fa-fw fa-bell-ringing"></i>
+			<i class="fa fa-fw fa-bell-ringing-o"></i>
 		</a>
 	</li>
 </ul>
