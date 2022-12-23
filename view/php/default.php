@@ -29,8 +29,8 @@
     </div>
     <!-- end container -->
     <!-- start footer -->
-    <footer class="footer">
-      <div class="container">
+    <footer class="footer border-top border-primary">
+      <div class="container"> 
         <span class="text-muted">Place sticky footer content here.</span>
       </div>
     </footer>
