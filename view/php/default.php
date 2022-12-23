@@ -18,8 +18,13 @@
             <div id="region_1" class="p-3 border border-primary h-100 rounded"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
           </div>
           <div id="region_2" class="col-md-6">
-            <div class="p-3 border border-primary h-100 rounded"><?php if(x($page,'content')) echo $page['content']; ?></div>
-            <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
+            <div class="p-3 border border-primary h-100 rounded">
+              <?php if(x($page,'content')) echo $page['content']; ?>
+
+              <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
+
+            </div>
+            
           </div>
           <div class="col-md-3">
             <div id="region_3" class=" p-3 border border-primary h-100 rounded"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
