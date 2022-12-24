@@ -8,11 +8,7 @@ require_once('include/menu.php');
 
 function nav($template = 'default') {
 
-	/**
-	 *
-	 * Build page header and site navigation bars
-	 *
-	 */
+	/* Build page header and site navigation bars */
 
 	App::$page['nav'] = App::$page['nav'] ?? '';
 	App::$page['htmlhead'] = App::$page['htmlhead'] ?? '';
@@ -309,9 +305,7 @@ function nav($template = 'default') {
 		head_add_css('navbar_' . $template . '.css');
 	}
 
-	if (!$tpl) {
-		$tpl = get_markup_template('navbar_default.tpl');
-	}
+	if (!$tpl) { $tpl = get_markup_template('navbar_default.tpl'); }
 
 	App::$page['nav'] .= replace_macros($tpl, [
 		'$baseurl'            => z_root(),
