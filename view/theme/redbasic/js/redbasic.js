@@ -4,36 +4,6 @@
 
 $(document).ready(function() {
 
-	// CSS3 calc() fallback (for unsupported browsers)
-	$('body').append('<div id="css3-calc" style="width: 10px; width: calc(10px + 10px); display: none;"></div>');
-	if( $('#css3-calc').width() == 10) {
-		$(window).resize(function() {
-			if($(window).width() < 992) {
-				$('main').css('width', $(window).width() + $('aside').outerWidth() );
-			} else {
-				$('main').css('width', '100%');
-			}
-		});
-	}
-	$('#css3-calc').remove(); // Remove the test element
-
-	if (document.querySelector('#region_1')) {
-		stickyScroll('.aside_spacer_left', '.aside_spacer_top_left', '.content', parseFloat(window.getComputedStyle(document.querySelector('#region_1')).getPropertyValue('padding-top')), 0);
-	}
-
-	if (document.querySelector('#region_3')) {
-		stickyScroll('.aside_spacer_right', '.aside_spacer_top_right', '.content', parseFloat(window.getComputedStyle(document.querySelector('#region_3')).getPropertyValue('padding-top')), 20);
-	}
-
-	$('#expand-aside').on('click', function() {
-		if($('main').hasClass('region_1-on')){
-			toggleAside('left');
-		}
-		else {
-			toggleAside('right');
-		}
-	});
-
 	$('.usermenu').click(function() {
 		if($('#navbar-collapse-1, #navbar-collapse-2').hasClass('show')){
 			$('#navbar-collapse-1, #navbar-collapse-2').removeClass('show');
@@ -187,21 +157,5 @@ function makeFullScreen(full) {
 		$('main').removeClass('fullscreen');
 		$('header, nav, aside, #fullscreen-btn').show();
 		$('#inline-btn').hide();
-	}
-}
-
-function toggleAside(swipe) {
-
-	if ($('main').hasClass('region_1-on') && swipe === 'left') {
-		$('#expand-aside-icon').addClass('fa-arrow-circle-right').removeClass('fa-arrow-circle-left');
-		$('html, body').css({ 'position': '', left: '' });
-		$('main').removeClass('region_1-on');
-		$('#overlay').remove();
-	}
-	if (!$('main').hasClass('region_1-on') && swipe === 'right') {
-		$('#expand-aside-icon').removeClass('fa-arrow-circle-right').addClass('fa-arrow-circle-left');
-		$('html, body').css({ 'position': 'sticky',  'left': '0px'});
-		$('main').addClass('region_1-on');
-		$('<div id="overlay"></div>').appendTo('body').one('click', function() { toggleAside('left'); });
 	}
 }

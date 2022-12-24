@@ -77,9 +77,7 @@
 			<i class="fa fa-question-circle"></i>
 		</button>
 		{{/if}}
-		<button id="expand-aside" type="button" class="d-lg-none navbar-toggler border-0" data-bs-toggle="offcanvas" data-bs-target="#region_1">
-			<i class="fa fa-arrow-circle-right" id="expand-aside-icon"></i>
-		</button>
+		
 		{{if $localuser || $nav.pubs}}
 		<button id="notifications-btn-1" type="button" class="navbar-toggler border-0 notifications-btn">
 			<i id="notifications-btn-icon-1" class="fa fa-exclamation-circle notifications-btn-icon"></i>
