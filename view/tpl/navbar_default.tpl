@@ -169,7 +169,7 @@
 			</ul>
 		</div>
 		{{if $nav.help.6}}
-		<div id="contextual-help-content" class="contextual-help-content">
+		<div id="contextual-help-content-orig" class="contextual-help-content-orig">
 			{{$nav.help.5}}
 			<div class="float-end">
 				<a class="btn btn-primary btn-sm" target="hubzilla-help" href="{{$nav.help.0}}" title="{{$nav.help.3}}"><i class="fa fa-question"></i>&nbsp;{{$fulldocs}}</a>
@@ -179,6 +179,25 @@
 		{{/if}}
 	</div>
 </nav>
+
+<!-- try this -->
+
+{{if $nav.help.6}}
+	<div id="contextual-help-content" class="">
+		{{$nav.help.5}}
+		{{*
+		<div class="float-end">
+			<a class="btn btn-primary btn-sm" target="hubzilla-help" href="{{$nav.help.0}}" title="{{$nav.help.3}}"><i class="fa fa-question"></i>&nbsp;{{$fulldocs}}</a>
+			<a class="contextual-help-tool" href="#" onclick="contextualHelp(); return false;"><i class="fa fa-times"></i></a>
+		</div>
+		*}}
+	</div>
+	{{/if}}
+
+
+
+<!-- end try this -->
+
 <div class="offcanvas offcanvas-end" tabindex="-1" id="app-bin" aria-labelledby="app-bin-label">
 	<div class="offcanvas-header">
 		{{if $nav.login && !$userinfo}}
