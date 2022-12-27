@@ -28,7 +28,6 @@ function nav($template = 'default') {
 				intval(get_account_id())
 			);
 		}
-
 		$sitelocation = (($is_owner) ? '' : App::$profile['reddress']);
 	}
 	else {
@@ -43,17 +42,6 @@ function nav($template = 'default') {
 	if (isset(App::$profile['channel_address'])) {
 		$channel_apps[] = channel_apps($is_owner, App::$profile['channel_address']);
 	}
-
-	/**
-	 * Provide a banner/logo/whatever
-	 */
-
-	$banner = get_config('system', 'banner');
-
-	if ($banner === false)
-		$banner = get_config('system', 'sitename');
-
-	call_hooks('get_banner', $banner);
 
 	App::$page['header'] = App::$page['header'] ?? '';
 	App::$page['header'] .= replace_macros(get_markup_template('hdr.tpl'), [

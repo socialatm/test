@@ -69,11 +69,7 @@
 			{{/if}} <!-- end the setting link with the cog icon -->
 			
 		</div>
-
-		{{else}} <!-- I think this is the banner part that we want to make go away -->
-			<div id="banner" class="navbar-text d-lg-none">{{$banner}}</div>
 		{{/if}}
-
 
 		<div class="navbar-toggler-right">
 
@@ -120,8 +116,6 @@
 				</li>
 				{{/if}}
 			</ul>
-
-			<div id="banner" class="navbar-text">{{$banner}}</div> <!-- I think this is the banner part that we want to make go away -->
 
 			<ul id="nav-right" class="navbar-nav">
 				<li class="nav-item collapse clearfix" id="nav-search">
