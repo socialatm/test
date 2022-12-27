@@ -53,9 +53,11 @@
 <!-- play here -->
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button type="button" class="nav-link btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
 </button>
+
+<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Launch demo modal</a>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
