@@ -41,7 +41,7 @@ class Site {
 
 		$register_policy	=	((x($_POST,'register_policy'))	? intval(trim($_POST['register_policy']))	:  0);
 		$register_wo_email	=	((x($_POST,'register_wo_email'))	? intval(trim($_POST['register_wo_email']))	:  0);
-		$minimum_age           = ((x($_POST,'minimum_age'))          ? intval(trim($_POST['minimum_age']))    : 13);
+		$minimum_age           = ((x($_POST,'minimum_age'))          ? intval(trim($_POST['minimum_age']))    : 18);
 		$access_policy	=	((x($_POST,'access_policy'))	? intval(trim($_POST['access_policy']))	:  0);
 		$reg_autochannel	= ((x($_POST,'auto_channel_create'))		? True	: False);
 		$invitation_only	= ((x($_POST,'invitation_only'))		? True	: False);
