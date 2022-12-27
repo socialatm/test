@@ -66,9 +66,7 @@ function nav($template = 'default') {
 	if (can_view_public_stream())
 		$nav['pubs'] = true;
 
-	/**
-	 * Display login or logout
-	 */
+	/* Display login or logout */
 
 	$nav['usermenu']  = [];
 	$nav['loginmenu'] = [];

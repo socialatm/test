@@ -23,7 +23,6 @@ function menu_fetch($name,$uid,$observer_xchan) {
 		);
 		return array('menu' => $r[0], 'items' => $x );
 	}
-
 	return null;
 }
 
@@ -68,11 +67,8 @@ function menu_element($channel,$menu) {
 			$arr['items'][] = $entry;
 		}
 	}
-
 	return $arr;
 }
-
-
 
 function menu_render($menu, $class='', $edit = false, $var = array()) {
 
@@ -122,11 +118,8 @@ function menu_render($menu, $class='', $edit = false, $var = array()) {
 		'$items' => $menu['items'],
 		'$wrap' => $wrap
 	));
-
 	return $ret;
 }
-
-
 
 function menu_fetch_id($menu_id,$channel_id) {
 

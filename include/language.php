@@ -292,6 +292,7 @@ function tf() {
  * @param int $n
  * @return boolean
  */
+
 function string_plural_select_default($n) {
 	return ($n != 1);
 }
@@ -310,6 +311,7 @@ function string_plural_select_default($n) {
  * @param string $s A string to examine
  * @return string Language code in 2-letter ISO 639-1 (en, de, fr) format
  */
+
 function detect_language($s) {
 
 	if (!$s) {
@@ -369,6 +371,7 @@ function detect_language($s) {
  * @param string $l (optional) In which language to return the name
  * @return string with the language name, or $s if unrecognized
  */
+
 function get_language_name($s, $l = null) {
 	// get() expects the second part to be in upper case
 	if (strpos($s, '-') !== false) $s = substr($s, 0, 2) . strtoupper(substr($s, 2));
@@ -390,11 +393,8 @@ function get_language_name($s, $l = null) {
 			return $s; // Give up
 		}
 	}
-
 	return $language->getName();
 }
-
-
 
 function language_list() {
 
@@ -445,9 +445,7 @@ function lang_selector() {
 	$o = replace_macros($tpl, array(
 		'$title' => t('Select an alternate language'),
 		'$langs' => array($lang_options, $selected),
-
 	));
-
 	return $o;
 }
 

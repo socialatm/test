@@ -48,10 +48,7 @@ class Tokens {
 		$o .= replace_macros($tpl, [
 			'$title' => t('Guest access'),
 			'$menu_items' => $menu_items,
-
 		]);
-
 		return $o;
-
 	}
 }

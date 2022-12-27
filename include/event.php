@@ -141,7 +141,6 @@ function format_event_obj($jobject) {
 			'$event_tz'      => ['label' => t('Timezone'), 'value' => (($tz === date_default_timezone_get()) ? '' : $tz)]
 		));
 
-
 		$description = [];
 
 		if (strpos($object['source']['content'], '[/event-description]') !== false) {
@@ -154,8 +153,8 @@ function format_event_obj($jobject) {
 			'$location'   => ((array_path_exists('location/name', $object)) ? zidify_links(smilies(bbcode($object['location']['name']))) : EMPTY_STR)
 		));
 	}
-
     return $event;
+	
 /*
 	$event = [];
 	$object = json_decode($jobject,true);
