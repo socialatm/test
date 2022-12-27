@@ -7,7 +7,6 @@
 
 use Zotlabs\Lib\Cache;
 
-
 function file_tag_encode($s) {
 	return str_replace(array('<','>','[',']'),array('%3c','%3e','%5b','%5d'),$s);
 }

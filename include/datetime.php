@@ -4,7 +4,6 @@
  * @brief Some functions for date and time related tasks.
  */
 
-
 /**
  * @brief Two-level sort for timezones.
  *
@@ -139,7 +138,6 @@ function dob($dob) {
 	$o = replace_macros(get_markup_template("field_input.tpl"), [
 		'$field' => [ 'dob', t('Birthday'), $value, ((intval($value)) ? t('Age: ') . age($value,App::$user['timezone'],App::$user['timezone']) : ''), '', 'placeholder="' . t('YYYY-MM-DD or MM-DD') .'"' ]
 	]);
-
 
 	return $o;
 }

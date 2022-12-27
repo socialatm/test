@@ -73,7 +73,6 @@ class DBA {
 
 		return self::$dba;
 	}
-
 }
 
 /**
@@ -83,6 +82,7 @@ class DBA {
  * dba_mysql, dba_mysqli or dba_postgres, but we moved to PDO and the only
  * implemented driver is dba_pdo.
  */
+
 abstract class dba_driver {
 	// legacy behavior
 
@@ -190,6 +190,7 @@ abstract class dba_driver {
 	 *
 	 * @param int $dbg 0 to disable debugging
 	 */
+	
 	function dbg($dbg) {
 		$this->debug = $dbg;
 	}

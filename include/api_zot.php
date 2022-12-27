@@ -62,7 +62,6 @@
 		json_return_and_die($channel);
 	}
 
-
 	function api_zot_version($type) {
 
 		if($type === 'xml') {
@@ -76,8 +75,6 @@
 			killme();
 		}
 	}
-
-
 
 	/*
 	 * Red basic channel export
@@ -125,7 +122,6 @@
 		$channel = channelx_by_n(api_user());
 		if(! $channel)
 			return false;
-
 
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			// json_return_and_die(post_activity_item($_REQUEST));
@@ -175,7 +171,6 @@
 
 	}
 
-
 	function api_channel_stream($type) {
 		if(api_user() === false) {
 			logger('api_channel_stream: no user');
@@ -223,7 +218,6 @@
 		json_return_and_die($x);
 	}
 
-
 	function api_file_meta($type) {
 		if(api_user() === false)
 			return false;
@@ -239,8 +233,6 @@
 		}
 		killme();
 	}
-
-
 
 	function api_file_data($type) {
 		if(api_user() === false)
@@ -282,7 +274,6 @@
 		}
 		killme();
 	}
-
 
 	function api_file_export($type) {
 		if(api_user() === false)
@@ -363,8 +354,6 @@
 		killme();
 	}
 
-
-
 	function api_albums($type) {
 		if(api_user() === false)
 			return false;
@@ -412,7 +401,6 @@
 					}
 				}
 			}
-
 			json_return_and_die($ret);
 		}
 		killme();
@@ -444,7 +432,6 @@
 			);
 			json_return_and_die($x);
 		}
-
 	}
 
 	function api_group($type) {
@@ -456,7 +443,6 @@
 		);
 		json_return_and_die($r);
 	}
-
 
 	function api_red_xchan($type) {
 		if(api_user() === false)
@@ -534,9 +520,7 @@
 				}
 			}
 		}
-
 		json_return_and_die($x);
-
 	}
 
 	function zot_item_update($type) {
@@ -548,7 +532,6 @@
 
 		logger('api_red_item_store: REQUEST ' . print_r($_REQUEST,true));
 		logger('api_red_item_store: FILES ' . print_r($_FILES,true));
-
 
 		// set this so that the item_post() function is quiet and doesn't redirect or emit json
 
@@ -568,8 +551,6 @@
 		$x = $mod->post();
 		json_return_and_die($x);
 	}
-
-
 
 	function red_item($type) {
 
@@ -605,6 +586,3 @@
 
 		json_return_and_die($ret);
 	}
-
-
-

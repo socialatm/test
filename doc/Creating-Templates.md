@@ -1,9 +1,7 @@
 Creating Page Templates
 =======================
 
-
 A page template for use with Comanche requires two files - a PHP template and a CSS file. Page templates will need to be installed by the system administrator of your site. 
-
 
 First choose a name. Here we'll create a template and call it "demo".
 
@@ -39,7 +37,6 @@ Here's is the corresponding CSS file
 view/php/default.css
 ====================
 
-
 	aside#region_1 {
 		display: block;
 		width: 210px;
@@ -52,7 +49,6 @@ view/php/default.css
 	aside input[type='text'] {
  		width: 174px;
 	}
-
 
 	section {
 		position: absolute;

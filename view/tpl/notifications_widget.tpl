@@ -48,7 +48,6 @@
 						sse_bs_init();
 					}
 				}, false);
-
 			}
 			else {
 				var myWorker = new SharedWorker('/view/js/sse_worker.js', localUser);
@@ -62,7 +61,6 @@
 				myWorker.onerror = function(e) {
 					myWorker.port.close();
 				}
-
 				myWorker.port.start();
 			}
 		}
@@ -345,8 +343,6 @@
 		if(sse_type  && sse_offset != -1 && $('#nav-' + sse_type + '-menu').children(':not(.tt-filter-active)').length < 15) {
 			sse_bs_notifications(sse_type, false, true);
 		}
-
-
 	}
 
 	function sse_handleNotificationsItems(notifyType, data, replace, followup) {
@@ -431,7 +427,6 @@
 		$('#nav-' + type + '-menu .notification[data-b64mid=\'' + mid + '\']').fadeOut(function() {
 			this.remove();
 		});
-
 	}
 
 	function sse_setNotificationsStatus(data) {

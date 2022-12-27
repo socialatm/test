@@ -31,7 +31,6 @@ class Manage extends \Zotlabs\Web\Controller {
 			goaway(z_root() . '/manage');
 		}
 
-
 		if($change_channel) {
 
 			$r = change_channel($change_channel);

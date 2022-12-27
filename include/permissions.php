@@ -4,12 +4,8 @@ require_once('include/security.php');
 
 /**
  * @file include/permissions.php
- *
  * This file conntains functions to check and work with permissions.
- *
  */
-
-
 
 /**
  * get_all_perms($uid,$observer_xchan)
@@ -23,6 +19,7 @@ require_once('include/security.php');
  *
  * @returns array of all permissions, key is permission name, value is 1 or 0
  */
+
 function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_ignored = true) {
 
 	$api = App::get_oauth_key();
@@ -95,7 +92,6 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
 			// This flag is only visible internally.
 
 			$blocked_anon_perms = \Zotlabs\Access\Permissions::BlockedAnonPerms();
-
 
 			if(($x) && ($default_ignored) && in_array($perm_name,$blocked_anon_perms) && intval($x[0]['abook_ignored'])) {
 				$ret[$perm_name] = 0;
@@ -242,6 +238,7 @@ function get_all_perms($uid, $observer_xchan, $check_siteblock = true, $default_
  *     if false bypass check for "Block Public" at the site level
  * @return bool true if permission is allowed for observer on channel
  */
+
 function perm_is_allowed($uid, $observer_xchan, $permission, $check_siteblock = true) {
 
 	$api = App::get_oauth_key();

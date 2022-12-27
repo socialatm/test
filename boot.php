@@ -1405,18 +1405,16 @@ function x($s, $k = null) {
 
 /**
  * @brief Called from db initialisation if db is dead.
- *
  * @ref include/system_unavailable.php will handle everything further.
  */
+
 function system_unavailable() {
 	include('include/system_unavailable.php');
 	system_down();
 	killme();
 }
 
-
 function clean_urls() {
-
 	//	if(App::$config['system']['clean_urls'])
 	return true;
 	//	return false;
@@ -1426,7 +1424,6 @@ function z_path() {
 	$base = z_root();
 	if (!clean_urls())
 		$base .= '/?q=';
-
 	return $base;
 }
 
@@ -1451,7 +1448,6 @@ function z_root() {
 function absurl($path) {
 	if (strpos($path, '/') === 0)
 		return z_path() . $path;
-
 	return $path;
 }
 
@@ -1462,13 +1458,13 @@ function os_mkdir($path, $mode = 0777, $recursive = false) {
 	return $result;
 }
 
-
 /**
  * @brief Recursively delete a directory.
  *
  * @param string $path
  * @return boolean
  */
+
 function rrmdir($path) {
 	if (is_dir($path) === true) {
 		$dir_entries = scandir($path);
@@ -1483,10 +1479,8 @@ function rrmdir($path) {
 	elseif (is_file($path) === true) {
 		return unlink($path);
 	}
-
 	return false;
 }
-
 
 /**
  * @brief Function to check if request was an AJAX (xmlhttprequest) request.
@@ -1497,12 +1491,12 @@ function is_ajax() {
 	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 }
 
-
 /**
  * Primarily involved with database upgrade, but also sets the
  * base url for use in cmdline programs which don't have
  * $_SERVER variables, and synchronising the state of installed plugins.
  */
+
 function check_config() {
 
 	$saved = get_config('system', 'urlverify');
@@ -1537,6 +1531,7 @@ function check_config() {
 	// Make sure each site has a system channel.  This is now created on install
 	// so we just need to keep this around a couple of weeks until the hubs that
 	// already exist have one
+
 	$syschan_exists = get_sys_channel();
 	if (!$syschan_exists)
 		create_sys_channel();
@@ -1550,9 +1545,7 @@ function check_config() {
 	check_for_new_perms();
 
 	check_cron_broken();
-
 }
-
 
 function fix_system_urls($oldurl, $newurl) {
 
@@ -1722,7 +1715,6 @@ function login($register = false, $form_id = 'main_login', $hiddens = false, $lo
 	// If system.register_link is set to the word 'none', no registration link will be shown on
 	// your site.
 
-
 	$register_policy = get_config('system', 'register_policy');
 
 	$reglink = get_config('system', 'register_link', z_root() . '/' . ((intval($register_policy) === REGISTER_CLOSED) ? 'pubsites' : 'register'));
@@ -1780,7 +1772,6 @@ function login($register = false, $form_id = 'main_login', $hiddens = false, $lo
  * @brief Used to end the current process, after saving session state.
  */
 function killme() {
-
 	register_shutdown_function('shutdown');
 	exit;
 }
@@ -1827,6 +1818,7 @@ function get_account_id() {
  * @return int|bool channel_id or false
  * @since 2.1
  */
+
 function local_channel() {
 	if (session_id()
 		&& array_key_exists('authenticated', $_SESSION) && $_SESSION['authenticated']
@@ -1848,6 +1840,7 @@ function local_channel() {
  * @return string|bool visitor_id or false
  * @since 2.1
  */
+
 function remote_channel() {
 	if (session_id()
 		&& array_key_exists('authenticated', $_SESSION) && $_SESSION['authenticated']
@@ -1856,7 +1849,6 @@ function remote_channel() {
 
 	return false;
 }
-
 
 function can_view_public_stream() {
 
@@ -1876,11 +1868,8 @@ function can_view_public_stream() {
 	if (!($site_firehose || $net_firehose)) {
 		return false;
 	}
-
 	return true;
-
 }
-
 
 /**
  * @brief Show an error or alert text on next page load.
@@ -1956,6 +1945,7 @@ function notice($s) {
  *
  * @param string $s Text to display
  */
+
 function info($s) {
 
 	/*
@@ -2003,7 +1993,6 @@ function info($s) {
 		$x['info']['notifications'][] = $s;
 		set_xconfig($hash, 'sse', 'notifications', $x);
 	}
-
 }
 
 /**
@@ -2029,6 +2018,7 @@ function get_max_import_size() {
  *
  * $cmd and string args are surrounded with ""
  */
+
 function proc_run() {
 
 	$args = func_get_args();
@@ -2042,12 +2032,14 @@ function proc_run() {
 		'args'    => $args,
 		'run_cmd' => true
 	];
+
 	/**
 	 * @hooks proc_run
 	 *   Called when invoking PHP sub processes.
 	 *   * \e array \b args
 	 *   * \e boolean \b run_cmd
 	 */
+
 	call_hooks('proc_run', $arr);
 
 	if (!$arr['run_cmd'])
@@ -2098,6 +2090,7 @@ function proc_run() {
  * has been accomplished, but is not officially supported. Good luck.
  *
  */
+
 function is_windows() {
 	return ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? true : false);
 }
@@ -2109,6 +2102,7 @@ function is_windows() {
  *
  * @return bool true if user is an admin
  */
+
 function is_site_admin() {
 
 	if (!session_id())
@@ -2130,6 +2124,7 @@ function is_site_admin() {
  *
  * @return bool true if user is a developer
  */
+
 function is_developer() {
 
 	if (!session_id())
@@ -2142,7 +2137,6 @@ function is_developer() {
 
 	return false;
 }
-
 
 function load_contact_links($uid) {
 
@@ -2167,7 +2161,6 @@ function load_contact_links($uid) {
 	App::$contacts = $ret;
 }
 
-
 /**
  * @brief Returns querystring as string from a mapped array.
  *
@@ -2176,6 +2169,7 @@ function load_contact_links($uid) {
  *
  * @return string
  */
+
 function build_querystring($params, $name = null) {
 	$ret = '';
 	foreach ($params as $key => $val) {
@@ -2197,13 +2191,13 @@ function build_querystring($params, $name = null) {
 			}
 		}
 	}
-
 	return $ret;
 }
 
 /**
  * @brief Much better way of dealing with c-style args.
  */
+
 function argc() {
 	return App::$argc;
 }
@@ -2221,11 +2215,10 @@ function dba_timer() {
 
 /**
  * @brief Returns xchan_hash from the observer.
- *
  * Observer can be a local or remote channel.
- *
  * @return string xchan_hash from observer, otherwise empty string if no observer
  */
+
 function get_observer_hash() {
 	$observer = App::get_observer();
 	if (is_array($observer))
@@ -2253,7 +2246,6 @@ function curPageURL() {
 	else {
 		$pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 	}
-
 	return $pageURL;
 }
 
@@ -2263,11 +2255,11 @@ function curPageURL() {
  * If no $navname provided load default page['nav']
  *
  * @param string $navname
- *
  * @return mixed
  * @todo not fully implemented yet
  *
  */
+
 function get_custom_nav($navname) {
 	if (!$navname)
 		return App::$page['nav'];
@@ -2281,22 +2273,22 @@ function get_custom_nav($navname) {
  * and parse it with Comanche.
  *
  */
+
 function load_pdl() {
 
 	App::$comanche = new Zotlabs\Render\Comanche();
 
 	if (!count(App::$layout)) {
 
-		$arr = [
-			'module' => App::$module,
-			'layout' => ''
-		];
+		$arr = [ 'module' => App::$module, 'layout' => '' ];
+
 		/**
 		 * @hooks load_pdl
 		 *   Called when we load a PDL file or description.
 		 *   * \e string \b module
 		 *   * \e string \b layout
 		 */
+
 		call_hooks('load_pdl', $arr);
 		$layout = $arr['layout'];
 
@@ -2340,6 +2332,7 @@ function exec_pdl() {
  * Build the page - now that we have all the components
  *
  */
+
 function construct_page() {
 
 	exec_pdl();
@@ -2420,9 +2413,9 @@ function construct_page() {
 		 *   * \e string \b module
 		 *   * \e string \b layout
 		 */
+
 		call_hooks('construct_page', $arr);
 		App::$layout = $arr['layout'];
-
 
 		foreach (App::$layout as $k => $v) {
 			if ((strpos($k, 'region_') === 0) && strlen($v)) {
@@ -2440,7 +2433,6 @@ function construct_page() {
 				if (strpos($v, '$content') !== false) {
 					$v = str_replace('$content', App::$page['content'], $v);
 				}
-
 				App::$page[substr($k, 7)] = $v;
 			}
 		}
@@ -2529,10 +2521,9 @@ function appdirpath() {
  *
  * @param string $icon
  */
+
 function head_set_icon($icon) {
-
 	App::$data['pageicon'] = $icon;
-
 }
 
 /**
@@ -2566,6 +2557,7 @@ function get_directory_realm() {
  *
  * @return string
  */
+
 function get_directory_primary() {
 
 	$dirmode = intval(get_config('system', 'directory_mode'));
@@ -2573,13 +2565,10 @@ function get_directory_primary() {
 	if ($dirmode == DIRECTORY_MODE_STANDALONE || $dirmode == DIRECTORY_MODE_PRIMARY) {
 		return z_root();
 	}
-
 	if ($x = get_config('system', 'directory_primary'))
 		return $x;
-
 	return DIRECTORY_FALLBACK_MASTER;
 }
-
 
 /**
  * @brief Return relative date of last completed poller execution.
@@ -2610,30 +2599,28 @@ function z_get_temp_dir() {
 	return $temp_dir;
 }
 
-
 /**
  * @brief Check if server certificate is valid.
- *
  * Notify admin if not.
  */
+
 function z_check_cert() {
 	if (strpos(z_root(), 'https://') !== false) {
 		$x = z_fetch_url(z_root() . '/siteinfo.json');
 		if (!$x['success']) {
 			$recurse = 0;
-			$y       = z_fetch_url(z_root() . '/siteinfo.json', false, $recurse, ['novalidate' => true]);
+			$y = z_fetch_url(z_root() . '/siteinfo.json', false, $recurse, ['novalidate' => true]);
 			if ($y['success'])
 				cert_bad_email();
 		}
 	}
 }
 
-
 /**
  * @brief Send email to admin if server has an invalid certificate.
- *
  * If a hub is available over https it must have a publicly valid certificate.
  */
+
 function cert_bad_email() {
 	return z_mail(
 		[
@@ -2648,9 +2635,7 @@ function cert_bad_email() {
 			)
 		]
 	);
-
 }
-
 
 function check_for_new_perms() {
 
@@ -2718,16 +2703,15 @@ function check_for_new_perms() {
 			}
 		}
 	}
-
 	// We should probably call perms_refresh here, but this should get pushed in 24 hours and there is no urgency
 	if ($found_new_perm)
 		set_config('system', 'perms', $pcurrent);
 }
 
-
 /**
  * @brief Send warnings every 3-5 days if cron is not running.
  */
+
 function check_cron_broken() {
 
 	$d = get_config('system', 'lastcron');

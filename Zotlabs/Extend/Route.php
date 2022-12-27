@@ -2,7 +2,6 @@
 
 namespace Zotlabs\Extend;
 
-
 class Route {
 
 	static function register($file,$modname) {
@@ -45,4 +44,3 @@ class Route {
 		return set_config('system','routes',$r);
 	}
 }
-

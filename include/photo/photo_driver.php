@@ -16,6 +16,7 @@ use Zotlabs\Photo\PhotoImagick;
  * @return null|PhotoDriver
  *   NULL if unsupported image type or failure, otherwise photo driver object
  */
+
 function photo_factory($data, $type = null) {
 	$ph = null;
 	$m = null;
@@ -50,14 +51,11 @@ function photo_factory($data, $type = null) {
 			// we aren't using imagick can find it
 		}
 	}
-
 	if(! $ph) {
 		$ph = new PhotoGd($data, $type);
 	}
-
 	return $ph;
 }
-
 
 /**
  * @brief Guess image mimetype from filename or from Content-Type header.
@@ -209,6 +207,7 @@ function delete_thing_photo($url, $ob_hash) {
  * * \e boolean \b 4 => TRUE if fetch failure
  * * \e string \b 5 => modification date
  */
+
 function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 
 	$modified = '';
@@ -387,7 +386,6 @@ function import_xchan_photo($photo, $xchan, $thing = false, $force = false) {
 	return([ $photo, $thumb, $micro, $type, $photo_failure, $modified ]);
 }
 
-
 /**
   * @brief Import channel photo from a URL.
  *
@@ -408,7 +406,6 @@ function import_channel_photo_from_url($photo, $aid, $uid) {
 			import_channel_photo($img_str, $type, $aid, $uid);
 		}
 	}
-
 	return $type;
 }
 
@@ -421,6 +418,7 @@ function import_channel_photo_from_url($photo, $aid, $uid) {
  * @param int $uid channel_id
  * @return boolean|string false on failure, otherwise resource_id of photo
  */
+
 function import_channel_photo($photo, $type, $aid, $uid) {
 
 	logger('Importing channel photo for ' . $uid, LOGGER_DEBUG);

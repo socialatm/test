@@ -44,8 +44,6 @@ function xchan_store_lowlevel($arr) {
 	return create_table_from_array('xchan',$store);
 }
 
-
-
 function xchan_store($arr) {
 
 	$update_photo = false;
@@ -140,10 +138,8 @@ function xchan_store($arr) {
 			dbesc($arr['hash'])
 		);
 	}
-
 	return true;
 }
-
 
 function xchan_fetch($arr) {
 
@@ -178,7 +174,6 @@ function xchan_fetch($arr) {
 	return $ret;
 }
 
-
 function xchan_keychange_table($table,$column,$oldxchan,$newxchan) {
 	$r = q("update $table set $column = '%s' where $column = '%s'",
 		dbesc($newxchan['xchan_hash']),
@@ -191,7 +186,6 @@ function xchan_keychange_acl($table,$column,$oldxchan,$newxchan) {
 
 	$allow = (($table === 'channel') ? 'channel_allow_cid' : 'allow_cid');
 	$deny  = (($table === 'channel') ? 'channel_deny_cid'  : 'deny_cid');
-
 
 	$r = q("select $column, $allow, $deny from $table where ($allow like '%s' or $deny like '%s') ",
 		dbesc('<' . $oldxchan['xchan_hash'] . '>'),
@@ -211,7 +205,6 @@ function xchan_keychange_acl($table,$column,$oldxchan,$newxchan) {
 	}
 	return $z;
 }
-
 
 function xchan_change_key($oldx,$newx,$data) {
 
@@ -249,7 +242,6 @@ function xchan_change_key($oldx,$newx,$data) {
 		'obj'       => 'obj_id',
 		'photo'     => 'id'
 	];
-
 
 	foreach($tables as $k => $v) {
 		xchan_keychange_table($k,$v,$oldx,$newx);

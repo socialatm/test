@@ -2,7 +2,6 @@
 
 namespace Zotlabs\Extend;
 
-
 class Widget {
 
 	static function register($file,$widget) {

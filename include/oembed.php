@@ -2,7 +2,6 @@
 
 use Zotlabs\Lib\Cache;
 
-
 function oembed_replacecb($matches){
 
 	$embedurl=$matches[1];
@@ -16,7 +15,6 @@ function oembed_replacecb($matches){
 	$s = oembed_format_object($j);
 	return $s;
 }
-
 
 function oembed_action($embedurl) {
 
@@ -112,8 +110,6 @@ function oembed_process($url) {
 		return '[embed]' . $url . '[/embed]';
 	return false;
 }
-
-
 
 function oembed_fetch_url($embedurl){
 
@@ -256,7 +252,6 @@ function oembed_fetch_url($embedurl){
 
 		if(! get_config('system','oembed_cache_disable'))
 			Cache::set('[' . App::$videowidth . '] ' . $furl, $txt);
-
 	}
 
 	if(! $j) {
@@ -301,7 +296,6 @@ function oembed_fetch_url($embedurl){
 					logger('oembed html truncated: ' . $ratio, LOGGER_DEBUG, LOG_INFO);
 				}
 			}
-
 		}
 	}
 
@@ -311,8 +305,6 @@ function oembed_fetch_url($embedurl){
 	// logger('fetch return: ' . print_r($j,true));
 
 	return $j;
-
-
 }
 
 function oembed_format_object($j){
@@ -414,10 +406,7 @@ function oembed_iframe($src,$width,$height) {
 
 	return '<iframe ' . $scroll . 'height="' . $height . '" width="' . $width . '" src="' . $s . '" allowfullscreen frameborder="no" >'
 		. t('Embedded content') . '</iframe>';
-
 }
-
-
 
 function oembed_bbcode2html($text){
 	$stopoembed = get_config("system","no_oembed");
@@ -426,7 +415,6 @@ function oembed_bbcode2html($text){
 	}
 	return preg_replace_callback("/\[embed\](.+?)\[\/embed\]/is", 'oembed_replacecb' ,$text);
 }
-
 
 function oe_build_xpath($attr, $value){
 	// http://westhoffswelt.de/blog/0036_xpath_to_select_html_by_class.html
@@ -476,6 +464,3 @@ function oembed_html2bbcode($text) {
 		return $text;
 	}
 }
-
-
-

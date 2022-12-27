@@ -23,7 +23,6 @@ function is_matrix_url($url) {
 		}
 		$remembered[$m['host']] = false;
 	}
-
 	return false;
 }
 
@@ -58,7 +57,6 @@ function zid($s, $address = '') {
 	$mine_parsed = parse_url($mine);
 	$s_parsed = parse_url($s);
 
-
 	$url_match = false;
 	if(isset($mine_parsed['host']) && isset($s_parsed['host']) && $mine_parsed['host'] === $s_parsed['host'])
 		$url_match = true;
@@ -90,7 +88,6 @@ function zid($s, $address = '') {
 	return $arr['result'];
 }
 
-
 function strip_query_param($s, $param) {
 	return drop_query_params($s, [$param]);
 	//return preg_replace('/[\?&]' . $param . '=(.*?)(&|$)/ism','$2',$s);
@@ -115,7 +112,6 @@ function strip_escaped_zids($s) {
 	$x = preg_replace('/&amp\;zid=(.*?)(&|$)/ism','$2',$s);
 	return strip_query_param($x,'f');
 }
-
 
 function clean_query_string($s = '') {
 
@@ -181,6 +177,7 @@ function drop_query_params($s, $p) {
  * @param array $match
  * @return string
  */
+
 function zidify_callback($match) {
 
 	$arr = [ 'zid' => ((strpos($match[1],'zrl')) ? true : false), 'url' => $match[2] ];
@@ -205,14 +202,12 @@ function zidify_img_callback($match) {
 	return $x;
 }
 
-
 function zidify_links($s) {
 	$s = preg_replace_callback('/\<a(.*?)href\=\"(.*?)\"/ism','zidify_callback',$s);
 	$s = preg_replace_callback('/\<img(.*?)src\=\"(.*?)\"/ism','zidify_img_callback',$s);
 
 	return $s;
 }
-
 
 function zidify_text_callback($match) {
 	$is_zid = is_matrix_url($match[2]);
@@ -252,6 +247,7 @@ function zidify_text($s) {
  * @param array $matches
  * @return string
  */
+
 function red_zrl_callback($matches) {
 
     // Catch and exclude trailing punctuation
@@ -300,7 +296,6 @@ function red_unescape_codeblock($m) {
 	return '[' . $m[2] . base64_decode($m[1]) . '[/' . $m[2] . ']';
 }
 
-
 function red_zrlify_img_callback($matches) {
 
 	$zrl = is_matrix_url($matches[2]);
@@ -316,7 +311,6 @@ function red_zrlify_img_callback($matches) {
 
 	return $matches[0];
 }
-
 
 /**
  * @brief OpenWebAuth authentication.
@@ -401,6 +395,7 @@ function owt_init($token) {
 	 *   * \e string \b url
 	 *   * \e array \b session
 	 */
+
 	call_hooks('magic_auth_success', $arr);
 
 	App::set_observer($hubloc);
@@ -411,7 +406,6 @@ function owt_init($token) {
 
 	logger('OpenWebAuth: auth success from ' . $hubloc['xchan_addr']);
 }
-
 
 function observer_auth($ob_hash) {
 
@@ -457,5 +451,4 @@ function observer_auth($ob_hash) {
 	App::set_observer($hubloc);
 	require_once('include/security.php');
 	App::set_groups(init_groups_visitor($_SESSION['visitor_id']));
-
 }

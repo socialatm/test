@@ -17,7 +17,6 @@ function nav($template = 'default') {
 	$observer = App::get_observer();
 	$chans = [];
 
-
 	if (local_channel()) {
 		$channel = App::get_channel();
 		$prof = q("select id from profile where uid = %d and is_default = 1",
@@ -35,7 +34,6 @@ function nav($template = 'default') {
 	else {
 		$sitelocation = ((isset(App::$profile['reddress'])) ? App::$profile['reddress'] : '@' . App::get_hostname());
 	}
-
 	require_once('include/conversation.php');
 
 	$nav_apps     = [];
@@ -47,9 +45,7 @@ function nav($template = 'default') {
 	}
 
 	/**
-	 *
 	 * Provide a banner/logo/whatever
-	 *
 	 */
 
 	$banner = get_config('system', 'banner');
@@ -92,13 +88,10 @@ function nav($template = 'default') {
 	}
 
 	if (local_channel()) {
-
 		if (empty($_SESSION['delegate'])) {
 			$nav['manage'] = ['manage', t('Channels'), "", t('Manage your channels'), 'manage_nav_btn'];
 		}
-
 		$nav['settings'] = ['settings', t('Settings'), "", t('Account/Channel Settings'), 'settings_nav_btn'];
-
 
 		if ($chans && count($chans) > 1)
 			$nav['channels'] = $chans;
@@ -134,8 +127,6 @@ function nav($template = 'default') {
 		}
 		else
 			$nav['alogout'] = ['logout', t('Logout'), "", t('End this session'), 'logout_nav_btn'];
-
-
 	}
 
 	$my_url = get_my_url();
@@ -191,6 +182,7 @@ function nav($template = 'default') {
 	/**
 	 * Admin page
 	 */
+
 	if (is_site_admin()) {
 		$nav['admin'] = ['admin/', t('Admin'), "", t('Site Setup and Configuration'), 'admin_nav_btn'];
 	}
@@ -342,20 +334,16 @@ function nav($template = 'default') {
 		// force the browser to reload the image from the server instead of its cache.
 		$tpl = get_markup_template('force_image_reload.tpl');
 
-		App::$page['nav'] .= replace_macros($tpl, [
-			'$imgUrl' => $observer['xchan_photo_m']
-		]);
+		App::$page['nav'] .= replace_macros($tpl, [ '$imgUrl' => $observer['xchan_photo_m'] ]);
 		unset($_SESSION['reload_avatar']);
 	}
-
-
 	call_hooks('page_header', App::$page['nav']);
 }
 
 /*
  * Set a menu item in navbar as selected
- *
  */
+
 function nav_set_selected($raw_name, $settings_url = '') {
 	App::$nav_sel['raw_name'] = $raw_name;
 
@@ -519,9 +507,5 @@ function channel_apps($is_owner = false, $nickname = null) {
 
 	call_hooks('channel_apps', $arr);
 
-	return replace_macros(get_markup_template('profile_tabs.tpl'),
-		[
-			'$tabs'  => $arr['tabs'],
-		]
-	);
+	return replace_macros(get_markup_template('profile_tabs.tpl'), [ '$tabs'  => $arr['tabs'], ] );
 }

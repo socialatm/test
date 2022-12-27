@@ -62,7 +62,6 @@ function profile_activity($changed, $value) {
 	else
 		$message = 	sprintf( t('%1$s has an updated %2$s, changing %3$s.'), $A, $prof, $changes);
  
-
 	$arr['body'] = $message;  
 
 	$links   = array();
@@ -77,7 +76,6 @@ function profile_activity($changed, $value) {
 		'id'    => $self['xchan_url'] . '/' . $self['xchan_hash'],
 		'link'  => $links
 	));
-
 	
 	$arr['allow_cid'] = $self['channel_allow_cid'];
 	$arr['allow_gid'] = $self['channel_allow_gid'];
@@ -91,5 +89,4 @@ function profile_activity($changed, $value) {
 		// FIXME - limit delivery in notifier.php to those specificed in the perms argument
 	   	Zotlabs\Daemon\Master::Summon(array('Notifier','activity', $i, 'PERMS_R_PROFILE'));
 	}
-
 }

@@ -41,7 +41,6 @@ class Hook {
 			intval($priority),
 			intval($version)
 		);
-
 		return $r;
 	}
 
@@ -52,7 +51,6 @@ class Hook {
 			}
 		}
 	}
-
 
 	static public function unregister($hook,$file,$function,$version = 1,$priority = 0) {
 		if(is_array($function)) {
@@ -65,7 +63,6 @@ class Hook {
 			intval($priority),
 			intval($version)
 		);
-
 		return $r;
 	}
 
@@ -76,11 +73,11 @@ class Hook {
 	 *
 	 * @param string $file
 	 */
+
 	static public function unregister_by_file($file) {
 		$r = q("DELETE FROM hook WHERE file = '%s' ",
 			dbesc($file)
 		);
-
 		return $r;
 	}
 
@@ -105,6 +102,7 @@ class Hook {
 	 * @param int $priority
 	 *     currently not implemented in this function, would require the hook array to be resorted
 	 */
+
 	static public function insert($hook, $fn, $version = 0, $priority = 0) {
 		if(is_array($fn)) {
 			$fn = serialize($fn);
@@ -118,5 +116,4 @@ class Hook {
 
 		App::$hooks[$hook][] = array('', $fn, $priority, $version);
 	}
-
 }

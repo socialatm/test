@@ -28,7 +28,6 @@
  *
  */
 
-
 use Zotlabs\Lib as Zlib;
 
 function load_config($family) {

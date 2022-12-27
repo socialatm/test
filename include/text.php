@@ -52,7 +52,6 @@ function replace_macros($s, $r) {
 		logger('Unable to render template: ' . $e->getMessage());
 		$output = '<h3>ERROR: there was an error creating the output.</h3>';
 	}
-
 	return $output;
 }
 
@@ -64,6 +63,7 @@ function replace_macros($s, $r) {
  *
  * @return string
  */
+
 function random_string($size = 64, $type = RANDOM_STRING_HEX) {
 	// generate a bit of entropy and run it through the whirlpool
 	$s = hash('whirlpool', (string) rand() . uniqid(rand(),true) . (string) rand(),(($type == RANDOM_STRING_TEXT) ? true : false));
@@ -790,8 +790,6 @@ function btlogger($msg, $level = LOGGER_NORMAL, $priority = LOG_INFO) {
 	}
 }
 
-
-
 function log_priority_str($priority) {
 	$parr = array(
 		LOG_EMERG   => 'LOG_EMERG',
@@ -824,6 +822,7 @@ function log_priority_str($priority) {
  * @param string $msg Message to log
  * @param int $level A log level.
  */
+
 function dlogger($msg, $level = 0) {
 
 	// turn off logger in install mode
@@ -847,12 +846,10 @@ function dlogger($msg, $level = 0) {
 	@file_put_contents($logfile, datetime_convert('UTC','UTC', 'now', ATOM_TIME) . ':' . logid() . ' ' . $where . $msg . PHP_EOL, FILE_APPEND);
 }
 
-
 function profiler($t1,$t2,$label) {
 	if(file_exists('profiler.out') && $t1 && t2)
 		@file_put_contents('profiler.out', sprintf('%01.4f %s',$t2 - $t1,$label) . PHP_EOL, FILE_APPEND);
 }
-
 
 function activity_match($haystack,$needle) {
 
@@ -880,6 +877,7 @@ function activity_match($haystack,$needle) {
  * @param string $s
  * @return array Returns an array of tags found, or empty array.
  */
+
 function get_tags($s) {
 	$ret = array();
 	$match = array();
@@ -971,7 +969,6 @@ function total_sort($a,$b) {
 	return(($b['total'] > $a['total']) ? 1 : (-1));
 }
 
-
 /**
  * @brief Quick and dirty quoted_printable encoding.
  *
@@ -981,7 +978,6 @@ function total_sort($a,$b) {
 function qp($s) {
 	return str_replace ("%", "=", rawurlencode($s));
 }
-
 
 function get_mentions($item,$tags) {
 	$o = '';
@@ -997,7 +993,6 @@ function get_mentions($item,$tags) {
 	}
 	return $o;
 }
-
 
 function contact_block() {
 	$o = '';
@@ -1106,7 +1101,6 @@ function contact_block() {
 	return $o;
 }
 
-
 function chanlink_hash($s) {
 	return z_root() . '/chanview?f=&hash=' . urlencode($s);
 }
@@ -1126,8 +1120,6 @@ function magiclink_url($observer,$myaddr,$url) {
 		: $url
 	);
 }
-
-
 
 function micropro($contact, $redirect = false, $class = '', $mode = false) {
 
@@ -1157,7 +1149,6 @@ function micropro($contact, $redirect = false, $class = '', $mode = false) {
 	));
 }
 
-
 function search($s,$id='search-box',$url='/search',$save = false) {
 
 	return replace_macros(get_markup_template('searchbox.tpl'),array(
@@ -1169,7 +1160,6 @@ function search($s,$id='search-box',$url='/search',$save = false) {
 		'$savedsearch' => feature_enabled(local_channel(),'savedsearch')
 	));
 }
-
 
 function searchbox($s,$id='search-box',$url='/search',$save = false) {
 	return replace_macros(get_markup_template('searchbox.tpl'),array(
@@ -1207,6 +1197,7 @@ function linkify($s, $me = false) {
  * @param string $s
  * @returns string
  */
+
 function sslify($s) {
 
 	// Local photo cache
@@ -1242,7 +1233,6 @@ function sslify($s) {
 			$s = str_replace($match[2],z_root() . '/sslify/' . $filename . '?f=&url=' . urlencode($match[2]),$s);
 		}
 	}
-
 	return $s;
 }
 
@@ -1283,6 +1273,7 @@ function get_poke_verbs() {
  *   * \e index is the verb
  *   * \e value is the translated verb
  */
+
 function get_mood_verbs() {
 
 	$arr = [
@@ -1327,6 +1318,7 @@ function get_mood_verbs() {
  *   * \e array \b texts
  *   * \e array \b icons
  */
+
 function list_smilies($default_only = false) {
 
 	$texts =  array(
@@ -1395,7 +1387,6 @@ function list_smilies($default_only = false) {
 		'<img class="smiley" src="' . z_root() . '/images/emoticons/smiley-facepalm.gif" alt=":facepalm" />',
 		'<img class="smiley" src="' . z_root() . '/images/emoticons/like.gif" alt=":like" />',
 		'<img class="smiley" src="' . z_root() . '/images/emoticons/dislike.gif" alt=":dislike" />'
-
 	);
 
 	$params = array('texts' => $texts, 'icons' => $icons);
@@ -1408,8 +1399,8 @@ function list_smilies($default_only = false) {
 	 *   * \e array \b texts - default values and also return value
 	 *   * \e array \b icons - default values and also return value
 	 */
-	call_hooks('smilie', $params);
 
+	call_hooks('smilie', $params);
 	return $params;
 }
 
@@ -1451,7 +1442,6 @@ function smilies($s, $sample = false) {
 		$s = str_replace($params['texts'],$params['icons'],$params['string']);
 	}
 
-
 	$s = preg_replace_callback('/<!--base64:(.*?)-->/ism', 'smile_unshield', $s);
 
 	return $s;
@@ -1489,8 +1479,6 @@ function preg_heart($x) {
 
 	return $r;
 }
-
-
 
 function day_translate($s) {
 	$ret = str_replace(array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
@@ -1542,7 +1530,6 @@ function link_compare($a, $b) {
 
 function theme_attachments(&$item) {
 
-
 	$s = '';
 	$arr = json_decode($item['attach'],true);
 
@@ -1589,10 +1576,8 @@ function theme_attachments(&$item) {
 				'$attaches' => $attaches
 			]);
 	}
-
 	return $s;
 }
-
 
 function format_categories(&$item,$writeable) {
 	$s = '';
@@ -1613,7 +1598,6 @@ function format_categories(&$item,$writeable) {
 			'$categories' => $categories
 		));
 	}
-
 	return $s;
 }
 
@@ -1643,10 +1627,8 @@ function format_hashtags(&$item) {
 			$s .= '<span class="badge rounded-pill bg-info"><i class="fa fa-hashtag"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
 		}
 	}
-
 	return $s;
 }
-
 
 function format_mentions(&$item) {
 
@@ -1666,10 +1648,8 @@ function format_mentions(&$item) {
 			$s .= '<span class="badge rounded-pill bg-success"><i class="fa fa-at"></i>&nbsp;<a class="text-white" href="' . zid($t['url']) . '" >' . $term . '</a></span>';
 		}
 	}
-
 	return $s;
 }
-
 
 function format_filer(&$item) {
 	$s = '';
@@ -1690,10 +1670,8 @@ function format_filer(&$item) {
 			'$categories' => $categories
 		));
 	}
-
 	return $s;
 }
-
 
 function generate_map($coord) {
 	$coord = trim($coord);
@@ -1731,7 +1709,6 @@ function generate_named_map($location) {
 
 	return (($arr['html']) ? $arr['html'] : $location);
 }
-
 
 function prepare_body(&$item,$attach = false,$opts = false) {
 
@@ -1786,7 +1763,6 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 			$s .= prepare_text($item['body'],$item['mimetype'], $opts);
 		}
 	}
-
 
 	$poll = (($item['obj_type'] === 'Question' && in_array($item['verb'],[ ACTIVITY_POST, ACTIVITY_UPDATE, ACTIVITY_SHARE ])) ? format_poll($item, $s, $opts) : false);
 	if ($poll) {
@@ -1866,10 +1842,8 @@ function prepare_body(&$item,$attach = false,$opts = false) {
 	call_hooks('prepare_body_final', $prep_arr);
 
 	unset($prep_arr['item']);
-
 	return $prep_arr;
 }
-
 
 function prepare_binary($item) {
 	return replace_macros(get_markup_template('item_binary.tpl'), [
@@ -1877,7 +1851,6 @@ function prepare_binary($item) {
 		'$url'       => z_root() . '/viewsrc/' . $item['id'] . '/download'
 	]);
 }
-
 
 function format_poll($item,$s,$opts) {
 
@@ -2009,9 +1982,6 @@ function format_poll($item,$s,$opts) {
 	return $output;
 }
 
-
-
-
 /**
  * @brief Given a text string, convert from content_type to HTML.
  *
@@ -2029,6 +1999,7 @@ function format_poll($item,$s,$opts) {
  * @return string
  *  The parsed $text as prepared HTML.
  */
+
 function prepare_text($text, $content_type = 'text/bbcode', $opts = false) {
 
 	switch($content_type) {
@@ -2085,7 +2056,6 @@ function prepare_text($text, $content_type = 'text/bbcode', $opts = false) {
 	return $s;
 }
 
-
 function create_export_photo_body(&$item) {
 	if(($item['verb'] === ACTIVITY_POST) && ($item['obj_type'] === ACTIVITY_OBJ_PHOTO)) {
 		$j = json_decode($item['obj'],true);
@@ -2117,7 +2087,6 @@ function feed_hublinks() {
 			}
 		}
 	}
-
 	return $hubxml;
 }
 
@@ -2138,7 +2107,6 @@ function feed_salmonlinks($nick) {
 
 	return $salmon;
 }
-
 
 function get_plink($item,$conversation_mode = true) {
 	if($conversation_mode)
@@ -2161,7 +2129,6 @@ function get_plink($item,$conversation_mode = true) {
 		return false;
 	}
 }
-
 
 function unamp($s) {
 	return str_replace('&amp;', '&', $s);
@@ -2193,7 +2160,6 @@ function layout_select($channel_id, $current = '') {
 	return $o;
 }
 
-
 function mimetype_select($channel_id, $current = 'text/bbcode', $choices = null, $element = 'mimetype') {
 
 	$x = (($choices) ? $choices : [
@@ -2203,7 +2169,6 @@ function mimetype_select($channel_id, $current = 'text/bbcode', $choices = null,
 		'text/plain'        => t('Text'),
 		'application/x-pdl' => t('Comanche Layout')
 	]);
-
 
 	if((App::$is_sys) || (channel_codeallowed($channel_id) && $channel_id == local_channel())){
 		$x['application/x-php'] = t('PHP');
@@ -2235,7 +2200,6 @@ function engr_units_to_bytes ($size_str) {
 	}
 }
 
-
 function base64url_encode($s, $strip_padding = true) {
 
 	$s = strtr(base64_encode($s),'+/','-_');
@@ -2253,7 +2217,6 @@ function base64url_decode($s, $strict = false) {
 	}
 	return base64_decode(strtr($s,'-_','+/'), $strict);
 }
-
 
 function base64special_encode($s, $strip_padding = true) {
 
@@ -2282,7 +2245,6 @@ function cleardiv() {
 	return '<div class="clear"></div>';
 }
 
-
 function bb_translate_video($s) {
 	$arr = array('string' => $s);
 	call_hooks('bb_translate_video',$arr);
@@ -2298,12 +2260,12 @@ function html2bb_video($s) {
 /**
  * apply xmlify() to all values of array $val, recursively
  */
+
 function array_xmlify($val) {
 	if (is_bool($val)) return $val?"true":"false";
 	if (is_array($val)) return array_map('array_xmlify', $val);
 	return xmlify((string) $val);
 }
-
 
 function reltoabs($text, $base) {
 	if (empty($base))
@@ -2398,7 +2360,6 @@ function undo_post_tagging($s) {
 			}
 		}
 	}
-
 	return $s;
 }
 
@@ -2410,6 +2371,7 @@ function undo_post_tagging($s) {
  * templates to the outputted html stream. Redecoding in js not required nor useful.
  * Apply like: p2j(t('any text\nI will place on a "next line"'));
  */
+
 function p2j($string) {
 	return preg_replace('/\r?\n/', '\\n', addslashes($string));
 }
@@ -2420,18 +2382,15 @@ function quote_tag($s) {
 	return $s;
 }
 
-
 function fix_mce_lf($s) {
 	$s = str_replace("\r\n","\n",$s);
 //	$s = str_replace("\n\n","\n",$s);
 	return $s;
 }
 
-
 function protect_sprintf($s) {
 	return(str_replace('%','%%',$s));
 }
-
 
 function is_a_date_arg($s) {
 	$i = intval($s);
@@ -2443,7 +2402,6 @@ function is_a_date_arg($s) {
 				return true;
 		}
 	}
-
 	return false;
 }
 
@@ -2472,15 +2430,9 @@ function legal_webbie_text() {
 	$x = [ 'text' => $s ];
 	call_hooks('legal_webbie_text',$x);
 	return $x['text'];
-
 }
 
-
-
-
-
 function check_webbie($arr) {
-
 
 	// These names conflict with the CalDAV server
 	$taken = [ 'principals', 'addressbooks', 'calendars' ];
@@ -2516,7 +2468,6 @@ function check_webbie($arr) {
 			}
 		}
 	}
-
 	return '';
 }
 
@@ -2531,9 +2482,6 @@ function ids_to_array($arr,$idx = 'id') {
 	}
 	return($t);
 }
-
-
-
 
 function ids_to_querystr($arr,$idx = 'id',$quote = false) {
 	$t = array();
@@ -2579,14 +2527,12 @@ function array_elm_to_str($arr, $elm, $delim = ',', $each = 'trim') {
 			}
 		}
 	}
-
 	return implode($delim, $tmp);
 }
 
 function trim_and_unpunify($s) {
 	return unpunify(trim($s));
 }
-
 
 /**
  * @brief Fetches xchan and hubloc data for an array of items with only an
@@ -2662,7 +2608,6 @@ function get_rel_link($j,$rel) {
 	return '';
 }
 
-
 // Lots of code to write here
 
 function magic_link($s) {
@@ -2675,11 +2620,11 @@ function magic_link($s) {
  * @param[in,out] array &$arr
  * @param boolean $escape (optional) default false
  */
+
 function stringify_array_elms(&$arr, $escape = false) {
 	foreach($arr as $k => $v)
 		$arr[$k] = "'" . (($escape) ? dbesc($v) : $v) . "'";
 }
-
 
 /**
  * @brief Similar to stringify_array_elms but returns a string. If $escape is true, dbesc() each element before adding quotes.
@@ -2688,6 +2633,7 @@ function stringify_array_elms(&$arr, $escape = false) {
  * @param boolean $escape (optional) default false
  * @return string
  */
+
 function stringify_array($arr, $escape = false) {
 	if($arr) {
 		stringify_array_elms($arr);
@@ -2695,7 +2641,6 @@ function stringify_array($arr, $escape = false) {
 	}
 	return EMPTY_STR;
 }
-
 
 /**
  * @brief Indents a flat JSON string to make it more human-readable.
@@ -2746,10 +2691,8 @@ function jindent($json) {
 				$result .= $indentStr;
 			}
 		}
-
 		$prevChar = $char;
 	}
-
 	return $result;
 }
 
@@ -2758,6 +2701,7 @@ function jindent($json) {
  *
  * @return string with parsed HTML
  */
+
 function design_tools() {
 
 	$channel  = channelx_by_n(App::$profile['profile_uid']);
@@ -2787,6 +2731,7 @@ function design_tools() {
  *
  * @return string Parsed HTML code from template 'website_portation_tools.tpl'
  */
+
 function website_portation_tools() {
 
 	return replace_macros(get_markup_template('website_portation_tools.tpl'), [
@@ -2831,6 +2776,7 @@ function normalise_openid($s) {
  *
  * @return string with additional URL parameters
  */
+
 function extra_query_args() {
 	$s = '';
 	if(count($_GET)) {
@@ -2849,7 +2795,6 @@ function extra_query_args() {
 			}
 		}
 	}
-
 	return $s;
 }
 
@@ -3021,7 +2966,6 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 					intval($profile_uid)
 				);
 			}
-
 		}
 
 		$fn_results = [];
@@ -3061,7 +3005,6 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 					}
 				}
 
-
 				$fn_results[] =  [
 					'replaced'   => $replaced,
 					'termtype'   => $termtype,
@@ -3070,9 +3013,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 					'access_tag' => $access_tag,
 					'contact'    => (($r) ? $xc : []),
 				];
-
 			}
-
 		}
 		else {
 
@@ -3100,7 +3041,6 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 					}
 				}
 			}
-
 
 			// if there is a url for this channel
 
@@ -3138,9 +3078,7 @@ function handle_tag(&$body, &$str_tags, $profile_uid, $tag, $in_network = true) 
 			];
 		}
 	}
-
 	return $fn_results;
-
 }
 
 function linkify_tags(&$body, $uid, $in_network = true) {
@@ -3159,7 +3097,6 @@ function linkify_tags(&$body, $uid, $in_network = true) {
 			}
 		}
 	}
-
 	return $results;
 }
 
@@ -3173,6 +3110,7 @@ function linkify_tags(&$body, $uid, $in_network = true) {
  * @return string
  * @todo rename to get_icon_from_type()
  */
+
 function getIconFromType($type) {
 	$iconMap = array(
 		//Folder
@@ -3225,7 +3163,6 @@ function getIconFromType($type) {
 		'message'     => 'fa-file-text-o'
 	];
 
-
 	$iconFromType = '';
 
 	if (array_key_exists($type, $iconMap)) {
@@ -3241,8 +3178,6 @@ function getIconFromType($type) {
 	if(! $iconFromType)	{
 		$iconFromType = 'fa-file-o';
 	}
-
-
 	return $iconFromType;
 }
 
@@ -3253,6 +3188,7 @@ function getIconFromType($type) {
  * @return string human readable formatted filesize
  * @todo rename to user_readable_size()
  */
+
 function userReadableSize($size) {
 	$ret = '';
 	if (is_numeric($size)) {
@@ -3265,7 +3201,6 @@ function userReadableSize($size) {
 		}
 		$ret = $size . ' ' . $unit[$incr];
 	}
-
 	return $ret;
 }
 
@@ -3274,7 +3209,6 @@ function str_rot47($str) {
 		'!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~',
 		'PQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNO');
 }
-
 
 function string_replace($old,$new,&$s) {
 
@@ -3286,7 +3220,6 @@ function string_replace($old,$new,&$s) {
 	$s = $x;
 	return $replaced;
 }
-
 
 function json_url_replace($old,$new,&$s) {
 
@@ -3301,7 +3234,6 @@ function json_url_replace($old,$new,&$s) {
 	$s = $x;
 	return $replaced;
 }
-
 
 function item_url_replace($channel,&$item,$old,$new,$oldnick = '') {
 
@@ -3351,9 +3283,7 @@ function item_url_replace($channel,&$item,$old,$new,$oldnick = '') {
 			}
 		}
 	}
-
 }
-
 
 /**
  * @brief Used to wrap ACL elements in angle brackets for storage.
@@ -3385,7 +3315,6 @@ function perms2str($p) {
 		array_walk($tmp, 'sanitise_acl');
 		$ret = implode('', $tmp);
 	}
-
 	return $ret;
 }
 
@@ -3409,7 +3338,6 @@ function expand_acl($s) {
 				$ret[] = $aa;
 		}
 	}
-
 	return $ret;
 }
 
@@ -3439,6 +3367,7 @@ function acl2json($s) {
  * @param string $current
  * @return string HTML code for dropdown
  */
+
 function pdl_selector($uid, $current='') {
 	$o = '';
 
@@ -3456,6 +3385,7 @@ function pdl_selector($uid, $current='') {
 	 *   * \e string \b current
 	 *   * \e array \b entries - Result from database query
 	 */
+
 	call_hooks('pdl_selector', $arr);
 
 	$entries = $arr['entries'];
@@ -3483,6 +3413,7 @@ function pdl_selector($uid, $current='') {
  * @param array $arr multi-dimensional array
  * @return one-dimensional array
  */
+
 function flatten_array_recursive($arr) {
 	$ret = array();
 
@@ -3500,7 +3431,6 @@ function flatten_array_recursive($arr) {
 			$ret[] = $a;
 		}
 	}
-
 	return($ret);
 }
 
@@ -3514,6 +3444,7 @@ function flatten_array_recursive($arr) {
  * after further processing. This was done to prevent oembed links from occurring inside code blocks.
  * See include/bbcode.php
  */
+
 function text_highlight($s, $lang) {
 
 	if($lang === 'js')
@@ -3623,10 +3554,8 @@ function create_table_from_array($table, $arr, $binary_fields = []) {
 		. implode("', '", array_values($clean))
 		. "')"
 	);
-
 	return $r;
 }
-
 
 function update_table_from_array($table, $arr, $where, $binary_fields = []) {
 
@@ -3737,6 +3666,7 @@ function gen_link_id($mid) {
  * @param string $mid
  * @return string|boolean false
  */
+
 function unpack_link_id($mid) {
 	if (is_string($mid) && strpos($mid, 'b64.') === 0) {
 		$mid = @base64url_decode(substr($mid, 4), true);
@@ -3781,15 +3711,12 @@ function featured_sort($a,$b) {
 	return(strcmp($s1,$s2));
 }
 
-
 // Be aware that punify will convert domain names and pathnames
-
 
 function punify($s) {
 	require_once('vendor/simplepie/simplepie/idn/idna_convert.class.php');
 	$x = new idna_convert(['encoding' => 'utf8']);
 	return $x->encode($s);
-
 }
 
 /**
@@ -3804,7 +3731,6 @@ function unpunify($s) {
 
 	return $x->decode($s);
 }
-
 
 function unique_multidim_array($array, $key) {
     $temp_array = array();
@@ -3829,7 +3755,6 @@ function get_forum_channels($uid) {
 	$r = q("select abook_id, xchan_pubforum, xchan_hash, xchan_network, xchan_name, xchan_url, xchan_photo_s from abook left join xchan on abook_xchan = xchan_hash where xchan_deleted = 0 and abook_channel = %d and abook_pending = 0 and abook_ignored = 0 and abook_blocked = 0 and abook_archived = 0 and abook_self = 0 and xchan_pubforum = 1 order by xchan_name",
 		intval($uid)
 	);
-
 
 /*
 
@@ -3933,7 +3858,6 @@ function print_array($arr, $level = 0) {
 		$o .= substr($tabs,0,-1) . ']' . (($level) ? ',' : ';' ). "\n";
 		return $o;
 	}
-
 }
 
 function print_val($v) {
@@ -3945,7 +3869,6 @@ function print_val($v) {
 		return "'" . $v . "'";
 	}
 	return $v;
-
 }
 
 function array_path_exists($str,$arr) {
@@ -3964,11 +3887,8 @@ function array_path_exists($str,$arr) {
 		}
 		return true;
 	}
-
 	return false;
-
 }
-
 
 /**
  * @brief provide psuedo random token (string) consisting entirely of US-ASCII letters/numbers
@@ -3976,6 +3896,7 @@ function array_path_exists($str,$arr) {
  *
  * @return string
  */
+
 function new_token($minlen = 36, $maxlen = 48) {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     $str   = EMPTY_STR;
@@ -3985,10 +3906,8 @@ function new_token($minlen = 36, $maxlen = 48) {
     for ($a = 0; $a < $len; $a++) {
         $str .= $chars[mt_rand(0, 61)];
     }
-
     return $str;
 }
-
 
 /**
  * @brief Generate a random v4 UUID.
@@ -4002,10 +3921,8 @@ function new_uuid() {
 	} catch (UnableToBuildUuidException $e) {
 		$hash = random_string(48);
 	}
-
 	return $hash;
 }
-
 
 /**
  * @brief Generate a name-based v5 UUID in the URL namespace
@@ -4041,8 +3958,6 @@ function svg2bb($s) {
 	}
 	return EMPTY_STR;
 }
-
-
 
 function serialise($x) {
 	return ((is_array($x)) ? 'json:' . json_encode($x) : $x);
@@ -4098,6 +4013,5 @@ function substr_words($str, $max_length, $suffix = '...') {
 		}
 		$ret .= $suffix;
 	}
-
 	return (($ret) ? $ret : $str);
 }
