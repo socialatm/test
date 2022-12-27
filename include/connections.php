@@ -269,17 +269,12 @@ function mark_orphan_hubsxchans() {
 
 }
 
-
-
-
 function remove_all_xchan_resources($xchan, $channel_id = 0) {
 
 	if(!$xchan)
 		return;
 
 	if(intval($channel_id)) {
-
-
 
 	}
 	else {
@@ -342,7 +337,6 @@ function remove_all_xchan_resources($xchan, $channel_id = 0) {
 		}
 	}
 }
-
 
 function contact_remove($channel_id, $abook_id) {
 
@@ -737,9 +731,7 @@ function get_vcard_array($vc,$id) {
 	];
 
 	return $card;
-
 }
-
 
 function vcard_translate_type($type) {
 
@@ -766,7 +758,6 @@ function vcard_translate_type($type) {
 		return [$type, t('Other') . ' (' . $type . ')'];
 	}
 }
-
 
 function vcard_query(&$r) {
 
@@ -858,5 +849,4 @@ function z6trans_connections() {
 
 		}
 	}
-
 }
