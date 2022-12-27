@@ -500,7 +500,7 @@
 <!-- this script runs the help modal -->
 <script>
 $('.helpBtn').on('click',function(){
-    $('.modal-body').load('{{$nav.help.0}}',function(){
+    $('.modal-body').load('/doc/context/en/channel/help.html',function(){
         $('#exampleModal').modal({show:true});
     });
 });
