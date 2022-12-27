@@ -577,6 +577,8 @@ function markItemRead(itemId) {
 	$('.unseen-wall-indicator-'+itemId).remove();
 }
 
+/* start contextual_help */
+
 function contextualHelp() {
 	var container = $("#contextual-help-content");
 
@@ -614,6 +616,8 @@ function contextualHelpFocus(target, openSidePanel) {
         }
 }
 
+/* end contextual_help */
+
 function updatePageItems(mode, data) {
 
 	$(document).trigger('hz:updatePageItems');
@@ -641,7 +645,6 @@ function updatePageItems(mode, data) {
 
 	collapseHeight();
 }
-
 
 function updateConvItems(mode,data) {
 
