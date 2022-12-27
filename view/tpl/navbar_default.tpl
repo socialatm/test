@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
 	<div class="container-fluid flex-nowrap">
 		{{if $userinfo}}
 		<div class="d-flex">
