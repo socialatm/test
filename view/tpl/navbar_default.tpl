@@ -168,6 +168,7 @@
 				</li>
 			</ul>
 		</div>
+		{{*
 		{{if $nav.help.6}}
 		<div id="contextual-help-content-orig" class="contextual-help-content-orig">
 			{{$nav.help.5}}
@@ -177,6 +178,7 @@
 			</div>
 		</div>
 		{{/if}}
+		*}}
 	</div>
 </nav>
 
