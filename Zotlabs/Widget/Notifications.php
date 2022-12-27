@@ -169,12 +169,9 @@ class Notifications {
 
 		$o = replace_macros(get_markup_template('notifications_widget.tpl'), [
 			'$notifications' => $notifications,
-			'$no_notifications' => t('Sorry, you have got no notifications at the moment'),
+			'$no_notifications' => t('No new notifications'),
 			'$loading' => t('Loading'),
 		]);
-
 		return $o;
-
 	}
 }
-
