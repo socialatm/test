@@ -53,7 +53,7 @@
 <!-- play here -->
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button type="button" class="btn btn-primary openBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
 </button>
 
@@ -494,3 +494,13 @@
     </div>
   </div>
 </div>
+
+<!-- end modal -->
+
+<script>
+$('.openBtn').on('click',function(){
+    $('.modal-body').load('https://dev.hubzilla.social/doc/context/en/channel/help.html',function(){
+        $('#myModal').modal({show:true});
+    });
+});
+</script>
