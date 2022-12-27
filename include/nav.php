@@ -340,9 +340,7 @@ function nav($template = 'default') {
 	call_hooks('page_header', App::$page['nav']);
 }
 
-/*
- * Set a menu item in navbar as selected
- */
+// Set a menu item in navbar as selected
 
 function nav_set_selected($raw_name, $settings_url = '') {
 	App::$nav_sel['raw_name'] = $raw_name;
@@ -453,7 +451,6 @@ function channel_apps($is_owner = false, $nickname = null) {
 			'icon'  => 'calendar'
 		];
 	}
-
 
 	if ($p['chat'] && Apps::system_app_installed($uid, 'Chatrooms')) {
 		$has_chats = Chatroom::list_count($uid);
