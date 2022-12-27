@@ -154,74 +154,6 @@ function format_event_obj($jobject) {
 		));
 	}
     return $event;
-	
-/*
-	$event = [];
-	$object = json_decode($jobject,true);
-
-	$event_tz = '';
-	if($object['adjust'] && is_array($object['asld']) && is_array($object['asld']['attachment'])) {
-		foreach($object['asld']['attachment'] as $attachment) {
-			if($attachment['type'] === 'PropertyValue' && $attachment['name'] == 'zot.event.timezone' ) {
-				// check if the offset of the timezones is different and only set event_tz if offset is not the same
-				$local_tz = new DateTimeZone(date_default_timezone_get());
-				$local_dt = new DateTime('now', $local_tz);
-
-				$ev_tz = new DateTimeZone($attachment['value']);
-				$ev_dt = new DateTime('now', $ev_tz);
-				if($local_dt->getOffset() !== $ev_dt->getOffset())
-					$event_tz = $attachment['value'];
-				break;
-			}
-		}
-
-	}
-
-	$allday = (($object['adjust']) ? false : true);
-
-	$dtstart = new DateTime($object['dtstart']);
-	$dtend = new DateTime($object['dtend']);
-	$dtdiff = $dtstart->diff($dtend);
-
-	if($allday && ($dtdiff->days < 2))
-		$oneday = true;
-
-	if($allday && !$oneday) {
-		// Subtract one day from the end date so we can use the "first day - last day" format for display.
-		$dtend->modify('-1 day');
-		$object['dtend'] = datetime_convert('UTC', 'UTC', $dtend->format('Y-m-d H:i:s'));
-	}
-
-	$bd_format = (($allday) ? t('l F d, Y') : t('l F d, Y \@ g:i A')); // Friday January 18, 2011 @ 8:01 AM or Friday January 18, 2011 for allday events
-
-	$event['header'] = replace_macros(get_markup_template('event_item_header.tpl'),array(
-		'$title'	 => zidify_links(smilies(bbcode($object['title']))),
-		'$dtstart_label' => t('Start:'),
-		'$dtstart_title' => datetime_convert('UTC', date_default_timezone_get(), $object['dtstart'], (($object['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' )),
-		'$dtstart_dt'	 => (($object['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(), $object['dtstart'] , $bd_format )) : day_translate(datetime_convert('UTC', 'UTC', $object['dtstart'] , $bd_format))),
-		'$finish'	 => (($object['nofinish']) ? false : true),
-		'$dtend_label'	 => t('End:'),
-		'$dtend_title'	 => datetime_convert('UTC', date_default_timezone_get(), $object['dtend'], (($object['adjust']) ? ATOM_TIME : 'Y-m-d\TH:i:s' )),
-		'$dtend_dt'	 => (($object['adjust']) ? day_translate(datetime_convert('UTC', date_default_timezone_get(), $object['dtend'] , $bd_format )) :  day_translate(datetime_convert('UTC', 'UTC', $object['dtend'] , $bd_format ))),
-		'$allday'	 => $allday,
-		'$oneday'	 => $oneday,
-		'$event_tz'      => ['label' => t('Timezone'), 'value' => (($event_tz === date_default_timezone_get()) ? '' : $event_tz)]
-	));
-
-	$event_src = [];
-
-	if(array_path_exists('asld/source', $object) && $object['asld']['source']['mediaType'] === 'text/bbcode') {
-		$event_src = bbtoevent($object['asld']['source']['content']);
-	}
-
-	$event['content'] = replace_macros(get_markup_template('event_item_content.tpl'),array(
-		'$description'	  => zidify_links(smilies(bbcode($event_src ? $event_src['description'] : $object['description']))),
-		'$location_label' => t('Location:'),
-		'$location'	  => zidify_links(smilies(bbcode($event_src ? $event_src['location'] : $object['location']))),
-	));
-
-	return $event;
-*/
 }
 
 function ical_wrapper($ev) {
@@ -296,7 +228,6 @@ function format_event_ical($ev) {
 	return $o;
 }
 
-
 function format_todo_ical($ev) {
 
 	$o = '';
@@ -338,7 +269,6 @@ function format_todo_ical($ev) {
 	return $o;
 }
 
-
 function format_ical_text($s) {
 
 	require_once('include/html2plain.php');
@@ -355,7 +285,6 @@ function format_ical_sourcetext($s) {
 	return(wordwrap(str_replace(['\\',',',';'],['\\\\','\\,','\\;'],$s),72,"\r\n ",true));
 }
 
-
 function format_event_bbcode($ev, $utc = false) {
 
 	$o = '';
@@ -363,15 +292,7 @@ function format_event_bbcode($ev, $utc = false) {
 	if($ev['event_vdata']) {
 		$o .= '[event]' . $ev['event_vdata'] . '[/event]';
 	}
-/*
-	if ($utc && $ev['event-timezone'] !== 'UTC') {
-		$ev['dtstart'] = datetime_convert($ev['timezone'],'UTC',$ev['dtstart']);
-		if ($ev['dtend'] && ! $ev['nofinish']) {
-			$ev['dtend'] = datetime_convert($ev['timezone'],'UTC',$ev['dtend']);
-		}
-		$ev['timezone'] = 'UTC';
-	}
-*/
+
 	if($ev['summary'])
 		$o .= '[event-summary]' . $ev['summary'] . '[/event-summary]';
 
@@ -390,15 +311,11 @@ function format_event_bbcode($ev, $utc = false) {
 	if($ev['event_hash'])
 		$o .= '[event-id]' . $ev['event_hash'] . '[/event-id]';
 
-//	if($ev['timezone'])
-//		$o .= '[event-timezone]' . $ev['timezone'] . '[/event-timezone]';
-
 	if($ev['adjust'])
 		$o .= '[event-adjust]' . $ev['adjust'] . '[/event-adjust]';
 
 	return $o;
 }
-
 
 function bbtovcal($s) {
 	$o = '';
@@ -408,7 +325,6 @@ function bbtovcal($s) {
 
 	return $o;
 }
-
 
 function bbtoevent($s) {
 
@@ -458,9 +374,6 @@ function bbtoevent($s) {
 		else
 			$ev['nofinish'] = 1;
 	}
-
-//	logger('bbtoevent: ' . print_r($ev,true));
-
 	return $ev;
 }
 
@@ -488,6 +401,7 @@ function sort_by_date($arr) {
  * @param array $b
  * @return number return values like strcmp()
  */
+
 function ev_compare($a, $b) {
 
 	$date_a = (($a['adjust']) ? datetime_convert('UTC',date_default_timezone_get(),$a['dtstart']) : $a['dtstart']);
@@ -498,7 +412,6 @@ function ev_compare($a, $b) {
 
 	return strcmp($date_a, $date_b);
 }
-
 
 function event_store_event($arr) {
 	$arr['created']        = $arr['created'] ?? datetime_convert();
@@ -566,6 +479,7 @@ function event_store_event($arr) {
 	 *   * \e array \b existing_event
 	 *   * \e boolean \b cancel - default false
 	 */
+
 	call_hooks('event_store_event', $hook_info);
 	if($hook_info['cancel'])
 		return false;
@@ -690,9 +604,7 @@ function event_store_event($arr) {
 		call_hooks('event_store_event_end', $r[0]);
 
 		return $r[0];
-
 	}
-
 	return false;
 }
 
@@ -768,10 +680,8 @@ function event_addtocal($item_id, $uid) {
 			return true;
 		}
 	}
-
 	return false;
 }
-
 
 function ical_to_ev($s) {
 	require_once('vendor/autoload.php');
@@ -800,8 +710,6 @@ function ical_to_ev($s) {
 
 	return $ev;
 }
-
-
 
 function parse_vobject($ical, $type) {
 
@@ -897,8 +805,6 @@ function parse_vobject($ical, $type) {
 	return $ev;
 }
 
-
-
 function parse_ical_file($f,$uid) {
 
 	$s = @file_get_contents($f);
@@ -924,8 +830,6 @@ function parse_ical_file($f,$uid) {
 	return false;
 }
 
-
-
 function event_import_ical($ical, $uid) {
 
 	$c = q("select * from channel where channel_id = %d limit 1",
@@ -946,8 +850,6 @@ function event_import_ical($ical, $uid) {
 
 	$dtstart = $ical->DTSTART->getDateTime();
 	$ev['adjust'] = (($ical->DTSTART->isFloating()) ? 0 : 1);
-
-//	logger('dtstart: ' . var_export($dtstart,true));
 
 	$ev['timezone'] = 'UTC';
 
@@ -1029,7 +931,6 @@ function event_import_ical($ical, $uid) {
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -1164,11 +1065,8 @@ function event_import_ical_task($ical, $uid) {
 			return true;
 		}
 	}
-
 	return false;
 }
-
-
 
 function event_store_item($arr, $event) {
 
@@ -1188,10 +1086,8 @@ function event_store_item($arr, $event) {
 		}
 	}
 
-
 	$item_arr = array();
 	$prefix = '';
-//	$birthday = false;
 
 	if(($event) && array_key_exists('event_hash',$event) && (! array_key_exists('event_hash',$arr)))
 		$arr['event_hash'] = $event['event_hash'];
@@ -1199,7 +1095,6 @@ function event_store_item($arr, $event) {
 	if($event['etype'] === 'birthday') {
 		if(! is_sys_channel($arr['uid']))
 			$prefix =  t('This event has been added to your calendar.');
-//		$birthday = true;
 
 		// The event is created on your own site by the system, but appears to belong
 		// to the birthday person. It also isn't propagated - so we need to prevent
@@ -1217,15 +1112,11 @@ function event_store_item($arr, $event) {
 
 	if($r) {
 
-		//set_iconfig($r[0]['id'], 'event', 'timezone', $arr['timezone'], true);
-		//xchan_query($r);
-		//$r = fetch_post_tags($r,true);
-
 		$x = [
 			'type'      => 'Event',
 			'id'        => z_root() . '/event/' . $r[0]['resource_id'],
 			'name'      => $arr['summary'],
-//          'summary'   => bbcode($arr['summary']),
+
 			// RFC3339 Section 4.3
 			'startTime' => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
 			'content'   => bbcode($arr['description']),
@@ -1385,7 +1276,7 @@ function event_store_item($arr, $event) {
 				'type'       => 'Event',
 				'id'         => z_root() . '/event/' . $event['event_hash'],
 				'name'       => $arr['summary'],
-//              'summary'    => bbcode($arr['summary']),
+
 				// RFC3339 Section 4.3
 				'startTime'  => (($arr['adjust']) ? datetime_convert('UTC', 'UTC', $arr['dtstart'], ATOM_TIME) : datetime_convert('UTC', 'UTC', $arr['dtstart'], 'Y-m-d\\TH:i:s-00:00')),
 				'content'    => bbcode($arr['description']),
@@ -1428,7 +1319,6 @@ function event_store_item($arr, $event) {
 	}
 }
 
-
 function todo_stat() {
 	return array(
 		''             => t('Not specified'),
@@ -1438,7 +1328,6 @@ function todo_stat() {
 		'CANCELLED'    => t('Cancelled')
 	);
 }
-
 
 function tasks_fetch($arr) {
 
@@ -1458,7 +1347,6 @@ function tasks_fetch($arr) {
 	if($r) {
 		$ret['tasks'] = $r;
 	}
-
 	return $ret;
 }
 
@@ -1507,7 +1395,6 @@ function cdav_perms($needle, $haystack, $check_rw = false) {
 	return false;
 }
 
-
 function translate_type($type) {
 
 	if(!$type)
@@ -1534,7 +1421,6 @@ function translate_type($type) {
 	}
 }
 
-
 function cal_store_lowlevel($arr) {
 
 	$store = [
@@ -1551,7 +1437,4 @@ function cal_store_lowlevel($arr) {
 	];
 
 	return create_table_from_array('cal', $store);
-
 }
-
-
