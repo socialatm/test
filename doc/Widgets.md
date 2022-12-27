@@ -76,7 +76,7 @@ Some/many of these widgets have restrictions which may restrict the type of page
 
 * item - displays a single webpage item by mid or page title
     * args:
-	* channel_id - channel that owns the content, defualt is the profile_uid 
+	* channel_id - channel that owns the content, default is the profile_uid 
 	* mid - message_id of webpage to display (must be webpage, not a conversation item)
 	* title - URL page title of webpage (must provide one of either title or mid)
 <br />&nbsp;<br />
