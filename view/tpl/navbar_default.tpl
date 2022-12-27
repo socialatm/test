@@ -53,7 +53,7 @@
 <!-- play here -->
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="https://dev.hubzilla.social/doc/context/en/channel/help.html">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="exampleModal">
   Launch demo modal
 </button>
 
@@ -184,17 +184,6 @@
 
 <!-- try this -->
 
-{{if $nav.help.6}}
-	<div id="contextual-help-content" class="">
-		{{$nav.help.5}}
-		{{*
-		<div class="float-end">
-			<a class="btn btn-primary btn-sm" target="hubzilla-help" href="{{$nav.help.0}}" title="{{$nav.help.3}}"><i class="fa fa-question"></i>&nbsp;{{$fulldocs}}</a>
-			<a class="contextual-help-tool" href="#" onclick="contextualHelp(); return false;"><i class="fa fa-times"></i></a>
-		</div>
-		*}}
-	</div>
-	{{/if}}
 
 
 
