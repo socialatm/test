@@ -36,6 +36,11 @@
           <div class="p-3 border border-primary rounded bg-white">
             <?php if(x($page,'footer')) echo $page['footer']; ?>
             <div class="p-3 border bg-light "><?php echo debug_print_backtrace(); ?></div>
+            <div class="p-3 border bg-light "><?php echo '<pre>'; print_r($nav.help); echo '</pre>';; ?></div>
+
+            
+
+
           </div>
         </div>
       </div>
