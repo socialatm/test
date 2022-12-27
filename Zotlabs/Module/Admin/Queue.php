@@ -6,8 +6,6 @@ use Zotlabs\Lib\Queue as LibQueue;
 
 class Queue {
 
-
-
 	function get() {
 
 		$o = '';
@@ -54,11 +52,6 @@ class Queue {
 			'$entries' => $r,
 			'$expert' => $expert
 		));
-
 		return $o;
 	}
-
-
-
-
 }

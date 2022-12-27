@@ -2,10 +2,7 @@
 
 namespace Zotlabs\Module\Admin;
 
-
-
 class Dbsync {
-
 
 	function get() {
 		$o = '';
@@ -95,7 +92,6 @@ class Dbsync {
 		else {
 			return '<div class="generic-content-wrapper-styled"><h3>' . t('No failed updates.') . '</h3></div>';
 		}
-
 		return $o;
 	}
 }

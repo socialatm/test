@@ -6,7 +6,6 @@ namespace Zotlabs\Lib;
  * @brief File with functions and a class for generating system and email notifications.
  */
 
-
 class Enotify {
 
 	/**
@@ -23,7 +22,6 @@ class Enotify {
 	 *  * \e string \b verb
 	 *  * \e string \b activity
 	 */
-
 
 	static public function submit($params) {
 
@@ -84,7 +82,6 @@ class Enotify {
 		$sender_name = get_config('system', 'from_email_name');
 		if(! $sender_name)
 			$sender_name = \Zotlabs\Lib\System::get_site_name();
-
 
 		$additional_mail_header = '';
 
@@ -185,7 +182,6 @@ class Enotify {
 			return;
 		}
 
-
 		// if it's a post figure out who's post it is.
 
 		$p = null;
@@ -203,7 +199,6 @@ class Enotify {
 		$item_post_type = item_post_type($p[0]);
 //		$private = $p[0]['item_private'];
 		$parent_id = $p[0]['id'];
-
 		$parent_item = $p[0];
 
 		//$possess_desc = str_replace('<!item_type!>',$possess_desc);
@@ -232,10 +227,10 @@ class Enotify {
 				$itemlink,
 				$item_post_type);
 
-		// Some mail softwares relies on subject field for threading.
+		// Some mail software relies on subject field for threading.
 		// So, we cannot have different subjects for notifications of the same thread.
 		// Before this we have the name of the replier on the subject rendering
-		// differents subjects for messages on the same thread.
+		// different subjects for messages on the same thread.
 
 		if($moderated)
 			$subject = sprintf( t('[$Projectname:Notify] Moderated Comment to conversation #%1$d by %2$s'), $parent_id, $sender['xchan_name']);
@@ -251,7 +246,6 @@ class Enotify {
 			$tsitelink .= "\n\n" . sprintf( t('Please visit %s to approve or reject this comment.'), z_root() . '/moderate' );
 			$hsitelink .= "<br><br>" . sprintf( t('Please visit %s to approve or reject this comment.'), '<a href="' . z_root() . '/moderate">' . z_root() . '/moderate</a>' );
 		}
-
 	}
 
 	elseif (isset($params['type']) && $params['type'] === NOTIFY_LIKE) {
@@ -281,7 +275,6 @@ class Enotify {
 			pop_lang();
 			return;
 		}
-
 
 		// if it's a post figure out who's post it is.
 
@@ -322,10 +315,10 @@ class Enotify {
 			return;
 		}
 
-		// Some mail softwares relies on subject field for threading.
+		// Some mail software relies on subject field for threading.
 		// So, we cannot have different subjects for notifications of the same thread.
 		// Before this we have the name of the replier on the subject rendering
-		// differents subjects for messages on the same thread.
+		// different subjects for messages on the same thread.
 
 		$subject = sprintf( t('[$Projectname:Notify] Like received to conversation #%1$d by %2$s'), $parent_id, $sender['xchan_name']);
 		$preamble = sprintf( t('%1$s liked an item/conversation you created'), $sender['xchan_name']);
@@ -335,8 +328,6 @@ class Enotify {
 		$tsitelink = sprintf( $sitelink, $siteurl );
 		$hsitelink = sprintf( $sitelink, '<a href="' . $siteurl . '">' . $sitename . '</a>');
 	}
-
-
 
 	elseif(isset($params['type']) && $params['type'] === NOTIFY_WALL) {
 		$subject = sprintf( t('[$Projectname:Notify] %s posted to your profile wall') , $sender['xchan_name']);
@@ -472,7 +463,6 @@ class Enotify {
 	$tsitelink = $h['tsitelink'];
 	$hsitelink = $h['hsitelink'];
 	$itemlink  = $h['itemlink'];
-
 
 	require_once('include/html2bbcode.php');
 
@@ -730,11 +720,8 @@ class Enotify {
 			'additionalMailHeader' => $datarray['headers'],
 		));
 	}
-
 	pop_lang();
-
 }
-
 
 	/**
 	 * @brief Send a multipart/alternative message with Text and HTML versions.
@@ -857,7 +844,6 @@ class Enotify {
 			}
 		}
 
-
 		// convert this logic into a json array just like the system notifications
 
 		$who = (($item['verb'] === ACTIVITY_SHARE) ? 'owner' : 'author');
@@ -914,9 +900,7 @@ class Enotify {
 			'notify_id' => (($tt['otype'] == 'item') ? $tt['id'] : ''),
 			'message' => $message
 		];
-
 		return $x;
-
 	}
 
 	static public function format_intros($rr) {
@@ -931,7 +915,6 @@ class Enotify {
 			'hclass' => ('notify-unseen'),
 			'message' => t('added your channel')
 		];
-
 	}
 
 	static public function format_files($rr) {
@@ -946,7 +929,6 @@ class Enotify {
 			'hclass' => ('notify-unseen'),
 			'message' => t('shared a file with you')
 		];
-
 	}
 
 	static public function format_mail($rr) {
@@ -961,7 +943,6 @@ class Enotify {
 			'hclass' => (intval($rr['mail_seen']) ? 'notify-seen' : 'notify-unseen'),
 			'message' => t('sent you a direct message'),
 		];
-
 	}
 
 	static public function format_all_events($rr) {
@@ -981,8 +962,6 @@ class Enotify {
 			'hclass'      => (($today) ? 'notify-unseen bg-warning' : 'notify-unseen'),
 			'message'     => t('created an event')
 		];
-
-
 	}
 
 	static public function format_register($rr) {
@@ -996,6 +975,5 @@ class Enotify {
 			'hclass' => ('notify-unseen'),
 			'message' => t('status verified')
 		];
-
 	}
 }

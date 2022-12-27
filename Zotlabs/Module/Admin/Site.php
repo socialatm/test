@@ -2,14 +2,12 @@
 
 namespace Zotlabs\Module\Admin;
 
-
 class Site {
-
 
 	/**
 	 * @brief POST handler for Admin Site Page.
-	 *
 	 */
+
 	function post(){
 		// [hilmar->
 		$this->isajax = is_ajax();
@@ -112,7 +110,6 @@ class Site {
 			$this->msgbg .= 'ZAR0131E,' . t('Invalid input') . $this->eol;
 			$this->error++;
 		} else {
-
 			$this->duty();
 
 			if ($this->isajax) {
