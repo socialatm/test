@@ -70,9 +70,9 @@
 			
 		</div>
 
-			{{else}} <!-- I think this is the banner part that we want to make go away -->
-				<div id="banner" class="navbar-text d-lg-none">{{$banner}}</div>
-			{{/if}}
+		{{else}} <!-- I think this is the banner part that we want to make go away -->
+			<div id="banner" class="navbar-text d-lg-none">{{$banner}}</div>
+		{{/if}}
 
 
 		<div class="navbar-toggler-right">
