@@ -25,18 +25,14 @@ class Site {
 
 		check_form_security_token_redirectOnErr('/admin/site', 'admin_site');
 
-		$sitename 			=	((x($_POST,'sitename'))			? notags(trim($_POST['sitename']))			: '');
-
-		$banner				=	((x($_POST,'banner'))			? trim($_POST['banner'])				: false);
+		$sitename =	((x($_POST,'sitename')) ? notags(trim($_POST['sitename'])) 	: '');
+		$banner	= ((x($_POST,'banner')) ? trim($_POST['banner']) : false);
 
 		$admininfo			=	((x($_POST,'admininfo'))		? trim($_POST['admininfo'])				: false);
 		$siteinfo			=	((x($_POST,'siteinfo'))		    ? trim($_POST['siteinfo'])				: '');
 		$language			=	((x($_POST,'language'))			? notags(trim($_POST['language']))			: '');
 		$theme				=	((x($_POST,'theme'))			? notags(trim($_POST['theme']))				: '');
-		//		$theme_mobile			=	((x($_POST,'theme_mobile'))		? notags(trim($_POST['theme_mobile']))			: '');
-		//		$site_channel			=	((x($_POST,'site_channel'))	? notags(trim($_POST['site_channel']))				: '');
 		$maximagesize		=	((x($_POST,'maximagesize'))		? intval(trim($_POST['maximagesize']))				:  0);
-
 		$register_policy	=	((x($_POST,'register_policy'))	? intval(trim($_POST['register_policy']))	:  0);
 		$register_wo_email	=	((x($_POST,'register_wo_email'))	? intval(trim($_POST['register_wo_email']))	:  0);
 		$minimum_age           = ((x($_POST,'minimum_age'))          ? intval(trim($_POST['minimum_age']))    : 18);
@@ -45,7 +41,6 @@ class Site {
 		$invitation_only	= ((x($_POST,'invitation_only'))		? True	: False);
 		$invitation_also	= ((x($_POST,'invitation_also'))		? True	: False);
 		$abandon_days	=	((x($_POST,'abandon_days'))	    ? intval(trim($_POST['abandon_days']))	    :  0);
-
 		$register_text		=	((x($_POST,'register_text'))	? notags(trim($_POST['register_text']))		: '');
 		$site_sellpage		=	((x($_POST,'site_sellpage'))	? notags(trim($_POST['site_sellpage']))		: '');
 		$site_location		=	((x($_POST,'site_location'))	? notags(trim($_POST['site_location']))		: '');
