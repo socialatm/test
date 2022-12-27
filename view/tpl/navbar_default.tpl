@@ -53,8 +53,8 @@
 <!-- play here -->
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary openBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
+<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Help
 </button>
 
 
@@ -497,8 +497,9 @@
 
 <!-- end modal -->
 
+<!-- this script runs the help modal -->
 <script>
-$('.openBtn').on('click',function(){
+$('.helpBtn').on('click',function(){
     $('.modal-body').load('/doc/context/en/channel/help.html',function(){
         $('#exampleModal').modal({show:true});
     });
