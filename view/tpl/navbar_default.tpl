@@ -1,7 +1,7 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-primary">
 	<div class="container-fluid flex-nowrap">
 		{{if $userinfo}}
-		<div class="d-flex" style="max-width: 50%">
+		<div class="d-flex">
 			<div class="dropdown">
 				<div class="fakelink usermenu" data-bs-toggle="dropdown">
 					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}">
