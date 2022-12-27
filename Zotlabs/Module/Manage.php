@@ -60,65 +60,13 @@ class Manage extends \Zotlabs\Web\Controller {
 				$channels[$x]['default'] = (($channels[$x]['channel_id'] == $account['account_default_channel']) ? "1" : '');
 				$channels[$x]['default_links'] = '1';
 
-				/* this is not currently implemented in the UI and probably should not (performance)
-				$c = q("SELECT id, item_wall FROM item
-					WHERE item_unseen = 1 and uid = %d " . item_normal(),
-					intval($channels[$x]['channel_id'])
-				);
-
-				if($c) {
-					foreach ($c as $it) {
-						if(intval($it['item_wall']))
-							$channels[$x]['home'] ++;
-						else
-							$channels[$x]['network'] ++;
-					}
-				}
-				*/
-
 				$intr = q("SELECT COUNT(abook.abook_id) AS total FROM abook left join xchan on abook.abook_xchan = xchan.xchan_hash where abook_channel = %d and abook_pending = 1 and abook_self = 0 and abook_ignored = 0 and xchan_deleted = 0 and xchan_orphan = 0 ",
 					intval($channels[$x]['channel_id'])
 				);
 
 				if($intr)
 					$channels[$x]['intros'] = intval($intr[0]['total']);
-
-				/* this is not currently implemented in the UI and probably should not (performance)
-				$events = q("SELECT etype, dtstart, adjust FROM event
-					WHERE event.uid = %d AND dtstart < '%s' AND dtstart > '%s' and dismissed = 0
-					ORDER BY dtstart ASC ",
-					intval($channels[$x]['channel_id']),
-					dbesc(datetime_convert('UTC', date_default_timezone_get(), 'now + 7 days')),
-					dbesc(datetime_convert('UTC', date_default_timezone_get(), 'now - 1 days'))
-				);
-
-				if($events) {
-					$channels[$x]['all_events'] = count($events);
-
-					if($channels[$x]['all_events']) {
-						$str_now = datetime_convert('UTC', date_default_timezone_get(), 'now', 'Y-m-d');
-						foreach($events as $e) {
-							$bd = false;
-							if($e['etype'] === 'birthday') {
-								$channels[$x]['birthdays'] ++;
-								$bd = true;
-							}
-							else {
-								$channels[$x]['events'] ++;
-							}
-							if(datetime_convert('UTC', ((intval($e['adjust'])) ? date_default_timezone_get() : 'UTC'), $e['dtstart'], 'Y-m-d') === $str_now) {
-								$channels[$x]['all_events_today'] ++;
-								if($bd)
-									$channels[$x]['birthdays_today'] ++;
-								else
-									$channels[$x]['events_today'] ++;
-							}
-						}
-					}
-				}
-				*/
 			}
-
 		}
 
 		$r = q("select count(channel_id) as total from channel where channel_account_id = %d and channel_removed = 0",
@@ -131,7 +79,6 @@ class Manage extends \Zotlabs\Web\Controller {
 		else {
 			$channel_usage_message = '';
 	 	}
-
 
 		$create = array( 'new_channel', t('Create a new channel'), t('Create New'));
 
@@ -171,9 +118,6 @@ class Manage extends \Zotlabs\Web\Controller {
 			'$delegated_desc'   => t('Delegated Channel'),
 			'$delegates'        => $delegates
 		));
-
 		return $o;
-
 	}
-
 }
