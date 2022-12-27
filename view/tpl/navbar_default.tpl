@@ -499,7 +499,7 @@
 
 <script>
 $('.openBtn').on('click',function(){
-    $('.modal-body').load('https://dev.hubzilla.social/doc/context/en/channel/help.html',function(){
+    $('.modal-body').load('/doc/context/en/channel/help.html',function(){
         $('#myModal').modal({show:true});
     });
 });
