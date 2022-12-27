@@ -113,7 +113,7 @@ input[type=text], textarea {
 	margin-left: 8px;
 }
 
-/* contextual help */
+/* contextual help  FIXME*/
 .contextual-help-content {
 	display: none;
 }

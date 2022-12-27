@@ -7,7 +7,7 @@
 					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}">
 					<i class="fa fa-caret-down"></i>
 				</div>
-				{{if $is_owner}}
+				{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
 				<div class="dropdown-menu">
 					{{foreach $nav.usermenu as $usermenu}}
 					<a class="dropdown-item{{if $usermenu.2}} active{{/if}}"  href="{{$usermenu.0}}" title="{{$usermenu.3}}" role="menuitem" id="{{$usermenu.4}}">{{$usermenu.1}}</a>
@@ -39,51 +39,61 @@
 					<a class="dropdown-item" href="{{$nav.logout.0}}" title="{{$nav.logout.3}}" role="menuitem" id="{{$nav.logout.4}}">{{$nav.logout.1}}</a>
 					{{/if}}
 				</div>
-				{{/if}}
-				{{if ! $is_owner}}
+				{{/if}} <!-- end of the left side dropdown menu under the user profile pic -->
+
+				{{if ! $is_owner}} <!-- this is the remote user menu with take me home & log me out of this site -->
 				<div class="dropdown-menu" role="menu" aria-labelledby="avatar">
 					<a class="dropdown-item" href="{{$nav.rusermenu.0}}" role="menuitem">{{$nav.rusermenu.1}}</a>
 					<a class="dropdown-item" href="{{$nav.rusermenu.2}}" role="menuitem">{{$nav.rusermenu.3}}</a>
 				</div>
-				{{/if}}
+				{{/if}} <!-- end the remote user menu with take me home & log me out of this site -->
+
 			</div>
-			{{if $sel.name}}
-			<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
+			{{if $sel.name}} <!-- start print the site location -->
+				<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
 				<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
 					{{$sel.name}}
 					{{if $sitelocation}}
 					<br><small>{{$sitelocation}}</small>
 					{{/if}}
 				</a>
-			</div>
-			{{if $settings_url}}
-			<div id="nav-app-settings-link-wrapper" class="navbar-nav">
+				</div>
+			{{/if}} <!-- end print the site location -->
+
+			{{if $settings_url}} <!-- start the setting link with the cog icon -->
+				<div id="nav-app-settings-link-wrapper" class="navbar-nav">
 				<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
 					<i class="fa fa-fw fa-cog"></i>
 				</a>
-			</div>
-			{{/if}}
-			{{/if}}
+				</div>
+			{{/if}} <!-- end the setting link with the cog icon -->
+			
 		</div>
-		{{else}}
-		<div id="banner" class="navbar-text d-lg-none">{{$banner}}</div>
-		{{/if}}
+
+			{{else}} <!-- I think this is the banner part that we want to make go away -->
+				<div id="banner" class="navbar-text d-lg-none">{{$banner}}</div>
+			{{/if}}
+
+
 		<div class="navbar-toggler-right">
-			{{if $nav.help.6}}
+
+			{{if $nav.help.6}} <!-- this is the context help that needs to be turned into a modal -->
 			<button id="context-help-btn" class="navbar-toggler border-0" type="button" onclick="contextualHelp(); return false;">
 				<i class="fa fa-question-circle"></i>
 			</button>
-			{{/if}}
+			{{/if}} <!-- end this is the context help that needs to be turned into a modal -->
 			
-			{{if $localuser || $nav.pubs}}
+			{{if $localuser || $nav.pubs}} <!-- start notifications -->
 			<button id="notifications-btn-1" type="button" class="navbar-toggler border-0 notifications-btn">
 				<i id="notifications-btn-icon-1" class="fa fa-exclamation-circle notifications-btn-icon"></i>
 			</button>
-			{{/if}}
+			{{/if}} <!-- end notifications -->
+
 			<button id="menu-btn" class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#app-bin">
 				<i class="fa fa-bars"></i>
 			</button>
 		</div>
+
 		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
 			<ul class="navbar-nav">
 				{{if $nav.login && !$userinfo}}
@@ -111,7 +121,7 @@
 				{{/if}}
 			</ul>
 
-			<div id="banner" class="navbar-text">{{$banner}}</div>
+			<div id="banner" class="navbar-text">{{$banner}}</div> <!-- I think this is the banner part that we want to make go away -->
 
 			<ul id="nav-right" class="navbar-nav">
 				<li class="nav-item collapse clearfix" id="nav-search">
@@ -135,13 +145,15 @@
 					<a class="nav-link text-white notifications-btn" href="#"><i id="notifications-btn-icon" class="fa fa-exclamation-circle  notifications-btn-icon"></i></a>
 				</li>
 				{{/if}}
+
 				{{if $navbar_apps}}
-				{{foreach $navbar_apps as $navbar_app}}
-				<li class="nav-app-sortable">
-					{{$navbar_app}}
-				</li>
-				{{/foreach}}
+					{{foreach $navbar_apps as $navbar_app}}
+						<li class="nav-app-sortable">
+							{{$navbar_app}}
+						</li>
+					{{/foreach}}
 				{{/if}}
+
 				<li class="nav-item dropdown" id="app-menu">
 					<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#app-bin" aria-controls="app-bin"><i class="fa fa-fw fa-bars"></i></a>
 				</li>
@@ -241,6 +253,7 @@
 	</div>
 </div>
 {{if $is_owner}}
+	
 <script>
 	var app_bin = document.getElementById('app-bin-container');
 	new Sortable(app_bin, {
@@ -412,7 +425,6 @@
 	$('#app-bin-trash').on('dragleave', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-
 		$('#app-bin-container a[href=\'' + app_url + '\']').fadeIn();
 
 	});
