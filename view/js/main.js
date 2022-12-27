@@ -578,7 +578,7 @@ function markItemRead(itemId) {
 }
 
 /* start contextual_help */
-
+/*
 function contextualHelp() {
 	var container = $("#contextual-help-content");
 
@@ -615,7 +615,7 @@ function contextualHelpFocus(target, openSidePanel) {
 	    $(target).parent().css('position', css_position);
         }
 }
-
+*/
 /* end contextual_help */
 
 function updatePageItems(mode, data) {

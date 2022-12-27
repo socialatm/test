@@ -114,6 +114,7 @@ input[type=text], textarea {
 }
 
 /* contextual help  FIXME*/
+/*
 .contextual-help-content {
 	display: none;
 }
@@ -146,7 +147,7 @@ input[type=text], textarea {
 .contextual-help-tool i {
 	font-size: 1.05rem;
 }
-
+*/
 /* contextual help end */
 
 /* jumping dots */
