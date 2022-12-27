@@ -53,7 +53,7 @@
 <!-- play here -->
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contextual-help-content">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="https://dev.hubzilla.social/doc/context/en/channel/help.html">
   Launch demo modal
 </button>
 
