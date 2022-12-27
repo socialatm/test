@@ -500,7 +500,7 @@
 <script>
 $('.openBtn').on('click',function(){
     $('.modal-body').load('/doc/context/en/channel/help.html',function(){
-        $('#myModal').modal({show:true});
+        $('#exampleModal').modal({show:true});
     });
 });
 </script>
