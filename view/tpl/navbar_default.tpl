@@ -146,7 +146,7 @@
 				</li>
 				{{/if}}
 				<!-- end notifications button -->
-{{*
+
 				{{if $navbar_apps}}
 					{{foreach $navbar_apps as $navbar_app}}
 						<li class="nav-app-sortable">
@@ -154,7 +154,7 @@
 						</li>
 					{{/foreach}}
 				{{/if}}
-				*}}
+				
 
 				<!-- start old app menu -->
 				<li class="nav-item dropdown" id="app-menu">
