@@ -327,7 +327,7 @@ function nav($template = 'default') {
 
 	$arr = get_defined_vars();
 
-	print_r($arr); exit;
+	print("<pre>".print_r($arr,true)."</pre>");
 }
 
 // Set a menu item in navbar as selected
