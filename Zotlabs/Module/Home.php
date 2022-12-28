@@ -10,7 +10,6 @@ use Zotlabs\Web\HTTPSig;
 require_once('include/items.php');
 require_once('include/conversation.php');
 
-
 class Home extends Controller {
 
 	function init() {
@@ -40,7 +39,7 @@ class Home extends Controller {
 			if (!$dest)
 				$dest = get_config('system', 'startpage');
 			if (!$dest)
-				$dest = z_root() . '/hq';
+				$dest = z_root() . '/network';
 
 			goaway($dest);
 		}
@@ -60,7 +59,6 @@ class Home extends Controller {
 		if (get_account_id() && !$splash) {
 			goaway(z_root() . '/new_channel');
 		}
-
 	}
 
 	function get($update = 0, $load = false) {
@@ -108,7 +106,5 @@ class Home extends Controller {
 			$o .= login(true);
 
 		return $o;
-
 	}
-
 }
