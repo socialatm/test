@@ -207,62 +207,6 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 
 	</div>
-
-	<!-- start old offcanvas body -->
-{{*
-
-	<div class="offcanvas-body">
-
-		{{if $channel_apps.0}}
-		<div class="text-uppercase text-muted">
-			{{$channelapps}}
-		</div>
-		<div class="nav nav-pills flex-column">
-			{{foreach $channel_apps as $channel_app}}
-			{{$channel_app}}
-			{{/foreach}}
-		</div>
-		{{/if}}
-
-		{{if $navbar_apps.0}}
-		<div class="d-lg-none dropdown-header text-uppercase text-muted">
-			{{$pinned_apps}}
-		</div>
-		<div id="nav-app-bin-container" class="d-lg-none nav nav-pills flex-column">
-			{{foreach $navbar_apps as $navbar_app}}
-				{{$navbar_app|replace:'fa':'generic-icons-nav fa'}}
-			{{/foreach}}
-		</div>
-		{{/if}}
-
-		{{if $is_owner}}
-		<div class="text-uppercase text-muted nav-link">
-			{{$featured_apps}}
-		</div>
-
-		<div id="app-bin-container" data-token="{{$form_security_token}}" class="nav nav-pills flex-column">
-			{{foreach $nav_apps as $nav_app}}
-				{{$nav_app}}
-			{{/foreach}}
-		</div>
-
-		<hr>
-
-		{{else}}
-		<div class="text-uppercase text-muted nav-link">
-			{{$sysapps}}
-		</div>
-		<div class="nav nav-pills flex-column">
-			{{foreach $nav_apps as $nav_app}}
-				{{$nav_app}}
-			{{/foreach}}
-		</div>
-		{{/if}}
-
-	</div>
-	*}}
-	<!-- end old offcanvas-body -->
-
 </div>
 
 <!-- start javascript -->
