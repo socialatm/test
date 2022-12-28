@@ -113,43 +113,6 @@ input[type=text], textarea {
 	margin-left: 8px;
 }
 
-/* contextual help  FIXME*/
-/*
-.contextual-help-content {
-	display: none;
-}
-
-.contextual-help-content-open {
-	display: block;
-	position: fixed;
-	top: 3.35rem;
-	width: 100%;
-	max-height: 50%;
-	padding: 1rem;
-	border-bottom: #e0e0e0 1px solid;
-	overflow: auto;
-}
-
-.contextual-help-content dd {
-	margin-bottom: 1em;
-}
-
-.contextual-help-tool {
-	padding: 7px;
-	opacity: .5;
-}
-
-.contextual-help-tool:hover {
-	opacity: 1;
-	text-decoration: none;
-}
-
-.contextual-help-tool i {
-	font-size: 1.05rem;
-}
-*/
-/* contextual help end */
-
 /* jumping dots */
 .jumping-dots span {
 	position: relative;
