@@ -42,7 +42,7 @@ abbr {
 	border-bottom: none;
 }
 
-/* icons */
+/* icons 
 
 a,
 .fakelink {
@@ -61,6 +61,7 @@ a:focus,
 .cursor-pointer {
 	cursor: pointer;
 }
+*/
 
 input, optgroup, select, textarea {
 	font-size: 0.9rem !important;
