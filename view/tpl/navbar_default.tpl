@@ -485,7 +485,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        ...{{$nav.help.5}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -497,7 +497,7 @@
 
 <!-- end modal -->
 
-<!-- this script runs the help modal -->
+<!-- this script runs the help modal 
 <script>
 $('.helpBtn').on('click',function(){
     $('.modal-body').load('/doc/context/en/channel/help.html',function(){
@@ -505,3 +505,4 @@ $('.helpBtn').on('click',function(){
     });
 });
 </script>
+-->
