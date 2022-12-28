@@ -92,9 +92,11 @@
 			</button>
 			{{/if}} <!-- end notifications -->
 
+			<!-- apps -->
 			<button id="menu-btn" class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#app-bin">
 				<i class="fa fa-bars"></i>
 			</button>
+			<!-- end apps -->
 		</div>
 
 		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
@@ -137,11 +139,13 @@
 					<a class="nav-link" href="#nav-search" title="{{$nav.search.3}}" onclick="openMenu('nav-search'); closeMenu('nav-search-btn'); $('#nav-search-text').focus(); return false;"><i class="fa fa-fw fa-search"></i></a>
 				</li>
 
+				<!-- notifications button -->
 				{{if $localuser || $nav.pubs}}
 				<li id="notifications-btn" class="nav-item d-xl-none">
 					<a class="nav-link text-white notifications-btn" href="#"><i id="notifications-btn-icon" class="fa fa-exclamation-circle  notifications-btn-icon"></i></a>
 				</li>
 				{{/if}}
+				<!-- end notifications button -->
 
 				{{if $navbar_apps}}
 					{{foreach $navbar_apps as $navbar_app}}
@@ -195,7 +199,9 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 
 	</div>
+
 	<div class="offcanvas-body">
+
 		{{if $channel_apps.0}}
 		<div class="text-uppercase text-muted">
 			{{$channelapps}}
@@ -206,6 +212,7 @@
 			{{/foreach}}
 		</div>
 		{{/if}}
+
 		{{if $navbar_apps.0}}
 		<div class="d-lg-none dropdown-header text-uppercase text-muted">
 			{{$pinned_apps}}
@@ -216,16 +223,20 @@
 			{{/foreach}}
 		</div>
 		{{/if}}
+
 		{{if $is_owner}}
 		<div class="text-uppercase text-muted nav-link">
 			{{$featured_apps}}
 		</div>
+
 		<div id="app-bin-container" data-token="{{$form_security_token}}" class="nav nav-pills flex-column">
 			{{foreach $nav_apps as $nav_app}}
 				{{$nav_app}}
 			{{/foreach}}
 		</div>
+
 		<hr>
+
 		<div class="nav nav-pills flex-column">
 			<a class="nav-link" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
 		</div>
@@ -239,10 +250,14 @@
 			{{/foreach}}
 		</div>
 		{{/if}}
+
 	</div>
-</div>
-{{if $is_owner}}
+	<!-- end offcanvas-body -->
 	
+</div>
+
+<!-- start javascript -->
+{{if $is_owner}}
 <script>
 	var app_bin = document.getElementById('app-bin-container');
 	new Sortable(app_bin, {
@@ -445,6 +460,7 @@
 	});
 </script>
 {{/if}}
+<!-- end javascript -->
 
 <!-- Modal for contextual help -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
