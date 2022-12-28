@@ -324,10 +324,11 @@ function nav($template = 'default') {
 		unset($_SESSION['reload_avatar']);
 	}
 	call_hooks('page_header', App::$page['nav']);
-
+/*
 	$arr = get_defined_vars();
 
 	print("<pre>".print_r($arr,true)."</pre>");
+	*/
 }
 
 // Set a menu item in navbar as selected
