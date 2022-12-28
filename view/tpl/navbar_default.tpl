@@ -50,20 +50,6 @@
 
 			</div>
 
-<!-- play here -->
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Help
-</button>
-
-
-
-
-
-
-<!-- end play here -->
-
 			{{if $sel.name}} <!-- start print the site location -->
 				<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
 				<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
@@ -82,6 +68,12 @@
 				</a>
 				</div>
 			{{/if}} <!-- end the setting link with the cog icon -->
+
+			<!-- Button trigger for contextual help modal -->
+			<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  				Help
+			</button>
+			<!-- end Button trigger for contextual help modal -->
 			
 		</div>
 		{{/if}}
@@ -144,11 +136,7 @@
 				<li class="nav-item" id="nav-search-btn">
 					<a class="nav-link" href="#nav-search" title="{{$nav.search.3}}" onclick="openMenu('nav-search'); closeMenu('nav-search-btn'); $('#nav-search-text').focus(); return false;"><i class="fa fa-fw fa-search"></i></a>
 				</li>
-				{{if $nav.help.6}}
-				<li class="nav-item dropdown {{$sel.help}}">
-					<a class="nav-link {{$nav.help.2}}" target="hubzilla-help" href="{{$nav.help.0}}" title="{{$nav.help.3}}" id="{{$nav.help.4}}" onclick="contextualHelp(); return false;"><i class="fa fa-fw fa-question-circle"></i></a>
-				</li>
-				{{/if}}
+
 				{{if $localuser || $nav.pubs}}
 				<li id="notifications-btn" class="nav-item d-xl-none">
 					<a class="nav-link text-white notifications-btn" href="#"><i id="notifications-btn-icon" class="fa fa-exclamation-circle  notifications-btn-icon"></i></a>
@@ -168,26 +156,8 @@
 				</li>
 			</ul>
 		</div>
-		{{*
-		{{if $nav.help.6}}
-		<div id="contextual-help-content-orig" class="contextual-help-content-orig">
-			{{$nav.help.5}}
-			<div class="float-end">
-				<a class="btn btn-primary btn-sm" target="hubzilla-help" href="{{$nav.help.0}}" title="{{$nav.help.3}}"><i class="fa fa-question"></i>&nbsp;{{$fulldocs}}</a>
-				<a class="contextual-help-tool" href="#" onclick="contextualHelp(); return false;"><i class="fa fa-times"></i></a>
-			</div>
-		</div>
-		{{/if}}
-		*}}
 	</div>
 </nav>
-
-<!-- try this -->
-
-
-
-
-<!-- end try this -->
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="app-bin" aria-labelledby="app-bin-label">
 	<div class="offcanvas-header">
@@ -476,7 +446,7 @@
 </script>
 {{/if}}
 
-<!-- Modal -->
+<!-- Modal for contextual help -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -485,7 +455,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...{{$nav.help.5}}
+        {{$nav.help.5}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -494,15 +464,4 @@
     </div>
   </div>
 </div>
-
-<!-- end modal -->
-
-<!-- this script runs the help modal 
-<script>
-$('.helpBtn').on('click',function(){
-    $('.modal-body').load('/doc/context/en/channel/help.html',function(){
-        $('#exampleModal').modal({show:true});
-    });
-});
-</script>
--->
+<!-- end modal for contextual help -->
