@@ -14,9 +14,6 @@ class Search extends Controller {
 	function init() {
 		if (x($_REQUEST, 'search'))
 			App::$data['search'] = escape_tags($_REQUEST['search']);
-
-			print("<pre>".print_r($_REQUEST['search'],true)."</pre>");
-			exit;
 	}
 
 	function get($update = 0, $load = false) {
