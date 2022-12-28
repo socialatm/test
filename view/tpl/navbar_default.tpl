@@ -73,7 +73,7 @@
 			{{/if}} <!-- end the setting link with the cog icon -->
 
 			<!-- start new search -->
-			<form class="d-flex" role="search" method="get" action="search">
+			<form class="d-flex" role="search" method="post" action="search">
 				<input class="form-control me-2" id="nav-search-text" type="text" value="" placeholder="Search" aria-label="Search" required>
 			<button class="btn btn-primary" type="submit">Search</button>
 		    </form>
