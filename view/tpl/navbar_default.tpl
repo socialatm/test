@@ -209,6 +209,7 @@
 	</div>
 
 	<!-- start old offcanvas body -->
+{{*
 
 	<div class="offcanvas-body">
 
@@ -259,6 +260,7 @@
 		{{/if}}
 
 	</div>
+	*}}
 	<!-- end old offcanvas-body -->
 
 </div>
