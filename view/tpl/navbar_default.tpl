@@ -69,6 +69,13 @@
 				</div>
 			{{/if}} <!-- end the setting link with the cog icon -->
 
+			<!-- start new apps button -->
+			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#apppModal">
+  				Apps
+			</button>
+
+			<!-- end new apps button -->
+
 			<!-- Button trigger for contextual help modal -->
 			<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#helpModal">
   				Help
@@ -253,7 +260,7 @@
 
 	</div>
 	<!-- end offcanvas-body -->
-	
+
 </div>
 
 <!-- start javascript -->
