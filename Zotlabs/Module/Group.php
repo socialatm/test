@@ -192,7 +192,6 @@ class Group extends Controller {
 			);
 			if(count($r))
 				$change = base64url_decode(argv(2));
-
 		}
 
 		if((argc() > 1) && (intval(argv(1)))) {
@@ -252,7 +251,6 @@ class Group extends Controller {
 				'$form_security_token_drop' => get_form_security_token("group_drop"),
 				'$pgrp_extras' => $pgrp_extras,
 			);
-
 		}
 
 		if(! isset($group))

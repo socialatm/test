@@ -47,7 +47,6 @@ class Help extends \Zotlabs\Web\Controller {
 			return $o;
 		}
 
-
 		if(argc() > 2 && argv(argc()-2) === 'assets') {
 			$path = '';
 			for($x = 1; $x < argc(); $x ++) {
@@ -105,5 +104,4 @@ class Help extends \Zotlabs\Web\Controller {
 			'$language'   => $language
 		));
 	}
-
 }

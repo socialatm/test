@@ -4,7 +4,6 @@ namespace Zotlabs\Module;
  * load view/theme/$current_theme/style.php with Hubzilla context
  */
  
-
 class View extends \Zotlabs\Web\Controller {
 
 	function init() {
@@ -16,5 +15,4 @@ class View extends \Zotlabs\Web\Controller {
 			require_once("view/theme/$theme/php/style.php");	
 		killme();
 	}
-	
 }
