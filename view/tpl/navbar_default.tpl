@@ -73,7 +73,6 @@
 			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
   				Apps
 			</button>
-
 			<!-- end new apps button -->
 
 			<!-- Button trigger for contextual help modal -->
@@ -148,7 +147,7 @@
 
 				<!-- notifications button -->
 				{{if $localuser || $nav.pubs}}
-				<li id="notifications-btn" class="nav-item d-xl-none">
+				<li id="notifications-btn" class="nav-item">
 					<a class="nav-link text-white notifications-btn" href="#"><i id="notifications-btn-icon" class="fa fa-exclamation-circle  notifications-btn-icon"></i></a>
 				</li>
 				{{/if}}
@@ -207,7 +206,7 @@
 
 	</div>
 
-	<!-- start offcanvas body -->
+	<!-- start old offcanvas body -->
 
 	<div class="offcanvas-body">
 
@@ -261,7 +260,7 @@
 		{{/if}}
 
 	</div>
-	<!-- end offcanvas-body -->
+	<!-- end old offcanvas-body -->
 
 </div>
 
