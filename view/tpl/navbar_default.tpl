@@ -152,11 +152,7 @@
 				{{/if}}
 				
 
-				<!-- start old app menu -->
-				<li class="nav-item dropdown" id="app-menu">
-					<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#app-bin" aria-controls="app-bin"><i class="fa fa-fw fa-bars"></i></a>
-				</li>
-				<!-- end old app menu -->
+				
 			</ul>
 		</div>
 	</div>
