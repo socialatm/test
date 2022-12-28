@@ -86,12 +86,6 @@
 
 		<div class="navbar-toggler-right">
 
-			{{if $nav.help.6}} <!-- this is the context help that needs to be turned into a modal -->
-			<button id="context-help-btn" class="navbar-toggler border-0" type="button" onclick="contextualHelp(); return false;">
-				<i class="fa fa-question-circle"></i>
-			</button>
-			{{/if}} <!-- end this is the context help that needs to be turned into a modal -->
-			
 			{{if $localuser || $nav.pubs}} <!-- start notifications -->
 			<button id="notifications-btn-1" type="button" class="navbar-toggler border-0 notifications-btn">
 				<i id="notifications-btn-icon-1" class="fa fa-exclamation-circle notifications-btn-icon"></i>
@@ -152,7 +146,7 @@
 				</li>
 				{{/if}}
 				<!-- end notifications button -->
-
+{{*
 				{{if $navbar_apps}}
 					{{foreach $navbar_apps as $navbar_app}}
 						<li class="nav-app-sortable">
@@ -160,6 +154,7 @@
 						</li>
 					{{/foreach}}
 				{{/if}}
+				*}}
 
 				<!-- start old app menu -->
 				<li class="nav-item dropdown" id="app-menu">
