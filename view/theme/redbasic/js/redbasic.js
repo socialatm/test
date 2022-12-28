@@ -1,6 +1,4 @@
-/**
- * redbasic theme specific JavaScript
- */
+/* redbasic theme specific JavaScript */
 
 $(document).ready(function() {
 
