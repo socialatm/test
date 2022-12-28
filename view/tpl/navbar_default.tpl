@@ -1,5 +1,8 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary text-white">
 	<div class="container-fluid flex-nowrap">
+		<a class="navbar-brand" href="{{$baseurl}}">
+			<img src="/images/hz-white-32.png" alt="Bootstrap" width="30" height="24">
+  		</a>
 		{{if $userinfo}}
 		<div class="d-flex">
 			<div class="dropdown">
