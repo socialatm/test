@@ -91,15 +91,10 @@
 				<i id="notifications-btn-icon-1" class="fa fa-exclamation-circle notifications-btn-icon"></i>
 			</button>
 			{{/if}} <!-- end notifications -->
-
-			<!-- apps -->
-			<button id="menu-btn" class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#app-bin">
-				<i class="fa fa-bars"></i>
-			</button>
-			<!-- end apps -->
 		</div>
 
 		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
+			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
 				{{if $nav.login && !$userinfo}}
 				<li class="nav-item d-lg-flex">
@@ -125,6 +120,7 @@
 				</li>
 				{{/if}}
 			</ul>
+			<!-- end login/logout/register -->
 
 			<ul id="nav-right" class="navbar-nav">
 				<li class="nav-item collapse clearfix" id="nav-search">
