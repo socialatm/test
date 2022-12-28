@@ -145,17 +145,6 @@
 				</li>
 				{{/if}}
 				<!-- end notifications button -->
-
-				{{if $navbar_apps}}
-					{{foreach $navbar_apps as $navbar_app}}
-						<li class="nav-app-sortable">
-							{{$navbar_app}}
-						</li>
-					{{/foreach}}
-				{{/if}}
-				
-
-				
 			</ul>
 		</div>
 	</div>
