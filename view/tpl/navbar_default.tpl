@@ -171,6 +171,8 @@
 	</div>
 </nav>
 
+<!-- can we delete this ? -->
+{{*
 <div class="offcanvas offcanvas-end" tabindex="-1" id="app-bin" aria-labelledby="app-bin-label">
 	<div class="offcanvas-header">
 		{{if $nav.login && !$userinfo}}
@@ -201,13 +203,15 @@
 			</div>
 			{{/if}}
 		</div>
-		<i id="app-bin-trash" class="fa fa-2x fa-fw fa-trash-o"></i>
+		
 		{{/if}}
 
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 
 	</div>
 </div>
+*}}
+<!-- end can we delete this ? -->
 
 <!-- start javascript -->
 {{if $is_owner}}
