@@ -70,7 +70,7 @@
 			{{/if}} <!-- end the setting link with the cog icon -->
 
 			<!-- start new apps button -->
-			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#apppModal">
+			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
   				Apps
 			</button>
 
@@ -487,3 +487,24 @@
   </div>
 </div>
 <!-- end modal for contextual help -->
+
+<!-- start new app modal -->
+
+<div class="modal fade" id="apppModal" tabindex="-1" aria-labelledby="appModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="appModalLabel">{{$nav.help.3}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Content goes here...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- end new app modal -->
