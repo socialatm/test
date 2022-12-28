@@ -161,9 +161,11 @@
 					{{/foreach}}
 				{{/if}}
 
+				<!-- start old app menu -->
 				<li class="nav-item dropdown" id="app-menu">
 					<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#app-bin" aria-controls="app-bin"><i class="fa fa-fw fa-bars"></i></a>
 				</li>
+				<!-- end old app menu -->
 			</ul>
 		</div>
 	</div>
@@ -199,7 +201,7 @@
 			</div>
 			{{/if}}
 		</div>
-		<i id="app-bin-trash" class="fa fa-2x fa-fw fa-trash-o d-none"></i>
+		<i id="app-bin-trash" class="fa fa-2x fa-fw fa-trash-o"></i>
 		{{/if}}
 
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -245,9 +247,6 @@
 
 		<hr>
 
-		<div class="nav nav-pills flex-column">
-			<a class="nav-link" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
-		</div>
 		{{else}}
 		<div class="text-uppercase text-muted nav-link">
 			{{$sysapps}}
