@@ -490,7 +490,7 @@
 
 <!-- start new app modal -->
 
-<div class="modal fade" id="apppModal" tabindex="-1" aria-labelledby="appModalLabel" aria-hidden="true">
+<div class="modal fade" id="appModal" tabindex="-1" aria-labelledby="appModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
