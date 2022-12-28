@@ -74,7 +74,7 @@
 
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="search">
-				<input class="form-control me-2" id="nav-search-text" type="search" value="" placeholder="Search" aria-label="Search" required>
+				<input class="form-control me-2" id="nav-search-text" type="search" placeholder="Search" aria-label="Search" required>
 			<button class="btn btn-primary" type="submit">Search</button>
 		    </form>
 			<!-- end new search -->
