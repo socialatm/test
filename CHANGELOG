@@ -7,6 +7,8 @@ Hubzilla 7.8.8 (add date here)
 	- create php.out as part of the install process
 	- on/off switches changed to checkboxes
 	- contextual help moved to a bootstrap modal
+	- app menu moved to a bootstrap modal
+	- changed the homepage to network
 		
 Hubzilla 7.8.7 (2022-12-03)
 	- Fix regression when adding feed contacts
