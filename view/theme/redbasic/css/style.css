@@ -1079,23 +1079,11 @@ blockquote {
 	background-color: #007bff;
 }
 
+/*
 .navbar {
 	z-index:1030;
 }
-
-@media screen and (max-width: 992px) {
-
-	#nav-app-link-wrapper {
-		margin-right: 0.5rem;
-	}
-/*
-	#navbar-collapse-2 .navbar-app i {
-		font-size: 1rem;
-		margin-right: 0.5rem;
-	}
 */
-
-}
 
 .shareable_element_text {
 	height: 300px;
