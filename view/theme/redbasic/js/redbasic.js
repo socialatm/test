@@ -2,30 +2,6 @@
 
 $(document).ready(function() {
 
-	/*
-
-	$('.usermenu').click(function() {
-		if($('#navbar-collapse-1, #navbar-collapse-2').hasClass('show')){
-			$('#navbar-collapse-1, #navbar-collapse-2').removeClass('show');
-		}
-	});
-
-	$('#menu-btn').click(function() {
-		if($('#navbar-collapse-1').hasClass('show')){
-			$('#navbar-collapse-1').removeClass('show');
-		}
-	});
-
-	$('.notifications-btn').click(function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		if($('#navbar-collapse-2').hasClass('show')){
-			$('#navbar-collapse-2').removeClass('show');
-		}
-	});
-
-	*/
-
 	$("input[data-role=cat-tagsinput]").tagsinput({
 		tagClass: 'badge rounded-pill bg-warning text-dark'
 	});
