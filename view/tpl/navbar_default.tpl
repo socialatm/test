@@ -250,3 +250,13 @@
   </div>
 </div>
 <!-- end new notify Modal -->
+
+<!-- start load notifications in modal -->
+<script>
+$('.notify-btn').on('click',function(){
+    $('.modal-body').load('#notifications_wrapper',function(){
+        $('#notifyModal').modal({show:true});
+    });
+});
+</script>
+<!-- end load notifications in modal -->
