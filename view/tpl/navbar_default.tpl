@@ -102,16 +102,6 @@
 		</div>
 		{{/if}}
 
-		<div class="navbar-toggler-right">
-
-			<!-- start notifications -->
-			{{if $localuser || $nav.pubs}} <!-- start notifications -->
-			<button id="notifications-btn-1" type="button" class="navbar-toggler border-0 notifications-btn">
-				<i id="notifications-btn-icon-1" class="fa fa-exclamation-circle notifications-btn-icon"></i>
-			</button>
-			{{/if}} <!-- end notifications -->
-		</div>
-
 		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
 			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
@@ -141,16 +131,7 @@
 			</ul>
 			<!-- end login/logout/register -->
 
-			<ul id="nav-right" class="navbar-nav">
-
-				<!-- notifications button -->
-				{{if $localuser || $nav.pubs}}
-				<li id="notifications-btn" class="nav-item">
-					<a class="nav-link text-white notifications-btn" href="#"><i id="notifications-btn-icon" class="fa fa-exclamation-circle  notifications-btn-icon"></i></a>
-				</li>
-				{{/if}}
-				<!-- end notifications button -->
-			</ul>
+			
 		</div>
 	</div>
 </nav>
