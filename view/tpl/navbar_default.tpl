@@ -94,7 +94,7 @@
 			<!-- notifications button -->
 			{{if $localuser || $nav.pubs}}
 				<li id="notifyBtn" class="btn btn-primary notifyBtn">
-					<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal">Notify <span class="float-end badge bg-danger notify-update"></span></a>
+					<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal">Notify <span class="float-end badge bg-danger notify-update rounded-circle"></span></a>
 				</li>
 			{{/if}}
 			<!-- end notifications button -->
