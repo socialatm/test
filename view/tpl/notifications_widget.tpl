@@ -164,7 +164,6 @@
 				sse_bs_notifications(sse_type, false, true);
 			}
 		}
-
 	});
 
 	$(document).on('click', '#cn-{{$notification.type}}-input-clear', function(e) {
@@ -408,22 +407,7 @@
 
 		if(type === 'notify' && (mid !== bParam_mid || sse_type !== 'notify'))
 			return true;
-	/*
-		var count = Number($('.' + type + '-update').html());
-
-		count--;
-
-		if(count < 1) {
-			$('.' + type + '-update').html(count);
-			$('.' + type + '-button').fadeOut(function() {
-				sse_setNotificationsStatus();
-			});
-		}
-		else {
-			$('.' + type + '-update').html(count);
-		}
-	*/
-
+	
 		$('#nav-' + type + '-menu .notification[data-b64mid=\'' + mid + '\']').fadeOut(function() {
 			this.remove();
 		});
@@ -499,7 +483,6 @@
 				});
 			});
 		}
-
 	}
 
 	function sse_fallback() {
