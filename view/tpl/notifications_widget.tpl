@@ -515,6 +515,17 @@
 	}
 </script>
 
+<!-- start wrap in modal top -->
+<div class="modal fade" id="notifyModal" tabindex="-1" aria-labelledby="notifyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="notifyModalLabel">Notifications</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+<!-- end wrap in modal top -->
 <div id="notifications_wrapper" class="mb-4">
 	<div id="no_notifications" class="d-xl-none">
 		{{$no_notifications}}
@@ -576,3 +587,13 @@
 		{{/foreach}}
 	</div>
 </div>
+<!-- start wrap in modal bottom -->
+</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end wrap in modal bottom -->

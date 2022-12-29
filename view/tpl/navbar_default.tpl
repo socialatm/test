@@ -230,7 +230,7 @@
   </div>
 </div>
 <!-- end new app modal -->
-
+{{*
 <!-- start new notify Modal -->
 <div class="modal fade" id="notifyModal" tabindex="-1" aria-labelledby="notifyModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -249,4 +249,5 @@
     </div>
   </div>
 </div>
+*}}
 <!-- end new notify Modal -->
