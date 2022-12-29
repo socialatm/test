@@ -255,7 +255,7 @@
 <script>
 $('.notify-btn-link').on('click',function(){
     $('.modal-body').load('#notifications_wrapper',function(){
-        $('#notifyModal').modal({show:true});
+        $('#notifyModal').modal-body({show:true});
     });
 });
 </script>
