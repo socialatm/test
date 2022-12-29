@@ -1,7 +1,3 @@
-{{*
-<input id="invisible-wall-file-upload" type="file" name="files" style="visibility:hidden;position:absolute;top:-50;left:-50;width:0;height:0;" multiple>
-<input id="invisible-comment-upload" type="file" name="files" style="visibility:hidden;position:absolute;top:-50;left:-50;width:0;height:0;" multiple>
-*}}
 <input id="invisible-wall-file-upload" type="file" name="files" style="visibility:hidden; width:0; height:0;" multiple>
 <input id="invisible-comment-upload" type="file" name="files" style="visibility:hidden; width:0; height:0;" multiple>
 
