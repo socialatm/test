@@ -93,8 +93,8 @@
 
 			<!-- notifications button -->
 			{{if $localuser || $nav.pubs}}
-				<li id="notify-btn" class="btn btn-primary notifyBtn">
-					<a class="nav-link text-white" id="notify-btn-link"  data-bs-toggle="modal" data-bs-target="#notifyModal">Notify <span class="float-end badge bg-danger notify-update"></span></a>
+				<li id="notifications-btn" class="btn btn-primary notifyBtn">
+					<a class="nav-link text-white notifications-btn" data-bs-toggle="modal" data-bs-target="#notifyModal">Notify <span class="float-end badge bg-danger notify-update"></span></a>
 				</li>
 			{{/if}}
 			<!-- end notifications button -->
@@ -250,13 +250,3 @@
   </div>
 </div>
 <!-- end new notify Modal -->
-
-<!-- start load notifications in modal -->
-<script>
-$('.notify-btn-link').on('click',function(){
-    $('.modal-body').load('#notifications_wrapper',function(){
-        $('#notifyModal').modal-body({show:true});
-    });
-});
-</script>
-<!-- end load notifications in modal -->
