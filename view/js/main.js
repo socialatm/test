@@ -468,11 +468,8 @@ function insertCommentAttach(comment,id) {
 	activeCommentText = comment;
 
 	$('body').css('cursor', 'wait');
-
 	$('#invisible-comment-upload').trigger('click');
-
 	return false;
-
 }
 
 function insertCommentURL(comment, id) {
