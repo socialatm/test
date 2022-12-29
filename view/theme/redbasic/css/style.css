@@ -331,20 +331,6 @@ footer {
 	display: none;
 }
 
-/*
-#nav-search-spinner {
-	float: right;
-	margin-top: -1.4rem;
-	margin-right: 1rem;
-}
-
-
-#nav-search-text {
-	width: 280px;
-	padding: .15rem .5rem;
-}
-*/
-
 nav .acpopup {
 	top: 46px !important;
 	margin-left: -35px;
