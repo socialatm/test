@@ -7,7 +7,7 @@
 		<div class="d-flex">
 			<div class="dropdown">
 				<div class="fakelink usermenu" data-bs-toggle="dropdown">
-					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}">
+					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
 					<i class="fa fa-caret-down"></i>
 				</div>
 				{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
