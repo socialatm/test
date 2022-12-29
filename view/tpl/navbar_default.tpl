@@ -1,17 +1,8 @@
 <nav class="navbar fixed-top navbar-dark bg-primary text-white">
 	<div class="container-fluid flex-nowrap">
 		<a class="navbar-brand" href="{{$baseurl}}">
-			<img src="/images/hubzilla_logo_5.png" alt="Home">
+			<img src="/images/hz-white-32.png" alt="Home">
   		</a>
-
-<!-- start  move to here -->
-
-
-
-<!-- end move to here -->
-
-
-
 		{{if $userinfo}}
 		<div class="d-flex">
 			<div class="dropdown">
