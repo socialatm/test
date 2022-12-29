@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary text-white">
+<nav class="navbar fixed-top navbar-dark bg-primary text-white">
 	<div class="container-fluid flex-nowrap">
 		<a class="navbar-brand" href="{{$baseurl}}">
 			<img src="/images/hz-white-32.png" alt="Home">
