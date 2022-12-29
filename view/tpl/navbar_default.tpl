@@ -93,7 +93,7 @@
 
 			<!-- notifications button -->
 			{{if $localuser || $nav.pubs}}
-				<li id="notifications-btn" class="nav-item">
+				<li id="notifications-btn" class="btn btn-primary notifyBtn">
 					<a class="nav-link text-white notifications-btn" href="#">Notify</i></a>
 				</li>
 			{{/if}}
