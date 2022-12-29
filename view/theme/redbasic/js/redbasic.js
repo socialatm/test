@@ -2,6 +2,8 @@
 
 $(document).ready(function() {
 
+	/*
+
 	$('.usermenu').click(function() {
 		if($('#navbar-collapse-1, #navbar-collapse-2').hasClass('show')){
 			$('#navbar-collapse-1, #navbar-collapse-2').removeClass('show');
@@ -21,6 +23,8 @@ $(document).ready(function() {
 			$('#navbar-collapse-2').removeClass('show');
 		}
 	});
+
+	*/
 
 	$("input[data-role=cat-tagsinput]").tagsinput({
 		tagClass: 'badge rounded-pill bg-warning text-dark'
