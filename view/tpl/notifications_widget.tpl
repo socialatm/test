@@ -517,7 +517,7 @@
 
 <div id="notifications_wrapper" class="mb-4">
 	<div id="no_notifications" class="d-xl-none">
-		{{$no_notifications}}<span class="jumping-dots"><span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span></span>
+		{{$no_notifications}}
 	</div>
 	<div id="nav-notifications-template" rel="template">
 		<a class="list-group-item text-decoration-none text-dark clearfix notification {6}" href="{0}" title="{13}" data-b64mid="{7}" data-notify_id="{8}" data-thread_top="{9}" data-contact_name="{2}" data-contact_addr="{3}" data-when="{5}">
