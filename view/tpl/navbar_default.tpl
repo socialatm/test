@@ -95,6 +95,7 @@
 			{{if $localuser || $nav.pubs}}
 				<li id="notifications-btn" class="btn btn-primary notifyBtn">
 					<a class="nav-link text-white notifications-btn" href="#">Notify</i></a>
+					<span class="float-end badge bg-danger notify-update">1</span>
 				</li>
 			{{/if}}
 			<!-- end notifications button -->
