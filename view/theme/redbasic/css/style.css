@@ -331,6 +331,7 @@ footer {
 	display: none;
 }
 
+/*
 #nav-search-spinner {
 	float: right;
 	margin-top: -1.4rem;
@@ -342,6 +343,7 @@ footer {
 	width: 280px;
 	padding: .15rem .5rem;
 }
+*/
 
 nav .acpopup {
 	top: 46px !important;

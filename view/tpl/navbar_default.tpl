@@ -134,7 +134,7 @@
 
 			<ul id="nav-right" class="navbar-nav">
 
-
+			{{*
 				<li class="nav-item collapse clearfix" id="nav-search">
 					<form class="form-inline" method="get" action="{{$nav.search.4}}" role="search">
 						<input class="form-control form-control-sm mt-1 me-2" id="nav-search-text" type="text" value="" placeholder="{{$help}}" name="search" title="{{$nav.search.3}}" onclick="this.submit();" onblur="closeMenu('nav-search'); openMenu('nav-search-btn');"/>
@@ -146,6 +146,8 @@
 				<li class="nav-item" id="nav-search-btn">
 					<a class="nav-link" href="#nav-search" title="{{$nav.search.3}}" onclick="openMenu('nav-search'); closeMenu('nav-search-btn'); $('#nav-search-text').focus(); return false;"><i class="fa fa-fw fa-search"></i></a>
 				</li>
+*}}
+
 
 				<!-- notifications button -->
 				{{if $localuser || $nav.pubs}}
