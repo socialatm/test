@@ -8,7 +8,6 @@
 
 body {
 	font-size: 0.9rem;
-	background-color: var(--bs-body-bg);
 	background-attachment: fixed;
 	background-size: cover;
 }
