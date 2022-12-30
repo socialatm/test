@@ -101,7 +101,7 @@
 
 			<!-- start new apps button -->
 			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
-  				Apps
+			<i class="fa fa-cubes" aria-hidden="true"></i>
 			</button>
 			<!-- end new apps button -->
 
