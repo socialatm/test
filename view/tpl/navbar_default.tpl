@@ -8,12 +8,14 @@
 			<i class="fa fa-bars"></i>
 	  	</button>
 		<!-- end Toggle button -->
-		<a class="navbar-brand" href="{{$baseurl}}">
-			<img src="/images/hz-white-32.png" alt="Home">
-  		</a>
+		
 
 		<!-- start Collapsible wrapper -->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+		<a class="navbar-brand m-2" href="{{$baseurl}}">
+			<img src="/images/hz-white-32.png" alt="Home">
+  		</a>
 			
 
 
