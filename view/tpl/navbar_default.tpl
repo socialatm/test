@@ -31,8 +31,8 @@
 				<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</form>
 			<!-- end new search -->
-			
-		<div class="d-flex">
+
+		<div class="d-flex flex-row-reverse">
 			<div class="dropdown">
 				<div class="fakelink usermenu" data-bs-toggle="dropdown">
 					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
