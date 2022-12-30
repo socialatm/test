@@ -9,23 +9,20 @@
 	  	</button>
 	  	<!-- end Toggle button -->
 
-<!-- start Collapsible wrapper -->
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-		<a class="navbar-brand" href="{{$baseurl}}">
+		<!-- start Collapsible wrapper -->
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<a class="navbar-brand" href="{{$baseurl}}">
 			<img src="/images/hz-white-32.png" alt="Home">
-  		</a>
-<!-- start new search -->
-<form class="d-flex" role="search" action="network">
-<input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
-<button class="btn btn-primary" type="submit">Search</button>
-</form>
-<!-- end new search -->
+  			</a>
 
-
-
-	</div>
-<!-- end Collapsible wrapper -->
+			<!-- start new search -->
+			<form class="d-flex" role="search" action="network">
+				<input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
+				<button class="btn btn-primary" type="submit">Search</button>
+			</form>
+			<!-- end new search -->
+		</div>
+		<!-- end Collapsible wrapper -->
 
 <div class="d-flex align-items-center">
 
