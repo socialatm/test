@@ -22,8 +22,7 @@
 				<button class="btn btn-primary" type="submit">Search</button>
 			</form>
 			<!-- end new search -->
-		</div>
-		<!-- end Collapsible wrapper -->
+		
 
 <div class="d-flex align-items-center">
 
@@ -156,7 +155,8 @@
 	<!--	</div> -->
 *}}
 </div>
-
+</div>
+		<!-- end Collapsible wrapper -->
 
 	</div>
 </nav>
