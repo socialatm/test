@@ -55,27 +55,27 @@
 
 			{{if $sel.name}} <!-- start print the site location -->
 				<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
-				<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
-					{{$sel.name}}
-					{{if $sitelocation}}
-					<br><small>{{$sitelocation}}</small>
-					{{/if}}
-				</a>
+					<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
+						{{$sel.name}}
+						{{if $sitelocation}}
+						<br><small>{{$sitelocation}}</small>
+						{{/if}}
+					</a>
 				</div>
 			{{/if}} <!-- end print the site location -->
 
 			{{if $settings_url}} <!-- start the setting link with the cog icon -->
 				<div id="nav-app-settings-link-wrapper" class="navbar-nav">
-				<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
-					<i class="fa fa-fw fa-cog"></i>
-				</a>
+					<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
+						<i class="fa fa-fw fa-cog"></i>
+					</a>
 				</div>
 			{{/if}} <!-- end the setting link with the cog icon -->
 
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="network">
 				<input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
-			<button class="btn btn-primary" type="submit">Search</button>
+				<button class="btn btn-primary" type="submit">Search</button>
 		    </form>
 			<!-- end new search -->
 
@@ -130,8 +130,6 @@
 				{{/if}}
 			</ul>
 			<!-- end login/logout/register -->
-
-			
 		</div>
 	</div>
 </nav>
