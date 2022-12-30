@@ -10,10 +10,31 @@
 	  	<!-- end Toggle button -->
 
 		<!-- start Collapsible wrapper -->
+
+		<!--
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<a class="navbar-brand" href="{{$baseurl}}">
-			<img src="/images/hz-white-32.png" alt="Home">
+				<img src="/images/hz-white-32.png" alt="Home">
   			</a>
+-->
+
+<!-- testing -->
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<li class="nav-item">
+  <a class="nav-link active" aria-current="page" href="#">Home</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#">Link</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link disabled">Disabled</a>
+</li>
+</ul>
+
+
+
+
+<!-- end testing -->
 
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="network">
