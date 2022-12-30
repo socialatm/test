@@ -76,7 +76,9 @@
 
 			</div>
 
-			{{if $sel.name}} <!-- start print the site location -->
+			{{*
+			<!-- start print the page location uncomment if you want to use it -->
+			{{if $sel.name}} 
 				<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
 					<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
 						{{$sel.name}}
@@ -85,7 +87,9 @@
 						{{/if}}
 					</a>
 				</div>
-			{{/if}} <!-- end print the site location -->
+			{{/if}} 
+			<!-- end print the page location -->
+			*}}
 
 			{{if $settings_url}} <!-- start the setting link with the cog icon -->
 				<div id="nav-app-settings-link-wrapper" class="navbar-nav">
