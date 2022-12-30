@@ -7,7 +7,7 @@
   }
 }
 
-/* nav overrides */
+/* nav overrides 
 
 nav .badge {
 	position: absolute;
@@ -27,7 +27,6 @@ nav .dropdown-menu {
 	white-space: nowrap;
 }
 
-/* this fixes ellipsis for too long nav banner */
 #navbar-collapse-1 {
 	min-width: 0;
 }
@@ -56,7 +55,7 @@ nav .dropdown-menu {
 	--bs-offcanvas-width: 19rem;
 }
 
-/* nav overrides end */
+nav overrides end */
 
 label {
 	font-weight: bold;
