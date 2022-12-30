@@ -125,6 +125,7 @@ function stickyScroll(sticky, stickyTop, container, topOffset, bottomOffset) {
 
 }
 
+/*
 function makeFullScreen(full) {
 	if(typeof full=='undefined' || full == true) {
 		$('main').addClass('fullscreen');
@@ -137,3 +138,4 @@ function makeFullScreen(full) {
 		$('#inline-btn').hide();
 	}
 }
+*/
