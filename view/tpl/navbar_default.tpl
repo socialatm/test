@@ -8,16 +8,22 @@
 			<i class="fa fa-bars"></i>
 	  	</button>
 		<!-- end Toggle button -->
-		
 
 		<!-- start Collapsible wrapper -->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-		<a class="navbar-brand m-2" href="{{$baseurl}}">
-			<img src="/images/hz-white-32.png" alt="Home">
-  		</a>
+			<a class="navbar-brand m-2" href="{{$baseurl}}">
+				<img src="/images/hz-white-32.png" alt="Home">
+  			</a>
 			
 
+
+			
+		
+
+<div class="d-flex align-items-center">
+
+		{{if $userinfo}}
 
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="network">
@@ -25,11 +31,7 @@
 				<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</form>
 			<!-- end new search -->
-		
-
-<div class="d-flex align-items-center">
-
-		{{if $userinfo}}
+			
 		<div class="d-flex">
 			<div class="dropdown">
 				<div class="fakelink usermenu" data-bs-toggle="dropdown">
