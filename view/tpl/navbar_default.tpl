@@ -122,7 +122,7 @@
 		{{/if}}
 
 
-
+{{*
 <!--		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
 			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
@@ -152,7 +152,7 @@
 			</ul>
 			<!-- end login/logout/register -->
 	<!--	</div> -->
-
+*}}
 </div>
 
 
