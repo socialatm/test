@@ -22,12 +22,6 @@
 				<input class="form-control m-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
 				<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</form>
-
-			<div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-  <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
-</div>
-
 			<!-- end new search -->
 		
 
