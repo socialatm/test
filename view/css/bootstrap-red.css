@@ -7,56 +7,6 @@
   }
 }
 
-/* nav overrides 
-
-nav .badge {
-	position: absolute;
-	font-size: 0.75rem;
-}
-
-nav .dropdown-menu {
-	min-width: 16rem;
-}
-
-.nav-item.nav-item-hack {
-	height: 2.3rem;
-}
-
-.navbar-toggler-right {
-	padding: 0.2rem 0;
-	white-space: nowrap;
-}
-
-#navbar-collapse-1 {
-	min-width: 0;
-}
-
-#navbar-collapse-1 i {
-	font-size: 1.0rem;
-}
-
-nav .dropdown-menu {
-	max-height: 70vh;
-	overflow: auto;
-}
-
-
-.navbar-dark .navbar-toggler {
-	color: rgba(255,255,255,1);
-}
-
-/* offcanvas */
-.offcanvas,
-.offcanvas-backdrop.fade {
-	transition: none;
-}
-
-.offcanvas.offcanvas-end {
-	--bs-offcanvas-width: 19rem;
-}
-
-nav overrides end */
-
 label {
 	font-weight: bold;
 }
