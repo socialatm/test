@@ -9,6 +9,9 @@
 	  	</button>
 	  	<!-- end Toggle button -->
 
+<!-- start Collapsible wrapper -->
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
 		<a class="navbar-brand" href="{{$baseurl}}">
 			<img src="/images/hz-white-32.png" alt="Home">
   		</a>
@@ -16,8 +19,8 @@
 
 
 
-
-
+	</div>
+<!-- end Collapsible wrapper -->
 
 		{{if $userinfo}}
 		<div class="d-flex">
