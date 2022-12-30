@@ -158,75 +158,68 @@
 <!-- start new app modal -->
 
 <div class="modal fade" id="appModal" tabindex="-1" aria-labelledby="appModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="appModalLabel">Apps</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<h1 class="modal-title fs-5" id="appModalLabel">Apps</h1>
+        		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      		</div>
+      		<div class="modal-body">
+				<div>
+					{{if $channel_apps.0}}
+					<div class="text-uppercase text-muted">
+						{{$channelapps}}
+					</div>
+					<div class="nav nav-pills flex-column">
+						{{foreach $channel_apps as $channel_app}}
+							{{$channel_app}}
+						{{/foreach}}
+					</div>
+					{{/if}}
 
-        <!-- start offcanvas body -->
+					{{if $navbar_apps.0}}
+					<div class="d-lg-none dropdown-header text-uppercase text-muted">
+						{{$pinned_apps}}
+					</div>
+					<div id="nav-app-bin-container" class="d-lg-none nav nav-pills flex-column">
+						{{foreach $navbar_apps as $navbar_app}}
+							{{$navbar_app|replace:'fa':'generic-icons-nav fa'}}
+						{{/foreach}}
+					{{/if}}
+				</div>
 
-	<div class="offcanvas-body">
+					{{if $is_owner}}
+				<div class="text-uppercase text-muted nav-link">
+					{{$featured_apps}}
+				</div>
 
-	{{if $channel_apps.0}}
-	<div class="text-uppercase text-muted">
-		{{$channelapps}}
-	</div>
-	<div class="nav nav-pills flex-column">
-		{{foreach $channel_apps as $channel_app}}
-		{{$channel_app}}
-		{{/foreach}}
-	</div>
-	{{/if}}
+				<div id="app-bin-container" data-token="{{$form_security_token}}" class="nav nav-pills flex-column">
+					{{foreach $nav_apps as $nav_app}}
+						{{$nav_app}}
+					{{/foreach}}
+				</div>
 
-	{{if $navbar_apps.0}}
-	<div class="d-lg-none dropdown-header text-uppercase text-muted">
-		{{$pinned_apps}}
-	</div>
-	<div id="nav-app-bin-container" class="d-lg-none nav nav-pills flex-column">
-		{{foreach $navbar_apps as $navbar_app}}
-			{{$navbar_app|replace:'fa':'generic-icons-nav fa'}}
-		{{/foreach}}
-	</div>
-	{{/if}}
+				<hr>
 
-	{{if $is_owner}}
-	<div class="text-uppercase text-muted nav-link">
-		{{$featured_apps}}
-	</div>
-
-	<div id="app-bin-container" data-token="{{$form_security_token}}" class="nav nav-pills flex-column">
-		{{foreach $nav_apps as $nav_app}}
-			{{$nav_app}}
-		{{/foreach}}
-	</div>
-
-	<hr>
-
-	<div class="nav nav-pills flex-column">
-		<a class="nav-link" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
-	</div>
-	{{else}}
-	<div class="text-uppercase text-muted nav-link">
-		{{$sysapps}}
-	</div>
-	<div class="nav nav-pills flex-column">
-		{{foreach $nav_apps as $nav_app}}
-			{{$nav_app}}
-		{{/foreach}}
-	</div>
-	{{/if}}
-
-</div>
-<!-- end offcanvas-body -->
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
+				<div class="nav nav-pills flex-column">
+					<a class="nav-link" href="/apps"><i class="generic-icons-nav fa fa-fw fa-plus"></i>{{$addapps}}</a>
+				</div>
+					{{else}}
+				<div class="text-uppercase text-muted nav-link">
+					{{$sysapps}}
+				</div>
+				<div class="nav nav-pills flex-column">
+					{{foreach $nav_apps as $nav_app}}
+						{{$nav_app}}
+					{{/foreach}}
+				</div>
+					{{/if}}
+				</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      		</div>
+    	</div>
+  	</div>
 </div>
 <!-- end new app modal -->

@@ -1,7 +1,6 @@
 <?php
 namespace Zotlabs\Module;
 
-
 class Manage extends \Zotlabs\Web\Controller {
 
 	function get() {
