@@ -19,7 +19,7 @@
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="network">
 				<input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
-				<button class="btn btn-primary" type="submit">Search</button>
+				<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</form>
 			<!-- end new search -->
 		
