@@ -1,4 +1,4 @@
-/* redbasic theme specific JavaScript */
+/* redbasic theme specific JavaScript 
 
 $(document).ready(function() {
 
@@ -72,6 +72,7 @@ function setStyle(element, cssProperty) {
 		element.style[property] = cssProperty[property];
 	}
 }
+*/
 
 /*
 
