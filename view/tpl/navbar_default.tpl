@@ -107,7 +107,7 @@
 
 			<!-- Button trigger for contextual help modal -->
 			<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#helpModal">
-  				Help
+			<i class="fa fa-question" aria-hidden="true"></i>
 			</button>
 			<!-- end Button trigger for contextual help modal -->
 
