@@ -73,6 +73,8 @@ function setStyle(element, cssProperty) {
 	}
 }
 
+/*
+
 function stickyScroll(sticky, stickyTop, container, topOffset, bottomOffset) {
 
 	var lastScrollTop = 0;
@@ -124,6 +126,7 @@ function stickyScroll(sticky, stickyTop, container, topOffset, bottomOffset) {
 	}, false);
 
 }
+*/
 
 /*
 function makeFullScreen(full) {
