@@ -70,39 +70,50 @@
 					<a class="dropdown-item" href="{{$nav.logout.0}}" title="{{$nav.logout.3}}" role="menuitem" id="{{$nav.logout.4}}">{{$nav.logout.1}}</a>
 					{{/if}}
 				</div>
-				{{/if}} <!-- end of the left side dropdown menu under the user profile pic -->
+				{{/if}}
+				<!-- end of the left side dropdown menu under the user profile pic -->
 
 				{{if ! $is_owner}} <!-- this is the remote user menu with take me home & log me out of this site -->
 				<div class="dropdown-menu" role="menu" aria-labelledby="avatar">
 					<a class="dropdown-item" href="{{$nav.rusermenu.0}}" role="menuitem">{{$nav.rusermenu.1}}</a>
 					<a class="dropdown-item" href="{{$nav.rusermenu.2}}" role="menuitem">{{$nav.rusermenu.3}}</a>
 				</div>
-				{{/if}} <!-- end the remote user menu with take me home & log me out of this site -->
-
+				{{/if}}
+				<!-- end the remote user menu with take me home & log me out of this site -->
 			</div>
 
-			{{*
-			<!-- start print the page location uncomment if you want to use it -->
-			{{if $sel.name}} 
-				<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
-					<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
-						{{$sel.name}}
-						{{if $sitelocation}}
-						<br><small>{{$sitelocation}}</small>
-						{{/if}}
-					</a>
-				</div>
-			{{/if}} 
-			<!-- end print the page location -->
-			*}}
+				{{*
+				<!-- start print the page location uncomment if you want to use it -->
+				{{if $sel.name}} 
+					<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
+						<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
+							{{$sel.name}}
+							{{if $sitelocation}}
+							<br><small>{{$sitelocation}}</small>
+							{{/if}}
+						</a>
+					</div>
+				{{/if}} 
+				<!-- end print the page location -->
+				*}}
 
-			{{if $settings_url}} <!-- start the setting link with the cog icon -->
+			<!-- start the setting link with the cog icon -->
+			{{if $settings_url}} 
 				<div id="nav-app-settings-link-wrapper" class="navbar-nav">
 					<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
 						<i class="fa fa-fw fa-cog"></i>
 					</a>
 				</div>
-			{{/if}} <!-- end the setting link with the cog icon -->
+			{{/if}}
+			<!-- end the setting link with the cog icon -->
+
+			<!-- notifications button -->
+			{{if $localuser || $nav.pubs}}
+				<li id="notifyBtn" class="btn btn-primary notifyBtn">
+					<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal" alt="notifications"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="float-end badge bg-danger notify-update rounded-circle"></span></a>
+				</li>
+			{{/if}}
+			<!-- end notifications button -->
 
 			<!-- start new apps button -->
 			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
@@ -116,20 +127,13 @@
 			</button>
 			<!-- end Button trigger for contextual help modal -->
 
-			<!-- notifications button -->
-			{{if $localuser || $nav.pubs}}
-				<li id="notifyBtn" class="btn btn-primary notifyBtn">
-					<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal" alt="notifications"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="float-end badge bg-danger notify-update rounded-circle"></span></a>
-				</li>
-			{{/if}}
-			<!-- end notifications button -->
 			
 		</div>
 		{{/if}}
 
 
-{{*
-<!--		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
+
+		<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse-1">
 			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
 				{{if $nav.login && !$userinfo}}
@@ -157,7 +161,7 @@
 				{{/if}}
 			</ul>
 			<!-- end login/logout/register -->
-	<!--	</div> -->
+		</div>
 *}}
 </div>
 </div>
