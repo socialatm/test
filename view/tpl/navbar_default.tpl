@@ -1,5 +1,14 @@
 <nav class="navbar fixed-top navbar-dark bg-primary text-white">
 	<div class="container-fluid flex-nowrap">
+		<!-- start Toggle button -->
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<i class="fas fa-bars"></i>
+	  	</button>
+	  	<!-- end Toggle button -->
+
 		<a class="navbar-brand" href="{{$baseurl}}">
 			<img src="/images/hz-white-32.png" alt="Home">
   		</a>
@@ -78,6 +87,8 @@
 				<button class="btn btn-primary" type="submit">Search</button>
 		    </form>
 			<!-- end new search -->
+
+
 
 			<!-- start new apps button -->
 			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
