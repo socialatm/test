@@ -27,6 +27,8 @@
 	</div>
 <!-- end Collapsible wrapper -->
 
+<div class="d-flex align-items-center">
+
 		{{if $userinfo}}
 		<div class="d-flex">
 			<div class="dropdown">
@@ -96,10 +98,6 @@
 				</div>
 			{{/if}} <!-- end the setting link with the cog icon -->
 
-			
-
-
-
 			<!-- start new apps button -->
 			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
   				Apps
@@ -155,7 +153,7 @@
 			<!-- end login/logout/register -->
 	<!--	</div> -->
 
-
+</div>
 
 
 	</div>
