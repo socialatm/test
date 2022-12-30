@@ -5,7 +5,7 @@
 			class="navbar-toggler"
 			type="button"
 			data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<i class="fas fa-bars"></i>
+			<i class="fa fa-bars"></i>
 	  	</button>
 	  	<!-- end Toggle button -->
 
