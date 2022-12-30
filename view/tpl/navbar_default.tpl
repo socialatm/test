@@ -7,13 +7,14 @@
 			data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<i class="fa fa-bars"></i>
 	  	</button>
-	  	<!-- end Toggle button -->
+		<!-- end Toggle button -->
+		<a class="navbar-brand" href="{{$baseurl}}">
+			<img src="/images/hz-white-32.png" alt="Home">
+  		</a>
 
 		<!-- start Collapsible wrapper -->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<a class="navbar-brand" href="{{$baseurl}}">
-				<img src="/images/hz-white-32.png" alt="Home">
-  			</a>
+			
 
 
 			<!-- start new search -->
