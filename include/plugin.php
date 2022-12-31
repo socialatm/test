@@ -937,7 +937,7 @@ function head_get_links() {
 				foreach($source as $k => $v) {
 					$str .= ' ' . $k . '="' . $v . '"';
 				}
-				$str .= ' />' . "\r\n";
+				$str .= ' >' . "\r\n";
 
 			}
 		}
