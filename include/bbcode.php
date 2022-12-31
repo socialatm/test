@@ -1484,7 +1484,7 @@ function bbcode($Text, $options = []) {
 		$Text = preg_replace("/\[table border=0\](.*?)\[\/table\]/sm", '<table class="table table-responsive" >$1</table>', $Text);
 	}
 	$Text = str_replace('</tr><br /><tr>', "</tr>\n<tr>", $Text);
-	$Text = str_replace('[hr]', '<hr />', $Text);
+	$Text = str_replace('[hr]', '<hr>', $Text);
 
 	// This is actually executed in prepare_body()
 

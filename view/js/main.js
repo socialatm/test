@@ -1628,7 +1628,7 @@ function b2h(s) {
 	rep(/\[\/i\]/gi,"</em>");
 	rep(/\[u\]/gi,"<u>");
 	rep(/\[\/u\]/gi,"</u>");
-	rep(/\[hr\]/gi,"<hr />");
+	rep(/\[hr\]/gi,"<hr>");
 	rep(/\[url=([^\]]+)\](.*?)\[\/url\]/gi,"<a href=\"$1\">$2</a>");
 	rep(/\[url\](.*?)\[\/url\]/gi,"<a href=\"$1\">$1</a>");
 	rep(/\[img=(.*?)x(.*?)\](.*?)\[\/img\]/gi,"<img width=\"$1\" height=\"$2\" src=\"$3\" />");

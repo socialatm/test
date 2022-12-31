@@ -13,7 +13,7 @@
 <li><a href="{{$base}}/admin/dbsync/{{$f}}">{{$apply}}</a></li>
 </ul>
 
-<hr />
+<hr>
 {{/foreach}}
 {{/if}}
 </div>

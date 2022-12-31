@@ -214,7 +214,7 @@
 						{{if $feature_nocomment}}
 						<a class="dropdown-item" href="#" onclick="toggleNoComment(); return false;"><i id="profile-nocomment-sub" class="fa fa-comments"></i>&nbsp;{{$nocommenttitlesub}}</a>
 						{{/if}}
-						<hr />
+						<hr>
 						{{$custommoretoolsdropdown}}
 					</div>
 				</div>
