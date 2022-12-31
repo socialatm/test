@@ -15,15 +15,8 @@
 			<a class="navbar-brand m-2" href="{{$baseurl}}">
 				<img src="/images/hz-white-32.png" alt="Home">
   			</a>
-			
-
-
-			
 		
-
-<div class="d-flex align-items-center">
-
-		{{if $userinfo}}
+			{{if $userinfo}}
 
 			<!-- start new search -->
 			<form class="d-flex" role="search" action="network">
@@ -32,59 +25,65 @@
 			</form>
 			<!-- end new search -->
 
-		<div class="d-flex flex-row-reverse">
-			<div class="dropdown">
-				<div class="fakelink usermenu" data-bs-toggle="dropdown">
-					<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
-					<i class="fa fa-caret-down"></i>
-				</div>
-				{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
-				<div class="dropdown-menu">
-					{{foreach $nav.usermenu as $usermenu}}
-					<a class="dropdown-item{{if $usermenu.2}} active{{/if}}"  href="{{$usermenu.0}}" title="{{$usermenu.3}}" role="menuitem" id="{{$usermenu.4}}">{{$usermenu.1}}</a>
-					{{/foreach}}
-					{{if $nav.group}}
-					<a class="dropdown-item" href="{{$nav.group.0}}" title="{{$nav.group.3}}" role="menuitem" id="{{$nav.group.4}}">{{$nav.group.1}}</a>
-					{{/if}}
-					{{if $nav.manage}}
-					<a class="dropdown-item{{if $sel.name == Manage}} active{{/if}}" href="{{$nav.manage.0}}" title="{{$nav.manage.3}}" role="menuitem" id="{{$nav.manage.4}}">{{$nav.manage.1}}</a>
-					{{/if}}
-					{{if $nav.channels}}
-					{{foreach $nav.channels as $chan}}
-					<a class="dropdown-item" href="manage/{{$chan.channel_id}}" title="{{$chan.channel_name}}" role="menuitem"><i class="fa fa-circle{{if $localuser == $chan.channel_id}} text-success{{else}} invisible{{/if}}"></i> {{$chan.channel_name}}</a>
-					{{/foreach}}
-					{{/if}}
-					{{if $nav.profiles}}
-					<a class="dropdown-item" href="{{$nav.profiles.0}}" title="{{$nav.profiles.3}}" role="menuitem" id="{{$nav.profiles.4}}">{{$nav.profiles.1}}</a>
-					{{/if}}
-					{{if $nav.settings}}
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item{{if $sel.name == Settings}} active{{/if}}" href="{{$nav.settings.0}}" title="{{$nav.settings.3}}" role="menuitem" id="{{$nav.settings.4}}">{{$nav.settings.1}}</a>
-					{{/if}}
-					{{if $nav.admin}}
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item{{if $sel.name == Admin}} active{{/if}}" href="{{$nav.admin.0}}" title="{{$nav.admin.3}}" role="menuitem" id="{{$nav.admin.4}}">{{$nav.admin.1}}</a>
-					{{/if}}
-					{{if $nav.logout}}
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="{{$nav.logout.0}}" title="{{$nav.logout.3}}" role="menuitem" id="{{$nav.logout.4}}">{{$nav.logout.1}}</a>
-					{{/if}}
-				</div>
-				{{/if}}
-				<!-- end of the left side dropdown menu under the user profile pic -->
+			<div class="d-flex flex-row-reverse">
+				<div class="dropdown">
+					<div class="fakelink usermenu" data-bs-toggle="dropdown">
+						<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
+						<i class="fa fa-caret-down"></i>
+					</div>
+						{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
+					<div class="dropdown-menu">
+						{{foreach $nav.usermenu as $usermenu}}
+						<a class="dropdown-item{{if $usermenu.2}} active{{/if}}"  href="{{$usermenu.0}}" title="{{$usermenu.3}}" role="menuitem" id="{{$usermenu.4}}">{{$usermenu.1}}</a>
+						{{/foreach}}
+						{{if $nav.group}}
+							<a class="dropdown-item" href="{{$nav.group.0}}" title="{{$nav.group.3}}" role="menuitem" id="{{$nav.group.4}}">{{$nav.group.1}}</a>
+						{{/if}}
 
-				{{if ! $is_owner}} <!-- this is the remote user menu with take me home & log me out of this site -->
-				<div class="dropdown-menu" role="menu" aria-labelledby="avatar">
-					<a class="dropdown-item" href="{{$nav.rusermenu.0}}" role="menuitem">{{$nav.rusermenu.1}}</a>
-					<a class="dropdown-item" href="{{$nav.rusermenu.2}}" role="menuitem">{{$nav.rusermenu.3}}</a>
-				</div>
-				{{/if}}
-				<!-- end the remote user menu with take me home & log me out of this site -->
-			</div>
+						{{if $nav.manage}}
+							<a class="dropdown-item{{if $sel.name == Manage}} active{{/if}}" href="{{$nav.manage.0}}" title="{{$nav.manage.3}}" role="menuitem" id="{{$nav.manage.4}}">{{$nav.manage.1}}</a>
+						{{/if}}
 
-				{{*
-				<!-- start print the page location uncomment if you want to use it -->
-				{{if $sel.name}} 
+						{{if $nav.channels}}
+							{{foreach $nav.channels as $chan}}
+							<a class="dropdown-item" href="manage/{{$chan.channel_id}}" title="{{$chan.channel_name}}" role="menuitem"><i class="fa fa-circle{{if $localuser == $chan.channel_id}} text-success{{else}} invisible{{/if}}"></i> {{$chan.channel_name}}</a>
+						{{/foreach}}
+						{{/if}}
+
+						{{if $nav.profiles}}
+							<a class="dropdown-item" href="{{$nav.profiles.0}}" title="{{$nav.profiles.3}}" role="menuitem" id="{{$nav.profiles.4}}">{{$nav.profiles.1}}</a>
+						{{/if}}
+
+						{{if $nav.settings}}
+						<div class="dropdown-divider"></div>
+							<a class="dropdown-item{{if $sel.name == Settings}} active{{/if}}" href="{{$nav.settings.0}}" title="{{$nav.settings.3}}" role="menuitem" id="{{$nav.settings.4}}">{{$nav.settings.1}}</a>
+						{{/if}}
+
+						{{if $nav.admin}}
+						<div class="dropdown-divider"></div>
+							<a class="dropdown-item{{if $sel.name == Admin}} active{{/if}}" href="{{$nav.admin.0}}" title="{{$nav.admin.3}}" role="menuitem" id="{{$nav.admin.4}}">{{$nav.admin.1}}</a>
+							{{/if}}
+
+							{{if $nav.logout}}
+							<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{{$nav.logout.0}}" title="{{$nav.logout.3}}" role="menuitem" id="{{$nav.logout.4}}">{{$nav.logout.1}}</a>
+							{{/if}}
+						</div>
+						{{/if}}
+						<!-- end of the left side dropdown menu under the user profile pic -->
+
+						{{if ! $is_owner}} <!-- this is the remote user menu with take me home & log me out of this site -->
+						<div class="dropdown-menu" role="menu" aria-labelledby="avatar">
+							<a class="dropdown-item" href="{{$nav.rusermenu.0}}" role="menuitem">{{$nav.rusermenu.1}}</a>
+							<a class="dropdown-item" href="{{$nav.rusermenu.2}}" role="menuitem">{{$nav.rusermenu.3}}</a>
+						</div>
+						{{/if}}
+						<!-- end the remote user menu with take me home & log me out of this site -->
+					</div>
+
+					{{*
+					<!-- start print the page location uncomment if you want to use it -->
+					{{if $sel.name}} 
 					<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
 						<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
 							{{$sel.name}}
@@ -93,46 +92,41 @@
 							{{/if}}
 						</a>
 					</div>
-				{{/if}} 
-				<!-- end print the page location -->
-				*}}
+					{{/if}} 
+					<!-- end print the page location -->
+					*}}
 
-			<!-- start the setting link with the cog icon -->
-			{{if $settings_url}} 
-				<div id="nav-app-settings-link-wrapper" class="navbar-nav">
-					<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
-						<i class="fa fa-fw fa-cog"></i>
-					</a>
-				</div>
+					<!-- start the setting link with the cog icon -->
+					{{if $settings_url}} 
+					<div id="nav-app-settings-link-wrapper" class="navbar-nav">
+						<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
+							<i class="fa fa-fw fa-cog"></i>
+						</a>
+					</div>
+					{{/if}}
+					<!-- end the setting link with the cog icon -->
+
+					<!-- notifications button -->
+					{{if $localuser || $nav.pubs}}
+					<li id="notifyBtn" class="btn btn-primary notifyBtn">
+						<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal" alt="notifications"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="float-end badge bg-danger notify-update rounded-circle"></span></a>
+					</li>
+					{{/if}}
+					<!-- end notifications button -->
+
+					<!-- start new apps button -->
+					<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
+						<i class="fa fa-cubes" aria-hidden="true"></i>
+					</button>
+					<!-- end new apps button -->
+
+					<!-- Button trigger for contextual help modal -->
+					<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#helpModal">
+						<i class="fa fa-question" aria-hidden="true"></i>
+					</button>
+				<!-- end Button trigger for contextual help modal -->
+			</div>
 			{{/if}}
-			<!-- end the setting link with the cog icon -->
-
-			<!-- notifications button -->
-			{{if $localuser || $nav.pubs}}
-				<li id="notifyBtn" class="btn btn-primary notifyBtn">
-					<a class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#notifyModal" alt="notifications"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="float-end badge bg-danger notify-update rounded-circle"></span></a>
-				</li>
-			{{/if}}
-			<!-- end notifications button -->
-
-			<!-- start new apps button -->
-			<button type="button" class="btn btn-primary appBtn" data-bs-toggle="modal" data-bs-target="#appModal">
-			<i class="fa fa-cubes" aria-hidden="true"></i>
-			</button>
-			<!-- end new apps button -->
-
-			<!-- Button trigger for contextual help modal -->
-			<button type="button" class="btn btn-primary helpBtn" data-bs-toggle="modal" data-bs-target="#helpModal">
-			<i class="fa fa-question" aria-hidden="true"></i>
-			</button>
-			<!-- end Button trigger for contextual help modal -->
-
-			
-		</div>
-		{{/if}}
-
-
-
 		
 			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
@@ -162,7 +156,6 @@
 			</ul>
 			<!-- end login/logout/register -->
 		
-
 			</div>
 		</div> <!-- end Collapsible wrapper -->
 	</div>
