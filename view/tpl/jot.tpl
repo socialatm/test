@@ -13,22 +13,22 @@
 	<div class="mb-4" id="profile-jot-wrapper">
 
 		{{if $parent}}
-		<input type="hidden" name="parent" value="{{$parent}}" />
+		<input type="hidden" name="parent" value="{{$parent}}" >
 		{{/if}}
-		<input type="hidden" name="obj_type" value="{{$ptyp}}" />
-		<input type="hidden" name="profile_uid" value="{{$profile_uid}}" />
-		<input type="hidden" name="return" value="{{$return_path}}" />
-		<input type="hidden" name="location" id="jot-location" value="{{$defloc}}" />
-		<input type="hidden" name="expire" id="jot-expire" value="{{$defexpire}}" />
-		<input type="hidden" name="created" id="jot-created" value="{{$defpublish}}" />
-		<input type="hidden" name="media_str" id="jot-media" value="" />
-		<input type="hidden" name="source" id="jot-source" value="{{$source}}" />
-		<input type="hidden" name="coord" id="jot-coord" value="" />
-		<input type="hidden" id="jot-postid" name="post_id" value="{{$post_id}}" />
-		<input type="hidden" id="jot-webpage" name="webpage" value="{{$webpage}}" />
-		<input type="hidden" name="preview" id="jot-preview" value="0" />
-		<input type="hidden" id="jot-consensus" name="consensus" value="{{if $consensus}}{{$consensus}}{{else}}0{{/if}}" />
-		<input type="hidden" id="jot-nocomment" name="nocomment" value="{{if $nocomment}}{{$nocomment}}{{else}}0{{/if}}" />
+		<input type="hidden" name="obj_type" value="{{$ptyp}}" >
+		<input type="hidden" name="profile_uid" value="{{$profile_uid}}" >
+		<input type="hidden" name="return" value="{{$return_path}}" >
+		<input type="hidden" name="location" id="jot-location" value="{{$defloc}}" >
+		<input type="hidden" name="expire" id="jot-expire" value="{{$defexpire}}" >
+		<input type="hidden" name="created" id="jot-created" value="{{$defpublish}}" >
+		<input type="hidden" name="media_str" id="jot-media" value="" >
+		<input type="hidden" name="source" id="jot-source" value="{{$source}}" >
+		<input type="hidden" name="coord" id="jot-coord" value="" >
+		<input type="hidden" id="jot-postid" name="post_id" value="{{$post_id}}" >
+		<input type="hidden" id="jot-webpage" name="webpage" value="{{$webpage}}" >
+		<input type="hidden" name="preview" id="jot-preview" value="0" >
+		<input type="hidden" id="jot-consensus" name="consensus" value="{{if $consensus}}{{$consensus}}{{else}}0{{/if}}" >
+		<input type="hidden" id="jot-nocomment" name="nocomment" value="{{if $nocomment}}{{$nocomment}}{{else}}0{{/if}}" >
 
 
 		<div id="jot-title-wrap" class="jothidden">
