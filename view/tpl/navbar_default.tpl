@@ -1,13 +1,13 @@
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-primary text-white">
 	<div class="container-fluid flex-nowrap">
-		<!-- start Toggle button -->
+			{{* start Toggle button *}}
 		<button
 			class="navbar-toggler"
 			type="button"
 			data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<i class="fa fa-bars"></i>
 	  	</button>
-		<!-- end Toggle button -->
+			{{* end Toggle button *}}
 
 		<!-- start Collapsible wrapper -->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -18,12 +18,12 @@
 		
 			{{if $userinfo}}
 
-			<!-- start new search -->
+				{{* start new search *}}
 			<form class="d-flex" role="search" action="network">
 				<input class="form-control m-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search" required>
 				<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</form>
-			<!-- end new search -->
+				{{* end new search *}}
 
 			<div class="d-flex flex-row-reverse float-end">
 				<div class="dropdown">
@@ -31,7 +31,8 @@
 						<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
 						<i class="fa fa-caret-down"></i>
 					</div>
-						{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
+							{{* start of the left side dropdown menu under the user profile pic *}}
+						{{if $is_owner}} 
 					<div class="dropdown-menu" role="menu">
 						{{foreach $nav.usermenu as $usermenu}}
 						<a class="dropdown-item{{if $usermenu.2}} active{{/if}}"  href="{{$usermenu.0}}" title="{{$usermenu.3}}" role="menuitem" id="{{$usermenu.4}}">{{$usermenu.1}}</a>
@@ -70,7 +71,7 @@
 							{{/if}}
 						</div>
 						{{/if}}
-						<!-- end of the left side dropdown menu under the user profile pic -->
+							{{* end of the left side dropdown menu under the user profile pic *}}
 
 						{{if ! $is_owner}} <!-- this is the remote user menu with take me home & log me out of this site -->
 						<div class="dropdown-menu" role="menu" aria-labelledby="avatar">
@@ -81,8 +82,7 @@
 						<!-- end the remote user menu with take me home & log me out of this site -->
 					</div>
 
-					{{*
-					<!-- start print the page location uncomment if you want to use it -->
+						{{* start print the page location uncomment if you want to use it
 					{{if $sel.name}} 
 					<div id="nav-app-link-wrapper" class="navbar-nav{{if $sitelocation}} has_location{{/if}}">
 						<a id="nav-app-link" href="{{$url}}" class="nav-link text-truncate" style="width: 100%">
@@ -93,10 +93,9 @@
 						</a>
 					</div>
 					{{/if}} 
-					<!-- end print the page location -->
-					*}}
+						end print the page location *}}
 
-					<!-- start the setting link with the cog icon -->
+						{{* start the setting link with the cog icon *}}
 					{{if $settings_url}} 
 					<div id="nav-app-settings-link-wrapper" class="navbar-nav">
 						<a id="nav-app-settings-link" href="{{$settings_url}}/?f=&rpath={{$url}}" class="nav-link">
@@ -104,7 +103,7 @@
 						</a>
 					</div>
 					{{/if}}
-					<!-- end the setting link with the cog icon -->
+						{{* end the setting link with the cog icon *}}
 
 					<!-- notifications button -->
 					{{if $localuser || $nav.pubs}}
@@ -155,8 +154,6 @@
 				{{/if}}
 			</ul>
 			<!-- end login/logout/register -->
-		
-			
 		</div> <!-- end Collapsible wrapper -->
 	</div><!-- end of container -->
 </nav>
