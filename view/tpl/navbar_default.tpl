@@ -10,7 +10,7 @@
 		<!-- end Toggle button -->
 
 		<!-- start Collapsible wrapper -->
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<div class="collapse navbar-collapse justify-content-evenly" id="navbarSupportedContent">
 
 			<a class="navbar-brand m-2" href="{{$baseurl}}">
 				<img src="/images/hz-white-32.png" alt="Home">
