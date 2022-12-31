@@ -32,7 +32,7 @@
 						<i class="fa fa-caret-down"></i>
 					</div>
 						{{if $is_owner}} <!-- start of the left side dropdown menu under the user profile pic -->
-					<div class="dropdown-menu">
+					<div class="dropdown-menu" role="menu">
 						{{foreach $nav.usermenu as $usermenu}}
 						<a class="dropdown-item{{if $usermenu.2}} active{{/if}}"  href="{{$usermenu.0}}" title="{{$usermenu.3}}" role="menuitem" id="{{$usermenu.4}}">{{$usermenu.1}}</a>
 						{{/foreach}}
