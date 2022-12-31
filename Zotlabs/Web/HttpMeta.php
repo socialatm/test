@@ -97,7 +97,7 @@ class HttpMeta {
 		$o = '';
 		if ($this->vars) {
 			foreach ($this->vars as $k => $v) {
-				$o .= '<meta name="' . htmlspecialchars($k,ENT_COMPAT,'UTF-8',false) . '" content="' . htmlspecialchars($v,ENT_COMPAT,'UTF-8',false) . '" />' . "\r\n" ;
+				$o .= '<meta name="' . htmlspecialchars($k,ENT_COMPAT,'UTF-8',false) . '" content="' . htmlspecialchars($v,ENT_COMPAT,'UTF-8',false) . '" >' . "\r\n" ;
 			}
 		}
 		if ($this->check_required()) {
