@@ -156,9 +156,9 @@
 			</ul>
 			<!-- end login/logout/register -->
 		
-			</div>
+			
 		</div> <!-- end Collapsible wrapper -->
-	</div>
+	</div><!-- end of container -->
 </nav>
 
 <!-- Modal for contextual help -->
