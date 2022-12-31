@@ -88,7 +88,7 @@ if (isset($_POST['submit'])) {
 		
 		curl_close($c);
 		if (!isset($error)) {
-			echo '<script language="javascript" type="text/javascript">window.close();</script>';
+			echo '<script>window.close();</script>';
 		}
 		
 	} else {

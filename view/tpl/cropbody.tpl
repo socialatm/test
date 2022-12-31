@@ -9,7 +9,7 @@
 <div id="previewWrap" class="crop-preview d-lg-none" style="height: 300px; width: 300px; max-width: 300px; max-height: 300px; overflow: hidden;"></div>
 </div>
 
-<script type="text/javascript" language="javascript">
+<script>
 
 
 var image = document.getElementById('croppa');

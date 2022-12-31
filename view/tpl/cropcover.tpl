@@ -9,7 +9,7 @@
 <div id="previewWrap" class="crop-preview" style="width: 320px; height: 116px; max-width: 320px; max-height: 116px; overflow: hidden"></div>
 </div>
 
-<script type="text/javascript" language="javascript">
+<script>
 
 var image = document.getElementById('croppa');
 var cropper = new Cropper(image, {

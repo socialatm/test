@@ -1,4 +1,4 @@
-<script language="javascript" type="text/javascript">
+<script>
 
 var editor = false;
 var plaintext = '{{$editselect}}';
