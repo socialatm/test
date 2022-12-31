@@ -1,4 +1,3 @@
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <base href="{{$baseurl}}/" />
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
 {{$metas}}
