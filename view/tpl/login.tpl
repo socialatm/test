@@ -11,7 +11,7 @@
 		<a href="rmagic" class="btn btn-outline-success">{{$remote_login}}</a>
 	</div>
 	{{foreach $hiddens as $k=>$v}}
-		<input type="hidden" name="{{$k}}" value="{{$v}}" />
+		<input type="hidden" name="{{$k}}" value="{{$v}}" >
 	{{/foreach}}
 </form>
 {{if $login_page}}
