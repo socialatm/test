@@ -316,7 +316,6 @@ class Comanche {
 
 			return false;
 		}
-
 		return false;
 	}
 
@@ -328,6 +327,7 @@ class Comanche {
 	 * @param string $class (optional) default empty
 	 * @return string
 	 */
+
 	function menu($s, $class = '') {
 
 		$channel_id = $this->get_channel_id();
@@ -348,7 +348,6 @@ class Comanche {
 			return menu_render($m, $class, $edit = false, $var);
 		}
 	}
-
 
 	function replace_region($match) {
 		if (array_key_exists($match[1], \App::$page)) {
@@ -437,7 +436,6 @@ class Comanche {
 				$o .= ($wrap ? '' : '</div>');
 			}
 		}
-
 		return $o;
 	}
 
@@ -475,6 +473,7 @@ class Comanche {
 	 * @param string $s
 	 * @return string
 	 */
+
 	function css($s) {
 
 		switch($s) {
@@ -514,7 +513,6 @@ class Comanche {
 				$ret['authored'] = $mtch[1];
 			}
 		}
-
 		return $ret;
 	}
 
@@ -524,6 +522,7 @@ class Comanche {
 	 * @param string $name
 	 * @param string $text
 	 */
+
 	function widget($name, $text) {
 		$vars = array();
 		$matches = array();
@@ -595,7 +594,6 @@ class Comanche {
 			return $func($vars);
 	}
 
-
 	function region($s,$region_name) {
 
 		$s = str_replace('$region',$region_name,$s);
@@ -658,7 +656,6 @@ class Comanche {
 		return $s;
 	}
 
-
 	/**
 	 * @brief Registers a page template/variant for use by Comanche selectors.
 	 *
@@ -677,5 +674,4 @@ class Comanche {
 		\App::$page_layouts[$arr['template']] = array($arr['variant']);
 		return;
 	}
-
 }
