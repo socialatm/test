@@ -25,7 +25,7 @@
 			</form>
 				{{* end new search *}}
 
-			<div class="d-flex ms-auto">
+			<div class="d-flex">
 				<div class="dropdown">
 					<div class="fakelink usermenu" data-bs-toggle="dropdown">
 						<img id="avatar" src="{{$userinfo.icon}}" alt="{{$userinfo.name}}" class="rounded-circle">
