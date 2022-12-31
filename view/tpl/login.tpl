@@ -1,5 +1,5 @@
 <form action="{{$dest_url}}" id="{{$form_id}}" method="post" >
-	<input type="hidden" name="auth-params" value="login" />
+	<input type="hidden" name="auth-params" value="login">
 	<div class="login-wrapper d-grid gap-2">
 		{{include file="field_input.tpl" field=$lname}}
 		{{include file="field_password.tpl" field=$lpassword}}
@@ -15,5 +15,5 @@
 	{{/foreach}}
 </form>
 {{if $login_page}}
-<script type="text/javascript"> $(document).ready(function() { $("#id_{{$lname.0}}").focus();} );</script>
+<script> $(document).ready(function() { $("#id_{{$lname.0}}").focus();} );</script>
 {{/if}}
