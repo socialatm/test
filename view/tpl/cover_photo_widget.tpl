@@ -86,7 +86,7 @@
 		return;
 	}
 
-
+*/
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
 		$('.navbar').removeClass('fixed-top');
@@ -94,6 +94,7 @@
 		$('main').css('opacity', 0);
 	}
 
+/*
 	function coverHiddenActions() {
 		$('body').css('cursor', '');
 		$('.navbar').addClass('fixed-top');
