@@ -104,7 +104,7 @@
 
 </script>
 
-<div class="" id="cover-photo" title="{{$hovertitle}}">
+<div class="mt-3" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
