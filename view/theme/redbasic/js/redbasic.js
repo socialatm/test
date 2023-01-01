@@ -11,6 +11,7 @@ $(document).ready(function() {
 		e.stopPropagation();
 	});
 
+	/* start notifications code */
 	var doctitle = document.title;
 	function checkNotify() {
 		var notifyUpdateElem = document.getElementById('notify-update');
@@ -22,6 +23,7 @@ $(document).ready(function() {
 		}
 	}
 	setInterval(function () {checkNotify();}, 10 * 1000);
+	/* end notifications code */
 
 	var touch_start = null;
 	var touch_max = window.innerWidth / 10;
