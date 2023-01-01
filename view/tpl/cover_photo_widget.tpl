@@ -103,7 +103,7 @@
 </script>
 *}}
 
-<div class="d-none" id="cover-photo" title="{{$hovertitle}}">
+<div class="" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
