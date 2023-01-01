@@ -10,8 +10,8 @@
 			return;
 
 		if($(window).width() < 755) {
-			$('#cover-photo').remove();
-			coverSlid = true;
+		//	$('#cover-photo').remove();
+		//	coverSlid = true;
 			return;
 		}
 
