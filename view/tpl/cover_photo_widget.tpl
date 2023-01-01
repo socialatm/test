@@ -77,7 +77,7 @@
 		$('html, body').animate({scrollTop: cover_height + 'px'}, 'fast');
 		return;
 	}
-
+/*
 	function hideCover() {
 		if(coverSlid) {
 			return;
@@ -86,7 +86,7 @@
 		return;
 	}
 
-/*
+
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
 		$('.navbar').removeClass('fixed-top');
