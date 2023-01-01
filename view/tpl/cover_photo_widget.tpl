@@ -86,6 +86,7 @@
 		return;
 	}
 
+/*
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
 		$('.navbar').removeClass('fixed-top');
@@ -99,6 +100,8 @@
 		$('main').css('margin-top', '');
 		$('main').css('opacity', 1);
 	}
+*/
+
 </script>
 
 <div class="d-none" id="cover-photo" title="{{$hovertitle}}">
