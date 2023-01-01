@@ -1,4 +1,3 @@
-{{*
 <script>
 	var aside_padding_top;
 	var section_padding_top;
@@ -101,7 +100,6 @@
 		$('main').css('opacity', 1);
 	}
 </script>
-*}}
 
 <div class="d-none" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
