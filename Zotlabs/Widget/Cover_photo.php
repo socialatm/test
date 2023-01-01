@@ -1,9 +1,9 @@
 <?php
 
 /**
- *   * Name: Cover photo
- *   * Description: Display a cover photo in the banner region
- *   * Requires: disabled_for_pdledit_gui
+ * Name: Cover photo
+ * Description: Display a cover photo in the banner region
+ * Requires: disabled_for_pdledit_gui
  */
 
 namespace Zotlabs\Widget;
