@@ -75,6 +75,13 @@ class Cover_photo {
 				'$hide_cover' => $hide_cover
 			));
 		}
+
+		print("<pre>".print_r($c,true)."</pre>");
+		exit;
+
+
+
+
 		return $o;
 	}
 }
