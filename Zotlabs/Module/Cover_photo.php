@@ -19,7 +19,6 @@ require_once('include/photos.php');
  *
  * @param $a Current application
  * @return void
- *
  */
 
 
@@ -38,7 +37,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 	 * @brief Evaluate posted values
 	 *
 	 * @return void
-	 *
 	 */
 
 	function post() {
@@ -221,7 +219,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 								@unlink(dbunescbin($xx['content']));
 							}
 						}
-
 						return;
 					}
 
@@ -237,9 +234,7 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 				else
 					notice( t('Unable to process image') . EOL);
 			}
-
 			goaway(z_root() . '/channel/' . $channel['channel_address']);
-
 		}
 
 		$hash = photo_new_resource();
@@ -278,9 +273,7 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 			notice( t('Unable to process image.') . EOL );
 			return;
 		}
-
 		return $this->cover_photo_crop_ui_head($a, $ph, $hash, $smallest);
-
 	}
 
 	function send_cover_photo_activity($channel,$photo,$profile) {
@@ -318,14 +311,12 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 		$arr['author_xchan'] = $channel['channel_hash'];
 
 		post_activity_item($arr);
-
 	}
 
 	/**
 	 * @brief Generate content of profile-photo view
 	 *
 	 * @return string
-	 *
 	 */
 
 	function get() {
@@ -347,8 +338,6 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 				notice( t('Permission denied.') . EOL );
 				return;
 			};
-
-	//		check_form_security_token_redirectOnErr('/cover_photo', 'cover_photo');
 
 			$resource_id = argv(2);
 
@@ -484,5 +473,4 @@ class Cover_photo extends \Zotlabs\Web\Controller {
 		\App::$page['htmlhead'] .= replace_macros(get_markup_template("crophead.tpl"), array());
 		return;
 	}
-
 }
