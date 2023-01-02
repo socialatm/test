@@ -30,6 +30,7 @@
 		}
 	});
 
+/*
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
 			return;
@@ -44,6 +45,7 @@
 		}
 
 	});
+*/
 
 	function slideUpCover() {
 		if(coverSlid) {
