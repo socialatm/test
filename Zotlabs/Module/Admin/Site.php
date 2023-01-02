@@ -48,9 +48,8 @@ class Site {
 		$firstpage		    =	((x($_POST,'firstpage'))	? notags(trim($_POST['firstpage']))		: 'profiles');
 		$first_page		    =	((x($_POST,'first_page'))	? notags(trim($_POST['first_page']))		: 'profiles');
 		// check value after trim
-		if(! $first_page) {
-			$first_page = 'profiles';
-		}
+		if(! $first_page) { $first_page = 'profiles'; }
+
 		$mirror_frontpage	=	((x($_POST,'mirror_frontpage'))	? intval(trim($_POST['mirror_frontpage']))		: 0);
 		$directory_server	=	((x($_POST,'directory_server')) ? trim($_POST['directory_server']) : '');
 		$allowed_sites		=	((x($_POST,'allowed_sites'))	? notags(trim($_POST['allowed_sites']))		: '');
@@ -68,7 +67,6 @@ class Site {
 		$reply_address      = ((array_key_exists('reply_address',$_POST) && trim($_POST['reply_address'])) ? trim($_POST['reply_address']) : 'noreply@' . \App::get_hostname());
 		$from_email         = ((array_key_exists('from_email',$_POST) && trim($_POST['from_email'])) ? trim($_POST['from_email']) : 'Administrator@' . \App::get_hostname());
 		$from_email_name    = ((array_key_exists('from_email_name',$_POST) && trim($_POST['from_email_name'])) ? trim($_POST['from_email_name']) : \Zotlabs\Lib\System::get_site_name());
-
 
 		$sse_enabled       = ((x($_POST,'sse_enabled'))      ? true : false);
 
@@ -115,8 +113,6 @@ class Site {
 
 			} else {
 
-				//logger( print_r( $this->msgbg, true) );
-				//logger( print_r( $this->joo, true) );
 				if ($this->error === 0) {
 					set_config('system', 'register_duty', $this->register_duty);
 					set_config('system', 'register_duty_jso', $this->joo);
@@ -175,12 +171,6 @@ class Site {
 		set_config('system','siteinfo',$siteinfo);
 		set_config('system', 'language', $language);
 		set_config('system', 'theme', $theme);
-		//		if ( $theme_mobile === '---' ) {
-		//			del_config('system', 'mobile_theme');
-		//		} else {
-		//			set_config('system', 'mobile_theme', $theme_mobile);
-		//		}
-		//	set_config('system','site_channel', $site_channel);
 		set_config('system','maximagesize', $maximagesize);
 
 		set_config('system','register_policy', $register_policy);
@@ -706,6 +696,4 @@ class Site {
 		}
 		return ;
 	}
-
-
 }
