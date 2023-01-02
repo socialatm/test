@@ -5,7 +5,6 @@ class Authtest extends \Zotlabs\Web\Controller {
 
 	function get() {
 
-
 		$auth_success = false;
 		$o .= '<h3>Magic-Auth Diagnostic</h3>';
 
@@ -51,8 +50,6 @@ class Authtest extends \Zotlabs\Web\Controller {
 			if(! $auth_success)
 				$o .= 'Authentication Failed!' . EOL;
 		}
-
-		return str_replace("\n",'<br />',$o);
+		return str_replace("\n",'<br>',$o);
 	}
-
 }

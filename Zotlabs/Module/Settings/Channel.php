@@ -180,7 +180,7 @@ class Channel {
 		$post_joingroup       = (($post_joingroup === false) ? '0' : $post_joingroup); // default if not set: 0
 		$post_profilechange   = get_pconfig(local_channel(), 'system', 'post_profilechange');
 		$post_profilechange   = (($post_profilechange === false) ? '0' : $post_profilechange); // default if not set: 0
-		$subdir               = ((strlen(App::get_path())) ? '<br />' . t('or') . ' ' . z_root() . '/channel/' . $nickname : '');
+		$subdir               = ((strlen(App::get_path())) ? '<br>' . t('or') . ' ' . z_root() . '/channel/' . $nickname : '');
 		$webbie               = $nickname . '@' . App::get_hostname();
 		$intl_nickname        = unpunify($nickname) . '@' . unpunify(App::get_hostname());
 		$disable_discover_tab = intval(get_config('system', 'disable_discover_tab', 1)) == 1;
