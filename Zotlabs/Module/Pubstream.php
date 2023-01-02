@@ -7,7 +7,6 @@ use Zotlabs\Lib\Apps;
 require_once('include/conversation.php');
 require_once('include/acl_selectors.php');
 
-
 class Pubstream extends \Zotlabs\Web\Controller {
 
 	function get($update = 0, $load = false) {
@@ -176,7 +175,6 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		else
 			$page_mode = 'client';
 
-
 		if(x($hashtags)) {
 			$sql_extra .= protect_sprintf(term_query('item', $hashtags, TERM_HASHTAG, TERM_COMMUNITYTAG));
 		}
@@ -186,8 +184,6 @@ class Pubstream extends \Zotlabs\Web\Controller {
 
 		if($update && $_SESSION['loadtime'])
 			$simple_update = " AND (( item_unseen = 1 AND item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' )  OR item.changed > '" . datetime_convert('UTC','UTC',$_SESSION['loadtime']) . "' ) ";
-
-		//logger('update: ' . $update . ' load: ' . $load);
 
 		$items = [];
 
@@ -278,6 +274,5 @@ class Pubstream extends \Zotlabs\Web\Controller {
 		$_SESSION['loadtime'] = datetime_convert();
 
 		return $o;
-
 	}
 }

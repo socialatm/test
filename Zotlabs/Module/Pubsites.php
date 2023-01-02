@@ -63,14 +63,10 @@ class Pubsites extends \Zotlabs\Web\Controller {
 						$o .=  '</tr>';
 					}
 				}
-
 				$o .= '</table>';
-
 				$o .= '</div></div>';
-
 			}
 		}
 		return $o;
 	}
-
 }
