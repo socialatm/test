@@ -8,13 +8,13 @@
 	$(document).ready(function() {
 		if(! $('#cover-photo').length)
 			return;
-
+/*
 		if($(window).width() < 755) {
 		//	$('#cover-photo').remove();
 		//	coverSlid = true;
 			return;
 		}
-
+*/
 		$('#cover-photo').removeClass('d-none');
 		cover_height = Math.ceil($(window).width()/2.75862069);
 		$('#cover-photo').css('height', cover_height + 'px');
@@ -29,34 +29,6 @@
 			coverVisibleActions();
 		}
 	});
-
-/*
-	$(window).scroll(function () {
-		if(! $('#cover-photo').length) {
-			return;
-		}
-
-		if($(window).scrollTop() >= cover_height) {
-			coverHiddenActions();
-			coverSlid = true;
-		}
-		else if ($(window).scrollTop() < cover_height){
-			if(coverSlid) {
-				$(window).scrollTop(cover_height);
-				setTimeout(function(){ coverSlid = false; }, 1000);
-			}
-			else {
-				if($(window).scrollTop() < cover_height) {
-					coverVisibleActions();
-				}
-			}
-		}
-		if($('main').css('opacity') < 1) {
-			$('main').css('opacity', ($(window).scrollTop()/cover_height).toFixed(1));
-		}
-	});
-
-	*/
 
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
@@ -108,7 +80,7 @@
 
 </script>
 
-<div class="mt-3" id="cover-photo" title="{{$hovertitle}}">
+<div class="mt-3 rounded" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
