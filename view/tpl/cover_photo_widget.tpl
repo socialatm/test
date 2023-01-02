@@ -3,7 +3,7 @@
 //	var section_padding_top;
 //	var coverSlid = false;
 //	var hide_cover = Boolean({{$hide_cover}});
-	var cover_height;
+//	var cover_height;
 
 	$(document).ready(function() {
 		if(! $('#cover-photo').length)
@@ -15,25 +15,6 @@
 		datasrc2src('#cover-photo > img');
 
 	});
-
-/*
-
-
-
-	function coverVisibleActions() {
-		$('body').css('cursor', 'n-resize');
-		$('.navbar').removeClass('fixed-top');
-		$('main').css('margin-top', - $('nav').outerHeight(true) + 'px');
-		$('main').css('opacity', 0);
-	}
-
-	function coverHiddenActions() {
-		$('body').css('cursor', '');
-		$('.navbar').addClass('fixed-top');
-		$('main').css('margin-top', '');
-		$('main').css('opacity', 1);
-	}
-*/
 
 </script>
 
