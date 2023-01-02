@@ -44,7 +44,7 @@ class Site {
 		$register_text		=	((x($_POST,'register_text'))	? notags(trim($_POST['register_text']))		: '');
 		$site_sellpage		=	((x($_POST,'site_sellpage'))	? notags(trim($_POST['site_sellpage']))		: '');
 		$site_location		=	((x($_POST,'site_location'))	? notags(trim($_POST['site_location']))		: '');
-		$frontpage			=	((x($_POST,'frontpage'))	? notags(trim($_POST['frontpage']))		: '');
+		$frontpage = ((x($_POST,'frontpage'))	? notags(trim($_POST['frontpage'])) : '');
 		$firstpage		    =	((x($_POST,'firstpage'))	? notags(trim($_POST['firstpage']))		: 'profiles');
 		$first_page		    =	((x($_POST,'first_page'))	? notags(trim($_POST['first_page']))		: 'profiles');
 		// check value after trim
