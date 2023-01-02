@@ -9,16 +9,16 @@
 		if(! $('#cover-photo').length)
 			return;
 
-		$('#cover-photo').removeClass('d-none');
-		cover_height = Math.ceil($(window).width()/2.75862069);
-		$('#cover-photo').css('height', cover_height + 'px');
+//		$('#cover-photo').removeClass('d-none');
+//		cover_height = Math.ceil($(window).width()/2.75862069);
+//		$('#cover-photo').css('height', cover_height + 'px');
 		datasrc2src('#cover-photo > img');
 
 	});
 
 </script>
 
-<div class="d-none" id="cover-photo" title="{{$hovertitle}}">
+<div class="" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h2>{{$title}}</h2>
