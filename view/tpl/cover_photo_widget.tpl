@@ -1,20 +1,20 @@
 <script>
-	var aside_padding_top;
+/*	var aside_padding_top;
 	var section_padding_top;
 	var coverSlid = false;
-	var hide_cover = Boolean({{$hide_cover}});
+	var hide_cover = Boolean({{}});
 	var cover_height;
 
 	$(document).ready(function() {
 		if(! $('#cover-photo').length)
 			return;
-/*
+
 		if($(window).width() < 755) {
 		//	$('#cover-photo').remove();
 		//	coverSlid = true;
 			return;
 		}
-*/
+
 		$('#cover-photo').removeClass('d-none');
 		cover_height = Math.ceil($(window).width()/2.75862069);
 		$('#cover-photo').css('height', cover_height + 'px');
@@ -52,7 +52,7 @@
 		$('html, body').animate({scrollTop: cover_height + 'px'}, 'fast');
 		return;
 	}
-/*
+
 	function hideCover() {
 		if(coverSlid) {
 			return;
@@ -61,7 +61,7 @@
 		return;
 	}
 
-*/
+
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
 		$('.navbar').removeClass('fixed-top');
@@ -69,7 +69,7 @@
 		$('main').css('opacity', 0);
 	}
 
-/*
+
 	function coverHiddenActions() {
 		$('body').css('cursor', '');
 		$('.navbar').addClass('fixed-top');
