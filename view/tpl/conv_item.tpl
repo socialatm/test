@@ -97,7 +97,7 @@
 							</button>
 							<div class="dropdown-menu dropdown-menu-end">
 							{{foreach $item.reactions as $react}}
-								<a class="dropdown-item clearfix" href="#" onclick="jotReact({{$item.id}},'{{$react}}'); return false;"><img class="menu-img-2" src="/images/emoji/{{$react}}.png" alt="{{$react}}" /></a>
+								<a class="dropdown-item clearfix" href="#" onclick="jotReact({{$item.id}},'{{$react}}'); return false;"><img class="menu-img-2" src="/images/emoji/{{$react}}.png" alt="{{$react}}" ></a>
 							{{/foreach}}
 							</div>
 						</div>

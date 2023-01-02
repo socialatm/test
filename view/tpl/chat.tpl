@@ -156,7 +156,7 @@ function update_inroom(inroom) {
 	$.each( inroom, function(index, item) {
 		var newNode = document.createElement('div');
 		newNode.setAttribute('class', 'member-item');
-		$(newNode).html('<img class="menu-img-2" src="' + item.img + '" alt="' + item.name + '" /> ' + '<span class="contactname">' + item.name + '</span><span class="' + item.status_class + '">' + item.status + '</span>');
+		$(newNode).html('<img class="menu-img-2" src="' + item.img + '" alt="' + item.name + '" > ' + '<span class="contactname">' + item.name + '</span><span class="' + item.status_class + '">' + item.status + '</span>');
 		html.appendChild(newNode);
 	});
     memberChange = chatRoomMembersChange(inroom); // get list of arrivals and departures
