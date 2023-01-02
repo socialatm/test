@@ -2,7 +2,7 @@
 	var aside_padding_top;
 	var section_padding_top;
 	var coverSlid = false;
-	var hide_cover = Boolean({{$hide_cover}});
+//	var hide_cover = Boolean({{$hide_cover}});
 	var cover_height;
 
 	$(document).ready(function() {
