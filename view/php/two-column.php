@@ -20,7 +20,7 @@
         </div>
         <div class="col-md-6 mb-3">
           <div id="region_3" class=" p-3 border border-primary rounded bg-white">
-            <img src="/images/facts.png" alt="hubzilla stats">
+            <img src="/images/facts.png" class="img-fluid" alt="hubzilla stats">
           </div>
         </div>
       </div>
