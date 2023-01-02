@@ -350,7 +350,7 @@ function oembed_format_object($j){
 					$embedurl = zid($embedurl);
 					$j['thumbnail_url'] = zid($j['thumbnail_url']);
 				}
-				$ret = '<a href="' . $embedurl . '" ><img src="' . $j['thumbnail_url'] . '" alt="thumbnail" /></a><br /><br />';
+				$ret = '<a href="' . $embedurl . '" ><img src="' . $j['thumbnail_url'] . '" alt="thumbnail" /></a><br><br>';
 			}
 
 			//$ret = "<a href='".$embedurl."'>".$j['title']."</a>";

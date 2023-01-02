@@ -1647,7 +1647,7 @@ function bbcode($Text, $options = []) {
 	$Text = oembed_bbcode2html($Text);
 
 	// Avoid triple linefeeds through oembed
-	$Text = str_replace("<br style='clear:left'></span><br /><br />", "<br style='clear:left'></span><br />", $Text);
+	$Text = str_replace("<br style='clear:left'></span><br><br>", "<br style='clear:left'></span><br>", $Text);
 
 	// If we found an event earlier, strip out all the event code and replace with a reformatted version.
 	// Replace the event-start section with the entire formatted event. The other bbcode is stripped.

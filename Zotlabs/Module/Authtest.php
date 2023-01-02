@@ -18,7 +18,7 @@ class Authtest extends \Zotlabs\Web\Controller {
 		$o .= 'Target URL: <input type="text" style="width: 250px;" name="dest" value="' . $_GET['dest'] .'" />';
 		$o .= '<input type="submit" name="submit" value="Submit" /></form>';
 
-		$o .= '<br /><br />';
+		$o .= '<br><br>';
 
 		if(x($_GET,'dest')) {
 			if(strpos($_GET['dest'],'@')) {

@@ -33,7 +33,7 @@ foreach ($langs as $lang) {
     $i++;
 }
 
-echo "<br />total $i</small><br /><br />";
+echo "<br>total $i</small><br><br>";
 
 ?>
 <form method="post">
@@ -52,15 +52,15 @@ if (isset($q) && strlen($q)) {
     $result = $l->detectConfidence($q);
 
     if ($result == null) {
-        echo "Text_LanguageDetect cannot identify this piece of text. <br /><br />\n";
+        echo "Text_LanguageDetect cannot identify this piece of text. <br><br>\n";
     } else {
-        echo "Text_LanguageDetect thinks this text is written in <b>{$result['language']}</b> ({$result['similarity']}, {$result['confidence']})<br /><br />\n";
+        echo "Text_LanguageDetect thinks this text is written in <b>{$result['language']}</b> ({$result['similarity']}, {$result['confidence']})<br><br>\n";
     }
 
     $result = $l->detectUnicodeBlocks($q, false);
     if (!empty($result)) {
         arsort($result);
-        echo "Unicode blocks present: ", join(', ', array_keys($result)), "\n<br /><br />";
+        echo "Unicode blocks present: ", join(', ', array_keys($result)), "\n<br><br>";
     }
 }
 
