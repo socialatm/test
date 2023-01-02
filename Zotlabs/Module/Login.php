@@ -1,7 +1,6 @@
 <?php
 namespace Zotlabs\Module;
 
-
 class Login extends \Zotlabs\Web\Controller {
 
 	function get() {
@@ -12,5 +11,4 @@ class Login extends \Zotlabs\Web\Controller {
 
 		return login(true);
 	}
-	
 }
