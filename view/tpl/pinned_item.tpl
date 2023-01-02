@@ -44,7 +44,7 @@
 				<span class="float-end" title="{{$pinned}}"><i class="fa fa-thumb-tack">&nbsp;</i></span>
 				<div class="wall-item-info" id="pinned-item-info-{{$id}}" >
 					<div class="wall-item-photo-wrapper{{if $owner_url}} wwfrom{{/if}} h-card p-author" id="pinned-item-photo-wrapper-{{$id}}">
-						<img src="{{$thumb}}" class="fakelink wall-item-photo u-photo p-name" id="pinned-item-photo-{{$id}}" alt="{{$name}}" data-bs-toggle="dropdown" />
+						<img src="{{$thumb}}" class="fakelink wall-item-photo u-photo p-name" id="pinned-item-photo-{{$id}}" alt="{{$name}}" data-bs-toggle="dropdown" >
 						{{if $thread_author_menu}}
 							<i class="fa fa-caret-down wall-item-photo-caret cursor-pointer" data-bs-toggle="dropdown"></i>
 							<div class="dropdown-menu">
