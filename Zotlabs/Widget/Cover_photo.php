@@ -63,11 +63,6 @@ class Cover_photo {
 
 		$c = get_cover_photo($channel_id,'html');
 
-
-		print("<pre>".print_r($c,true)."</pre>");
-		exit;
-
-
 		if($c) {
 			$c = str_replace('src=', 'data-src=', $c);
 			$photo_html = (($style) ? str_replace('alt=',' style="' . $style . '" alt=',$c) : $c);
@@ -80,13 +75,6 @@ class Cover_photo {
 				'$hide_cover' => $hide_cover
 			));
 		}
-/*
-		print("<pre>".print_r($c,true)."</pre>");
-		exit;
-*/
-
-
-
 		return $o;
 	}
 }
