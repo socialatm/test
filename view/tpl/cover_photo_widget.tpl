@@ -10,8 +10,8 @@
 			return;
 
 		if($(window).width() < 755) {
-		//	$('#cover-photo').remove();
-		//	coverSlid = true;
+			$('#cover-photo').remove();
+			coverSlid = true;
 			return;
 		}
 
@@ -29,7 +29,6 @@
 			coverVisibleActions();
 		}
 	});
-
 
 	$(window).scroll(function () {
 		if(! $('#cover-photo').length) {
@@ -55,8 +54,6 @@
 			$('main').css('opacity', ($(window).scrollTop()/cover_height).toFixed(1));
 		}
 	});
-
-	
 
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
@@ -89,7 +86,6 @@
 		return;
 	}
 
-
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
 		$('.navbar').removeClass('fixed-top');
@@ -97,18 +93,15 @@
 		$('main').css('opacity', 0);
 	}
 
-
 	function coverHiddenActions() {
 		$('body').css('cursor', '');
 		$('.navbar').addClass('fixed-top');
 		$('main').css('margin-top', '');
 		$('main').css('opacity', 1);
 	}
-*/
-
 </script>
 
-<div class="mt-3" id="cover-photo" title="{{$hovertitle}}">
+<div class="d-none" id="cover-photo" title="{{$hovertitle}}">
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
