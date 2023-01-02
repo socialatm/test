@@ -2286,7 +2286,7 @@ function get_cover_photo($channel_id,$format = 'bbcode', $res = PHOTO_RES_COVER_
 			$output = '[zrl=' . $r[0]['width'] . 'x' . $r[0]['height'] . ']' . $url . '[/zrl]';
 			break;
 		case 'html':
- 			$output = '<img class="zrl" width="' . $r[0]['width'] . '" height="' . $r[0]['height'] . '" src="' . $url . '" alt="' . t('cover photo') . '" />';
+ 			$output = '<img class="zrl rounded" width="' . $r[0]['width'] . '" height="' . $r[0]['height'] . '" src="' . $url . '" alt="' . t('cover photo') . '" />';
 			break;
 		case 'array':
 		default:
