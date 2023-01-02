@@ -30,33 +30,6 @@
 		}
 	});
 
-/*
-	$(window).scroll(function () {
-		if(! $('#cover-photo').length) {
-			return;
-		}
-
-		if($(window).scrollTop() >= cover_height) {
-			coverHiddenActions();
-			coverSlid = true;
-		}
-		else if ($(window).scrollTop() < cover_height){
-			if(coverSlid) {
-				$(window).scrollTop(cover_height);
-				setTimeout(function(){ coverSlid = false; }, 1000);
-			}
-			else {
-				if($(window).scrollTop() < cover_height) {
-					coverVisibleActions();
-				}
-			}
-		}
-		if($('main').css('opacity') < 1) {
-			$('main').css('opacity', ($(window).scrollTop()/cover_height).toFixed(1));
-		}
-	});
-*/
-
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
 			return;
