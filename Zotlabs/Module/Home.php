@@ -81,7 +81,7 @@ class Home extends Controller {
 			if (strpos($frontpage, 'include:') !== false) {
 				$file = trim(str_replace('include:', '', $frontpage));
 				if (file_exists($file)) {
-					App::$page['template'] = 'two-column'; /* here */
+					App::$page['template'] = 'full';
 					App::$page['title']    = t('$Projectname');
 					$o                     .= file_get_contents($file);
 					return $o;
