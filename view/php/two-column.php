@@ -13,13 +13,6 @@
     <div class="container-fluid">
       <!-- start row -->
       <div class="row gx-3 bg-light mb-3" >
-
-<!--
-        <div class="col-md-3">
-          <div id="region_1" class="p-3 border border-primary rounded bg-white"><?php if(x($page,'aside')) echo $page['aside']; ?></div>
-        </div>
--->
-
         <div id="region_2" class="col-md-6">
           <div class="p-3 border border-primary rounded bg-white">
             <?php if(x($page,'content')) echo $page['content']; ?>
