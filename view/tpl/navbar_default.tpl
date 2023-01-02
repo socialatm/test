@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-primary text-white">
+<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-primary text-white p-md-0">
 	<div class="container-fluid flex-nowrap">
 			{{* start Toggle button *}}
 		<button
