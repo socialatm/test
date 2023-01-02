@@ -30,6 +30,34 @@
 		}
 	});
 
+
+	$(window).scroll(function () {
+		if(! $('#cover-photo').length) {
+			return;
+		}
+
+		if($(window).scrollTop() >= cover_height) {
+			coverHiddenActions();
+			coverSlid = true;
+		}
+		else if ($(window).scrollTop() < cover_height){
+			if(coverSlid) {
+				$(window).scrollTop(cover_height);
+				setTimeout(function(){ coverSlid = false; }, 1000);
+			}
+			else {
+				if($(window).scrollTop() < cover_height) {
+					coverVisibleActions();
+				}
+			}
+		}
+		if($('main').css('opacity') < 1) {
+			$('main').css('opacity', ($(window).scrollTop()/cover_height).toFixed(1));
+		}
+	});
+
+	
+
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
 			return;
@@ -80,7 +108,11 @@
 
 </script>
 
+<<<<<<< HEAD
 <div class=" " id="cover-photo" title="{{$hovertitle}}">
+=======
+<div class="mt-3" id="cover-photo" title="{{$hovertitle}}">
+>>>>>>> parent of 5f3418a7c (Update cover_photo_widget.tpl)
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
