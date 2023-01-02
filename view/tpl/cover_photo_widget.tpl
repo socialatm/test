@@ -30,6 +30,7 @@
 		}
 	});
 
+/*
 	$(window).scroll(function () {
 		if(! $('#cover-photo').length) {
 			return;
@@ -54,6 +55,7 @@
 			$('main').css('opacity', ($(window).scrollTop()/cover_height).toFixed(1));
 		}
 	});
+*/
 
 	$(window).resize(function () {
 		if(! $('#cover-photo').length) {
