@@ -16,7 +16,7 @@
 		}
 */
 
-/*
+
 	$('#cover-photo').removeClass('d-none');
 		cover_height = Math.ceil($(window).width()/2.75862069);
 		$('#cover-photo').css('height', cover_height + 'px');
@@ -32,7 +32,7 @@
 		}
 	});
 
-*/
+
 
 /*
 	$(window).resize(function () {
