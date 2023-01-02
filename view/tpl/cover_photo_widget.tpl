@@ -108,11 +108,7 @@
 
 </script>
 
-<<<<<<< HEAD
-<div class=" " id="cover-photo" title="{{$hovertitle}}">
-=======
 <div class="mt-3" id="cover-photo" title="{{$hovertitle}}">
->>>>>>> parent of 5f3418a7c (Update cover_photo_widget.tpl)
 	{{$photo_html}}
 	<div id="cover-photo-caption">
 		<h1>{{$title}}</h1>
