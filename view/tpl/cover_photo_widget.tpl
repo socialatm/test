@@ -22,7 +22,7 @@
 		$('#cover-photo').css('height', cover_height + 'px');
 		datasrc2src('#cover-photo > img');
 
-//		$(document).on('click mouseup keyup', slideUpCover);
+/*		$(document).on('click mouseup keyup', slideUpCover);
 
 		if(hide_cover) {
 			hideCover();
@@ -30,6 +30,8 @@
 		else if(!hide_cover && !coverSlid)  {
 			coverVisibleActions();
 		}
+*/
+
 	});
 
 
