@@ -10,8 +10,7 @@
   </head>
   <body class="py-4 mt-5 bg-light" <?php if($page['direction']) echo 'dir="rtl"' ?> >
       <?php if(x($page,'nav')) echo $page['nav']; ?>
-      <?php if(x($page,'banner')) echo $page['banner']; ?>
-	  <header class="container-fluid mb-3"><?php if(x($page,'header')) echo $page['header']; ?></header>
+    <header class="container-fluid mb-3"><?php if(x($page,'header')) echo $page['header']; ?></header>
 	  <div class="container-fluid">
 
       <!-- start row -->
