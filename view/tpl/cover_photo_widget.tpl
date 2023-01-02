@@ -8,68 +8,17 @@
 	$(document).ready(function() {
 		if(! $('#cover-photo').length)
 			return;
-/*
-		if($(window).width() < 755) {
-			$('#cover-photo').remove();
-			coverSlid = true;
-			return;
-		}
-*/
 
-
-	$('#cover-photo').removeClass('d-none');
+		$('#cover-photo').removeClass('d-none');
 		cover_height = Math.ceil($(window).width()/2.75862069);
 		$('#cover-photo').css('height', cover_height + 'px');
 		datasrc2src('#cover-photo > img');
 
-/*		$(document).on('click mouseup keyup', slideUpCover);
-
-		if(hide_cover) {
-			hideCover();
-		}
-		else if(!hide_cover && !coverSlid)  {
-			coverVisibleActions();
-		}
-*/
-
 	});
-
-
 
 /*
-	$(window).resize(function () {
-		if(! $('#cover-photo').length) {
-			return;
-		}
-
-		cover_height = Math.ceil($(window).width()/2.75862069);
-		$('#cover-photo').css('height', cover_height + 'px');
-		if($(window).width() < 755) {
-			$('#cover-photo').remove();
-			coverHiddenActions();
-			coverSlid = true;
-		}
-
-	});
 
 
-	function slideUpCover() {
-		if(coverSlid) {
-			return;
-		}
-		$('html, body').animate({scrollTop: cover_height + 'px'}, 'fast');
-		return;
-	}
-
-	function hideCover() {
-		if(coverSlid) {
-			return;
-		}
-		window.scrollTo(0, cover_height);
-		return;
-	}
-
-*/
 
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
@@ -84,6 +33,8 @@
 		$('main').css('margin-top', '');
 		$('main').css('opacity', 1);
 	}
+*/
+
 </script>
 
 <div class="d-none" id="cover-photo" title="{{$hovertitle}}">
