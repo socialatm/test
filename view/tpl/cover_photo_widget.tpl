@@ -22,7 +22,7 @@
 		$('#cover-photo').css('height', cover_height + 'px');
 		datasrc2src('#cover-photo > img');
 
-		$(document).on('click mouseup keyup', slideUpCover);
+//		$(document).on('click mouseup keyup', slideUpCover);
 
 		if(hide_cover) {
 			hideCover();
@@ -49,7 +49,7 @@
 		}
 
 	});
-*/
+
 
 	function slideUpCover() {
 		if(coverSlid) {
@@ -66,6 +66,8 @@
 		window.scrollTo(0, cover_height);
 		return;
 	}
+
+*/
 
 	function coverVisibleActions() {
 		$('body').css('cursor', 'n-resize');
