@@ -15,7 +15,9 @@
 			return;
 		}
 */
-		$('#cover-photo').removeClass('d-none');
+
+/*
+	$('#cover-photo').removeClass('d-none');
 		cover_height = Math.ceil($(window).width()/2.75862069);
 		$('#cover-photo').css('height', cover_height + 'px');
 		datasrc2src('#cover-photo > img');
@@ -29,6 +31,8 @@
 			coverVisibleActions();
 		}
 	});
+
+*/
 
 /*
 	$(window).resize(function () {
