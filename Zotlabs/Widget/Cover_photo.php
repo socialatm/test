@@ -72,7 +72,6 @@ class Cover_photo {
 				'$title'	=> $title,
 				'$subtitle'	=> $subtitle,
 				'$hovertitle' => t('Click to show more'),
-				'$hide_cover' => $hide_cover
 			));
 		}
 		return $o;
