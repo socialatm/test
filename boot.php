@@ -1767,7 +1767,6 @@ function login($register = false, $form_id = 'main_login', $hiddens = false, $lo
 	return $o;
 }
 
-
 /**
  * @brief Used to end the current process, after saving session state.
  */
