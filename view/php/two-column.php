@@ -10,7 +10,7 @@
   </head>
   <body class="py-4 mt-5 bg-light" <?php if($page['direction']) echo 'dir="rtl"' ?> >
       <?php if(x($page,'nav')) echo $page['nav']; ?>
-    <header class="container-fluid mb-3"><?php if(x($page,'header')) echo $page['header']; ?>two-column</two-column></header>
+  <!--  <header class="container-fluid mb-3"><?php if(x($page,'header')) echo $page['header']; ?>two-column</two-column></header> -->
 	  <div class="container-fluid">
 
       <!-- start row -->
@@ -29,15 +29,15 @@
       </div>
       <!-- end row -->
 
-      <!-- start footer -->
+      <!-- start footer 
       <div class="row gx-3 bg-light mb-3" >
         <div id="region_5" class="col-md-12">
           <div class="p-3 border border-primary rounded bg-white">
-            <?php if(x($page,'footer')) echo $page['footer']; ?>
+       {{*     <?php if(x($page,'footer')) echo $page['footer']; ?> *}}
           </div>
         </div>
       </div>
-      <!-- end footer -->
+      -- end footer -->
     </div>
     <!-- end container -->
   </body>
