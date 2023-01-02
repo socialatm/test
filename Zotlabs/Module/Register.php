@@ -8,7 +8,6 @@ use Zotlabs\Web\Controller;
 require_once('include/security.php');
 require_once('include/channel.php');
 
-
 class Register extends Controller {
 
 	const MYP = 	'ZAR';		// ZAR0x
@@ -424,7 +423,6 @@ class Register extends Controller {
 		}
 	}
 
-
 	function get() {
 
 		$registration_is = '';
@@ -543,7 +541,6 @@ class Register extends Controller {
 			'$nickhub'      => $nickhub
 
 		));
-
 		return $o;
 	}
 
