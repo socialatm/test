@@ -13,13 +13,15 @@
     <div class="container-fluid">
       <!-- start row -->
       <div class="row gx-3 bg-light mb-3" >
-        <div id="region_2" class="col-md-6">
+        <div id="region_2" class="col-md-6 mb-3">
           <div class="p-3 border border-primary rounded bg-white">
             <?php if(x($page,'content')) echo $page['content']; ?>
           </div>
         </div>
-        <div class="col-md-6">
-          <div id="region_3" class=" p-3 border border-primary rounded bg-white"><?php if(x($page,'right_aside')) echo $page['right_aside']; ?></div>
+        <div class="col-md-6 mb-3">
+          <div id="region_3" class=" p-3 border border-primary rounded bg-white">
+            <img src="/images/facts.png" alt="hubzilla stats">
+          </div>
         </div>
       </div>
       <!-- end row -->
