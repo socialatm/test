@@ -1,4 +1,3 @@
-
 <div id="poke-content" class="generic-content-wrapper">
     <div class="section-title-wrapper">
     <h2>{{$title}}</h2>
@@ -7,12 +6,10 @@
 
 	<div id="poke-desc">{{$desc}}</div>
 
-<br />
-<br />
-
+<br>
+<br>
 
 <form action="poke" method="get">
-
 
 <div class="mb-3 field input">
 	<label id="poke-recip-label" for="poke-recip">{{$clabel}}</label>
@@ -21,7 +18,6 @@
 
 	<input id="poke-recip-complete" type="hidden" value="{{$id}}" name="cid" />
 	<input id="poke-parent" type="hidden" value="{{$parent}}" name="parent" />
-
 
 {{if $poke_basic}}
 <input type="hidden" name="verb" value="poke" />
@@ -42,7 +38,6 @@
 
 <input type="submit" name="submit" value="{{$submit}}" />
 </form>
-
 
     </div>
 </div>

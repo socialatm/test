@@ -24,7 +24,7 @@
 {{if $cust_fields}}
 <br><br>
 <div><strong>{{$cust_field_desc}}</strong></div>
-<br />
+<br>
 
 <table width="100%">
 {{foreach $cust_fields as $field}}
