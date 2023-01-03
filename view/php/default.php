@@ -30,7 +30,7 @@
       </div>
       <!-- end row -->
 
-      <!-- start footer -->
+      <!-- start footer it's here if we need it
       <div class="row gx-3 bg-light mb-3" >
         <div id="region_5" class="col-md-12">
           <div class="p-3 border border-primary rounded bg-white">
@@ -38,7 +38,7 @@
           </div>
         </div>
       </div>
-      <!-- end footer -->
+        end footer -->
     </div>
     <!-- end container -->
   </body>
