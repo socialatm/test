@@ -2,7 +2,7 @@
 
 /**
  * Name: Cover photo
- * Description: Display a cover photo in the header region
+ * Description: Display a cover photo in the page header region
  * Requires: disabled_for_pdledit_gui
  */
 
