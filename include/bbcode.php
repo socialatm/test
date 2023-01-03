@@ -554,7 +554,7 @@ function bb_ShareAttributes($match) {
 	$headline = '<div id="shared_container_' . $rnd . '" class="shared_container"> <div id="shared_header_' . $rnd . '" class="shared_header">';
 
 	if ($avatar != "")
-		$headline .= '<a href="' . (($auth) ? zid($profile) : $profile) . '" ><img src="' . $avatar . '" alt="' . $author . '" height="32" width="32" loading="lazy" /></a>';
+		$headline .= '<a href="' . (($auth) ? zid($profile) : $profile) . '" ><img src="' . $avatar . '" alt="' . $author . '" height="32" width="32" loading="lazy" ></a>';
 
 	if(strpos($link,'/cards/'))
 		$type = t('card');

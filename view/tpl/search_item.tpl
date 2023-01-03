@@ -26,7 +26,7 @@
 						{{if $item.contact_id}}
 						<div class="spinner-wrapper contact-edit-rotator contact-edit-rotator-{{$item.contact_id}}"><div class="spinner s"></div></div>
 						{{/if}}
-						<img src="{{$item.thumb}}" class="fakelink wall-item-photo{{$item.sparkle}} u-photo p-name" id="wall-item-photo-{{$item.id}}" alt="{{$item.name}}" data-bs-toggle="dropdown" loading="lazy" />
+						<img src="{{$item.thumb}}" class="fakelink wall-item-photo{{$item.sparkle}} u-photo p-name" id="wall-item-photo-{{$item.id}}" alt="{{$item.name}}" data-bs-toggle="dropdown" loading="lazy" >
 						{{if $item.author_is_group_actor}}
 						<i class="fa fa-comments-o wall-item-photo-group-actor" title="{{$item.author_is_group_actor}}"></i>
 						{{/if}}

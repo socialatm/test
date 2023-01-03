@@ -19,7 +19,7 @@
 	<div class="section-content-tools-wrapper">
 		<div class="contact-photo-wrapper" >
 			<a href="{{$contact.url}}" title="{{$contact.img_hover}}" >
-				<img class="directory-photo-img {{if $contact.classes}}{{$contact.classes}}{{/if}}" src="{{$contact.thumb}}" alt="{{$contact.name}}" loading="lazy" />
+				<img class="directory-photo-img {{if $contact.classes}}{{$contact.classes}}{{/if}}" src="{{$contact.thumb}}" alt="{{$contact.name}}" loading="lazy" >
 			</a>
 			{{include "connstatus.tpl" perminfo=$contact.perminfo}}
 		</div>
