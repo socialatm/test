@@ -1,7 +1,6 @@
 <?php
 namespace Zotlabs\Module;
 
-
 class Siteinfo extends \Zotlabs\Web\Controller {
 
 	function init() {

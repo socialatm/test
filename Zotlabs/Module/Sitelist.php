@@ -1,7 +1,6 @@
 <?php
 namespace Zotlabs\Module; /** @file */
 
-
 class Sitelist extends \Zotlabs\Web\Controller {
 
 	function init() {
@@ -61,7 +60,5 @@ class Sitelist extends \Zotlabs\Web\Controller {
 
 		echo json_encode($result);
 		killme();
-
-
 	}
 }
