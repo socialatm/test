@@ -4,7 +4,6 @@ namespace Zotlabs\Module;
 require_once('include/items.php');
 require_once('include/conversation.php');
 
-
 class Page extends \Zotlabs\Web\Controller {
 
 	function init() {
@@ -59,7 +58,6 @@ class Page extends \Zotlabs\Web\Controller {
 				$page_name .= '/';
 			$page_name .= argv($x);
 		}
-
 
 		// The page link title was stored in a urlencoded format
 		// php or the browser may/will have decoded it, so re-encode it for our search
@@ -158,9 +156,7 @@ class Page extends \Zotlabs\Web\Controller {
 				\App::$pdl = $l[0]['body'];
 			}
 		}
-
 		\App::$data['webpage'] = $r;
-
 	}
 
 	function get() {
@@ -174,7 +170,6 @@ class Page extends \Zotlabs\Web\Controller {
 			$r[0]['body'] = t('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 			$r[0]['mimetype'] = 'text/plain';
 			$r[0]['title'] = '';
-
 		}
 
 		xchan_query($r);
@@ -185,7 +180,5 @@ class Page extends \Zotlabs\Web\Controller {
 
 		$o .= prepare_page($r[0]);
 		return $o;
-
 	}
-
 }
