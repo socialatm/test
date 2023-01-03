@@ -10,10 +10,7 @@
   </head>
   <body class="py-4 mt-5 bg-light" <?php if($page['direction']) echo 'dir="rtl"' ?> >
       <?php if(x($page,'nav')) echo $page['nav']; ?>
-
-      
-
-    <?php if(x($page,'header')) echo '<header class="container-fluid mb-3">'. $page['header'].'</header>'; ?>
+      <?php if(x($page,'header')) echo '<header class="container-fluid mb-3">'. $page['header'].'</header>'; ?>
 
 	  <div class="container-fluid">
 
