@@ -44,11 +44,14 @@ function nav($template = 'default') {
 	}
 
 	App::$page['header'] = App::$page['header'] ?? '';
-/*	
+
+   	/*	Leave this here. we may need it for pages that use something other than an image
+	 * in the page header,
+
 	App::$page['header'] .= replace_macros(get_markup_template('hdr.tpl'), [
 		//we could additionally use this to display important system notifications e.g. for updates
 	]);
-*/
+	*/
 
 	// nav links: array of array('href', 'text', 'extra css classes', 'title')
 	$nav = [];
