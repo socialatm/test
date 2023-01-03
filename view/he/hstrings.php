@@ -2039,7 +2039,7 @@ App::$strings["Select \"Show\" to allow viewing. \"Don't show\" lets you overrid
 App::$strings["Show"] = "הצג";
 App::$strings["Don't show"] = "אל תציג";
 App::$strings["Other networks and post services"] = "שירותי רשת ופרסום אחרים";
-App::$strings["Post permissions %s cannot be changed %s after a post is shared.</br />These permissions set who is allowed to view the post."] = "";
+App::$strings["Post permissions %s cannot be changed %s after a post is shared.<br>These permissions set who is allowed to view the post."] = "";
 App::$strings["Logged out."] = "מנותק.";
 App::$strings["Failed authentication"] = "אימות נכשל";
 App::$strings["Birthday"] = "יום הולדת";

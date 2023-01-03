@@ -2086,7 +2086,7 @@ App::$strings["Select \"Show\" to allow viewing. \"Don't show\" lets you overrid
 App::$strings["Show"] = "Vis";
 App::$strings["Don't show"] = "Ikke vis";
 App::$strings["Other networks and post services"] = "Andre nettverk og innleggstjenester";
-App::$strings["Post permissions %s cannot be changed %s after a post is shared.</br />These permissions set who is allowed to view the post."] = "";
+App::$strings["Post permissions %s cannot be changed %s after a post is shared.<br>These permissions set who is allowed to view the post."] = "";
 App::$strings["Logged out."] = "Logget ut.";
 App::$strings["Failed authentication"] = "Mislykket autentisering";
 App::$strings["Birthday"] = "";
