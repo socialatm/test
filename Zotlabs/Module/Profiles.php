@@ -679,7 +679,7 @@ class Profiles extends \Zotlabs\Web\Controller {
 
 				$opt_tpl = get_markup_template("field_checkbox.tpl");
 				if (get_config('system', 'publish_all')) {
-					$profile_in_dir = '<input type="hidden" name="profile_in_directory" value="1" />';
+					$profile_in_dir = '<input type="hidden" name="profile_in_directory" value="1" >';
 				}
 				else {
 					$profile_in_dir = replace_macros($opt_tpl, [

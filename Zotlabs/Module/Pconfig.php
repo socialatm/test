@@ -99,14 +99,14 @@ class Pconfig extends \Zotlabs\Web\Controller {
 	function pconfig_form($cat,$k) {
 
 		$o = '<form action="pconfig" method="post" >';
-		$o .= '<input type="hidden" name="form_security_token" value="' . get_form_security_token('pconfig') . '" />';
+		$o .= '<input type="hidden" name="form_security_token" value="' . get_form_security_token('pconfig') . '" >';
 
 		$v = get_pconfig(local_channel(),$cat,$k);
 		if(strpos($k,'password') !== false)
 			$v = unobscurify($v);
 
-		$o .= '<input type="hidden" name="cat" value="' . $cat . '" />';
-		$o .= '<input type="hidden" name="k" value="' . $k . '" />';
+		$o .= '<input type="hidden" name="cat" value="' . $cat . '" >';
+		$o .= '<input type="hidden" name="k" value="' . $k . '" >';
 
 		if(strpos($v,"\n"))
 			$o .= '<textarea name="v" >' . escape_tags($v) . '</textarea>';

@@ -1339,7 +1339,7 @@ function hz_status_editor($a, $x, $popup = false) {
 	if($mimeselect)
 		$mimeselect = mimetype_select($x['profile_uid'], $mimetype);
 	else
-		$mimeselect = '<input type="hidden" name="mimetype" value="' . $mimetype . '" />';
+		$mimeselect = '<input type="hidden" name="mimetype" value="' . $mimetype . '" >';
 
 	$weblink = (($mimetype === 'text/bbcode') ? t('Insert web link') : false);
 	if(x($x, 'hide_weblink'))
@@ -1357,7 +1357,7 @@ function hz_status_editor($a, $x, $popup = false) {
 	if($layoutselect)
 		$layoutselect = layout_select($x['profile_uid'], $layout);
 	else
-		$layoutselect = '<input type="hidden" name="layout_mid" value="' . $layout . '" />';
+		$layoutselect = '<input type="hidden" name="layout_mid" value="' . $layout . '" >';
 
 	if(array_key_exists('channel_select',$x) && $x['channel_select']) {
 		require_once('include/channel.php');

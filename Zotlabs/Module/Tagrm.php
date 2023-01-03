@@ -125,7 +125,7 @@ class Tagrm extends \Zotlabs\Web\Controller {
 			$o .= '<p id="tag-remove-desc">' . t('Select a tag to remove: ') . '</p>';
 	
 			$o .= '<form id="tagrm" action="tagrm" method="post" >';
-			$o .= '<input type="hidden" name="item" value="' . $item . '" />';
+			$o .= '<input type="hidden" name="item" value="' . $item . '" >';
 			$o .= '<ul>';
 	
 	
