@@ -130,7 +130,7 @@
 			<!-- start login/logout/register -->
 			<ul class="navbar-nav">
 				{{if $nav.login && !$userinfo}}
-				<li class="nav-item d-lg-flex">
+				<li class="nav-item d-lg-flex ms-2">
 					{{if $nav.loginmenu.1.4}}
 					<a class="nav-link" href="#" title="{{$nav.loginmenu.1.3}}" id="{{$nav.loginmenu.1.4}}" data-bs-toggle="modal" data-bs-target="#nav-login">
 					{{$nav.loginmenu.1.1}}
@@ -143,7 +143,7 @@
 				</li>
 				{{/if}}
 				{{if $nav.register}}
-				<li class="nav-item {{$nav.register.2}} d-lg-flex">
+				<li class="nav-item {{$nav.register.2}} d-lg-flex ms-2">
 					<a class="nav-link" href="{{$nav.register.0}}" title="{{$nav.register.3}}" id="{{$nav.register.4}}">{{$nav.register.1}}</a>
 				</li>
 				{{/if}}
