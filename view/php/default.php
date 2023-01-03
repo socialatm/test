@@ -12,9 +12,10 @@
       <?php if(x($page,'nav')) echo $page['nav']; ?>
       <?php if(x($page,'header')) echo '<header class="container-fluid mb-3">'. $page['header'].'</header>'; ?>
 
+      <?php
       print("<pre>".print_r(get_defined_vars(),true)."</pre>");
     exit;
-
+    ?>
 
 
 
