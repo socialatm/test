@@ -9,6 +9,8 @@ Hubzilla 7.8.8 (add date here)
 	- contextual help moved to a bootstrap modal
 	- app menu moved to a bootstrap modal
 	- changed the homepage to network
+	- new login and register pages
+	- notification widget added to a bootstrap modal
 		
 Hubzilla 7.8.7 (2022-12-03)
 	- Fix regression when adding feed contacts
