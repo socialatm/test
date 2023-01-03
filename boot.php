@@ -1382,6 +1382,7 @@ class App {
  *
  * @return bool|int
  */
+
 function x($s, $k = null) {
 	if ($k != null) {
 		if ((is_array($s)) && (array_key_exists($k, $s))) {
@@ -1401,7 +1402,6 @@ function x($s, $k = null) {
 		return false;
 	}
 }
-
 
 /**
  * @brief Called from db initialisation if db is dead.
