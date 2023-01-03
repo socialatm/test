@@ -99,7 +99,7 @@ class Home extends Controller {
 
 		$sitename = get_config('system', 'sitename');
 		if ($sitename)
-			$o .= '<h1 class="home-welcome">' . sprintf(t('Welcome to %s'), $sitename) . '</h1>';
+			$o .= '<h3 class="home-welcome">' . sprintf(t('Welcome to %s'), $sitename) . '</h3>';
 
 		$loginbox = get_config('system', 'login_on_homepage');
 		if (intval($loginbox) || $loginbox === false)
