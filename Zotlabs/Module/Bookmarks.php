@@ -85,7 +85,7 @@ class Bookmarks extends \Zotlabs\Web\Controller {
 
 		$o = '';
 
-		$o .= '<div class="generic-content-wrapper-styled">';
+		$o .= '<div>';
 
 		$o .= '<h3>' . t('Bookmarks') . '</h3>';
 

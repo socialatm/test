@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled">
+<div>
 <h3>{{$header}}</h3>
 
 <div class="rating-target-name">{{if $site}}{{$website}} {{$site}}{{else}}{{$tgt_name}}{{/if}}</div>

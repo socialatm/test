@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled">
+<div>
 <h1>{{$header}}</h1>
 
 {{if $site}}

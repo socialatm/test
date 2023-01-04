@@ -41,7 +41,7 @@ class Search extends Controller {
 		$observer      = App::get_observer();
 		$observer_hash = (($observer) ? $observer['xchan_hash'] : '');
 
-		$o = '<div class="generic-content-wrapper-styled">' . "\r\n";
+		$o = '<div>' . "\r\n";
 
 		$o .= '<h2>' . t('Search') . '</h2>';
 

@@ -51,7 +51,7 @@ class Pdledit extends Controller {
 		if(argc() > 1)
 			$module = 'mod_' . argv(1) . '.pdl';
 		else {
-			$o .= '<div class="generic-content-wrapper-styled">';
+			$o .= '<div>';
 			$o .= '<h1>' . t('Edit System Page Description') . '</h1>';
 
 			$edited = [];

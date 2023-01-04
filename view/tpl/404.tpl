@@ -1,3 +1,3 @@
-<div class="generic-content-wrapper-styled">
+<div>
 <h1>{{$message}}</h1>
 </div>

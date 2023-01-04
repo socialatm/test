@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled">
+<div>
 <h2>{{$title}}</h2>
 <hr><br/>
 <h3>{{$sitenametxt}}</h3> <div>{{$sitename}}</div>

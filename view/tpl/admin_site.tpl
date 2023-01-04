@@ -1,4 +1,4 @@
-<div id="adminpage" class="generic-content-wrapper-styled">
+<div id="adminpage">
 	<h1>{{$title}} - {{$page}}</h1>
 
 	<form action="{{$baseurl}}/admin/site" method="post">

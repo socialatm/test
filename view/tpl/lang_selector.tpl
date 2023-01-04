@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled">
+<div">
 <h1>{{$title}}</h1>
 <br>
 <div id="language-selector" >

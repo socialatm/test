@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled">
+<div>
 	<h3>{{$title}}</h3>
 	<form action="rmagic" method="post" >
 		<div class="mb-3">

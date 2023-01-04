@@ -1,4 +1,4 @@
-<div class="generic-content-wrapper-styled" id='adminpage'>
+<div id='adminpage'>
 	<h1>{{$title}} - {{$page}}</h1>
 {{if $adminalertmsg}}
 	<p class="alert alert-warning" role="alert">{{$adminalertmsg}}</p>
