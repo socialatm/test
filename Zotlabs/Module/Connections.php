@@ -115,7 +115,6 @@ class Connections extends \Zotlabs\Web\Controller {
 					$active = true;
 					$head = t('Active');
 					break;
-
 			}
 
 			$sql_extra = $search_flags;
@@ -272,7 +271,6 @@ class Connections extends \Zotlabs\Web\Controller {
 
 			//vcard_query($r);
 
-
 			foreach($r as $rr) {
 				if($rr['xchan_url']) {
 
@@ -316,7 +314,6 @@ class Connections extends \Zotlabs\Web\Controller {
 					if ($perminfo['connpermcount'] == 0) {
 						$perminfo['connperms'] .= t('Nothing');
 					}
-
 
 					foreach($status as $str) {
 						if(!$str)
@@ -414,5 +411,4 @@ class Connections extends \Zotlabs\Web\Controller {
 
 		return $o;
 	}
-
 }
