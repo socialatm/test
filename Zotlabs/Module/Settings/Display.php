@@ -26,8 +26,7 @@ class Display {
 		$preload_images    = ((x($_POST,'preload_images')) ? intval($_POST['preload_images'])  : 0);
 		$nosmile           = ((x($_POST,'nosmile')) ? intval($_POST['nosmile'])  : 0);
 		$title_tosource    = ((x($_POST,'title_tosource')) ? intval($_POST['title_tosource'])  : 0);
-		$start_menu        = ((x($_POST,'start_menu')) ? intval($_POST['start_menu']) : 0);
-
+		
 		$browser_update   = ((x($_POST,'browser_update')) ? intval($_POST['browser_update']) : 0);
 		$browser_update   = $browser_update * 1000;
 		if($browser_update < 10000)
@@ -43,8 +42,7 @@ class Display {
 		set_pconfig(local_channel(),'system','itemspage', $itemspage);
 		set_pconfig(local_channel(),'system','no_smilies',1-intval($nosmile));
 		set_pconfig(local_channel(),'system','title_tosource',$title_tosource);
-		set_pconfig(local_channel(),'system','start_menu', $start_menu);
-
+		
 		$newschema = '';
 		if($theme){
 			// call theme_post only if theme has not been changed
@@ -136,13 +134,6 @@ class Display {
 
 		$account = \App::get_account();
 
-		if($account['account_created'] > datetime_convert('','','now - 60 days')) {
-			$start_menu = get_pconfig(local_channel(), 'system', 'start_menu', 1);
-		}
-		else {
-			$start_menu = get_pconfig(local_channel(), 'system', 'start_menu', 0);
-		}
-
 		$preload_images = get_pconfig(local_channel(),'system','preload_images');
 		$preload_images = (($preload_images===false)? '0': $preload_images); // default if not set: 0
 
@@ -189,8 +180,7 @@ class Display {
 			'$itemspage'   => array('itemspage',  t("Maximum number of conversations to load at any time:"), $itemspage, t('Maximum of 30 items')),
 			'$nosmile'	=> array('nosmile', t("Show emoticons (smilies) as images"), 1-intval($nosmile), '', $yes_no),
 			'$title_tosource'	=> array('title_tosource', t("Link post titles to source"), $title_tosource, '', $yes_no),
-			'$theme_config' => $theme_config,
-			'$start_menu' => ['start_menu', t('New Member Links'), $start_menu, t('Display new member quick links menu'), $yes_no]
+			'$theme_config' => $theme_config
 		));
 
 		call_hooks('display_settings',$o);
