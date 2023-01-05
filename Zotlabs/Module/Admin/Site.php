@@ -26,8 +26,7 @@ class Site {
 		check_form_security_token_redirectOnErr('/admin/site', 'admin_site');
 
 		$sitename =	((x($_POST,'sitename')) ? notags(trim($_POST['sitename'])) 	: '');
-		$banner	= ((x($_POST,'banner')) ? trim($_POST['banner']) : false);
-
+		
 		$admininfo			=	((x($_POST,'admininfo'))		? trim($_POST['admininfo'])				: false);
 		$siteinfo			=	((x($_POST,'siteinfo'))		    ? trim($_POST['siteinfo'])				: '');
 		$language			=	((x($_POST,'language'))			? notags(trim($_POST['language']))			: '');
@@ -155,12 +154,6 @@ class Site {
 		if($directory_server)
 			set_config('system','directory_server',$directory_server);
 
-		if ($banner == '') {
-			del_config('system', 'banner');
-		} else {
-			set_config('system', 'banner', $banner);
-		}
-
 		if ($admininfo == ''){
 			del_config('system', 'admininfo');
 		} else {
@@ -285,14 +278,6 @@ class Site {
 			}
 		}
 
-		/* Banner */
-
-		$banner = get_config('system', 'banner');
-		if($banner === false)
-			$banner = get_config('system','sitename');
-
-		$banner = htmlspecialchars($banner);
-
 		/* Admin Info */
 		$admininfo = get_config('system', 'admininfo');
 
@@ -404,7 +389,6 @@ class Site {
 			// name, label, value, help string, extra data...
 			'$sitename' 		=> array('sitename', t("Site name"), htmlspecialchars(get_config('system','sitename'), ENT_QUOTES, 'UTF-8'),''),
 
-			'$banner'			=> array('banner', t("Banner/Logo"), $banner, t('Unfiltered HTML/CSS/JS is allowed')),
 			'$admininfo'		=> array('admininfo', t("Administrator Information"), $admininfo, t("Contact information for site administrators.  Displayed on siteinfo page.  BBCode can be used here")),
 			'$siteinfo'		=> array('siteinfo', t('Site Information'), get_config('system','siteinfo'), t("Publicly visible description of this site.  Displayed on siteinfo page.  BBCode can be used here")),
 			'$language' 		=> array('language', t("System language"), get_config('system','language'), "", $lang_choices),

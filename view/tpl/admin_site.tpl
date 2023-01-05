@@ -6,7 +6,6 @@
 
 	{{include file="field_input.tpl" field=$sitename}}
 	{{include file="field_input.tpl" field=$location}}
-	{{include file="field_textarea.tpl" field=$banner}}
 	{{include file="field_textarea.tpl" field=$siteinfo}}
 	{{include file="field_textarea.tpl" field=$admininfo}}
 	{{include file="field_select.tpl" field=$access_policy}}
