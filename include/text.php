@@ -1089,6 +1089,23 @@ function contact_block() {
 		'$micropro' => $micropro
 	));
 
+	$arr = [
+		'$contacts' => $contacts,
+		'$nickname' => App::$profile['channel_address'],
+		'$viewconnections' => (($total > $shown) ? sprintf(t('View all %s connections'),$total) : ''),
+		'$micropro' => $micropro
+	]);
+
+print("<pre>".print_r($arr,true)."</pre>");
+    exit;
+
+
+
+
+
+
+
+
 	$arr = ['contacts' => $r, 'output' => $o];
 	/**
 	 * @hooks contact_block_end
