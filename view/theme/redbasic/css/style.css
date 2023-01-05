@@ -1238,8 +1238,7 @@ dl.bb-dl > dd > li {
 }
 
 .oneway-overlay {
-    position: absolute;
-    text-shadow: -1px 0 1px #fff, 0 1px 1px#fff, 1px 0 1px #fff, 0 -1px 1px #fff;
+	text-shadow: -1px 0 1px #fff, 0 1px 1px#fff, 1px 0 1px #fff, 0 -1px 1px #fff;
 }
 
 .cover-photo-review {
