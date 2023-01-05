@@ -2,7 +2,7 @@
 
 /**
  *   * Name: New member
- *   * Description: Display useful links for new members to help them get started
+ *   * Description: Display useful links for new members
  */
 
 namespace Zotlabs\Widget;
@@ -49,8 +49,8 @@ class Newmember {
 
 			t('Communicate'),
 			[
-				'channel/' . $c['channel_address']       => t('View your channel homepage'),
-				'network'       => t('View your network stream'),
+				'channel/' . $c['channel_address'] => t('View your channel homepage'),
+				'network' => t('View your network stream'),
 			],
 
 			t('Miscellaneous'),
@@ -69,7 +69,6 @@ class Newmember {
 		$site_firehose = ((intval(get_config('system','site_firehose',0))) ? true : false);
 		$net_firehose  = ((get_config('system','disable_discover_tab',1)) ? false : true);
 
-
 		// hack to put this in the correct spot of the array
 
 		if($site_firehose || $net_firehose) {
@@ -81,12 +80,6 @@ class Newmember {
 			'$options' => $options
 
 		]);
-
 		return $o;
-
 	}
-
 }
-
-
-
