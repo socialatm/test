@@ -45,7 +45,6 @@ class Hcard extends \Zotlabs\Web\Controller {
 			'href'  => z_root() . '/feed/' . $which . '?f=&top=1'
 		]);
 
-
 	    if(! $profile) {
 	        $x = q("select channel_id as profile_uid from channel where channel_address = '%s' limit 1",
 	            dbesc(argv(1))
@@ -54,20 +53,12 @@ class Hcard extends \Zotlabs\Web\Controller {
 	            \App::$profile = $x[0];
 	        }
 	    }
-
 		profile_load($which,$profile);
-
-
 	}
-
 
 	function get() {
 
 		$x = new \Zotlabs\Widget\Fullprofile();
 		return $x->widget(array());
-
 	}
-
-
-
 }
