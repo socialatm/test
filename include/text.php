@@ -1094,9 +1094,9 @@ function contact_block() {
 		'$nickname' => App::$profile['channel_address'],
 		'$viewconnections' => (($total > $shown) ? sprintf(t('View all %s connections'),$total) : ''),
 		'$micropro' => $micropro
-	]
+	];
 
-print("<pre>".print_r($arr,true)."</pre>");
+	print("<pre>".print_r($arr,true)."</pre>");
     exit;
 
 
