@@ -961,6 +961,7 @@ img.mail-conv-sender-photo {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	padding: 3px;
 }
 
 .section-subtitle-wrapper h3 {
