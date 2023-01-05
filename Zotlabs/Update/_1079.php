@@ -10,5 +10,4 @@ function run() {
 	return UPDATE_FAILED;
 }
 
-
 }
