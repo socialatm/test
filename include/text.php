@@ -1121,7 +1121,7 @@ function magiclink_url($observer,$myaddr,$url) {
 	);
 }
 
-function micropro($contact, $redirect = false, $class = '', $mode = false) {
+function micropro($contact, $redirect = false, $class = '', $mode = card) {
 
 	if(x($contact,'click'))
 		$url = '#';
