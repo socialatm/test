@@ -93,7 +93,7 @@ function nav($template = 'default') {
 		$nav['usermenu'][] = ['profile/' . $channel['channel_address'], t('View My Profile'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profile') ? 'active' : ''), t('Your profile page'), 'profile_nav_btn'];
 
 		if (feature_enabled(local_channel(), 'multi_profiles'))
-			$nav['usermenu'][] = ['profiles', t('Edit Profiles'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Manage/Edit profiles'), 'profiles_nav_btn'];
+			$nav['usermenu'][] = ['profiles', t('Edit My Profiles'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Manage/Edit profiles'), 'profiles_nav_btn'];
 		else
 			$nav['usermenu'][] = ['profiles/' . $prof[0]['id'], t('Edit My Profile'), ((isset(App::$nav_sel['raw_name']) && App::$nav_sel['raw_name'] == 'Profiles') ? 'active' : ''), t('Edit your profile'), 'profiles_nav_btn'];
 
