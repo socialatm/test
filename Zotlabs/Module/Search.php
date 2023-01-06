@@ -32,7 +32,6 @@ class Search extends Controller {
 		require_once('include/items.php');
 		require_once('include/security.php');
 
-
 		$format = $_REQUEST['format'] ?? '';
 		if ($format !== '') {
 			$update = $load = 1;
@@ -42,7 +41,6 @@ class Search extends Controller {
 		$observer_hash = (($observer) ? $observer['xchan_hash'] : '');
 
 		$o = '<div>' . "\r\n";
-
 		$o .= '<h2>' . t('Search') . '</h2>';
 
 		if (x(App::$data, 'search'))
@@ -52,7 +50,7 @@ class Search extends Controller {
 
 		$tag = false;
 		if (x($_GET, 'tag')) {
-			$tag    = true;
+			$tag = true;
 			$search = ((x($_GET, 'tag')) ? trim(escape_tags(rawurldecode($_GET['tag']))) : '');
 		}
 
@@ -176,8 +174,6 @@ class Search extends Controller {
 				'$dend'    => '',
 				'$dbegin'  => ''
 			]);
-
-
 		}
 
 		$r = null;

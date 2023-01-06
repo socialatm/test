@@ -6,7 +6,6 @@ If an update has failed but doesn't register as failed for some reason, the admi
 
 https://hubzilla.com.bradmin/dbsync/1999
 
-
 [h2]Database Tables[/h2][table border=1][tr][th]Table[/th][th]Description[/th][/tr]
 [tr][td][zrl=[baseurl]/help/database/db_abconfig]abconfig[/zrl][/td][td]arbitrary storage for connections of local channels[/td][/tr]
 [tr][td][zrl=[baseurl]/help/database/db_abook]abook[/zrl][/td][td]connections of local channels[/td][/tr]

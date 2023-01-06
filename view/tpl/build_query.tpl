@@ -73,6 +73,4 @@
 		if(bParam_unseen != 0) bCmd = bCmd + "&unseen=" + bParam_unseen;
 		return(bCmd);
 	}
-
 </script>
-
