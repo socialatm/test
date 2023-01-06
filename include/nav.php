@@ -80,7 +80,7 @@ function nav($template = 'default') {
 
 	if (local_channel()) {
 		if (empty($_SESSION['delegate'])) {
-			$nav['manage'] = ['manage', t('Channels'), "", t('Manage your channels'), 'manage_nav_btn'];
+			$nav['manage'] = ['manage', t('My Channels'), "", t('Manage your channels'), 'manage_nav_btn'];
 		}
 		$nav['settings'] = ['settings', t('Settings'), "", t('Account/Channel Settings'), 'settings_nav_btn'];
 
