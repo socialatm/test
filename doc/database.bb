@@ -6,36 +6,6 @@ If an update has failed but doesn't register as failed for some reason, the admi
 
 https://hubzilla.com.bradmin/dbsync/1999
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-
 [h2]Database Tables[/h2][table border=1][tr][th]Table[/th][th]Description[/th][/tr]
 [tr][td][zrl=[baseurl]/help/database/db_abconfig]abconfig[/zrl][/td][td]arbitrary storage for connections of local channels[/td][/tr]
 [tr][td][zrl=[baseurl]/help/database/db_abook]abook[/zrl][/td][td]connections of local channels[/td][/tr]
