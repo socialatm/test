@@ -1,11 +1,9 @@
 <?php /** @file */
 /*
-html2bbcode.php
-Converter for HTML to BBCode
-Made by: Mike@piratenpartei.de
-Originally made for the syncom project: http://wiki.piratenpartei.de/Syncom
-					https://github.com/annando/Syncom
-*/
+ * html2bbcode.php
+ * Converter for HTML to BBCode
+ * Made by: Mike@piratenpartei.de
+ */
 
 function node2bbcode(&$doc, $oldnode, $attributes, $startbb, $endbb)
 {
@@ -84,9 +82,7 @@ function deletenode(&$doc, $node)
 		$child->parentNode->removeChild($child);
 }
 
-function html2bbcode($message)
-{
-
+function html2bbcode($message) {
 	if(!is_string($message))
 		return;
 
@@ -145,26 +141,7 @@ function html2bbcode($message)
 	node2bbcode($doc, 'span', array('style'=>'font-style: italic;'), '[i]', '[/i]');
 	node2bbcode($doc, 'span', array('style'=>'font-weight: bold;'), '[b]', '[/b]');
 
-	/*node2bbcode($doc, 'font', array('face'=>'/([\w ]+)/', 'size'=>'/(\d+)/', 'color'=>'/(.+)/'), '[font=$1][size=$2][color=$3]', '[/color][/size][/font]');
-	node2bbcode($doc, 'font', array('size'=>'/(\d+)/', 'color'=>'/(.+)/'), '[size=$1][color=$2]', '[/color][/size]');
-	node2bbcode($doc, 'font', array('face'=>'/([\w ]+)/', 'size'=>'/(.+)/'), '[font=$1][size=$2]', '[/size][/font]');
-	node2bbcode($doc, 'font', array('face'=>'/([\w ]+)/', 'color'=>'/(.+)/'), '[font=$1][color=$3]', '[/color][/font]');
-	node2bbcode($doc, 'font', array('face'=>'/([\w ]+)/'), '[font=$1]', '[/font]');
-	node2bbcode($doc, 'font', array('size'=>'/(\d+)/'), '[size=$1]', '[/size]');
-	node2bbcode($doc, 'font', array('color'=>'/(.+)/'), '[color=$1]', '[/color]');
-*/
-	// Untested
-	//node2bbcode($doc, 'span', array('style'=>'/.*font-size:\s*(.+?)[,;].*font-family:\s*(.+?)[,;].*color:\s*(.+?)[,;].*/'), '[size=$1][font=$2][color=$3]', '[/color][/font][/size]');
-	//node2bbcode($doc, 'span', array('style'=>'/.*font-size:\s*(\d+)[,;].*/'), '[size=$1]', '[/size]');
-	//node2bbcode($doc, 'span', array('style'=>'/.*font-size:\s*(.+?)[,;].*/'), '[size=$1]', '[/size]');
-
 	node2bbcode($doc, 'span', array('style'=>'/.*color:\s*(.+?)[,;].*/'), '[color="$1"]', '[/color]');
-	//node2bbcode($doc, 'span', array('style'=>'/.*font-family:\s*(.+?)[,;].*/'), '[font=$1]', '[/font]');
-
-	//node2bbcode($doc, 'div', array('style'=>'/.*font-family:\s*(.+?)[,;].*font-size:\s*(\d+?)pt.*/'), '[font=$1][size=$2]', '[/size][/font]');
-	//node2bbcode($doc, 'div', array('style'=>'/.*font-family:\s*(.+?)[,;].*font-size:\s*(\d+?)px.*/'), '[font=$1][size=$2]', '[/size][/font]');
-	//node2bbcode($doc, 'div', array('style'=>'/.*font-family:\s*(.+?)[,;].*/'), '[font=$1]', '[/font]');
-
 	node2bbcode($doc, 'strong', array(), '[b]', '[/b]');
 	node2bbcode($doc, 'em', array(), '[i]', '[/i]');
 	node2bbcode($doc, 'b', array(), '[b]', '[/b]');
@@ -195,10 +172,6 @@ function html2bbcode($message)
 
 	node2bbcode($doc, 'hr', array(), "[hr]", "");
 
-//	node2bbcode($doc, 'table', array(), "", "");
-//	node2bbcode($doc, 'tr', array(), "\n", "");
-//	node2bbcode($doc, 'td', array(), "\t", "");
-
 	node2bbcode($doc, 'table', array(), "[table]", "[/table]");
 	node2bbcode($doc, 'th', array(), "[th]", "[/th]");
 	node2bbcode($doc, 'tr', array(), "[tr]", "[/tr]");
@@ -219,8 +192,6 @@ function html2bbcode($message)
 
 	node2bbcode($doc, 'video', array('src'=>'/(.+)/'), '[video]$1', '[/video]');
 	node2bbcode($doc, 'audio', array('src'=>'/(.+)/'), '[audio]$1', '[/audio]');
-//	node2bbcode($doc, 'iframe', array('src'=>'/(.+)/'), '[iframe]$1', '[/iframe]');
-
 	node2bbcode($doc, 'code', array(), '[code]', '[/code]');
 
 	$message = $doc->saveHTML();
@@ -286,10 +257,6 @@ function html2bbcode($message)
 	$message = str_replace(array('[b][b]', '[/b][/b]', '[i][i]', '[/i][/i]'),
 		array('[b]', '[/b]', '[i]', '[/i]'), $message);
 
-	// Handling Yahoo style of mails
-	//	$message = str_replace('[hr][b]From:[/b]', '[quote][b]From:[/b]', $message);
-
 	$message = htmlspecialchars($message,ENT_COMPAT,'UTF-8',false);
 	return(trim($message));
 }
-

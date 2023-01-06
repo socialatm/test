@@ -12,6 +12,7 @@ require_once('include/help.php');
  *
  * The syntax is somewhat strict.
  */
+
 class Help extends \Zotlabs\Web\Controller {
 
 	function get() {

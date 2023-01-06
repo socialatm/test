@@ -268,7 +268,6 @@ function search_doc_files($s) {
 	return $r;
 }
 
-
 function doc_rank_sort($s1, $s2) {
 	if($s1['rank'] == $s2['rank'])
 		return 0;
@@ -281,6 +280,7 @@ function doc_rank_sort($s1, $s2) {
  *
  * @return string
  */
+
 function load_context_help() {
 
 	$path = App::$cmd;
@@ -288,9 +288,7 @@ function load_context_help() {
 	$lang = App::$language;
 	$context_help = '';
 
-	if(! isset($lang) || !is_dir('doc/context/' . $lang . '/')) {
-		$lang = 'en';
-	}
+	if(! isset($lang) || !is_dir('doc/context/' . $lang . '/')) { $lang = 'en'; }
 	while($path) {
 		$context_help = load_doc_file('doc/context/' . $lang . '/' . $path . '/help.html');
 		if(!$context_help) {
@@ -303,7 +301,6 @@ function load_context_help() {
 		array_pop($args);
 		$path = implode('/', $args);
 	}
-
 	return $context_help;
 }
 
@@ -313,6 +310,7 @@ function load_context_help() {
  * @param string $s
  * @return void|array
  */
+
 function store_doc_file($s) {
 
 	if(is_dir($s))

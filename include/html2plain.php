@@ -1,8 +1,7 @@
 <?php /** @file */
 require_once "html2bbcode.php";
 
-function breaklines($line, $level, $wraplength = 75)
-{
+function breaklines($line, $level, $wraplength = 75) {
 
 	if ($wraplength == 0)
 		$wraplength = 2000000;
@@ -39,12 +38,10 @@ function breaklines($line, $level, $wraplength = 75)
 
 	$newlines[] = $line;
 
-
 	return(implode("\n", $newlines));
 }
 
-function quotelevel($message, $wraplength = 75)
-{
+function quotelevel($message, $wraplength = 75) {
 	$lines = explode("\n", $message);
 
 	$newlines = array();
@@ -75,7 +72,6 @@ function quotelevel($message, $wraplength = 75)
 	}
 	return(implode("\n", $newlines));
 }
-
 
 function collecturls($message) {
 
@@ -112,20 +108,16 @@ function collecturls($message) {
 				$urls[$treffer[1]] = $treffer[1];
 		}
 	}
-
 	return($urls);
 }
 
-
-function html2plain($html, $wraplength = 75, $compact = false)
-{
+function html2plain($html, $wraplength = 75, $compact = false) {
 
 	$message = str_replace("\r", "", $html);
 	$message = mb_convert_encoding($message, 'HTML-ENTITIES', "UTF-8");
 
 	if(!$message)
 		return;
-
 
 	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
@@ -149,39 +141,20 @@ function html2plain($html, $wraplength = 75, $compact = false)
 	node2bbcode($doc, 'html', array(), '', '');
 	node2bbcode($doc, 'body', array(), '', '');
 
-	// MyBB-Auszeichnungen
-	/*
-	node2bbcode($doc, 'span', array('style'=>'text-decoration: underline;'), '_', '_');
-	node2bbcode($doc, 'span', array('style'=>'font-style: italic;'), '/', '/');
-	node2bbcode($doc, 'span', array('style'=>'font-weight: bold;'), '*', '*');
-
-	node2bbcode($doc, 'strong', array(), '*', '*');
-	node2bbcode($doc, 'b', array(), '*', '*');
-	node2bbcode($doc, 'i', array(), '/', '/');
-	node2bbcode($doc, 'u', array(), '_', '_');
-	*/
-
 	if ($compact)
 		node2bbcode($doc, 'blockquote', array(), "»", "«");
 	else
 		node2bbcode($doc, 'blockquote', array(), '[quote]', "[/quote]\n");
 
 	node2bbcode($doc, 'br', array(), "\n", '');
-
 	node2bbcode($doc, 'span', array(), "", "");
 	node2bbcode($doc, 'pre', array(), "", "");
 	node2bbcode($doc, 'div', array(), "\r", "\r");
 	node2bbcode($doc, 'p', array(), "\n", "\n");
-
-	//node2bbcode($doc, 'ul', array(), "\n[list]", "[/list]\n");
-	//node2bbcode($doc, 'ol', array(), "\n[list=1]", "[/list]\n");
 	node2bbcode($doc, 'li', array(), "\n* ", "\n");
-
 	node2bbcode($doc, 'hr', array(), "\n".str_repeat("-", 70)."\n", "");
-
 	node2bbcode($doc, 'tr', array(), "\n", "");
 	node2bbcode($doc, 'td', array(), "\t", "");
-
 	node2bbcode($doc, 'h1', array(), "\n\n*", "*\n");
 	node2bbcode($doc, 'h2', array(), "\n\n*", "*\n");
 	node2bbcode($doc, 'h3', array(), "\n\n*", "*\n");
@@ -192,9 +165,7 @@ function html2plain($html, $wraplength = 75, $compact = false)
 	// Problem: there is no reliable way to detect if it is a link to a tag or profile
 	//node2bbcode($doc, 'a', array('href'=>'/(.+)/'), ' $1 ', '', true);
 	node2bbcode($doc, 'a', array('href'=>'/(.+)/', 'rel'=>'oembed'), ' $1 ', '', true);
-	//node2bbcode($doc, 'img', array('alt'=>'/(.+)/'), '$1', '');
-	//node2bbcode($doc, 'img', array('title'=>'/(.+)/'), '$1', '');
-	//node2bbcode($doc, 'img', array(), '', '');
+	
 	if (!$compact)
 		node2bbcode($doc, 'img', array('src'=>'/(.+)/'), '[img]$1', '[/img]');
 	else
@@ -240,4 +211,3 @@ function html2plain($html, $wraplength = 75, $compact = false)
 
 	return(trim($message));
 }
-
