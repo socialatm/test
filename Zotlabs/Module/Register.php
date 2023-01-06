@@ -55,7 +55,6 @@ class Register extends Controller {
 		 * It may happen, the posted form arrives in a strange fashion. With the control of the duty hours
 		 * for registration, the input form was disabled at html. While receiving posted data, checks are
 		 * required if all is on the right road (most posts are not accepted during off duty).
-		 *
 		 */
 
 
@@ -120,7 +119,6 @@ class Register extends Controller {
 				}
 				return;
 			}
-
 		}
 
 		// case when an invited prepares the own account by supply own pw, accept tos, prepage channel (if auto)

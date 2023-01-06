@@ -29,9 +29,7 @@ class Webpages extends Controller {
 			return;
 
 		profile_load($which);
-
 	}
-
 
 	function get() {
 
@@ -103,7 +101,6 @@ class Webpages extends Controller {
 						break;
 		}
 
-
 		if(App::$is_sys && is_site_admin()) {
 			$sys = get_sys_channel();
 			if($sys && intval($sys['channel_id'])) {
@@ -155,7 +152,6 @@ class Webpages extends Controller {
 			$channel_acl = [ 'allow_cid' => '', 'allow_gid' => '', 'deny_cid' => '', 'deny_gid' => '' ];
 		}
 
-
 		$is_owner = ($uid && $uid == $owner);
 
 		$o = '';
@@ -186,10 +182,8 @@ class Webpages extends Controller {
 		$x['body'] = $_REQUEST['body'] ?? '';
 		$x['pagetitle'] = $_REQUEST['pagetitle'] ?? '';
 
-
 		// Get a list of webpages.  We can't display all them because endless scroll makes that unusable,
 		// so just list titles and an edit link.
-
 
 		$sql_extra = item_permissions_sql($owner);
 
@@ -239,7 +233,6 @@ class Webpages extends Controller {
 			}
 		}
 
-
 		//Build the base URL for edit links
 		$url = z_root() . '/editwebpage/' . $which;
 
@@ -261,7 +254,6 @@ class Webpages extends Controller {
 			'$created_txt'  => t('Created'),
 			'$edited_txt'   => t('Edited')
 		));
-
 		return $o;
 	}
 
@@ -431,9 +423,7 @@ class Webpages extends Controller {
 										$filename = 'website.zip';
 								}
 								$_SESSION['zipfilename'] = $filename;
-
 						}
-
 						break;
 
 				case 'exportcloud':
@@ -442,7 +432,6 @@ class Webpages extends Controller {
 								$_SESSION['export'] = 'cloud';
 								$_SESSION['exportcloudpath'] = filter_var($_POST['exportcloudpath'], FILTER_SANITIZE_ENCODED);
 						}
-
 						break;
 
 				case 'cloud':
@@ -705,9 +694,6 @@ class Webpages extends Controller {
 				default :
 					break;
 			}
-
 		}
-
 	}
-
 }

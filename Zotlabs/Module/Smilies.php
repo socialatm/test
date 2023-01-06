@@ -1,7 +1,6 @@
 <?php
 namespace Zotlabs\Module;
 
-
 class Smilies extends \Zotlabs\Web\Controller {
 
 	function get() { 
@@ -17,5 +16,4 @@ class Smilies extends \Zotlabs\Web\Controller {
 			return smilies('',true);
 		}
 	}
-	
 }

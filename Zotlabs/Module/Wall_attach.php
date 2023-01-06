@@ -83,7 +83,6 @@ class Wall_attach extends \Zotlabs\Web\Controller {
 
 		$observer = \App::get_observer();
 	
-	
 		$def_album  = get_pconfig($channel['channel_id'],'system','photo_path');
 		$def_attach = get_pconfig($channel['channel_id'],'system','attach_path');
 	
@@ -144,8 +143,5 @@ class Wall_attach extends \Zotlabs\Web\Controller {
 
 		$result['message'] = $s;
 		json_return_and_die($result);
-		
 	}
-	
-
 }

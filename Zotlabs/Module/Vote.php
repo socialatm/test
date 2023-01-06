@@ -31,7 +31,6 @@ class Vote extends Controller {
 			);
 		}
 
-
 		if ($fetch && $fetch[0]['obj_type'] === 'Question') {
 			$obj = json_decode($fetch[0]['obj'],true);
 
@@ -128,11 +127,3 @@ class Vote extends Controller {
 		json_return_and_die($ret);
 	}
 }
-
-
-
-
-
-
-
-

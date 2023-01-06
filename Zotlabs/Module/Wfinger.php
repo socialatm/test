@@ -28,10 +28,8 @@ class Wfinger extends \Zotlabs\Web\Controller {
 			killme();
 		}
 
-
 		$resource = $_REQUEST['resource'];
 		logger('webfinger: ' . $resource,LOGGER_DEBUG);
-
 
 		$root_resource  = false;
 		$pchan = false;
@@ -94,10 +92,6 @@ class Wfinger extends \Zotlabs\Web\Controller {
 					'href' => z_root() . '/owa',
 				],
 			];
-
-
-
-
 		}
 
 		if($resource && $r) {
@@ -152,10 +146,7 @@ class Wfinger extends \Zotlabs\Web\Controller {
 						'rel'  => 'magic-public-key',
 						'href' => 'data:application/magic-public-key,' . Keyutils::salmonKey($r['channel_pubkey']),
 					]
-
 				];
-
-
 			}
 			else {
 
@@ -227,7 +218,5 @@ class Wfinger extends \Zotlabs\Web\Controller {
 		call_hooks('webfinger',$arr);
 
 		json_return_and_die($arr['result'],'application/jrd+json');
-
 	}
-
 }

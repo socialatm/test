@@ -12,14 +12,11 @@ require_once('include/security.php');
 require_once('include/attach.php');
 require_once('include/text.php');
 
-
 class Photos extends \Zotlabs\Web\Controller {
 
 	function init() {
 
-		if(observer_prohibited()) {
-			return;
-		}
+		if(observer_prohibited()) { return; }
 
 		if(argc() > 1) {
 			$nick = argv(1);
@@ -41,13 +38,9 @@ class Photos extends \Zotlabs\Web\Controller {
 			head_set_icon(\App::$data['channel']['xchan_photo_s']);
 
 			\App::$page['htmlhead'] = "<script> var profile_uid = " . ((\App::$data['channel']) ? \App::$data['channel']['channel_id'] : 0) . "; </script>" ;
-
 		}
-
 		return;
 	}
-
-
 
 	function post() {
 
@@ -85,13 +78,11 @@ class Photos extends \Zotlabs\Web\Controller {
 				goaway(z_root() . '/' . $_SESSION['photo_return']);
 			}
 
-
 			/*
 			 * DELETE photo album and all its photos
 			 */
 
 			if($_REQUEST['dropalbum'] == t('Delete Album')) {
-
 
 				$folder_hash = '';
 
@@ -155,11 +146,8 @@ class Photos extends \Zotlabs\Web\Controller {
 							Libsync::build_sync_packet($page_owner_uid,array('file' => array($sync)));
 					}
 				}
-
 			}
-
 			goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address']);
-
 		}
 
 		if((argc() > 2) && (x($_REQUEST,'delete')) && ($_REQUEST['delete'] === t('Delete Photo'))) {
@@ -186,7 +174,6 @@ class Photos extends \Zotlabs\Web\Controller {
 				// If the admin deletes a photo, don't sync
 				attach_delete($page_owner_uid, argv(2), true);
 			}
-
 
 			goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/album/' . $_SESSION['album_return']);
 		}
@@ -356,8 +343,6 @@ class Photos extends \Zotlabs\Web\Controller {
 					intval($page_owner_uid)
 			);
 
-
-
 			if(strlen($rawtags)) {
 
 				$str_tags = '';
@@ -416,10 +401,7 @@ class Photos extends \Zotlabs\Web\Controller {
 
 			goaway(z_root() . '/' . $_SESSION['photo_return']);
 			return; // NOTREACHED
-
-
 		}
-
 
 		/**
 		 * default post action - upload a photo
@@ -438,11 +420,8 @@ class Photos extends \Zotlabs\Web\Controller {
 			$_REQUEST['group_deny']    = expand_acl($channel['channel_deny_gid']);
 		}
 
-
 		$matches = [];
 		$partial = false;
-
-
 
 		if(array_key_exists('HTTP_CONTENT_RANGE',$_SERVER)) {
 			$pm = preg_match('/bytes (\d*)\-(\d*)\/(\d*)/',$_SERVER['HTTP_CONTENT_RANGE'],$matches);
@@ -494,10 +473,7 @@ class Photos extends \Zotlabs\Web\Controller {
 			killme();
 
 		goaway(z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/album/' . $r['data']['folder']);
-
 	}
-
-
 
 	function get() {
 
@@ -528,10 +504,8 @@ class Photos extends \Zotlabs\Web\Controller {
 
 		$_SESSION['photo_return'] = \App::$cmd;
 
-		//
 		// Parse arguments
-		//
-
+		
 		$can_comment = perm_is_allowed(\App::$profile['profile_uid'],get_observer_hash(),'post_comments');
 		$datum = '';
 
@@ -551,13 +525,10 @@ class Photos extends \Zotlabs\Web\Controller {
 		else
 			$cmd = 'view';
 
-		//
 		// Setup permissions structures
-		//
-
-		$can_post       = false;
-		$visitor        = 0;
-
+		
+		$can_post = false;
+		$visitor = 0;
 
 		$owner_uid = \App::$data['channel']['channel_id'];
 		$owner_aid = \App::$data['channel']['channel_account_id'];
@@ -681,13 +652,10 @@ class Photos extends \Zotlabs\Web\Controller {
 				'$submit' => t('Upload')
 
 			));
-
 		}
 
-		//
 		// dispatch request
-		//
-
+		
 		/*
 		 * Display a single photo album
 		 */
@@ -866,8 +834,6 @@ class Photos extends \Zotlabs\Web\Controller {
 				return;
 			}
 
-
-
 			$prevlink = '';
 			$nextlink = '';
 
@@ -875,7 +841,6 @@ class Photos extends \Zotlabs\Web\Controller {
 				$order = 'ASC';
 			else
 				$order = 'DESC';
-
 
 			$prvnxt = q("SELECT hash FROM attach WHERE folder = '%s' AND uid = %d AND is_photo = 1
 				$sql_attach ORDER BY created $order ",
@@ -899,7 +864,6 @@ class Photos extends \Zotlabs\Web\Controller {
 				$prevlink = z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/image/' . $prvnxt[$prv]['hash'] . (($order == 'ASC') ? '?f=&order=posted' : '');
 				$nextlink = z_root() . '/photos/' . \App::$data['channel']['channel_address'] . '/image/' . $prvnxt[$nxt]['hash'] . (($order == 'ASC') ? '?f=&order=posted' : '');
 	 		}
-
 
 			if(count($ph) == 1)
 				$hires = $lores = $ph[0];
@@ -950,7 +914,6 @@ class Photos extends \Zotlabs\Web\Controller {
 			if($nextlink)
 				$nextlink = array($nextlink, t('Next'));
 
-
 			// Do we have an item for this photo?
 
 			$linked_items = q("SELECT * FROM item WHERE resource_id = '%s' and resource_type = 'photo'
@@ -972,7 +935,6 @@ class Photos extends \Zotlabs\Web\Controller {
 					$item_normal and uid = %d $sql_item ",
 					dbesc($link_item['mid']),
 					intval($link_item['uid'])
-
 				);
 
 				if($r) {
@@ -1005,8 +967,6 @@ class Photos extends \Zotlabs\Web\Controller {
 					$map = generate_map($link_item['coord']);
 				}
 			}
-
-	//		logger('mod_photo: link_item' . print_r($link_item,true));
 
 			// FIXME - remove this when we move to conversation module
 
@@ -1139,7 +1099,6 @@ class Photos extends \Zotlabs\Web\Controller {
 						}
 					//}
 
-
 					$like    = ((isset($alike[$link_item['mid']])) ? format_like($alike[$link_item['mid']],$alike[$link_item['mid'] . '-l'],'like',$link_item['mid']) : '');
 					$dislike = ((isset($dlike[$link_item['mid']])) ? format_like($dlike[$link_item['mid']],$dlike[$link_item['mid'] . '-l'],'dislike',$link_item['mid']) : '');
 
@@ -1155,10 +1114,8 @@ class Photos extends \Zotlabs\Web\Controller {
 
 						$redirect_url = z_root() . '/redir/' . $item['cid'] ;
 
-
 						$profile_url = zid($item['author']['xchan_url']);
 						$sparkle = '';
-
 
 						$profile_name   = $item['author']['xchan_name'];
 						$profile_avatar = $item['author']['xchan_photo_m'];
@@ -1188,7 +1145,6 @@ class Photos extends \Zotlabs\Web\Controller {
 							'$drop' => $drop,
 							'$comment' => $comment
 						));
-
 					}
 
 					if($observer && ($can_post || $can_comment)) {
@@ -1207,7 +1163,6 @@ class Photos extends \Zotlabs\Web\Controller {
 							'$ww' => ''
 						));
 					}
-
 				}
 				$paginate = paginate($a);
 			}
@@ -1215,7 +1170,6 @@ class Photos extends \Zotlabs\Web\Controller {
 			$album_e = array($album_link,$ph[0]['album']);
 			$like_e = $like;
 			$dislike_e = $dislike;
-
 
 			$response_verbs = array('like');
 			if(feature_enabled($owner_uid,'dislike'))
@@ -1279,7 +1233,6 @@ class Photos extends \Zotlabs\Web\Controller {
 
 		\App::$page['htmlhead'] .= "\r\n" . '<link rel="alternate" type="application/json+oembed" href="' . z_root() . '/oep?f=&url=' . urlencode(z_root() . '/' . \App::$cmd) . '" title="oembed" />' . "\r\n";
 
-
 		\App::set_pager_itemspage(30);
 
 		$r = q("SELECT p.resource_id, p.id, p.filename, p.mimetype, p.album, p.imgscale, p.created, p.display_path
@@ -1296,8 +1249,6 @@ class Photos extends \Zotlabs\Web\Controller {
 			intval(\App::$pager['itemspage']),
 			intval(\App::$pager['start'])
 		);
-
-
 
 		$photos = array();
 		if($r) {
@@ -1326,7 +1277,6 @@ class Photos extends \Zotlabs\Web\Controller {
 					'album'	=> array(
 						'name'  => $name_e,
 					),
-
 				);
 			}
 		}
@@ -1368,6 +1318,4 @@ class Photos extends \Zotlabs\Web\Controller {
 	//	paginate($a);
 		return $o;
 	}
-
-
 }

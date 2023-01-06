@@ -8,15 +8,11 @@ class Dirsearch extends Controller {
 
 	function init() {
 		App::set_pager_itemspage(30);
-
 	}
 
 	function get() {
 
 		$ret = array('success' => false);
-
-	//	logger('request: ' . print_r($_REQUEST,true));
-
 
 		$dirmode = intval(get_config('system','directory_mode'));
 
@@ -24,7 +20,6 @@ class Dirsearch extends Controller {
 			$ret['message'] = t('This site is not a directory server');
 			json_return_and_die($ret);
 		}
-
 
 		$access_token = $_REQUEST['t'] ?? '';
 
@@ -34,14 +29,11 @@ class Dirsearch extends Controller {
 			json_return_and_die($ret);
 		}
 
-
 		if(argc() > 1 && argv(1) === 'sites') {
 			$ret = $this->list_public_sites();
 			json_return_and_die($ret);
 		}
-
 		$sql_extra = '';
-
 
 		$tables = array('name','address','locale','region','postcode','country','gender','marital','sexual','keywords');
 
@@ -83,11 +75,10 @@ class Dirsearch extends Controller {
 		if(get_config('system','disable_directory_keywords'))
 			$kw = 0;
 
-
 		// by default use a safe search
-		$safe     = ((x($_REQUEST,'safe')));    // ? intval($_REQUEST['safe'])  : 1 );
+		$safe = ((x($_REQUEST,'safe')));    // ? intval($_REQUEST['safe'])  : 1 );
 		if ($safe === false)
-				$safe = 1;
+			$safe = 1;
 
 		if(array_key_exists('sync',$_REQUEST)) {
 			if($_REQUEST['sync'])
@@ -143,11 +134,9 @@ class Dirsearch extends Controller {
 			$sql_extra .= " AND  xprof_age >= " . intval($agege) . ") ";
 		}
 
-
 		if($hash) {
 			$sql_extra = " AND xchan_hash like '" . dbesc($hash) . protect_sprintf('%') . "' ";
 		}
-
 
 	    $perpage      = $_REQUEST['n'] ?? 60;
 	    $page         = ((isset($_REQUEST['p']) && $_REQUEST['p']) ? intval($_REQUEST['p'] - 1) : 0);
@@ -157,7 +146,7 @@ class Dirsearch extends Controller {
 
 		// mtime is not currently working
 
-		$mtime        = ((x($_REQUEST,'mtime'))        ? datetime_convert('UTC','UTC',$_REQUEST['mtime']) : '');
+		$mtime = ((x($_REQUEST,'mtime')) ? datetime_convert('UTC','UTC',$_REQUEST['mtime']) : '');
 
 		// ok a separate tag table won't work.
 		// merge them into xprof
@@ -211,7 +200,6 @@ class Dirsearch extends Controller {
 			$order = " order by xchan_name_date asc ";
 		else
 			$order = " order by xchan_name_date desc ";
-
 
 		if($sync) {
 			$spkt = array('transactions' => array());
@@ -269,7 +257,6 @@ class Dirsearch extends Controller {
 				db_utcnow(),
 				db_quoteinterval('30 DAY')
 			);
-
 		}
 
 		if($r) {
@@ -287,7 +274,6 @@ class Dirsearch extends Controller {
 				}
 			}
 		}
-
 		json_return_and_die($ret);
 	}
 
@@ -301,7 +287,6 @@ class Dirsearch extends Controller {
 	function dir_flag_build($joiner,$field,$bit,$s) {
 		return dbesc($joiner) . " ( " . dbesc($field) . " & " . intval($bit) . " ) " . ((intval($s)) ? '>' : '=' ) . " 0 ";
 	}
-
 
 	function dir_parse_query($s) {
 
@@ -364,12 +349,6 @@ class Dirsearch extends Controller {
 		return $ret;
 	}
 
-
-
-
-
-
-
 	function list_public_sites() {
 
 		$rand = db_getfunc('rand');
@@ -423,5 +402,4 @@ class Dirsearch extends Controller {
 		}
 		return $ret;
 	}
-
 }

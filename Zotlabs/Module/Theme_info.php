@@ -50,9 +50,7 @@ class Theme_info extends \Zotlabs\Web\Controller {
 			'config' => $theme_config
 		];
 		json_return_and_die($ret);
-
 	}
-
 
 	function get_theme_config_file($theme){
 
@@ -66,6 +64,4 @@ class Theme_info extends \Zotlabs\Web\Controller {
 		}
 		return null;
 	}
-
-
 }

@@ -3,14 +3,9 @@ namespace Zotlabs\Module;
 
 require_once('include/event.php');
 
-
-
 class Tasks extends \Zotlabs\Web\Controller {
 
 	function init() {
-	
-	
-	//	logger('request: ' . print_r($_REQUEST,true));
 	
 		$arr = array();
 	
@@ -27,16 +22,9 @@ class Tasks extends \Zotlabs\Web\Controller {
 			}
 			json_return_and_die($x);
 		}
-	
 	}
-	
-	
-	
+
 		function post() {
-	
-	
-	//	logger('post: ' . print_r($_POST,true));
-	
 	
 		if(! local_channel())
 			return;
@@ -69,7 +57,6 @@ class Tasks extends \Zotlabs\Web\Controller {
 				if($x)
 					$ret['success'] = true;
 			}
-
 			json_return_and_die($ret);
 		}
 	

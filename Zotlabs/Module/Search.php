@@ -257,6 +257,4 @@ class Search extends Controller {
 
 		return $o;
 	}
-
-
 }

@@ -43,8 +43,5 @@ class Siteinfo extends \Zotlabs\Web\Controller {
 		call_hooks('about_hook', $siteinfo);
 
 		return $siteinfo;
-
 	}
-
-
 }

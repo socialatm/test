@@ -359,6 +359,5 @@ function store_doc_file($s) {
 		$item['mid'] = $item['parent_mid'] = z_root() . '/item/' . $item['uuid'];
 		$x = item_store($item);
 	}
-
 	return $x;
 }

@@ -10,8 +10,8 @@ class Addons {
 
 	/**
 	 * @brief
-	 *
 	 */
+	
 	function post() {
 
 		if(argc() > 2 && is_file("addon/" . argv(2) . "/" . argv(2) . ".php")) {
