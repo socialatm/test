@@ -7,17 +7,17 @@
 
 /**
  *
- * This is an open source decentralised communications
- * platform combined with a decentralised identity/authentication framework
+ * This is an open source decentralized communications
+ * platform combined with a decentralized identity/authentication framework
  * wrapped in an extensible content management system, providing website designers
- * the ability to embed fully decentralised communications and social tools
+ * the ability to embed fully decentralized communications and social tools
  * into many traditional website designs (blogs, forums, small business
- * websites, charitable organisations, etc.). Also provided is DNS mobility
+ * websites, charitable organizations, etc.). Also provided is DNS mobility
  * and internet scale privacy/access control.
  *
  * This allows any individual website to participate in a matrix of linked
  * sites and people and media sharing which is far greater than the reach
- * of an individual site.
+ * of an individual website.
  *
  * If you are reading the source code and come across a function
  * or code block which is not documented, but you have a good idea what it
@@ -38,7 +38,6 @@ use Zotlabs\Lib\Libzot;
 use Zotlabs\Lib\Config;
 
 require_once('vendor/autoload.php');
-
 require_once('include/config.php');
 require_once('include/network.php');
 require_once('include/plugin.php');
@@ -62,9 +61,7 @@ require_once('include/items.php');
 define('PLATFORM_NAME', 'hubzilla');
 define('STD_VERSION', '7.8.7');
 define('ZOT_REVISION', '6.0');
-
 define('DB_UPDATE_VERSION', 1253);
-
 define('PROJECT_BASE', __DIR__);
 
 /**
@@ -74,6 +71,7 @@ define('PROJECT_BASE', __DIR__);
  * feed for the source.
  * This can be used in HTML and JavaScript where needed a line break.
  */
+
 define('EOL', '<br>' . "\r\n");
 define('EMPTY_STR', '');
 define('ATOM_TIME', 'Y-m-d\\TH:i:s\\Z'); // aka ISO 8601 "Zulu"
@@ -92,17 +90,14 @@ define('DIRECTORY_MODE_STANDALONE', 0x0100); // A detached (off the grid) hub wi
 define('DIRECTORY_REALM', 'RED_GLOBAL');
 define('DIRECTORY_FALLBACK_MASTER', 'https://hub.netzgemeinde.eu');
 
-
 function get_directory_fallback_servers() {
 	$ret = [
 		'https://hub.netzgemeinde.eu',
 		'https://zotsite.net',
 		'https://hub.libranet.de'
 	];
-
 	return $ret;
 }
-
 
 /**
  *
@@ -130,7 +125,6 @@ define('WEBP_QUALITY', 80);
 define('LANGUAGE_DETECT_MIN_LENGTH', 128);
 define('LANGUAGE_DETECT_MIN_CONFIDENCE', 0.01);
 
-
 /**
  * Default permissions for file-based storage (webDAV, etc.)
  * These files will be owned by the webserver who will need write
@@ -143,10 +137,7 @@ define('LANGUAGE_DETECT_MIN_CONFIDENCE', 0.01);
  * either more or less restrictive.
  */
 
-if (!defined('STORAGE_DEFAULT_PERMISSIONS')) {
-	define('STORAGE_DEFAULT_PERMISSIONS', 0770);
-}
-
+if (!defined('STORAGE_DEFAULT_PERMISSIONS')) { define('STORAGE_DEFAULT_PERMISSIONS', 0770); }
 
 /**
  *
@@ -156,7 +147,7 @@ if (!defined('STORAGE_DEFAULT_PERMISSIONS')) {
  * this length (on the longest side, the other side will be scaled appropriately).
  * Modify this value using
  *
- *    App::$config['system']['max_image_length'] = n;
+ * App::$config['system']['max_image_length'] = n;
  *
  * in .htconfig.php
  *
@@ -165,7 +156,6 @@ if (!defined('STORAGE_DEFAULT_PERMISSIONS')) {
  *
  */
 define('MAX_IMAGE_LENGTH', -1);
-
 
 /**
  * log levels
@@ -177,7 +167,6 @@ define('LOGGER_DEBUG', 2);
 define('LOGGER_DATA', 3);
 define('LOGGER_ALL', 4);
 
-
 /**
  * registration policies
  */
@@ -185,7 +174,6 @@ define('LOGGER_ALL', 4);
 define('REGISTER_CLOSED', 0);
 define('REGISTER_APPROVE', 1);
 define('REGISTER_OPEN', 2);
-
 
 /**
  * site access policy
@@ -203,11 +191,9 @@ define('ACCESS_TIERED', 3);
 define('UPDATE_SUCCESS', 0);
 define('UPDATE_FAILED', 1);
 
-
 define('CLIENT_MODE_NORMAL', 0x0000);
 define('CLIENT_MODE_LOAD', 0x0001);
 define('CLIENT_MODE_UPDATE', 0x0002);
-
 
 /**
  *
@@ -228,7 +214,6 @@ define('PAGE_HUBADMIN', 0x2000); // set this to indicate a preferred admin chann
 // default channel of any accounts with the admin role.
 define('PAGE_REMOVED', 0x8000);
 
-
 /**
  * Photo usage types
  */
@@ -239,11 +224,8 @@ define('PHOTO_XCHAN', 0x0002);
 define('PHOTO_THING', 0x0004);
 define('PHOTO_COVER', 0x0010);
 define('PHOTO_CACHE', 0x0020);
-
 define('PHOTO_ADULT', 0x0008);
 define('PHOTO_FLAG_OS', 0x4000);
-
-
 define('PHOTO_RES_ORIG', 0);
 define('PHOTO_RES_1024', 1);  // rectangular 1024 max width or height, floating height if not (4:3)
 define('PHOTO_RES_640', 2);  // to accomodate SMBC vertical comic strips without scrunching the width
@@ -256,7 +238,6 @@ define('PHOTO_RES_PROFILE_48', 6);  // square 48 px
 define('PHOTO_RES_COVER_1200', 7);  // 1200w x 435h (2.75:1)
 define('PHOTO_RES_COVER_850', 8);  // 850w x 310h
 define('PHOTO_RES_COVER_425', 9);  // 425w x 160h
-
 
 /**
  * Menu types
@@ -283,9 +264,7 @@ define('NETWORK_FACEBOOK', 'face');    // Facebook API
 define('NETWORK_LINKEDIN', 'lnkd');    // LinkedIn
 define('NETWORK_XMPP', 'xmpp');    // XMPP
 define('NETWORK_MYSPACE', 'mysp');    // MySpace
-define('NETWORK_GPLUS', 'goog');    // Google+
 define('NETWORK_PHANTOM', 'unkn');    // Place holder
-
 
 /**
  * Permissions
@@ -333,7 +312,6 @@ define('ABOOK_FLAG_UNCONNECTED', 0x0020);
 define('ABOOK_FLAG_SELF', 0x0080);
 define('ABOOK_FLAG_FEED', 0x0100);
 
-
 define('MAIL_DELETED', 0x0001);
 define('MAIL_REPLIED', 0x0002);
 define('MAIL_ISREPLY', 0x0004);
@@ -341,15 +319,12 @@ define('MAIL_SEEN', 0x0008);
 define('MAIL_RECALLED', 0x0010);
 define('MAIL_OBSCURED', 0x0020);
 
-
 define('ATTACH_FLAG_DIR', 0x0001);
 define('ATTACH_FLAG_OS', 0x0002);
-
 
 define('MENU_ITEM_ZID', 0x0001);
 define('MENU_ITEM_NEWWIN', 0x0002);
 define('MENU_ITEM_CHATROOM', 0x0004);
-
 
 define('SITE_TYPE_ZOT', 0);
 define('SITE_TYPE_NOTZOT', 1);
@@ -364,7 +339,6 @@ define('POLL_TENSCALE', 0x0002);  // 1-10
 define('POLL_MULTIPLE_CHOICE', 0x0004);
 define('POLL_OVERWRITE', 0x8000);  // If you vote twice remove the prior entry
 
-
 define('UPDATE_FLAGS_UPDATED', 0x0001);
 define('UPDATE_FLAGS_FORCED', 0x0002);
 define('UPDATE_FLAGS_DELETED', 0x1000);
@@ -374,7 +348,6 @@ define('HUBLOC_OFFLINE', 0x0001);
 define('DROPITEM_NORMAL', 0);
 define('DROPITEM_PHASE1', 1);
 define('DROPITEM_PHASE2', 2);
-
 
 /**
  * Maximum number of "people who like (or don't like) this"  that we will list by name
@@ -387,7 +360,6 @@ define('MAX_LIKERS', 10);
  */
 
 define('ZCURL_TIMEOUT', (-1));
-
 
 /**
  * email notification options
@@ -404,7 +376,6 @@ define('NOTIFY_TAGSELF', 0x0080);
 define('NOTIFY_TAGSHARE', 0x0100);
 define('NOTIFY_POKE', 0x0200);
 define('NOTIFY_LIKE', 0x0400);
-
 define('NOTIFY_SYSTEM', 0x8000);
 
 /**
@@ -445,7 +416,6 @@ define('TERM_HIERARCHY', 9);
 define('TERM_COMMUNITYTAG', 10);
 define('TERM_FORUM', 11);
 define('TERM_EMOJI', 12);
-
 define('TERM_OBJ_POST', 1);
 define('TERM_OBJ_FILE', 2);
 define('TERM_OBJ_PROFILE', 3);
@@ -453,7 +423,6 @@ define('TERM_OBJ_CHANNEL', 4);
 define('TERM_OBJ_OBJECT', 5);
 define('TERM_OBJ_THING', 6);
 define('TERM_OBJ_APP', 7);
-
 
 /**
  * various namespaces we may need to parse
@@ -588,7 +557,6 @@ define('ITEM_DOC', 0x1000);   // hubzilla only, define here so that item import 
 define('ITEM_CARD', 0x2000);
 define('ITEM_ARTICLE', 0x4000);
 
-
 define('ITEM_TYPE_POST', 0);
 define('ITEM_TYPE_BLOCK', 1);
 define('ITEM_TYPE_PDL', 2);
@@ -602,13 +570,10 @@ define('ITEM_TYPE_CUSTOM', 9);
 
 define('ITEM_IS_STICKY', 1000);
 
-
 define('DBTYPE_MYSQL', 0);
 define('DBTYPE_POSTGRES', 1);
 
-
 function sys_boot() {
-
 
 	// our central App object
 
