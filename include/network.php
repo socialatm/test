@@ -47,6 +47,7 @@ function get_capath() {
  *  * \e string \b header => HTTP headers
  *  * \e string \b body => fetched content
  */
+
 function z_fetch_url($url, $binary = false, $redirects = 0, $opts = array()) {
 
 	$ret = array('return_code' => 0, 'success' => false, 'header' => "", 'body' => "");
@@ -165,7 +166,6 @@ function z_fetch_url($url, $binary = false, $redirects = 0, $opts = array()) {
 	$base = $s;
 	$curl_info = @curl_getinfo($ch);
 	$http_code = $curl_info['http_code'];
-	//logger('fetch_url:' . $http_code . ' data: ' . $s);
 	$header = '';
 
 	// Pull out multiple headers, e.g. proxy and continuation headers
@@ -1858,6 +1858,7 @@ function z_mail($params) {
  * @param string $host
  * @return string
  */
+
 function probe_api_path($host) {
 
 	$schemes = ['https', 'http' ];
@@ -1871,7 +1872,6 @@ function probe_api_path($host) {
 				return str_replace('version', '', $curpath);
 		}
 	}
-
 	return '';
 }
 

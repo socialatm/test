@@ -612,7 +612,7 @@ function sys_boot() {
 	// install without special fiddling
 
 	if (App::$install && file_exists('.htpreconfig.php'))
-		@include('.htpreconfig.php');
+		include('.htpreconfig.php'); 
 
 	if (array_key_exists('default_timezone', get_defined_vars())) {
 		App::$config['system']['timezone'] = $default_timezone;
@@ -651,7 +651,6 @@ function sys_boot() {
 		if (!DBA::$dba->connected) {
 			system_unavailable();
 		}
-
 		unset($db_host, $db_port, $db_user, $db_pass, $db_data, $db_type, $db_charset);
 
 		/*
@@ -671,7 +670,6 @@ function sys_boot() {
 	}
 }
 
-
 function startup() {
 	error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED);
 
@@ -689,7 +687,6 @@ function startup() {
 		@ini_set('session.use_trans_sid', 0);
 	}
 }
-
 
 /**
  * class miniApp
@@ -709,7 +706,6 @@ class miniApp {
 		}
 	}
 }
-
 
 /**
  * class: App
@@ -781,11 +777,7 @@ class App {
 	public static $is_sys = false;
 	public static $nav_sel;
 	public static $comanche;
-
-
 	public static $channel_links;
-
-
 	public static $category;
 
 	// Allow themes to control internal parameters
@@ -841,12 +833,12 @@ class App {
 	// to access the page
 
 	private static $baseurl;
-
 	public static $meta;
 
 	/**
 	 * App constructor.
 	 */
+
 	public static function init() {
 		// we'll reset this after we read our config file
 		date_default_timezone_set('UTC');
@@ -854,9 +846,7 @@ class App {
 		self::$config = ['system' => []];
 		self::$page   = [];
 		self::$pager  = [];
-
 		self::$query_string = '';
-
 
 		startup();
 
@@ -882,6 +872,7 @@ class App {
 			 * Figure out if we are running at the top of a domain
 			 * or in a sub-directory and adjust accordingly
 			 */
+
 			$path = trim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
 			if (isset($path) && strlen($path) && ($path != self::$path))
 				self::$path = $path;
@@ -989,7 +980,6 @@ class App {
 			self::$module = 'home';
 		}
 
-
 		/*
 		 * See if there is any page number information, and initialise
 		 * pagination
@@ -1013,7 +1003,6 @@ class App {
 		$smarty = new Zotlabs\Render\SmartyTemplate();
 		/// @todo validate if this is still the desired behavior
 		self::register_template_engine(get_class($smarty));
-
 	}
 
 	public static function get_baseurl($ssl = false) {
@@ -1031,7 +1020,6 @@ class App {
 		}
 
 		$scheme = self::$scheme;
-
 		self::$baseurl = $scheme . "://" . punify(self::$hostname) . ((isset(self::$path) && strlen(self::$path)) ? '/' . self::$path : '');
 
 		return self::$baseurl;
@@ -1048,7 +1036,6 @@ class App {
 		}
 
 		$parsed = @parse_url($url);
-
 		self::$baseurl = $url;
 
 		if ($parsed !== false) {
@@ -1190,17 +1177,14 @@ class App {
 			}
 		}
 
-
 		// webmanifest
 		head_add_link(['rel' => 'manifest', 'href' => '/manifest.json']);
 		self::$meta->set('application-name', Zotlabs\Lib\System::get_platform_name());
-
 		self::$meta->set('generator', Zotlabs\Lib\System::get_platform_name());
 		self::$meta->set('theme-color', $theme_color);
 
 		head_add_link(['rel' => 'shortcut icon', 'href' => head_get_icon()]);
 		head_add_link(['rel' => 'apple-touch-icon', 'href' => '/images/app/hz-192.png']);
-
 
 		$x = ['header' => ''];
 		/**
@@ -1271,6 +1255,7 @@ class App {
 	 *
 	 * @return object Template Engine instance
 	 */
+
 	public static function template_engine($name = '') {
 		if ($name !== '') {
 			$template_engine = $name;
@@ -1293,7 +1278,6 @@ class App {
 				return $obj;
 			}
 		}
-
 		echo "template engine <tt>$template_engine</tt> is not registered!\n";
 		killme();
 	}
@@ -1303,6 +1287,7 @@ class App {
 	 *
 	 * @return string
 	 */
+
 	public static function get_template_engine() {
 		return self::$theme['template_engine'];
 	}
@@ -1331,7 +1316,6 @@ class App {
 	}
 
 } // End App class
-
 
 /**
  * @brief Multi-purpose function to check variable state.
@@ -1504,11 +1488,8 @@ function check_config() {
 	new DB_Upgrade(DB_UPDATE_VERSION);
 
 	plugins_sync();
-
 	load_hooks();
-
 	check_for_new_perms();
-
 	check_cron_broken();
 }
 
@@ -1601,7 +1582,6 @@ function fix_system_urls($oldurl, $newurl) {
 					);
 				}
 			}
-
 			Zotlabs\Daemon\Master::Summon(['Notifier', 'refresh_all', $c[0]['channel_id']]);
 		}
 	}
@@ -1845,6 +1825,7 @@ function can_view_public_stream() {
  *
  * @param string $s Text to display
  */
+
 function notice($s) {
 
 	/*
@@ -1964,10 +1945,10 @@ function info($s) {
  *
  * @return int
  */
+
 function get_max_import_size() {
 	return (intval(get_config('system', 'max_import_size')));
 }
-
 
 /**
  * @brief Wrap calls to proc_close(proc_open()) and call hook
@@ -2016,6 +1997,7 @@ function proc_run() {
 	// redirect proc_run statements of legacy daemon processes to the newer Daemon Master object class
 	// We will keep this interface until everybody has transitioned. (2016-05-20)
 
+	/* we'll comment this for now then remove it after testing
 	if (strstr($args[1], 'include/')) {
 		// convert 'include/foo.php' to 'Foo'
 		$orig = substr(ucfirst(substr($args[1], 8)), 0, -4);
@@ -2028,6 +2010,7 @@ function proc_run() {
 			return;
 		}
 	}
+	*/
 
 	$args    = array_map('escapeshellarg', $args);
 	$cmdline = implode(' ', $args);
@@ -2108,8 +2091,6 @@ function load_contact_links($uid) {
 
 	if (!$uid || x(App::$contacts, 'empty'))
 		return;
-
-//	logger('load_contact_links');
 
 	$r = q("SELECT abook_id, abook_flags, abook_my_perms, abook_their_perms, abook_self, xchan_hash, xchan_photo_m, xchan_name, xchan_url, xchan_network from abook left join xchan on abook_xchan = xchan_hash where abook_channel = %d and xchan_deleted = 0",
 		intval($uid)
@@ -2326,9 +2307,7 @@ function construct_page() {
 	}
 
 	$current_theme = Zotlabs\Render\Theme::current();
-	// logger('current_theme: ' . print_r($current_theme,true));
-	// Zotlabs\Render\Theme::debug();
-
+	
 	if (($p = theme_include($current_theme[0] . '.js')) != '')
 		head_add_js('/' . $p);
 

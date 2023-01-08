@@ -2,7 +2,6 @@
 
 namespace Zotlabs\Module;
 
-
 class Email_resend extends \Zotlabs\Web\Controller {
 
 	function post() {
@@ -12,9 +11,7 @@ class Email_resend extends \Zotlabs\Web\Controller {
 				notice(t('Token verification failed.'));
 			}
 		}
-
 	}
-
 
 	function get() {
 
@@ -39,8 +36,5 @@ class Email_resend extends \Zotlabs\Web\Controller {
 
 		// @todo - one can provide a form here to resend the mail
 		// after directing to here if a succesful login was attempted from an unverified address.
-
-
 	}
-
 }

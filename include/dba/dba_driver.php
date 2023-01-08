@@ -87,7 +87,6 @@ abstract class dba_driver {
 	// legacy behavior
 
 	public $db;
-
 	public  $debug = 0;
 	public  $connected = false;
 	public  $error = false;
