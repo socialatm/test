@@ -157,8 +157,8 @@
 
 			<div class="btn-group" role="group" aria-label="Basic outlined example">
 			<button type="button" class="btn btn-outline-light">Left</button>
-			<button type="button" class="btn btn-outline-primary">Middle</button>
-			<button type="button" class="btn btn-outline-primary">Right</button>
+			<button type="button" class="btn btn-outline-light">Middle</button>
+			<button type="button" class="btn btn-outline-light">Right</button>
 		  </div>
 
 
