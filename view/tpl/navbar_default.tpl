@@ -159,7 +159,8 @@
 			<button type="button" class="btn btn-outline-light">Left</button>
 			<button type="button" class="btn btn-outline-light">Middle</button>
 			<a href="#region_2" class="btn btn-outline-light">Link</a>
-			<button type="button" class="btn btn-outline-light">Right</button>
+	<!--		<button type="button" class="btn btn-outline-light">Right</button> -->
+			<a href="#region_3" class="btn btn-outline-light">Right</a>
 		  </div>
 
 
