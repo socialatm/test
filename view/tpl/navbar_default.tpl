@@ -156,11 +156,9 @@
 			<!-- end login/logout/register -->
 
 			<div class="btn-group" role="group" aria-label="Basic outlined example">
-			<button type="button" class="btn btn-outline-light">Left</button>
-			<button type="button" class="btn btn-outline-light">Middle</button>
-			<a href="#region_2" class="btn btn-outline-light">Link</a>
-	<!--		<button type="button" class="btn btn-outline-light">Right</button> -->
-			<a href="#region_3" class="btn btn-outline-light">Right</a>
+				<a href="#region_1" class="btn btn-outline-light">left</a>
+				<a href="#region_2" class="btn btn-outline-light">Middle</a>
+				<a href="#region_3" class="btn btn-outline-light">Right</a>
 		  </div>
 
 
