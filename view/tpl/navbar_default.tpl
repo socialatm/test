@@ -155,7 +155,7 @@
 			</ul>
 			<!-- end login/logout/register -->
 
-			<div class="btn-group" role="group" aria-label="Basic outlined example">
+			<div class="btn-group d-block d-md-none" role="group" aria-label="Basic outlined example">
 				<a href="#region_1" class="btn btn-outline-light">left</a>
 				<a href="#region_2" class="btn btn-outline-light">Middle</a>
 				<a href="#region_3" class="btn btn-outline-light">Right</a>
