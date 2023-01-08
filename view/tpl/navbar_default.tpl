@@ -158,6 +158,7 @@
 			<div class="btn-group" role="group" aria-label="Basic outlined example">
 			<button type="button" class="btn btn-outline-light">Left</button>
 			<button type="button" class="btn btn-outline-light">Middle</button>
+			<a href="#region_2" class="btn btn-outline-light">Link</a>
 			<button type="button" class="btn btn-outline-light">Right</button>
 		  </div>
 
