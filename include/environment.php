@@ -4,9 +4,7 @@
  * @brief Functions related to system/environment tasks.
  *
  * This file contains some functions to check the environment/system.
- */
-
-/**
+ *
  * @brief Get some upload related limits from php.ini.
  *
  * This function returns values from php.ini like \b post_max_size,
@@ -18,6 +16,7 @@
  *   * \e int \b max_file_uploads maximum number of files in one POST
  *   * \e int \b max_upload_filesize min(post_max_size, upload_max_filesize)
  */
+
 function getPhpiniUploadLimits() {
 	$ret = array();
 
@@ -50,6 +49,7 @@ function getPhpiniUploadLimits() {
  * @param string $val value from php.ini e.g. 2M, 8M
  * @return int size in bytes
  */
+
 function phpiniSizeToBytes($val) {
 	$val = trim($val);
 	$num = (double)$val;
@@ -64,6 +64,5 @@ function phpiniSizeToBytes($val) {
 		default:
 			break;
 	}
-
 	return (int)$num;
 }

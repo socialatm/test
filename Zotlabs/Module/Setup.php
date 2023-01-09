@@ -2,17 +2,13 @@
 namespace Zotlabs\Module;
 /**
  * @file Zotlabs/Module/Setup.php
- *
  * @brief Controller for the initial setup/installation.
  *
  * @todo This setup module could need some love and improvements.
- */
-
-
-/**
- * @brief Initialisation for the setup module.
+ * @brief Initialization for the setup module.
  *
  */
+
 class Setup extends \Zotlabs\Web\Controller {
 
 	private static $install_wizard_pass = 1;
@@ -55,6 +51,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @brief Handle the actions of the different setup steps.
 	 *
 	 */
+
 	function post() {
 
 		switch($this->install_wizard_pass) {
@@ -79,7 +76,6 @@ class Setup extends \Zotlabs\Web\Controller {
 				}
 
 				// $siteurl should not have a trailing slash
-
 				$siteurl = rtrim($siteurl,'/');
 
 				require_once('include/dba/dba_driver.php');
@@ -369,6 +365,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @param boolean $required
 	 * @param string $help optional help string
 	 */
+	
 	function check_add(&$checks, $title, $status, $required, $help = '') {
 		$checks[] = [
 			'title'    => $title,
@@ -505,7 +502,6 @@ class Setup extends \Zotlabs\Web\Controller {
 		if($disabled)
 			array_walk($disabled,'array_trim');
 
-
 		// add check metadata, the real check is done bit later and return values set
 		$this->check_add($ck_funcs, t('libCurl PHP module'), true, true);
 		$this->check_add($ck_funcs, t('GD graphics PHP module'), true, true);
@@ -582,7 +578,6 @@ class Setup extends \Zotlabs\Web\Controller {
 	function check_htconfig(&$checks) {
 		$status = true;
 		$help = '';
-
 		$fname = '.htconfig.php';
 
 		if((file_exists($fname) && is_writable($fname)) ||
@@ -615,7 +610,6 @@ class Setup extends \Zotlabs\Web\Controller {
 			$help .= t('Please ensure that the user that your web server runs as (e.g. www-data) has write access to this folder.').EOL;
 			$help .= sprintf( t('Note: as a security measure, you should give the web server write access to %s only--not the template files (.tpl) that it contains.'), TEMPLATE_BUILD_PATH) . EOL;
 		}
-
 		$this->check_add($checks, sprintf( t('%s is writable'), TEMPLATE_BUILD_PATH), $status, true, $help);
 	}
 
@@ -624,6 +618,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 *
 	 * @param[out] array &$checks
 	 */
+
 	function check_store(&$checks) {
 		$status = true;
 		$help = '';
@@ -635,7 +630,6 @@ class Setup extends \Zotlabs\Web\Controller {
 			$help = t('This software uses the store directory to save uploaded files. The web server needs to have write access to the store directory under the top level web folder') . EOL;
 			$help .= t('Please ensure that the user that your web server runs as (e.g. www-data) has write access to this folder.').EOL;
 		}
-
 		$this->check_add($checks, t('store is writable'), $status, true, $help);
 	}
 
@@ -644,6 +638,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 *
 	 * @param[out] array &$checks
 	 */
+
 	function check_htaccess(&$checks) {
 		$status = true;
 		$help = '';
@@ -684,7 +679,6 @@ class Setup extends \Zotlabs\Web\Controller {
 				$status = false;
 				$help = t('Url rewrite in .htaccess is not working. Check your server configuration.'.'Test: '.var_export($test,true));
 			}
-
 			$this->check_add($checks, t('Url rewrite is working'), $status, true, $help);
 		} else {
 			// cannot check modrewrite if libcurl is not installed
@@ -719,6 +713,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @param dba_driver $db (unused)
 	 * @return boolean|string false on success or error message as string
 	 */
+
 	function load_database($db) {
 		$str = file_get_contents(\DBA::$dba->get_install_script());
 		$arr = explode(';', $str);
@@ -731,7 +726,6 @@ class Setup extends \Zotlabs\Web\Controller {
 				}
 			}
 		}
-
 		return $errors;
 	}
 
@@ -740,6 +734,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 *
 	 * @return string with parsed HTML
 	 */
+
 	function what_next() {
 		// install the standard theme
 		set_config('system', 'allowed_themes', 'redbasic');
@@ -748,7 +743,6 @@ class Setup extends \Zotlabs\Web\Controller {
 		if(@is_executable('/usr/bin/convert')) {
 			set_config('system','imagick_convert_path','/usr/bin/convert');
 		}
-
 
 		// Set a lenient list of ciphers if using openssl. Other ssl engines
 		// (e.g. NSS used in RedHat) require different syntax, so hopefully
@@ -788,11 +782,11 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @param array $c
 	 * @return array
 	 */
+
 	static private function check_passed($v, $c) {
 		if($c['required'])
 			$v = $v && $c['status'];
 
 		return $v;
 	}
-
 }

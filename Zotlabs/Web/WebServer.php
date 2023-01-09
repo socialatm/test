@@ -6,7 +6,6 @@ class WebServer {
 
 	public function run() {
 
-
 		/*
 		 * Bootstrap the application, load configuration, load modules, load theme, etc.
 		 */
@@ -15,10 +14,8 @@ class WebServer {
 
 		sys_boot();
 
-
 		\App::$language = get_best_language();
 		load_translation_table(\App::$language,\App::$install);
-
 
 		/**
 		 *
