@@ -60,3 +60,7 @@
 		</form>
 	</div>
 </div>
+
+<SCRIPT>
+        alert( document.referrer );
+    </SCRIPT>
