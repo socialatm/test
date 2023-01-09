@@ -154,15 +154,6 @@
 				{{/if}}
 			</ul>
 			<!-- end login/logout/register -->
-
-			<div class="btn-group d-block d-sm-none" role="group" aria-label="Basic outlined example">
-				<a href="{{$url}}#region_1" class="btn btn-outline-light">left</a>
-				<a href="{{$url}}#region_2" class="btn btn-outline-light">Middle</a>
-				<a href="{{$url}}#region_3" class="btn btn-outline-light">Right</a>
-		  </div>
-
-
-
 		</div> <!-- end Collapsible wrapper -->
 	</div><!-- end of container -->
 </nav>
