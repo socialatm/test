@@ -735,7 +735,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @return string with parsed HTML
 	 */
 
-	function what_next($adminmail) {
+	function what_next() {
 		// install the standard theme
 		set_config('system', 'allowed_themes', 'redbasic');
 
@@ -767,7 +767,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 		$baseurl = z_root();
 
-		goaway(z_root().'/register?email='.$adminmail);
+		goaway(z_root().'/register?email=admin@hubzilla.com');
 
 		return
 			t('<h1>What next?</h1>')
