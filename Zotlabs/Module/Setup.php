@@ -157,7 +157,6 @@ class Setup extends \Zotlabs\Web\Controller {
 				return;
 				// implied break;
 			default:
-				require_once('Zotlabs/Module/Register.php');
 				break;
 		}
 	}
@@ -774,6 +773,8 @@ class Setup extends \Zotlabs\Web\Controller {
 			."</div><div>"
 			.t("Go to your new hub <a href='$baseurl/register'>registration page</a> and register as new member. Remember to use the same email you have entered as administrator email. This will allow you to enter the site admin panel.")
 			."</div>";
+
+			require_once('Zotlabs/Module/Register.php');
 	}
 
 	/**
