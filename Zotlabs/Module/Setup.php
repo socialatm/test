@@ -767,9 +767,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 		$baseurl = z_root();
 
-		require_once('Zotlabs/Module/Register.php');
-		$register = new Register;
-		$register->init();
+		goaway(register);
 
 		return
 			t('<h1>What next?</h1>')
