@@ -154,7 +154,7 @@ class Setup extends \Zotlabs\Web\Controller {
 				else
 					\App::$data['db_installed'] = true;
 
-				return;
+				return $adminmail;
 				// implied break;
 			default:
 				break;
@@ -767,7 +767,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 		$baseurl = z_root();
 
-		goaway(z_root().'/register?email=admin@hubzilla.com');
+		goaway(z_root().'/register?email='.$adminmail);
 
 		return
 			t('<h1>What next?</h1>')
