@@ -767,6 +767,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 		$baseurl = z_root();
 		require_once('Zotlabs/Module/Register.php');
+		get();
 		return
 			t('<h1>What next?</h1>')
 			."<div class=\"alert alert-info\">".t('IMPORTANT: You will need to [manually] setup a scheduled task for the poller.').EOL
