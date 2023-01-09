@@ -735,7 +735,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @return string with parsed HTML
 	 */
 
-	function what_next() {
+	function what_next($adminmail) {
 		// install the standard theme
 		set_config('system', 'allowed_themes', 'redbasic');
 
