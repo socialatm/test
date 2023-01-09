@@ -767,7 +767,7 @@ class Setup extends \Zotlabs\Web\Controller {
 
 		$baseurl = z_root();
 
-		goaway(z_root().'/register');
+		goaway(z_root().'/register?email='.$adminmail);
 
 		return
 			t('<h1>What next?</h1>')
