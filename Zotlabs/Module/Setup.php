@@ -766,6 +766,7 @@ class Setup extends \Zotlabs\Web\Controller {
 		create_sys_channel();
 
 		$baseurl = z_root();
+		require_once('Zotlabs/Module/Register.php');
 		return
 			t('<h1>What next?</h1>')
 			."<div class=\"alert alert-info\">".t('IMPORTANT: You will need to [manually] setup a scheduled task for the poller.').EOL
@@ -773,8 +774,6 @@ class Setup extends \Zotlabs\Web\Controller {
 			."</div><div>"
 			.t("Go to your new hub <a href='$baseurl/register'>registration page</a> and register as new member. Remember to use the same email you have entered as administrator email. This will allow you to enter the site admin panel.")
 			."</div>";
-
-			require_once('Zotlabs/Module/Register.php');
 	}
 
 	/**
