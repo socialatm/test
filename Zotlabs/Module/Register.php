@@ -10,7 +10,7 @@ require_once('include/channel.php');
 
 class Register extends Controller {
 
-	const MYP = 	'ZAR';		// ZAR0x
+	const MYP = 'ZAR';		// ZAR0x
 	const VERSION =	'2.0.0';
 
 	function init() {
