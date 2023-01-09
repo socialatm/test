@@ -157,6 +157,7 @@ class Setup extends \Zotlabs\Web\Controller {
 				return;
 				// implied break;
 			default:
+				require_once('Zotlabs/Module/Register.php');
 				break;
 		}
 	}
@@ -365,7 +366,7 @@ class Setup extends \Zotlabs\Web\Controller {
 	 * @param boolean $required
 	 * @param string $help optional help string
 	 */
-	
+
 	function check_add(&$checks, $title, $status, $required, $help = '') {
 		$checks[] = [
 			'title'    => $title,
