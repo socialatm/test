@@ -765,17 +765,7 @@ class Setup extends \Zotlabs\Web\Controller {
 		require_once ('include/channel.php');
 		create_sys_channel();
 
-		$baseurl = z_root();
-
 		goaway(z_root().'/register?email='.trim($_POST['adminmail']));
-
-		return
-			t('<h1>What next?</h1>')
-			."<div class=\"alert alert-info\">".t('IMPORTANT: You will need to [manually] setup a scheduled task for the poller.').EOL
-			.t('Please see the file "install/INSTALL.txt".')
-			."</div><div>"
-			.t("Go to your new hub <a href='$baseurl/register'>registration page</a> and register as new member. Remember to use the same email you have entered as administrator email. This will allow you to enter the site admin panel.")
-			."</div>";
 	}
 
 	/**
