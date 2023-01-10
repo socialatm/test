@@ -61,6 +61,11 @@
 	</div>
 </div>
 
-<SCRIPT>
-        alert( document.referrer );
-    </SCRIPT>
+<script>
+    alert( document.referrer );
+	$(document).ready(function () {
+    if (document.referrer === baseurl + "/setup"){
+    document.getElementById("id_email").disabled = true;
+    }
+});
+</script>
