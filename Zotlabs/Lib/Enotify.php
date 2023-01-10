@@ -759,7 +759,7 @@ class Enotify {
 
 		// generate a multipart/alternative message header
 		$messageHeader =
-			$params['additionalMailHeader'] . PHP_EOL .
+			$params['additionalMailHeader'] .
 			"From: $fromName <{$params['fromEmail']}>" . PHP_EOL .
 			"Reply-To: $fromName <{$params['replyTo']}>" . PHP_EOL .
 			'MIME-Version: 1.0' . PHP_EOL .
