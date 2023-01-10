@@ -11,6 +11,7 @@ Hubzilla 7.8.8 (add date here)
 	- changed the homepage to network
 	- new login and register pages
 	- notification widget added to a bootstrap modal
+	- admin register added to the install process
 		
 Hubzilla 7.8.7 (2022-12-03)
 	- Fix regression when adding feed contacts
