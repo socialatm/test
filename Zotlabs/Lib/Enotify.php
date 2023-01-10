@@ -766,8 +766,8 @@ class Enotify {
 			"Content-Type: multipart/alternative; boundary=\"{$mimeBoundary}\"";
 
 		// assemble the final multipart message body with the text and html types included
-		$textBody = chunk_split(base64_encode($params['textVersion']));
-		$htmlBody = chunk_split(base64_encode($params['htmlVersion']));
+//		$textBody = chunk_split(base64_encode($params['textVersion']));
+//		$htmlBody = chunk_split(base64_encode($params['htmlVersion']));
 
 		$multipartMessageBody =
 			'--' . $mimeBoundary . PHP_EOL .					// plain text section
