@@ -782,15 +782,6 @@ class Enotify {
 
 		// send the message
 
-		$arr = get_defined_vars();
-
-		print("<pre>".print_r($arr,true)."</pre>");
-		exit;
-
-
-
-
-
 		$res = mail(
 			$params['toEmail'],								// send to address
 			$messageSubject,								// subject
