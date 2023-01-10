@@ -64,7 +64,7 @@
 <script>
     $(document).ready(function () {
     if (document.referrer === baseurl + "/setup"){
-    document.getElementById("id_email").disabled = true;
+    document.getElementById("id_email").readonly = true;
     }
 });
 </script>
