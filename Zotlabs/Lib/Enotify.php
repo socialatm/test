@@ -763,7 +763,7 @@ class Enotify {
 			"From: $fromName <{$params['fromEmail']}>" . PHP_EOL .
 			"Reply-To: $fromName <{$params['replyTo']}>" . PHP_EOL .
 			'MIME-Version: 1.0' . PHP_EOL .
-			"Content-Type: multipart/alternative; boundary=\"{$mimeBoundary}"\";
+			"Content-Type: multipart/alternative; boundary=\"{$mimeBoundary}\"";
 
 		// assemble the final multipart message body with the text and html types included
 		$textBody = chunk_split(base64_encode($params['textVersion']));
