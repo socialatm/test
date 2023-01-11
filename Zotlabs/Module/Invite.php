@@ -12,7 +12,6 @@ use Zotlabs\Web\Controller;
  *
  */
 
-
 class Invite extends Controller {
 
 	/**
@@ -83,23 +82,17 @@ class Invite extends Controller {
 		$maxto = ($maxto === 'na') ? 12 : $maxto;
 
 		// language code current for the invitation
-		$lcc  = x($_POST['zailcc'])  && preg_match('/[a-z\-]{2,5}/', $_POST['zailcc'])
-				? $_POST['zailcc']
-				: '';
+		$lcc  = x($_POST['zailcc'])  && preg_match('/[a-z\-]{2,5}/', $_POST['zailcc']) ? $_POST['zailcc'] : '';
 
 		// expiration duration amount quantity, in case of doubts defaults 2
-		$durn = x($_POST['zaiexpiren']) && preg_match('/[0-9]{1,2}/', $_POST['zaiexpiren'])
-				? trim(intval($_POST['zaiexpiren']))
-				: '2';
+		$durn = x($_POST['zaiexpiren']) && preg_match('/[0-9]{1,2}/', $_POST['zaiexpiren']) ? trim(intval($_POST['zaiexpiren'])) : '2';
 		!$durn ? $durn = 2 : '';
 
 		// expiration duration unit 1st letter (day, weeks, months, years), defaults days
-		$durq = x($_POST['zaiexpire']) && preg_match('/[ihd]{1,1}/', $_POST['zaiexpire'])
-				? $_POST['zaiexpire']
-				: 'd';
+		$durq = x($_POST['zaiexpire']) && preg_match('/[ihd]{1,1}/', $_POST['zaiexpire']) ? $_POST['zaiexpire'] : 'd';
 
 		$dur = self::calcdue($durn.$durq);
-		$due = t('Note, the invitation code is valid up to') . ' ' . $dur['due'];
+		$due = t('Note, the invitation code is valid until') . ' ' . $dur['due'];
 
 		if ($isajax) {
 			$feedbk .= 'ZAI0207I ' . $due . $eol;
@@ -118,7 +111,6 @@ class Invite extends Controller {
 		} elseif ( $havto == 0 ) {
 			$feedbk .= 'ZAI0211E ' . t('No recipients for this invitation') . $eol;
 			$ko++;
-
 		} else {
 
 			// each email address
@@ -128,12 +120,6 @@ class Invite extends Controller {
 				$recip = $recips[$n] = trim($recip);
 				if(! $recip) continue;
 
-				// see if we have an email address who@domain.tld
-				//if (!preg_match('/^.{2,64}\@[a-z0-9.-]{2,32}\.[a-z]{2,12}$/', $recip)) {
-					//$feedbk .= 'ZAI0203E ' . ($n+1) . ': ' . sprintf( t('(%s) : Not a valid email address'), $recip) . $eol;
-					//$ko++;
-					//continue;
-				//}
 				if(! validate_email($recip)) {
 					$feedbk .= 'ZAI0204E ' . ($n+1) . ': ' . sprintf( t('(%s) : Not a real email address'), $recip) . $eol;
 					$ko++;
@@ -147,7 +133,7 @@ class Invite extends Controller {
 					continue;
 				}
 
-				// is the email address just in use for account or registered before
+				// is the email address in use or registered before
 				$r = q("SELECT account_email       AS em FROM account  WHERE account_email = '%s'"
 					  . " UNION "
 					  ."SELECT reg_email           AS em FROM register WHERE reg_vital = 1 AND reg_email = '%s' LIMIT 1;",
@@ -161,8 +147,8 @@ class Invite extends Controller {
 				}
 
 				if ($isajax) {
-					// seems we have an email address acceptable
-					$feedbk .= 'ZAI0209I ' . ($n+1) . ': ' . sprintf( t('(%s) : Accepted email address'), $recip) . $eol;
+					// if it's a good email address
+					$feedbk .= 'ZAI0209I ' . ($n+1) . ': ' . sprintf( t('(%s) : email address accepted'), $recip) . $eol;
 				}
 			}
 		}
@@ -180,7 +166,6 @@ class Invite extends Controller {
 
 		// any errors up to now in fg?
 
-
 		// down from here, only on the main road (no more ajax)
 
 		// tell if sth is to tell
@@ -189,10 +174,10 @@ class Invite extends Controller {
 		if ($ko > 0) return;
 
 		// the personal mailtext
-		$mailtext = ((x($_POST,'zaitxt'))    ? notags(trim($_POST['zaitxt']))    : '');
+		$mailtext = ((x($_POST,'zaitxt')) ? notags(trim($_POST['zaitxt'])) : '');
 
 		// to log in db
-		$reonar = json_decode( ((x($_POST,'zaireon'))  ? notags(trim($_POST['zaireon']))    : ''), TRUE, 8) ;
+		$reonar = json_decode( ((x($_POST,'zaireon')) ? notags(trim($_POST['zaireon'])) : ''), TRUE, 8) ;
 
 		// me, the invitor
 		$account = App::get_account();
@@ -285,14 +270,10 @@ class Invite extends Controller {
 			zar_log( $msg);
 		}
 
-		$ok + $ko > 0
-		? notice( 'ZAI0212I ' . sprintf( t('%1$d mail(s) sent, %2$d mail error(s)'), $ok, $ko) . EOL)
-		: '';
-		//logger( print_r( $reonar, true) );
-
+		$ok + $ko > 0 ? notice( 'ZAI0212I ' . sprintf( t('%1$d mail(s) sent, %2$d mail error(s)'), $ok, $ko) . EOL) : '';
+		
 		return;
 	}
-
 
 	function get() {
 
@@ -347,6 +328,7 @@ class Invite extends Controller {
 		// xchan record of the page observer
 		// while quoting matters the user, the sending is associated with a channel (of the user)
 		// also the admin may and should decide, which channel will told to the public
+
 		$ob = App::get_observer();
 		if(! $ob)
 			return 'ZAI0109F,' . t('Not on xchan') . EOL;
@@ -367,7 +349,7 @@ class Invite extends Controller {
 		// to easy redisplay the empty form
 		nav_set_selected('Invite');
 
-		// inform about the count of invitations we have at all
+		// inform about the count of invitations we have
 		$r = q("SELECT count(reg_id) as ct FROM register WHERE reg_vital = 1");		// where not admin TODO
 		$wehave = ($r ? $r[0]['ct'] : 0);
 
@@ -420,7 +402,8 @@ class Invite extends Controller {
 		// real invite codes become generated for each recipient when we store the new invitation(s)
 		// $invite_code = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 8) . rand(1000,9999);
 		// let take one descriptive for template (as said is never used)
-		$invite_code = 'INVITATE2020';
+
+		$invite_code = 'INVITE2023';
 
 		// and all the localized templates belonging to invite
 		$tpls	= glob('view/*/invite.*.tpl');
@@ -436,6 +419,7 @@ class Invite extends Controller {
 			}
 			// collect unique template names cross all languages and
 			// tpla[language][]=template those available in each language
+
 			$tplx[] = $tpla[$l][] = str_replace( array('invite.', '.tpl'), '', $t);
 		}
 
@@ -443,6 +427,7 @@ class Invite extends Controller {
 		asort($langs);
 
 		// Use the current language if we have a template for it. Otherwise fall back to 'en'.
+
 		$lccmy	= ((in_array(App::$language, $langs)) ? App::$language : 'en');
 
 		$tplx = array_unique($tplx);
@@ -466,6 +451,7 @@ class Invite extends Controller {
 		// running thru the localized templates (subjects and textmsgs) and bring them to tao
 		// lcc LanguageCountryCode,
 		// lcc2 is a 2 character and lcc5 a 5 character LanguageCountryCode
+
 		foreach($tpla as $l => $tn) {
 
 			// restyle lc to iso getttext format to avoid errors in js, hilite the current
@@ -501,6 +487,7 @@ class Invite extends Controller {
 				);
 
 				// a default subject if no associated exists
+				
 				$ts=t('Invitation');
 				if ( $tplxs[$l][$t1] )
 					$ts = replace_macros(get_intltext_template('invite.'.$t1.'.subject.tpl'),
