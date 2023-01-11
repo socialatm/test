@@ -36,10 +36,10 @@ class Invite extends Controller {
 	 * @author Hilmar Runge
 	 * @version 2.0.0
 	 * @since 2020-01-20
-	 *
+	 * 
 	 */
 
-	const MYP = 	'ZAI';
+	const MYP = 'ZAI';
 	const VERSION =	'2.0.0';
 
 	function post() {
@@ -487,7 +487,7 @@ class Invite extends Controller {
 				);
 
 				// a default subject if no associated exists
-				
+
 				$ts=t('Invitation');
 				if ( $tplxs[$l][$t1] )
 					$ts = replace_macros(get_intltext_template('invite.'.$t1.'.subject.tpl'),
