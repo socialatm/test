@@ -18,7 +18,6 @@ require_once('include/conversation.php');
 require_once('include/acl_selectors.php');
 require_once('include/opengraph.php');
 
-
 /**
  * @brief Channel Controller
  *
@@ -274,7 +273,6 @@ class Channel extends Controller {
 			}
 
 		}
-
 
 		/**
 		 * Get permissions SQL - if $remote_contact is true, our remote user has been pre-verified and we already have fetched his/her groups

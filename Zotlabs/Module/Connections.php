@@ -19,14 +19,12 @@ class Connections extends \Zotlabs\Web\Controller {
 		$channel = App::get_channel();
 		if($channel)
 			head_set_icon($channel['xchan_photo_s']);
-
 	}
 
 	function get() {
 
 		$sort_type = 0;
 		$o = '';
-
 
 		if(! local_channel()) {
 			notice( t('Permission denied.') . EOL);
@@ -116,11 +114,9 @@ class Connections extends \Zotlabs\Web\Controller {
 					$head = t('Active');
 					break;
 			}
-
 			$sql_extra = $search_flags;
 			if(argv(1) === 'pending')
 				$sql_extra .= " and abook_ignored = 0 ";
-
 		}
 		else {
 			$sql_extra = " and abook_blocked = 0 ";
@@ -264,7 +260,6 @@ class Connections extends \Zotlabs\Web\Controller {
 		foreach ($roles_list as $role) {
 			$roles_dict[$role['name']] = $role['localname'];
 		}
-
 		$contacts = array();
 
 		if($r) {

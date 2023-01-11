@@ -5,7 +5,6 @@ require_once('include/api.php');
 
 class Api extends \Zotlabs\Web\Controller {
 
-
 	function init() {
 		zot_api_init();
 
@@ -24,7 +23,6 @@ class Api extends \Zotlabs\Web\Controller {
 			notice( t('Permission denied.') . EOL);
 			return;
 		}
-	
 	}
 	
 	function get() {
@@ -46,7 +44,6 @@ class Api extends \Zotlabs\Web\Controller {
 				// echo "<pre>"; var_dump($e); 
 				killme();
 			}
-			
 			
 			if(x($_POST,'oauth_yes')){
 			
@@ -75,10 +72,8 @@ class Api extends \Zotlabs\Web\Controller {
 					'$info' => t('Return to your app and insert this Security Code:'),
 					'$code' => $verifier,
 				));
-			
 				return $o;
 			}
-			
 			
 			if(! local_channel()) {
 				//TODO: we need login form to redirect to this page
@@ -121,7 +116,5 @@ class Api extends \Zotlabs\Web\Controller {
 			return $r[0];
 
 		return null;
-	
 	}
-	
 }
