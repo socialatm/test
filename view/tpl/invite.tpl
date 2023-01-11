@@ -60,85 +60,83 @@
 
 <script>
   // @hilmar |->
-  typeof(window.tao) == 'undefined' ? window.tao = {} : '';
-  tao.zai = { vsn: '2.0.0', s: {}, t: {} };
+  typeof(window.tao) == "undefined" ? window.tao = {} : "";
+  tao.zai = { vsn: "2.0.0", s: {}, t: {} };
   {{$tao}}
-  $('head').append(
-  '<style> '+
-  '  .zai_h0 { font-size: 1.2rem; display: inline; }'+
-  '  .zai_hi { background: #ffc107; font-weight: bold; }'+
-  '  .zai_fa { margin: 0 0.2em 0 1em; }'+
-  '  .zai_lcc, .zai_qmc, .zuiqmid { font-family: monospace; text-transform: uppercase; }'+
-  '  .zai_lcc5 { display: none; }'+
-  '  .zai_ax { margin-inline: 8rem; }'+
-  '  .zai_il { display: inline; }'+
-  '  .zai_b  { font-weight: bold; }'+
-  '  .zai_n  { width: 5em; text-align: center; }'+
-  '  #id_zaiexpire_fs  { display: inline-block; }'+
-  '  .invites { text-transform: capitalize; }'+
-  '  .jGrowl-message { font-family: monospace; }'+
-  '</style>');
-  $('#zai-txt').attr('placeholder','{{$personal_pointer}}');
+  $("head").append(
+  "<style> "+
+  "  .zai_h0 { font-size: 1.2rem; display: inline; }"+
+  "  .zai_hi { background: #ffc107; font-weight: bold; }"+
+  "  .zai_fa { margin: 0 0.2em 0 1em; }"+
+  "  .zai_lcc, .zai_qmc, .zuiqmid { font-family: monospace; text-transform: uppercase; }"+
+  "  .zai_lcc5 { display: none; }"+
+  "  .zai_ax { margin-inline: 8rem; }"+
+  "  .zai_il { display: inline; }"+
+  "  .zai_b  { font-weight: bold; }"+
+  "  .zai_n  { width: 5em; text-align: center; }"+
+  "  #id_zaiexpire_fs  { display: inline-block; }"+
+  "  .invites { text-transform: capitalize; }"+
+  "  .jGrowl-message { font-family: monospace; }"+
+  "</style>");
+  $("#zai-txt").attr("placeholder","{{$personal_pointer}}");
   zaitx();
-  $('.zuiqmid').removeClass('required');
-  $('#invite')
-  .delegate('.invites', 'click', function() {
+  $(".zuiqmid").removeClass("required");
+  $("#invite")
+  .delegate(".invites", "click", function() {
     tao.zai.itpl=$(this).text();
-    $('.invites').removeClass('zai_hi');
-    $('#zai-'+tao.zai.itpl).addClass('zai_hi');
+    $(".invites").removeClass("zai_hi");
+    $("#zai-"+tao.zai.itpl).addClass("zai_hi");
     zaitx();
     })
-  .delegate('.zai_lcc', 'click', function() {
+  .delegate(".zai_lcc", "click", function() {
     tao.zai.lcc=$(this).text();
-    if ( $(this).hasClass('zai_lcc2') ) {
-      tao.zai.lccg = '.zai_lccg' + tao.zai.lcc.substr(0,2);
-      $('.zai_lcc5:not('+tao.zai.lccg+')').hide();
-      if ( $(this).hasClass('zai_hi') ) {
-        $('.zai_lcc5'+tao.zai.lccg).toggle();
+    if ( $(this).hasClass("zai_lcc2") ) {
+      tao.zai.lccg = ".zai_lccg" + tao.zai.lcc.substr(0,2);
+      $(".zai_lcc5:not("+tao.zai.lccg+")").hide();
+      if ( $(this).hasClass("zai_hi") ) {
+        $(".zai_lcc5"+tao.zai.lccg).toggle();
       }
     }
-    $('.zai_lcc').removeClass('zai_hi');
-    $(this).addClass('zai_hi');
+    $(".zai_lcc").removeClass("zai_hi");
+    $(this).addClass("zai_hi");
     $.each( tao.zai.t[tao.zai.lcc], function(k,v) {
       tao.zai.lccmy=tao.zai.lcc;
     });
     zaitx();
   });
-  $('#zai-ax').click( function() {
+  $("#zai-ax").click( function() {
     tao.zai.c2s={};
-    tao.zai.c2s.to=$('#zai-to').val();
-    if (tao.zai.c2s.to=='') { return false; };
-    // tao.zai.c2s.lcc=$('.zai_lcc.zai_hi').text();
+    tao.zai.c2s.to=$("#zai-to").val();
+    if (tao.zai.c2s.to=="") { return false; };
     $.ajax({
-      type: 'POST', url: 'invite',
+      type: "POST", url: "invite",
       data: {
         zaito: tao.zai.c2s.to,
         zailcc: tao.zai.lccmy,
-        zaidurn: $('#zaiexpiren').val(),
-        zaidurq: $('input[name="zaiexpire"]:checked').val(),
+        zaidurn: $("#zaiexpiren").val(),
+        zaidurq: $("input[name="zaiexpire"]:checked").val(),
         form_security_token: $("input[name='form_security_token']").val()
       }
     }).done( function(r) {
       tao.zai.r = JSON.parse(r);
-      $('#zai-re').attr('style', 'visibility: show;');
-      $('#zai-remsg').text(tao.zai.r.feedbk);
-      $('#zai-due').text(tao.zai.r.due);
+      $("#zai-re").attr("style", "visibility: show;");
+      $("#zai-remsg").text(tao.zai.r.feedbk);
+      $("#zai-due").text(tao.zai.r.due);
     })
   });
-  $('#invite-submit').click( function() {
-    // $('#zai-txt').val($('#zai-ims').text());
-    tao.zai.reon = {subject: $('#zai-subject').text(),
+  $("#invite-submit").click( function() {
+    tao.zai.reon = {subject: $("#zai-subject").text(),
        lang: tao.zai.lccmy, tpl: tao.zai.itpl,
        whereami: tao.zai.whereami, whoami: tao.zai.whoami};
-    $('#zai-reon').val(JSON.stringify(tao.zai.reon));
+    $("#zai-reon").val(JSON.stringify(tao.zai.reon));
   });
   function zaitx() {
-    typeof(tao.zai.s[tao.zai.lccmy]) !== 'undefined' && typeof(tao.zai.s[tao.zai.lccmy][tao.zai.itpl]) !== 'undefined'
-    ? $('#zai-subject').text(decodeURIComponent(tao.zai.s[tao.zai.lccmy][tao.zai.itpl]))
-    : $('#zai-subject').text('Invitation');
-    typeof(tao.zai.t[tao.zai.lccmy]) !== 'undefined' && typeof(tao.zai.t[tao.zai.lccmy][tao.zai.itpl]) !== 'undefined'
-    ? $('#zai-ims').text(decodeURIComponent(tao.zai.t[tao.zai.lccmy][tao.zai.itpl]))
-    : $('#zai-ims').text(' ');
+    typeof(tao.zai.s[tao.zai.lccmy]) !== "undefined" && typeof(tao.zai.s[tao.zai.lccmy][tao.zai.itpl]) !== "undefined"
+    ? $("#zai-subject").text(decodeURIComponent(tao.zai.s[tao.zai.lccmy][tao.zai.itpl]))
+    : $("#zai-subject").text("Invitation");
+    typeof(tao.zai.t[tao.zai.lccmy]) !== "undefined" && typeof(tao.zai.t[tao.zai.lccmy][tao.zai.itpl]) !== "undefined"
+    ? $("#zai-ims").text(decodeURIComponent(tao.zai.t[tao.zai.lccmy][tao.zai.itpl]))
+    : $("#zai-ims").text(" ");
   }
   // @hilmar <-|
 </script>
